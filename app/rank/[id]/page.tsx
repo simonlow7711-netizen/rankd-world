@@ -7,6 +7,7 @@ export default async function RankPage({
   params: Promise<{ id: string }>
 }) {
 
+
   const { id } = await params
 
 
@@ -19,13 +20,21 @@ export default async function RankPage({
 
     return (
 
-      <div className="
+      <main className="
+        min-h-screen
+        bg-black
+        text-white
         p-10
-        text-2xl
-        font-bold
       ">
-        Ranking not found
-      </div>
+
+        <h1 className="
+          text-4xl
+          font-black
+        ">
+          Ranking not found
+        </h1>
+
+      </main>
 
     )
 
@@ -38,8 +47,7 @@ export default async function RankPage({
       min-h-screen
       bg-black
       text-white
-      px-6
-      py-20
+      p-8
     ">
 
 
@@ -51,16 +59,13 @@ export default async function RankPage({
 
         <p className="
           text-gray-400
-          uppercase
-          tracking-wide
         ">
-          {ranking.category}
+          #{ranking.category}
         </p>
 
 
         <h1 className="
           text-5xl
-          md:text-6xl
           font-black
           mt-4
         ">
@@ -69,21 +74,11 @@ export default async function RankPage({
 
 
         <p className="
-          mt-6
-          text-gray-400
-          text-lg
-        ">
-          {ranking.description}
-        </p>
-
-
-        <p className="
           mt-4
-          text-gray-500
+          text-gray-400
         ">
           Created by {ranking.creator}
         </p>
-
 
 
         <div className="
@@ -92,79 +87,42 @@ export default async function RankPage({
         ">
 
 
-        {ranking.items.map(item => (
+          {ranking.items.map(item => (
 
-          <div
-            key={item.position}
-            className="
-              bg-zinc-900
-              border
-              border-zinc-800
-              rounded-3xl
-              p-6
-              flex
-              justify-between
-              items-center
-            "
-          >
-
-
-            <div className="
-              flex
-              items-center
-              gap-5
-            ">
-
-
-              <span className="
-                text-3xl
-                font-black
-              ">
-                {item.position === 1 && "🥇"}
-                {item.position === 2 && "🥈"}
-                {item.position === 3 && "🥉"}
-                {item.position > 3 && item.position}
-              </span>
-
+            <div
+              key={item.position}
+              className="
+                bg-white
+                text-black
+                rounded-2xl
+                p-5
+                flex
+                justify-between
+                items-center
+              "
+            >
 
               <span className="
                 text-xl
                 font-bold
               ">
-                {item.name}
+                #{item.position} {item.name}
+              </span>
+
+
+              <span className="
+                text-gray-500
+              ">
+                {item.votes}
               </span>
 
 
             </div>
 
-
-            <div className="
-              text-gray-400
-            ">
-              {item.votes} votes
-            </div>
-
-
-          </div>
-
-        ))}
+          ))}
 
 
         </div>
-
-
-        <button className="
-          mt-12
-          bg-white
-          text-black
-          rounded-full
-          px-10
-          py-4
-          font-black
-          text-lg
-        ">
-          Create Your Top 7
-        </button>
 
 
       </div>
