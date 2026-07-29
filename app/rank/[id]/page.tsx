@@ -1,19 +1,90 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { useParams } from "next/navigation"
 import { rankings } from "@/data/rankings"
 
 
-export default async function RankPage({
-  params
-}: {
-  params: Promise<{ id: string }>
-}) {
+export default function RankPage() {
 
 
-  const { id } = await params
+  const params = useParams()
+
+  const id = params.id as string
 
 
-  const ranking = rankings.find(
-    item => item.id === id
-  )
+  const [ranking, setRanking] = useState<any>(null)
+
+  const [loading, setLoading] = useState(true)
+
+
+
+  useEffect(() => {
+
+
+    const existingRanking = rankings.find(
+      item => item.id === id
+    )
+
+
+    if (existingRanking) {
+
+      setRanking(existingRanking)
+
+      setLoading(false)
+
+      return
+
+    }
+
+
+
+    const createdRankings = JSON.parse(
+      localStorage.getItem("createdRankings") || "[]"
+    )
+
+
+
+    const createdRanking = createdRankings.find(
+      (item:any) => item.id === id
+    )
+
+
+
+    setRanking(createdRanking || null)
+
+    setLoading(false)
+
+
+  }, [id])
+
+
+
+
+  if (loading) {
+
+    return (
+
+      <main className="
+        min-h-screen
+        bg-black
+        text-white
+        p-10
+      ">
+
+        <h1 className="
+          text-3xl
+          font-black
+        ">
+          Loading ranking...
+        </h1>
+
+      </main>
+
+    )
+
+  }
+
 
 
   if (!ranking) {
@@ -41,6 +112,8 @@ export default async function RankPage({
   }
 
 
+
+
   return (
 
     <main className="
@@ -64,6 +137,7 @@ export default async function RankPage({
         </p>
 
 
+
         <h1 className="
           text-5xl
           font-black
@@ -71,6 +145,7 @@ export default async function RankPage({
         ">
           {ranking.title}
         </h1>
+
 
 
         <p className="
@@ -81,16 +156,20 @@ export default async function RankPage({
         </p>
 
 
+
+
         <div className="
           mt-12
           space-y-4
         ">
 
 
-          {ranking.items.map(item => (
+          {ranking.items.map((item:any) => (
 
             <div
+
               key={item.position}
+
               className="
                 bg-white
                 text-black
@@ -100,6 +179,7 @@ export default async function RankPage({
                 justify-between
                 items-center
               "
+
             >
 
               <span className="
@@ -108,6 +188,7 @@ export default async function RankPage({
               ">
                 #{item.position} {item.name}
               </span>
+
 
 
               <span className="
