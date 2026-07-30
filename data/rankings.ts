@@ -1,5 +1,6 @@
 import { Ranking } from "@/types/ranking"
 
+
 export const rankings: Ranking[] = [
 
   {
@@ -10,6 +11,12 @@ export const rankings: Ranking[] = [
     category: "Food",
 
     creator: "Simon",
+
+    source: "official",
+
+    createdAt: "2026-07-01",
+
+    views: 1200,
 
     description:
       "The ultimate burger ranking.",
@@ -63,6 +70,12 @@ export const rankings: Ranking[] = [
 
     creator: "RANKD Community",
 
+    source: "official",
+
+    createdAt: "2026-07-02",
+
+    views: 1800,
+
     description:
       "The ultimate Christopher Nolan film ranking.",
 
@@ -114,6 +127,12 @@ export const rankings: Ranking[] = [
     category: "Gaming",
 
     creator: "RANKD Community",
+
+    source: "official",
+
+    createdAt: "2026-07-03",
+
+    views: 2200,
 
     description:
       "The games that defined generations.",
