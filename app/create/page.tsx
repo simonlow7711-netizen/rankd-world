@@ -31,7 +31,6 @@ export default function Create() {
   const [originalId, setOriginalId] = useState("")
 
 
-
   const [preview, setPreview] = useState(false)
 
 
@@ -101,13 +100,19 @@ export default function Create() {
 
 
 
-  const id = title
+  const slug = title
 
     .toLowerCase()
 
     .replace(/[^a-z0-9]+/g, "-")
 
     .replace(/(^-|-$)/g, "")
+
+
+
+  const id = `${slug}-${Math.random()
+    .toString(36)
+    .substring(2,6)}`
 
 
 
