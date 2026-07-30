@@ -27,6 +27,7 @@ export default function Create() {
   ])
 
 
+
   const [preview, setPreview] = useState(false)
 
 
@@ -34,9 +35,15 @@ export default function Create() {
 
 
 
+
+
   useEffect(() => {
 
+
     const startingTitle = searchParams.get("title")
+
+    const startingItems = searchParams.get("items")
+
 
 
     if (startingTitle) {
@@ -45,57 +52,107 @@ export default function Create() {
 
     }
 
+
+
+    if (startingItems) {
+
+      const loadedItems = startingItems.split("|")
+
+
+      setItems([
+
+        ...loadedItems,
+
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        ""
+
+      ].slice(0,7))
+
+
+    }
+
+
+
   }, [searchParams])
 
 
 
 
-  const id = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "")
 
+
+
+  const id = title
+
+    .toLowerCase()
+
+    .replace(/[^a-z0-9]+/g, "-")
+
+    .replace(/(^-|-$)/g, "")
 
 
 
   const ranking = {
 
+
     id,
+
 
     title,
 
+
     category: "General",
+
 
     creator: "Simon",
 
+
     source: "community",
+
 
     createdAt: new Date().toISOString(),
 
+
     views: 0,
+
 
     description:
       "A new community RANKD.",
 
-    items: items.map((item, index) => ({
 
-      position: index + 1,
+    items: items.map((item,index)=>(
 
-      name: item,
 
-      votes: 0
+      {
 
-    }))
+        position:index + 1,
+
+        name:item,
+
+        votes:0
+
+      }
+
+
+    ))
+
 
   }
 
 
 
 
-  function createPreview() {
 
 
-    if (!title.trim()) {
+
+  function createPreview(){
+
+
+    if(!title.trim()){
 
       setMessage("Please add a title")
 
@@ -104,7 +161,8 @@ export default function Create() {
     }
 
 
-    if (items.some(item => !item.trim())) {
+
+    if(items.some(item=>!item.trim())){
 
       setMessage("Please complete all 7 rankings")
 
@@ -113,20 +171,27 @@ export default function Create() {
     }
 
 
+
     setMessage("")
 
     setPreview(true)
+
 
   }
 
 
 
 
-  function publishRankd() {
+
+
+
+  function publishRankd(){
 
 
     const existingRankings = JSON.parse(
+
       localStorage.getItem("createdRankings") || "[]"
+
     )
 
 
@@ -156,6 +221,9 @@ export default function Create() {
 
 
 
+
+
+
   return (
 
     <main className="
@@ -166,10 +234,12 @@ export default function Create() {
     ">
 
 
+
       <div className="
         max-w-2xl
         mx-auto
       ">
+
 
 
 
@@ -179,6 +249,7 @@ export default function Create() {
         ">
           Create Your RANKD
         </h1>
+
 
 
 
@@ -198,6 +269,7 @@ export default function Create() {
 
 
 
+
             <input
 
               className="
@@ -210,15 +282,19 @@ export default function Create() {
                 placeholder:text-gray-500
               "
 
+
               placeholder="Top 7 of what?"
+
 
               value={title}
 
-              onChange={(e) =>
-                setTitle(e.target.value)
-              }
+
+              onChange={(e)=>setTitle(e.target.value)}
+
 
             />
+
+
 
 
 
@@ -230,11 +306,15 @@ export default function Create() {
             ">
 
 
-              {items.map((item, index) => (
+
+              {items.map((item,index)=>(
+
 
                 <input
 
+
                   key={index}
+
 
                   className="
                     w-full
@@ -245,26 +325,37 @@ export default function Create() {
                     placeholder:text-gray-500
                   "
 
+
                   placeholder={`#${index + 1}`}
+
 
                   value={item}
 
-                  onChange={(e) => {
 
-                    const updatedItems = [...items]
+                  onChange={(e)=>{
 
-                    updatedItems[index] = e.target.value
+
+                    const updatedItems=[...items]
+
+
+                    updatedItems[index]=e.target.value
+
 
                     setItems(updatedItems)
 
+
                   }}
 
+
                 />
+
 
               ))}
 
 
+
             </div>
+
 
 
 
@@ -281,6 +372,7 @@ export default function Create() {
               </p>
 
             )}
+
 
 
 
@@ -308,9 +400,12 @@ export default function Create() {
             </button>
 
 
+
           </>
 
         )}
+
+
 
 
 
@@ -348,8 +443,8 @@ export default function Create() {
               ">
 
 
+                {ranking.items.map(item=>(
 
-                {ranking.items.map(item => (
 
                   <div
 
@@ -375,7 +470,6 @@ export default function Create() {
 
 
               </div>
-
 
 
             </div>
