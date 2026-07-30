@@ -9,6 +9,7 @@ import DailyRankd from "@/components/DailyRankd"
 import PerspectiveCard from "@/components/PerspectiveCard"
 import PeopleCard from "@/components/PeopleCard"
 import TasteMatchCard from "@/components/TasteMatchCard"
+import ChallengeCard from "@/components/ChallengeCard"
 
 import {
   getTrendingRankings,
@@ -28,12 +29,15 @@ import {
   calculateTasteMatch
 } from "@/utils/tasteMatching"
 
+import {
+  calculateChallenge
+} from "@/utils/challengeTaste"
+
 
 
 
 
 export default function Explore() {
-
 
 
   const [communityRankings, setCommunityRankings] =
@@ -62,9 +66,6 @@ export default function Explore() {
 
 
 
-
-
-
   const allRankings = [
 
     ...communityRankings,
@@ -72,7 +73,6 @@ export default function Explore() {
     ...rankings
 
   ]
-
 
 
 
@@ -99,10 +99,8 @@ export default function Explore() {
 
 
 
-
   const perspectiveGaps =
     getPerspectiveGaps(allRankings)
-
 
 
 
@@ -115,11 +113,8 @@ export default function Explore() {
 
 
 
-
-
   const currentUser =
     people[0]
-
 
 
 
@@ -133,9 +128,7 @@ export default function Explore() {
 
       .map((person:any)=>({
 
-
         person,
-
 
         match:
 
@@ -147,10 +140,54 @@ export default function Explore() {
 
           )
 
-
       }))
 
 
+
+
+
+
+  const challenges =
+
+    people
+
+      .slice(1)
+
+      .filter((person:any)=>
+
+        person.rankings.length > 0
+
+      )
+
+      .map((person:any)=>{
+
+
+        const ranking =
+
+          person.rankings[0]
+
+
+
+        return {
+
+          person,
+
+          ranking,
+
+          challenge:
+
+            calculateChallenge(
+
+              currentUser.rankings[0],
+
+              ranking
+
+            )
+
+        }
+
+
+      })
 
 
 
@@ -192,7 +229,6 @@ export default function Explore() {
         "
 
       >
-
 
 
         <h2
@@ -288,8 +324,6 @@ export default function Explore() {
 
 
 
-
-
         <h1
 
           className="
@@ -304,8 +338,6 @@ export default function Explore() {
           Explore RANKD
 
         </h1>
-
-
 
 
 
@@ -329,11 +361,7 @@ export default function Explore() {
 
 
 
-
-
         <DailyRankd />
-
-
 
 
 
@@ -355,8 +383,6 @@ export default function Explore() {
 
 
 
-
-
         <Section
 
           title="⚡ Biggest Debates"
@@ -364,8 +390,6 @@ export default function Explore() {
           items={debates}
 
         />
-
-
 
 
 
@@ -441,8 +465,6 @@ export default function Explore() {
 
 
 
-
-
         <section
 
           className="
@@ -450,7 +472,6 @@ export default function Explore() {
           "
 
         >
-
 
 
           <h2
@@ -466,7 +487,6 @@ export default function Explore() {
             👥 People to Explore
 
           </h2>
-
 
 
 
@@ -503,10 +523,7 @@ export default function Explore() {
           </div>
 
 
-
         </section>
-
-
 
 
 
@@ -523,7 +540,6 @@ export default function Explore() {
         >
 
 
-
           <h2
 
             className="
@@ -537,8 +553,6 @@ export default function Explore() {
             🧬 People Who Rank Like You
 
           </h2>
-
-
 
 
 
@@ -577,10 +591,77 @@ export default function Explore() {
           </div>
 
 
-
         </section>
 
 
+
+
+
+
+
+        <section
+
+          className="
+            mb-16
+          "
+
+        >
+
+
+          <h2
+
+            className="
+              text-3xl
+              font-black
+              mb-6
+            "
+
+          >
+
+            🆚 Challenge My Taste
+
+          </h2>
+
+
+
+
+
+          <div
+
+            className="
+              grid
+              md:grid-cols-3
+              gap-8
+            "
+
+          >
+
+
+
+            {challenges.map((item:any)=>(
+
+
+              <ChallengeCard
+
+                key={`${item.person.username}-${item.ranking.id}`}
+
+                person={item.person}
+
+                ranking={item.ranking}
+
+                challenge={item.challenge}
+
+              />
+
+
+            ))}
+
+
+
+          </div>
+
+
+        </section>
 
 
 
@@ -602,8 +683,6 @@ export default function Explore() {
 
 
 
-
-
         <Section
 
           title="All RANKDs"
@@ -616,9 +695,7 @@ export default function Explore() {
 
 
 
-
       </section>
-
 
 
     </main>
