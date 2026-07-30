@@ -38,10 +38,13 @@ export default function ProfilePage() {
 
 
 
+
   const categories = new Set(
 
     rankings.map(
+
       ranking => ranking.category
+
     )
 
   )
@@ -51,7 +54,10 @@ export default function ProfilePage() {
 
 
 
-  const tasteData = calculateTasteDNA(rankings)
+  const tasteData =
+    calculateTasteDNA(rankings)
+
+
 
 
 
@@ -67,6 +73,7 @@ export default function ProfilePage() {
   return (
 
     <main
+
       className="
         min-h-screen
         bg-black
@@ -74,87 +81,153 @@ export default function ProfilePage() {
         px-6
         py-16
       "
+
     >
 
 
+
       <div
+
         className="
           max-w-5xl
           mx-auto
         "
+
       >
 
 
 
 
 
+
         <div
+
           className="
             bg-zinc-900
             rounded-3xl
             p-10
             mb-12
           "
+
         >
 
 
+
+
           <h1
+
             className="
               text-5xl
               font-black
             "
+
           >
+
             Simon
+
           </h1>
 
 
 
+
+
           <p
+
             className="
               mt-3
               text-gray-400
             "
+
           >
+
             Your RANKD identity starts here.
+
           </p>
 
 
 
 
 
+
+          <Link href="/profile/simon">
+
+
+            <button
+
+              className="
+                mt-6
+                bg-white
+                text-black
+                px-8
+                py-4
+                rounded-full
+                font-black
+                hover:scale-105
+                transition
+              "
+
+            >
+
+              View Public Profile →
+
+            </button>
+
+
+          </Link>
+
+
+
+
+
+
+
+
           <div
+
             className="
               mt-10
               grid
               md:grid-cols-3
               gap-6
             "
+
           >
 
 
 
+
+
             <div
+
               className="
                 bg-black
                 rounded-2xl
                 p-6
               "
+
             >
 
               <p className="text-gray-500">
+
                 RANKDs Created
+
               </p>
 
 
               <p
+
                 className="
                   text-4xl
                   font-black
                   mt-2
                 "
+
               >
+
                 {rankings.length}
+
               </p>
+
 
             </div>
 
@@ -163,30 +236,43 @@ export default function ProfilePage() {
 
 
 
+
+
             <div
+
               className="
                 bg-black
                 rounded-2xl
                 p-6
               "
+
             >
 
               <p className="text-gray-500">
+
                 Categories
+
               </p>
 
 
               <p
+
                 className="
                   text-4xl
                   font-black
                   mt-2
                 "
+
               >
+
                 {categories.size}
+
               </p>
 
+
             </div>
+
+
 
 
 
@@ -194,33 +280,47 @@ export default function ProfilePage() {
 
 
             <div
+
               className="
                 bg-black
                 rounded-2xl
                 p-6
               "
+
             >
 
               <p className="text-gray-500">
+
                 Opinions Shared
+
               </p>
 
 
               <p
+
                 className="
                   text-4xl
                   font-black
                   mt-2
                 "
+
               >
+
                 {rankings.length}
+
               </p>
 
+
             </div>
+
+
+
 
 
 
           </div>
+
+
 
 
         </div>
@@ -231,9 +331,13 @@ export default function ProfilePage() {
 
 
 
+
         <TasteDNA
+
           data={tasteData}
+
         />
+
 
 
 
@@ -242,7 +346,9 @@ export default function ProfilePage() {
 
 
         <Achievements
+
           achievements={achievementData}
+
         />
 
 
@@ -251,14 +357,19 @@ export default function ProfilePage() {
 
 
 
+
         <h2
+
           className="
             text-3xl
             font-black
             mb-8
           "
+
         >
+
           My RANKDs
+
         </h2>
 
 
@@ -269,10 +380,13 @@ export default function ProfilePage() {
 
 
         <div
+
           className="
             space-y-4
           "
+
         >
+
 
 
 
@@ -282,20 +396,26 @@ export default function ProfilePage() {
 
 
             <div
+
               className="
                 bg-zinc-900
                 rounded-2xl
                 p-8
               "
+
             >
 
               <p
+
                 className="
                   text-xl
                   font-bold
                 "
+
               >
+
                 You haven't created a RANKD yet.
+
               </p>
 
 
@@ -314,6 +434,7 @@ export default function ProfilePage() {
           {rankings.map((ranking)=>(
 
 
+
             <Link
 
               key={ranking.id}
@@ -323,6 +444,7 @@ export default function ProfilePage() {
             >
 
 
+
               <div
 
                 className="
@@ -330,32 +452,39 @@ export default function ProfilePage() {
                   text-black
                   rounded-2xl
                   p-6
+                  mb-4
                   hover:scale-[1.02]
                   transition
-                  cursor-pointer
-                  mb-4
                 "
 
               >
 
 
+
                 <p
+
                   className="
                     text-gray-500
                   "
+
                 >
+
                   #{ranking.category}
+
                 </p>
 
 
 
 
+
                 <h3
+
                   className="
                     text-2xl
                     font-black
                     mt-2
                   "
+
                 >
 
                   {ranking.title}
@@ -364,10 +493,12 @@ export default function ProfilePage() {
 
 
 
+
               </div>
 
 
             </Link>
+
 
 
           ))}
@@ -408,6 +539,8 @@ export default function ProfilePage() {
 
 
         </Link>
+
+
 
 
 
