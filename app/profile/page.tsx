@@ -9,12 +9,17 @@ import Achievements from "@/components/Achievements"
 import { calculateTasteDNA } from "@/utils/tasteProfile"
 import { calculateAchievements } from "@/utils/achievements"
 
+import { user } from "@/data/user"
+
 
 
 export default function ProfilePage() {
 
 
-  const [rankings, setRankings] = useState<any[]>([])
+  const [rankings, setRankings] =
+    useState<any[]>([])
+
+
 
 
 
@@ -54,6 +59,7 @@ export default function ProfilePage() {
 
 
 
+
   const tasteData =
     calculateTasteDNA(rankings)
 
@@ -61,8 +67,10 @@ export default function ProfilePage() {
 
 
 
+
   const achievementData =
     calculateAchievements(rankings)
+
 
 
 
@@ -114,6 +122,7 @@ export default function ProfilePage() {
 
 
 
+
           <h1
 
             className="
@@ -123,9 +132,28 @@ export default function ProfilePage() {
 
           >
 
-            Simon
+            {user.displayName}
 
           </h1>
+
+
+
+
+
+
+          <p
+
+            className="
+              mt-3
+              text-gray-400
+            "
+
+          >
+
+            @{user.username}
+
+          </p>
+
 
 
 
@@ -149,7 +177,14 @@ export default function ProfilePage() {
 
 
 
-          <Link href="/profile/simon">
+
+
+          <Link
+
+            href={`/profile/${user.username}`}
+
+          >
+
 
 
             <button
@@ -171,6 +206,7 @@ export default function ProfilePage() {
               View Public Profile →
 
             </button>
+
 
 
           </Link>
@@ -291,7 +327,7 @@ export default function ProfilePage() {
 
               <p className="text-gray-500">
 
-                Opinions Shared
+                Achievements
 
               </p>
 
@@ -306,7 +342,7 @@ export default function ProfilePage() {
 
               >
 
-                {rankings.length}
+                {achievementData.length}
 
               </p>
 
@@ -319,6 +355,8 @@ export default function ProfilePage() {
 
 
           </div>
+
+
 
 
 
@@ -378,7 +416,6 @@ export default function ProfilePage() {
 
 
 
-
         <div
 
           className="
@@ -386,7 +423,6 @@ export default function ProfilePage() {
           "
 
         >
-
 
 
 
@@ -482,7 +518,6 @@ export default function ProfilePage() {
                   className="
                     text-2xl
                     font-black
-                    mt-2
                   "
 
                 >
@@ -549,7 +584,9 @@ export default function ProfilePage() {
       </div>
 
 
+
     </main>
+
 
   )
 
