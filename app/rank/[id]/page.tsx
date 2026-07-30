@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 import { rankings } from "@/data/rankings"
+import { calculatePerspectiveGap } from "@/utils/perspectiveGap"
 
 
 export default function RankPage() {
@@ -17,6 +18,10 @@ export default function RankPage() {
 
 
   const [ranking, setRanking] = useState<any>(null)
+
+  const [originalRanking, setOriginalRanking] = useState<any>(null)
+
+  const [perspectiveGap, setPerspectiveGap] = useState<any>(null)
 
   const [loading, setLoading] = useState(true)
 
@@ -60,7 +65,43 @@ export default function RankPage() {
 
 
 
-    setRanking(createdRanking || null)
+    if (createdRanking) {
+
+      setRanking(createdRanking)
+
+
+
+      if (createdRanking.remixedFrom) {
+
+
+        const original = rankings.find(
+          item => item.id === createdRanking.remixedFrom
+        )
+
+
+
+        if (original) {
+
+          setOriginalRanking(original)
+
+
+          const gaps = calculatePerspectiveGap(
+            original,
+            createdRanking
+          )
+
+
+          setPerspectiveGap(gaps[0])
+
+        }
+
+
+      }
+
+
+    }
+
+
 
     setLoading(false)
 
@@ -214,6 +255,63 @@ export default function RankPage() {
               font-semibold
             ">
               This ranking was inspired by another opinion.
+            </p>
+
+
+          </div>
+
+        )}
+
+
+
+
+
+
+        {perspectiveGap && (
+
+          <div className="
+            mb-8
+            bg-zinc-900
+            rounded-2xl
+            p-6
+          ">
+
+
+            <p className="
+              text-gray-400
+              font-bold
+            ">
+              🔥 BIGGEST PERSPECTIVE GAP
+            </p>
+
+
+
+            <h2 className="
+              text-3xl
+              font-black
+              mt-3
+            ">
+              {perspectiveGap.item}
+            </h2>
+
+
+
+            <p className="
+              mt-3
+              text-gray-300
+            ">
+              Original: #{perspectiveGap.originalPosition}
+              <br />
+              Your ranking: #{perspectiveGap.remixPosition}
+            </p>
+
+
+
+            <p className="
+              mt-3
+              font-bold
+            ">
+              {perspectiveGap.difference} position difference
             </p>
 
 
