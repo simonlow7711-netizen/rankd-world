@@ -4,8 +4,22 @@ export default function RankingCard({
   ranking
 }: any) {
 
+
   const isCommunity =
-    ranking.creator !== "Simon"
+    ranking.source === "community"
+
+
+
+  const opinionCount =
+    ranking.remixes || 0
+
+
+
+  const hasDebate =
+    ranking.remixedFrom || opinionCount > 0
+
+
+
 
   return (
 
@@ -22,12 +36,15 @@ export default function RankingCard({
         cursor-pointer
       ">
 
+
+
         <div className="
           flex
           justify-between
           items-center
           mb-4
         ">
+
 
           <p className="
             text-sm
@@ -36,6 +53,8 @@ export default function RankingCard({
             #{ranking.category}
           </p>
 
+
+
           <span
             className={`
               text-xs
@@ -43,6 +62,7 @@ export default function RankingCard({
               px-3
               py-1
               rounded-full
+
               ${
                 isCommunity
                   ? "bg-purple-100 text-purple-700"
@@ -57,51 +77,149 @@ export default function RankingCard({
 
           </span>
 
+
         </div>
+
+
+
 
 
         <h2 className="
           text-2xl
           font-black
-          mt-2
         ">
+
           {ranking.title}
+
         </h2>
+
+
+
 
 
         <p className="
           mt-3
           text-gray-600
         ">
+
           Created by {ranking.creator}
+
         </p>
 
 
+
+
+
+
         <div className="
-          mt-6
+          mt-5
           space-y-2
         ">
+
 
           {ranking.items
             .slice(0,3)
             .map((item:any)=>(
 
               <div
-                key={item.name}
+
+                key={item.position}
+
                 className="
                   font-semibold
                 "
+
               >
 
                 #{item.position} {item.name}
 
               </div>
 
-          ))}
+
+            ))}
+
 
         </div>
 
+
+
+
+
+
+        <div className="
+          mt-6
+          border-t
+          pt-4
+          flex
+          justify-between
+          items-center
+        ">
+
+
+
+          <span className="
+            text-sm
+            font-bold
+            text-gray-600
+          ">
+
+            {opinionCount === 0
+              ? "Be the first to remix"
+              : `${opinionCount} opinions created`
+            }
+
+          </span>
+
+
+
+
+
+          {hasDebate && (
+
+            <span className="
+              text-xs
+              font-black
+              bg-black
+              text-white
+              px-3
+              py-1
+              rounded-full
+            ">
+
+              ⚡ DEBATE
+
+            </span>
+
+          )}
+
+
+
+        </div>
+
+
+
+
+
+        <div className="
+          mt-5
+          text-center
+          bg-black
+          text-white
+          rounded-full
+          py-3
+          font-black
+        ">
+
+          RANKD IT →
+
+        </div>
+
+
+
+
+
       </div>
+
 
     </Link>
 
