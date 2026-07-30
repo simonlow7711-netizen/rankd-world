@@ -57,6 +57,20 @@ export const discoveryUsers = [
 
     ]
 
+  },
+
+
+  {
+    username: "naomi",
+
+    displayName: "Naomi",
+
+    rankingIds: [
+
+      "best-nolan-films"
+
+    ]
+
   }
 
 ]
