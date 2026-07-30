@@ -6,6 +6,9 @@ import { rankings } from "@/data/rankings"
 
 import RankingCard from "@/components/RankingCard"
 import DailyRankd from "@/components/DailyRankd"
+import PerspectiveCard from "@/components/PerspectiveCard"
+import PeopleCard from "@/components/PeopleCard"
+import TasteMatchCard from "@/components/TasteMatchCard"
 
 import {
   getTrendingRankings,
@@ -13,9 +16,24 @@ import {
   getBiggestDebates
 } from "@/utils/rankingMetrics"
 
+import {
+  getPerspectiveGaps
+} from "@/utils/perspectiveMetrics"
+
+import {
+  getDiscoverableUsers
+} from "@/utils/userDiscovery"
+
+import {
+  calculateTasteMatch
+} from "@/utils/tasteMatching"
+
+
+
 
 
 export default function Explore() {
+
 
 
   const [communityRankings, setCommunityRankings] =
@@ -60,7 +78,6 @@ export default function Explore() {
 
 
 
-
   const trending =
     getTrendingRankings(allRankings)
 
@@ -83,6 +100,62 @@ export default function Explore() {
 
 
 
+  const perspectiveGaps =
+    getPerspectiveGaps(allRankings)
+
+
+
+
+
+
+  const people =
+    getDiscoverableUsers(allRankings)
+
+
+
+
+
+
+
+  const currentUser =
+    people[0]
+
+
+
+
+
+
+  const tasteMatches =
+
+    people
+
+      .slice(1)
+
+      .map((person:any)=>({
+
+
+        person,
+
+
+        match:
+
+          calculateTasteMatch(
+
+            currentUser.rankings,
+
+            person.rankings
+
+          )
+
+
+      }))
+
+
+
+
+
+
+
 
 
 
@@ -92,7 +165,7 @@ export default function Explore() {
 
     items
 
-  }: {
+  }:{
 
     title:string
 
@@ -102,14 +175,15 @@ export default function Explore() {
 
 
 
-    if(items.length === 0) return null
+    if(items.length === 0)
+
+      return null
 
 
 
 
 
     return (
-
 
       <section
 
@@ -154,7 +228,6 @@ export default function Explore() {
           {items.map((ranking)=>(
 
 
-
             <RankingCard
 
               key={ranking.id}
@@ -162,7 +235,6 @@ export default function Explore() {
               ranking={ranking}
 
             />
-
 
 
           ))}
@@ -177,7 +249,6 @@ export default function Explore() {
 
 
     )
-
 
   }
 
@@ -260,8 +331,8 @@ export default function Explore() {
 
 
 
-
         <DailyRankd />
+
 
 
 
@@ -284,6 +355,8 @@ export default function Explore() {
 
 
 
+
+
         <Section
 
           title="⚡ Biggest Debates"
@@ -291,6 +364,223 @@ export default function Explore() {
           items={debates}
 
         />
+
+
+
+
+
+
+
+
+
+        <section
+
+          className="
+            mb-16
+          "
+
+        >
+
+
+          <h2
+
+            className="
+              text-3xl
+              font-black
+              mb-6
+            "
+
+          >
+
+            🌍 Biggest Perspective Gaps
+
+          </h2>
+
+
+
+
+
+          <div
+
+            className="
+              grid
+              md:grid-cols-3
+              gap-8
+            "
+
+          >
+
+
+
+            {perspectiveGaps.map((item:any)=>(
+
+
+              <PerspectiveCard
+
+                key={item.ranking.id}
+
+                ranking={item.ranking}
+
+                gap={item.gap}
+
+              />
+
+
+            ))}
+
+
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+
+
+
+
+        <section
+
+          className="
+            mb-16
+          "
+
+        >
+
+
+
+          <h2
+
+            className="
+              text-3xl
+              font-black
+              mb-6
+            "
+
+          >
+
+            👥 People to Explore
+
+          </h2>
+
+
+
+
+
+
+          <div
+
+            className="
+              grid
+              md:grid-cols-3
+              gap-8
+            "
+
+          >
+
+
+
+            {people.map((person:any)=>(
+
+
+              <PeopleCard
+
+                key={person.username}
+
+                person={person}
+
+              />
+
+
+            ))}
+
+
+
+          </div>
+
+
+
+        </section>
+
+
+
+
+
+
+
+
+
+        <section
+
+          className="
+            mb-16
+          "
+
+        >
+
+
+
+          <h2
+
+            className="
+              text-3xl
+              font-black
+              mb-6
+            "
+
+          >
+
+            🧬 People Who Rank Like You
+
+          </h2>
+
+
+
+
+
+
+
+          <div
+
+            className="
+              grid
+              md:grid-cols-3
+              gap-8
+            "
+
+          >
+
+
+
+            {tasteMatches.map((item:any)=>(
+
+
+              <TasteMatchCard
+
+                key={item.person.username}
+
+                person={item.person}
+
+                match={item.match}
+
+              />
+
+
+            ))}
+
+
+
+          </div>
+
+
+
+        </section>
+
+
 
 
 
@@ -312,6 +602,8 @@ export default function Explore() {
 
 
 
+
+
         <Section
 
           title="All RANKDs"
@@ -325,10 +617,7 @@ export default function Explore() {
 
 
 
-
       </section>
-
-
 
 
 
