@@ -1,10 +1,52 @@
 "use client"
 
+import { useState } from "react"
+
+
+
 export default function ProfileCard({
   username,
   rankings,
   achievements
 }:any){
+
+
+  const [copied,setCopied] =
+    useState(false)
+
+
+
+
+
+  function shareProfile(){
+
+
+    const url =
+      `${window.location.origin}/profile/${username}`
+
+
+
+    navigator.clipboard.writeText(url)
+
+
+
+    setCopied(true)
+
+
+
+    setTimeout(()=>{
+
+      setCopied(false)
+
+    },2000)
+
+
+  }
+
+
+
+
+
 
 
   return (
@@ -20,6 +62,7 @@ export default function ProfileCard({
     >
 
 
+
       <h2
         className="
           text-4xl
@@ -31,6 +74,7 @@ export default function ProfileCard({
 
 
 
+
       <p
         className="
           mt-3
@@ -39,6 +83,8 @@ export default function ProfileCard({
       >
         My RANKD identity
       </p>
+
+
 
 
 
@@ -65,7 +111,6 @@ export default function ProfileCard({
           <p className="text-gray-400">
             RANKDs
           </p>
-
 
           <p
             className="
@@ -97,7 +142,6 @@ export default function ProfileCard({
             Achievements
           </p>
 
-
           <p
             className="
               text-3xl
@@ -116,16 +160,34 @@ export default function ProfileCard({
 
 
 
-      <p
+
+
+
+      <button
+
+        onClick={shareProfile}
+
         className="
           mt-8
-          font-bold
+          bg-black
+          text-white
+          px-8
+          py-4
+          rounded-full
+          font-black
         "
+
       >
 
-        Discover my Top 7 everything →
+        {copied
+          ? "Copied ✓"
+          : "Share My RANKD →"
+        }
 
-      </p>
+
+      </button>
+
+
 
 
     </div>
