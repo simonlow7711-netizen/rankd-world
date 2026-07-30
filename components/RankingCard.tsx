@@ -1,55 +1,77 @@
-import Link from "next/link";
-
+import Link from "next/link"
 
 export default function RankingCard({
   ranking
 }: any) {
 
-  const totalVotes = ranking.items.reduce(
-    (total:any, item:any) => total + item.votes,
-    0
-  );
-
+  const isCommunity =
+    ranking.creator !== "Simon"
 
   return (
 
     <Link href={`/rank/${ranking.id}`}>
 
       <div className="
-        bg-zinc-900
-        text-white
+        bg-white
+        text-black
         rounded-3xl
-        p-8
-        border
-        border-zinc-800
+        p-6
+        shadow-lg
         hover:scale-105
         transition
         cursor-pointer
       ">
 
-
-        <p className="
-          text-sm
-          text-gray-400
-          uppercase
-          tracking-wide
+        <div className="
+          flex
+          justify-between
+          items-center
+          mb-4
         ">
-          {ranking.category}
-        </p>
+
+          <p className="
+            text-sm
+            text-gray-500
+          ">
+            #{ranking.category}
+          </p>
+
+          <span
+            className={`
+              text-xs
+              font-bold
+              px-3
+              py-1
+              rounded-full
+              ${
+                isCommunity
+                  ? "bg-purple-100 text-purple-700"
+                  : "bg-green-100 text-green-700"
+              }
+            `}
+          >
+
+            {isCommunity
+              ? "COMMUNITY"
+              : "OFFICIAL"}
+
+          </span>
+
+        </div>
 
 
         <h2 className="
-          text-3xl
+          text-2xl
           font-black
-          mt-3
+          mt-2
         ">
           {ranking.title}
         </h2>
 
 
         <p className="
-          mt-4
-          text-gray-400
+          mt-3
+          text-gray-600
         ">
           Created by {ranking.creator}
         </p>
@@ -57,59 +79,32 @@ export default function RankingCard({
 
         <div className="
           mt-6
-          space-y-3
+          space-y-2
         ">
 
-          {ranking.items.slice(0,3).map((item:any)=>(
+          {ranking.items
+            .slice(0,3)
+            .map((item:any)=>(
 
-            <div
-              key={item.name}
-              className="
-                font-bold
-                text-lg
-              "
-            >
+              <div
+                key={item.name}
+                className="
+                  font-semibold
+                "
+              >
 
-              {item.position}. {item.name}
+                #{item.position} {item.name}
 
-            </div>
+              </div>
 
           ))}
 
-
         </div>
-
-
-        <div className="
-          mt-8
-          flex
-          justify-between
-          text-sm
-          text-gray-400
-        ">
-
-          <span>
-            7 items
-          </span>
-
-          <span>
-            {totalVotes.toLocaleString()} votes
-          </span>
-
-        </div>
-
-
-        <div className="
-          mt-6
-          font-bold
-        ">
-          View Ranking →
-        </div>
-
 
       </div>
 
     </Link>
 
-  );
+  )
+
 }

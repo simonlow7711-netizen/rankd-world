@@ -1,7 +1,30 @@
-import { rankings } from "@/data/rankings";
-import RankingCard from "@/components/RankingCard";
+"use client"
+
+import { useEffect, useState } from "react"
+
+import { rankings } from "@/data/rankings"
+import RankingCard from "@/components/RankingCard"
 
 export default function Explore() {
+
+  const [communityRankings, setCommunityRankings] = useState<any[]>([])
+
+  useEffect(() => {
+
+    const storedRankings = JSON.parse(
+      localStorage.getItem("createdRankings") || "[]"
+    )
+
+    setCommunityRankings(storedRankings)
+
+  }, [])
+
+
+  const allRankings = [
+    ...communityRankings,
+    ...rankings
+  ]
+
 
   return (
 
@@ -43,7 +66,7 @@ export default function Explore() {
           gap-8
         ">
 
-          {rankings.map((ranking)=>(
+          {allRankings.map((ranking) => (
 
             <RankingCard
               key={ranking.id}
@@ -58,5 +81,6 @@ export default function Explore() {
 
     </main>
 
-  );
+  )
+
 }
