@@ -11,6 +11,8 @@ import Achievements from "@/components/Achievements"
 import { calculateTasteDNA } from "@/utils/tasteProfile"
 import { calculateAchievements } from "@/utils/achievements"
 
+import { user } from "@/data/user"
+
 
 
 export default function PublicProfilePage({
@@ -18,17 +20,19 @@ export default function PublicProfilePage({
 }: any) {
 
 
-  const username = params.username
+  const username =
+    params.username || user.username
 
 
 
-  const [rankings, setRankings] = useState<any[]>([])
+  const [rankings, setRankings] =
+    useState<any[]>([])
 
 
 
 
 
-  useEffect(() => {
+  useEffect(()=>{
 
 
     const created = JSON.parse(
@@ -41,7 +45,8 @@ export default function PublicProfilePage({
     setRankings(created)
 
 
-  }, [])
+  },[])
+
 
 
 
@@ -66,7 +71,6 @@ export default function PublicProfilePage({
 
   const tasteData =
     calculateTasteDNA(rankings)
-
 
 
 
@@ -124,6 +128,7 @@ export default function PublicProfilePage({
 
 
 
+
           <h1
 
             className="
@@ -133,9 +138,26 @@ export default function PublicProfilePage({
 
           >
 
-            @{username}
+            {user.displayName}
 
           </h1>
+
+
+
+
+
+          <p
+
+            className="
+              mt-3
+              text-gray-400
+            "
+
+          >
+
+            @{username}
+
+          </p>
 
 
 
@@ -169,6 +191,7 @@ export default function PublicProfilePage({
             "
 
           >
+
 
 
 
@@ -252,7 +275,6 @@ export default function PublicProfilePage({
 
 
 
-
             <div
 
               className="
@@ -295,9 +317,7 @@ export default function PublicProfilePage({
 
 
 
-
         </div>
-
 
 
 
@@ -321,7 +341,6 @@ export default function PublicProfilePage({
 
 
 
-
         <ProfileCard
 
           username={username}
@@ -331,7 +350,6 @@ export default function PublicProfilePage({
           achievements={achievementData}
 
         />
-
 
 
 
@@ -351,13 +369,11 @@ export default function PublicProfilePage({
 
 
 
-
         <Achievements
 
           achievements={achievementData}
 
         />
-
 
 
 
@@ -396,7 +412,6 @@ export default function PublicProfilePage({
 
 
 
-
           {rankings.map((ranking)=>(
 
 
@@ -425,18 +440,11 @@ export default function PublicProfilePage({
 
 
 
-                <p
-
-                  className="
-                    text-gray-500
-                  "
-
-                >
+                <p className="text-gray-500">
 
                   #{ranking.category}
 
                 </p>
-
 
 
 
@@ -456,10 +464,7 @@ export default function PublicProfilePage({
 
 
 
-
-
               </div>
-
 
 
             </Link>
@@ -484,7 +489,6 @@ export default function PublicProfilePage({
 
 
     </main>
-
 
   )
 
