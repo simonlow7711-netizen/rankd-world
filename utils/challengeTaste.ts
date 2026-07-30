@@ -1,84 +1,209 @@
 export function calculateChallenge(
 
-  original: any,
+  userRankings: any[],
 
-  remix: any
+  otherRankings: any[]
 
 ) {
 
-  const comparisons = original.items
-    .map((item: any) => {
 
-      const other = remix.items.find(
-        (candidate: any) => candidate.name === item.name
+  const challenges:any[] = []
+
+
+
+
+  userRankings.forEach((userRanking)=>{
+
+
+    otherRankings.forEach((otherRanking)=>{
+
+
+
+      const comparisons =
+
+        userRanking.items
+
+          .map((item:any)=>{
+
+
+            const otherItem =
+
+              otherRanking.items.find(
+
+                (candidate:any)=>
+
+                  candidate.name === item.name
+
+              )
+
+
+
+            if(!otherItem)
+
+              return null
+
+
+
+            return {
+
+
+              item:item.name,
+
+
+              userPosition:item.position,
+
+
+              otherPosition:otherItem.position,
+
+
+              difference:
+
+                Math.abs(
+
+                  item.position -
+
+                  otherItem.position
+
+                )
+
+
+            }
+
+
+          })
+
+          .filter(Boolean)
+
+
+
+
+
+
+      if(comparisons.length === 0)
+
+        return
+
+
+
+
+
+
+      comparisons.sort(
+
+        (a:any,b:any)=>
+
+          b.difference -
+
+          a.difference
+
       )
 
-      if (!other) return null
 
-      return {
-        item: item.name,
-        originalPosition: item.position,
-        remixPosition: other.position,
-        difference: Math.abs(
-          item.position - other.position
+
+
+
+      const biggestDifference =
+
+        comparisons[0]
+
+
+
+
+
+      const totalDifference =
+
+        comparisons.reduce(
+
+          (
+
+            total:number,
+
+            item:any
+
+          )=>
+
+
+            total + item.difference,
+
+
+          0
+
         )
-      }
+
+
+
+
+
+
+
+      challenges.push({
+
+
+        ranking:userRanking,
+
+
+        comparedRanking:otherRanking,
+
+
+        biggestDifference,
+
+
+        challengeScore:
+
+          Math.min(
+
+            Math.round(
+
+              (
+
+                totalDifference /
+
+                (userRanking.items.length * 6)
+
+              )
+
+              * 100
+
+            ),
+
+            100
+
+          )
+
+
+      })
+
+
 
     })
-    .filter(Boolean)
 
 
 
-  comparisons.sort(
+  })
 
-    (a: any, b: any) =>
-      b.difference - a.difference
+
+
+
+
+
+
+
+  challenges.sort(
+
+    (a,b)=>
+
+      b.challengeScore -
+
+      a.challengeScore
 
   )
 
 
 
-  const biggestDifference =
-    comparisons[0] || null
 
 
 
-  const totalDifference =
-    comparisons.reduce(
+  return challenges[0] || null
 
-      (sum: number, comparison: any) =>
-
-        sum + comparison.difference,
-
-      0
-
-    )
-
-
-
-  const maxDifference =
-    original.items.length * 6
-
-
-
-  const challengeScore =
-
-    Math.round(
-
-      (totalDifference / maxDifference) * 100
-
-    )
-
-
-
-  return {
-
-    challengeScore,
-
-    biggestDifference,
-
-    comparisons
-
-  }
 
 }
