@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react"
 
 import { rankings } from "@/data/rankings"
+
 import RankingCard from "@/components/RankingCard"
+import DailyRankd from "@/components/DailyRankd"
 
 import {
   getTrendingRankings,
@@ -16,7 +18,10 @@ import {
 export default function Explore() {
 
 
-  const [communityRankings, setCommunityRankings] = useState<any[]>([])
+  const [communityRankings, setCommunityRankings] =
+    useState<any[]>([])
+
+
 
 
 
@@ -24,7 +29,9 @@ export default function Explore() {
 
 
     const storedRankings = JSON.parse(
+
       localStorage.getItem("createdRankings") || "[]"
+
     )
 
 
@@ -32,6 +39,9 @@ export default function Explore() {
 
 
   }, [])
+
+
+
 
 
 
@@ -48,21 +58,27 @@ export default function Explore() {
 
 
 
-  const trending = getTrendingRankings(
-    allRankings
-  )
 
 
 
-  const debates = getBiggestDebates(
-    allRankings
-  )
+  const trending =
+    getTrendingRankings(allRankings)
 
 
 
-  const latest = getLatestRankings(
-    allRankings
-  )
+
+
+  const debates =
+    getBiggestDebates(allRankings)
+
+
+
+
+
+  const latest =
+    getLatestRankings(allRankings)
+
+
 
 
 
@@ -71,30 +87,49 @@ export default function Explore() {
 
 
   function Section({
+
     title,
+
     items
+
   }: {
+
     title:string
+
     items:any[]
+
   }) {
+
 
 
     if(items.length === 0) return null
 
 
 
+
+
     return (
 
-      <section className="
-        mb-16
-      ">
+
+      <section
+
+        className="
+          mb-16
+        "
+
+      >
 
 
-        <h2 className="
-          text-3xl
-          font-black
-          mb-6
-        ">
+
+        <h2
+
+          className="
+            text-3xl
+            font-black
+            mb-6
+          "
+
+        >
 
           {title}
 
@@ -102,15 +137,24 @@ export default function Explore() {
 
 
 
-        <div className="
-          grid
-          md:grid-cols-3
-          gap-8
-        ">
+
+
+        <div
+
+          className="
+            grid
+            md:grid-cols-3
+            gap-8
+          "
+
+        >
+
 
 
           {items.map((ranking)=>(
-            
+
+
+
             <RankingCard
 
               key={ranking.id}
@@ -119,7 +163,10 @@ export default function Explore() {
 
             />
 
+
+
           ))}
+
 
 
         </div>
@@ -128,7 +175,9 @@ export default function Explore() {
 
       </section>
 
+
     )
+
 
   }
 
@@ -139,30 +188,47 @@ export default function Explore() {
 
 
 
+
   return (
 
-    <main className="
-      bg-black
-      min-h-screen
-      text-white
-      px-6
-      py-20
-    ">
+
+    <main
+
+      className="
+        bg-black
+        min-h-screen
+        text-white
+        px-6
+        py-20
+      "
+
+    >
 
 
-      <section className="
-        max-w-6xl
-        mx-auto
-      ">
+
+      <section
+
+        className="
+          max-w-6xl
+          mx-auto
+        "
+
+      >
 
 
 
-        <h1 className="
-          text-5xl
-          md:text-6xl
-          font-black
-          mb-4
-        ">
+
+
+        <h1
+
+          className="
+            text-5xl
+            md:text-6xl
+            font-black
+            mb-4
+          "
+
+        >
 
           Explore RANKD
 
@@ -171,15 +237,33 @@ export default function Explore() {
 
 
 
-        <p className="
-          text-gray-400
-          text-lg
-          mb-16
-        ">
+
+
+
+        <p
+
+          className="
+            text-gray-400
+            text-lg
+            mb-10
+          "
+
+        >
 
           Discover opinions. Create your own Top 7.
 
         </p>
+
+
+
+
+
+
+
+
+        <DailyRankd />
+
+
 
 
 
@@ -198,6 +282,8 @@ export default function Explore() {
 
 
 
+
+
         <Section
 
           title="⚡ Biggest Debates"
@@ -205,6 +291,7 @@ export default function Explore() {
           items={debates}
 
         />
+
 
 
 
@@ -237,12 +324,18 @@ export default function Explore() {
 
 
 
+
+
       </section>
+
+
 
 
 
     </main>
 
+
   )
+
 
 }
