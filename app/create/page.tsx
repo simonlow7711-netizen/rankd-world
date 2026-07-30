@@ -1,13 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 
 
 export default function Create() {
 
 
   const router = useRouter()
+
+  const searchParams = useSearchParams()
+
 
 
   const [title, setTitle] = useState("")
@@ -31,10 +34,27 @@ export default function Create() {
 
 
 
+  useEffect(() => {
+
+    const startingTitle = searchParams.get("title")
+
+
+    if (startingTitle) {
+
+      setTitle(startingTitle)
+
+    }
+
+  }, [searchParams])
+
+
+
+
   const id = title
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "")
+
 
 
 
@@ -47,6 +67,12 @@ export default function Create() {
     category: "General",
 
     creator: "Simon",
+
+    source: "community",
+
+    createdAt: new Date().toISOString(),
+
+    views: 0,
 
     description:
       "A new community RANKD.",
@@ -62,6 +88,7 @@ export default function Create() {
     }))
 
   }
+
 
 
 
@@ -94,6 +121,7 @@ export default function Create() {
 
 
 
+
   function publishRankd() {
 
 
@@ -102,18 +130,29 @@ export default function Create() {
     )
 
 
+
     localStorage.setItem(
+
       "createdRankings",
+
       JSON.stringify([
+
         ...existingRankings,
+
         ranking
+
       ])
+
     )
+
 
 
     router.push(`/rank/${id}`)
 
+
   }
+
+
 
 
 
@@ -133,12 +172,14 @@ export default function Create() {
       ">
 
 
+
         <h1 className="
           text-5xl
           font-black
         ">
           Create Your RANKD
         </h1>
+
 
 
 
@@ -153,6 +194,7 @@ export default function Create() {
             ">
               What is your Top 7?
             </p>
+
 
 
 
@@ -177,6 +219,8 @@ export default function Create() {
               }
 
             />
+
+
 
 
 
@@ -224,6 +268,8 @@ export default function Create() {
 
 
 
+
+
             {message && (
 
               <p className="
@@ -235,6 +281,9 @@ export default function Create() {
               </p>
 
             )}
+
+
+
 
 
 
@@ -267,6 +316,7 @@ export default function Create() {
 
 
 
+
         {preview && (
 
           <>
@@ -280,6 +330,7 @@ export default function Create() {
             ">
 
 
+
               <h2 className="
                 text-3xl
                 font-black
@@ -289,10 +340,13 @@ export default function Create() {
 
 
 
+
+
               <div className="
                 mt-6
                 space-y-3
               ">
+
 
 
                 {ranking.items.map(item => (
@@ -315,13 +369,19 @@ export default function Create() {
 
                   </div>
 
+
                 ))}
+
 
 
               </div>
 
 
+
             </div>
+
+
+
 
 
 
@@ -346,9 +406,11 @@ export default function Create() {
             </button>
 
 
+
           </>
 
         )}
+
 
 
       </div>

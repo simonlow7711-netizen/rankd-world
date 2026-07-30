@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { rankings } from "@/data/rankings"
 
 
@@ -10,12 +10,16 @@ export default function RankPage() {
 
   const params = useParams()
 
+  const router = useRouter()
+
+
   const id = params.id as string
 
 
   const [ranking, setRanking] = useState<any>(null)
 
   const [loading, setLoading] = useState(true)
+
 
 
 
@@ -39,6 +43,7 @@ export default function RankPage() {
 
 
 
+
     const createdRankings = JSON.parse(
       localStorage.getItem("createdRankings") || "[]"
     )
@@ -57,6 +62,8 @@ export default function RankPage() {
 
 
   }, [id])
+
+
 
 
 
@@ -87,6 +94,9 @@ export default function RankPage() {
 
 
 
+
+
+
   if (!ranking) {
 
     return (
@@ -114,6 +124,24 @@ export default function RankPage() {
 
 
 
+
+
+  function rankIt() {
+
+
+    router.push(
+      `/create?title=${encodeURIComponent(ranking.title)}`
+    )
+
+
+  }
+
+
+
+
+
+
+
   return (
 
     <main className="
@@ -124,10 +152,12 @@ export default function RankPage() {
     ">
 
 
+
       <div className="
         max-w-3xl
         mx-auto
       ">
+
 
 
         <p className="
@@ -135,6 +165,8 @@ export default function RankPage() {
         ">
           #{ranking.category}
         </p>
+
+
 
 
 
@@ -148,6 +180,8 @@ export default function RankPage() {
 
 
 
+
+
         <p className="
           mt-4
           text-gray-400
@@ -158,10 +192,39 @@ export default function RankPage() {
 
 
 
+
+
+        <button
+
+          onClick={rankIt}
+
+          className="
+            mt-8
+            bg-white
+            text-black
+            px-8
+            py-4
+            rounded-full
+            font-black
+          "
+
+        >
+
+          RANKD IT
+
+        </button>
+
+
+
+
+
+
+
         <div className="
           mt-12
           space-y-4
         ">
+
 
 
           {ranking.items.map((item:any) => (
@@ -182,12 +245,15 @@ export default function RankPage() {
 
             >
 
+
+
               <span className="
                 text-xl
                 font-bold
               ">
                 #{item.position} {item.name}
               </span>
+
 
 
 
@@ -198,15 +264,20 @@ export default function RankPage() {
               </span>
 
 
+
             </div>
 
+
           ))}
+
 
 
         </div>
 
 
+
       </div>
+
 
 
     </main>
