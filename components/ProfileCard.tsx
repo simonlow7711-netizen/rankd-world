@@ -8,17 +8,16 @@ export default function ProfileCard({
   username,
   rankings,
   achievements
-}:any){
+}: any) {
 
 
-  const [copied,setCopied] =
-    useState(false)
-
-
+  const [copied, setCopied] = useState(false)
 
 
 
-  function shareProfile(){
+
+
+  async function shareProfile() {
 
 
     const url =
@@ -26,19 +25,89 @@ export default function ProfileCard({
 
 
 
-    navigator.clipboard.writeText(url)
+    const shareText =
+      `Check out my RANKD — my Top 7 everything.`
 
 
 
-    setCopied(true)
 
 
 
-    setTimeout(()=>{
+    const isMobile =
+      /Android|iPhone|iPad/i.test(
+        navigator.userAgent
+      )
 
-      setCopied(false)
 
-    },2000)
+
+
+
+
+
+    if (
+
+      navigator.share && isMobile
+
+    ) {
+
+
+      try {
+
+
+        await navigator.share({
+
+          title: `${username}'s RANKD`,
+
+          text: shareText,
+
+          url
+
+        })
+
+
+      }
+
+      catch {
+
+
+        return
+
+      }
+
+
+    }
+
+
+
+
+
+
+    else {
+
+
+      await navigator.clipboard.writeText(
+
+        `${shareText} ${url}`
+
+      )
+
+
+
+      setCopied(true)
+
+
+
+      setTimeout(()=>{
+
+
+        setCopied(false)
+
+
+      },2000)
+
+
+
+    }
 
 
   }
@@ -49,9 +118,12 @@ export default function ProfileCard({
 
 
 
+
+
   return (
 
     <div
+
       className="
         bg-white
         text-black
@@ -59,29 +131,43 @@ export default function ProfileCard({
         p-8
         mb-12
       "
+
     >
 
 
 
+
+
       <h2
+
         className="
           text-4xl
           font-black
         "
+
       >
+
         @{username}
+
       </h2>
 
 
 
 
+
+
+
       <p
+
         className="
           mt-3
           text-gray-600
         "
+
       >
+
         My RANKD identity
+
       </p>
 
 
@@ -89,40 +175,61 @@ export default function ProfileCard({
 
 
 
+
+
       <div
+
         className="
           mt-8
           grid
           grid-cols-2
           gap-4
         "
+
       >
 
 
+
+
+
+
         <div
+
           className="
             bg-black
             text-white
             rounded-2xl
             p-5
           "
+
         >
 
           <p className="text-gray-400">
+
             RANKDs
+
           </p>
 
+
+
           <p
+
             className="
               text-3xl
               font-black
             "
+
           >
+
             {rankings.length}
+
           </p>
 
 
+
         </div>
+
+
 
 
 
@@ -130,29 +237,45 @@ export default function ProfileCard({
 
 
         <div
+
           className="
             bg-black
             text-white
             rounded-2xl
             p-5
           "
+
         >
 
           <p className="text-gray-400">
+
             Achievements
+
           </p>
 
+
+
           <p
+
             className="
               text-3xl
               font-black
             "
+
           >
+
             {achievements.length}
+
           </p>
 
 
+
         </div>
+
+
+
+
+
 
 
       </div>
@@ -163,9 +286,12 @@ export default function ProfileCard({
 
 
 
+
       <button
 
+
         onClick={shareProfile}
+
 
         className="
           mt-8
@@ -175,14 +301,22 @@ export default function ProfileCard({
           py-4
           rounded-full
           font-black
+          hover:scale-105
+          transition
         "
+
 
       >
 
+
         {copied
+
           ? "Copied ✓"
+
           : "Share My RANKD →"
+
         }
+
 
 
       </button>
@@ -190,7 +324,10 @@ export default function ProfileCard({
 
 
 
+
+
     </div>
+
 
   )
 
