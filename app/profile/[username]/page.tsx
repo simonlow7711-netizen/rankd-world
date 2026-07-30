@@ -3,9 +3,10 @@
 import { useEffect, useState } from "react"
 import Link from "next/link"
 
+import ProfileCard from "@/components/ProfileCard"
+import ShareCard from "@/components/ShareCard"
 import TasteDNA from "@/components/TasteDNA"
 import Achievements from "@/components/Achievements"
-import ProfileCard from "@/components/ProfileCard"
 
 import { calculateTasteDNA } from "@/utils/tasteProfile"
 import { calculateAchievements } from "@/utils/achievements"
@@ -22,6 +23,8 @@ export default function PublicProfilePage({
 
 
   const [rankings, setRankings] = useState<any[]>([])
+
+
 
 
 
@@ -60,8 +63,10 @@ export default function PublicProfilePage({
 
 
 
+
   const tasteData =
     calculateTasteDNA(rankings)
+
 
 
 
@@ -79,6 +84,7 @@ export default function PublicProfilePage({
   return (
 
     <main
+
       className="
         min-h-screen
         bg-black
@@ -86,14 +92,17 @@ export default function PublicProfilePage({
         px-6
         py-16
       "
+
     >
 
 
       <div
+
         className="
           max-w-5xl
           mx-auto
         "
+
       >
 
 
@@ -102,34 +111,47 @@ export default function PublicProfilePage({
 
 
         <div
+
           className="
             bg-zinc-900
             rounded-3xl
             p-10
             mb-12
           "
+
         >
 
 
 
+
           <h1
+
             className="
               text-5xl
               font-black
             "
+
           >
+
             @{username}
+
           </h1>
 
 
 
+
+
           <p
+
             className="
-              text-gray-400
               mt-3
+              text-gray-400
             "
+
           >
+
             RANKD identity
+
           </p>
 
 
@@ -138,37 +160,47 @@ export default function PublicProfilePage({
 
 
           <div
+
             className="
               mt-8
               grid
               md:grid-cols-3
               gap-5
             "
+
           >
 
 
 
             <div
+
               className="
                 bg-black
                 rounded-2xl
                 p-5
               "
+
             >
 
               <p className="text-gray-400">
+
                 RANKDs
+
               </p>
 
 
               <p
+
                 className="
                   text-3xl
                   font-black
                   mt-2
                 "
+
               >
+
                 {rankings.length}
+
               </p>
 
 
@@ -179,31 +211,42 @@ export default function PublicProfilePage({
 
 
 
+
             <div
+
               className="
                 bg-black
                 rounded-2xl
                 p-5
               "
+
             >
 
               <p className="text-gray-400">
+
                 Categories
+
               </p>
 
 
               <p
+
                 className="
                   text-3xl
                   font-black
                   mt-2
                 "
+
               >
+
                 {categories.size}
+
               </p>
 
 
             </div>
+
+
 
 
 
@@ -211,30 +254,39 @@ export default function PublicProfilePage({
 
 
             <div
+
               className="
                 bg-black
                 rounded-2xl
                 p-5
               "
+
             >
 
               <p className="text-gray-400">
+
                 Achievements
+
               </p>
 
 
               <p
+
                 className="
                   text-3xl
                   font-black
                   mt-2
                 "
+
               >
+
                 {achievementData.length}
+
               </p>
 
 
             </div>
+
 
 
 
@@ -242,7 +294,27 @@ export default function PublicProfilePage({
 
 
 
+
+
         </div>
+
+
+
+
+
+
+
+
+        <ShareCard
+
+          username={username}
+
+          rankings={rankings}
+
+          achievements={achievementData}
+
+        />
+
 
 
 
@@ -279,6 +351,7 @@ export default function PublicProfilePage({
 
 
 
+
         <Achievements
 
           achievements={achievementData}
@@ -291,14 +364,19 @@ export default function PublicProfilePage({
 
 
 
+
         <h2
+
           className="
             text-3xl
             font-black
             mb-8
           "
+
         >
+
           Rankings
+
         </h2>
 
 
@@ -308,14 +386,19 @@ export default function PublicProfilePage({
 
 
         <div
+
           className="
             space-y-4
           "
+
         >
 
 
 
+
+
           {rankings.map((ranking)=>(
+
 
 
             <Link
@@ -325,6 +408,7 @@ export default function PublicProfilePage({
               href={`/rank/${ranking.id}`}
 
             >
+
 
 
               <div
@@ -342,12 +426,17 @@ export default function PublicProfilePage({
 
 
                 <p
+
                   className="
                     text-gray-500
                   "
+
                 >
+
                   #{ranking.category}
+
                 </p>
+
 
 
 
@@ -367,13 +456,19 @@ export default function PublicProfilePage({
 
 
 
+
+
               </div>
+
 
 
             </Link>
 
 
+
           ))}
+
+
 
 
 
@@ -389,6 +484,7 @@ export default function PublicProfilePage({
 
 
     </main>
+
 
   )
 
