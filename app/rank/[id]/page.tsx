@@ -129,8 +129,18 @@ export default function RankPage() {
   function rankIt() {
 
 
+    const items = ranking.items
+
+      .map((item:any) => item.name)
+
+      .join("|")
+
+
+
     router.push(
-      `/create?title=${encodeURIComponent(ranking.title)}`
+
+      `/create?title=${encodeURIComponent(ranking.title)}&items=${encodeURIComponent(items)}`
+
     )
 
 
