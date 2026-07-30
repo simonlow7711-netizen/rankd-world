@@ -1,9 +1,9 @@
 export const discoveryUsers = [
 
   {
-    username: "alex",
+    username: "remy",
 
-    displayName: "Alex",
+    displayName: "Remy",
 
     rankingIds: [
 
@@ -17,11 +17,41 @@ export const discoveryUsers = [
 
 
   {
-    username: "jamie",
+    username: "liv",
 
-    displayName: "Jamie",
+    displayName: "Liv",
 
     rankingIds: [
+
+      "best-nolan-films"
+
+    ]
+
+  },
+
+
+  {
+    username: "immy",
+
+    displayName: "Immy",
+
+    rankingIds: [
+
+      "best-burgers-london"
+
+    ]
+
+  },
+
+
+  {
+    username: "zach",
+
+    displayName: "Zach",
+
+    rankingIds: [
+
+      "best-burgers-london",
 
       "best-nolan-films"
 
