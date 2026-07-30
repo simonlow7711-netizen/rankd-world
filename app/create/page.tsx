@@ -28,6 +28,10 @@ export default function Create() {
 
 
 
+  const [originalId, setOriginalId] = useState("")
+
+
+
   const [preview, setPreview] = useState(false)
 
 
@@ -44,6 +48,8 @@ export default function Create() {
 
     const startingItems = searchParams.get("items")
 
+    const startingOriginalId = searchParams.get("originalId")
+
 
 
     if (startingTitle) {
@@ -55,6 +61,7 @@ export default function Create() {
 
 
     if (startingItems) {
+
 
       const loadedItems = startingItems.split("|")
 
@@ -78,6 +85,14 @@ export default function Create() {
 
 
 
+    if (startingOriginalId) {
+
+      setOriginalId(startingOriginalId)
+
+    }
+
+
+
   }, [searchParams])
 
 
@@ -93,6 +108,10 @@ export default function Create() {
     .replace(/[^a-z0-9]+/g, "-")
 
     .replace(/(^-|-$)/g, "")
+
+
+
+
 
 
 
@@ -120,8 +139,16 @@ export default function Create() {
     views: 0,
 
 
+    remixedFrom: originalId || undefined,
+
+
+    originalId: originalId || undefined,
+
+
+
     description:
       "A new community RANKD.",
+
 
 
     items: items.map((item,index)=>(
@@ -142,6 +169,7 @@ export default function Create() {
 
 
   }
+
 
 
 
@@ -185,7 +213,9 @@ export default function Create() {
 
 
 
+
   function publishRankd(){
+
 
 
     const existingRankings = JSON.parse(
@@ -193,6 +223,7 @@ export default function Create() {
       localStorage.getItem("createdRankings") || "[]"
 
     )
+
 
 
 
@@ -212,10 +243,12 @@ export default function Create() {
 
 
 
+
     router.push(`/rank/${id}`)
 
 
   }
+
 
 
 
@@ -243,6 +276,7 @@ export default function Create() {
 
 
 
+
         <h1 className="
           text-5xl
           font-black
@@ -254,9 +288,15 @@ export default function Create() {
 
 
 
+
+
+
         {!preview && (
 
           <>
+
+
+
 
 
             <p className="
@@ -270,7 +310,10 @@ export default function Create() {
 
 
 
+
+
             <input
+
 
               className="
                 mt-8
@@ -300,6 +343,8 @@ export default function Create() {
 
 
 
+
+
             <div className="
               mt-8
               space-y-3
@@ -313,7 +358,9 @@ export default function Create() {
                 <input
 
 
+
                   key={index}
+
 
 
                   className="
@@ -326,10 +373,13 @@ export default function Create() {
                   "
 
 
+
                   placeholder={`#${index + 1}`}
 
 
+
                   value={item}
+
 
 
                   onChange={(e)=>{
@@ -347,6 +397,7 @@ export default function Create() {
                   }}
 
 
+
                 />
 
 
@@ -355,6 +406,8 @@ export default function Create() {
 
 
             </div>
+
+
 
 
 
@@ -379,9 +432,14 @@ export default function Create() {
 
 
 
+
+
             <button
 
+
               onClick={createPreview}
+
+
 
               className="
                 mt-10
@@ -393,11 +451,14 @@ export default function Create() {
                 font-black
               "
 
+
             >
 
               Preview RANKD
 
             </button>
+
+
 
 
 
@@ -412,9 +473,13 @@ export default function Create() {
 
 
 
+
         {preview && (
 
           <>
+
+
+
 
 
             <div className="
@@ -423,6 +488,8 @@ export default function Create() {
               rounded-3xl
               p-8
             ">
+
+
 
 
 
@@ -437,18 +504,26 @@ export default function Create() {
 
 
 
+
+
               <div className="
                 mt-6
                 space-y-3
               ">
 
 
+
+
                 {ranking.items.map(item=>(
+
 
 
                   <div
 
+
                     key={item.position}
+
+
 
                     className="
                       bg-white
@@ -458,6 +533,7 @@ export default function Create() {
                       font-bold
                     "
 
+
                   >
 
                     #{item.position} {item.name}
@@ -465,11 +541,16 @@ export default function Create() {
                   </div>
 
 
+
                 ))}
 
 
 
+
               </div>
+
+
+
 
 
             </div>
@@ -479,9 +560,16 @@ export default function Create() {
 
 
 
+
+
+
             <button
 
+
+
               onClick={publishRankd}
+
+
 
               className="
                 mt-10
@@ -493,6 +581,8 @@ export default function Create() {
                 font-black
               "
 
+
+
             >
 
               Publish RANKD
@@ -501,9 +591,15 @@ export default function Create() {
 
 
 
+
+
+
           </>
 
         )}
+
+
+
 
 
 

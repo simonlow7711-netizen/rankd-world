@@ -23,12 +23,14 @@ export default function RankPage() {
 
 
 
+
   useEffect(() => {
 
 
     const existingRanking = rankings.find(
       item => item.id === id
     )
+
 
 
     if (existingRanking) {
@@ -44,13 +46,15 @@ export default function RankPage() {
 
 
 
+
+
     const createdRankings = JSON.parse(
       localStorage.getItem("createdRankings") || "[]"
     )
 
 
 
-    const createdRanking = createdRankings.find(
+    const createdRanking = createdRankings.findLast(
       (item:any) => item.id === id
     )
 
@@ -61,7 +65,11 @@ export default function RankPage() {
     setLoading(false)
 
 
+
   }, [id])
+
+
+
 
 
 
@@ -97,6 +105,8 @@ export default function RankPage() {
 
 
 
+
+
   if (!ranking) {
 
     return (
@@ -126,6 +136,9 @@ export default function RankPage() {
 
 
 
+
+
+
   function rankIt() {
 
 
@@ -139,12 +152,14 @@ export default function RankPage() {
 
     router.push(
 
-      `/create?title=${encodeURIComponent(ranking.title)}&items=${encodeURIComponent(items)}`
+      `/create?title=${encodeURIComponent(ranking.title)}&items=${encodeURIComponent(items)}&originalId=${ranking.id}`
 
     )
 
 
   }
+
+
 
 
 
@@ -163,10 +178,53 @@ export default function RankPage() {
 
 
 
+
       <div className="
         max-w-3xl
         mx-auto
       ">
+
+
+
+
+
+
+
+        {ranking.remixedFrom && (
+
+          <div className="
+            mb-8
+            bg-white
+            text-black
+            rounded-2xl
+            p-5
+          ">
+
+
+            <p className="
+              font-black
+              text-xl
+            ">
+              🔁 REMIXED RANKD
+            </p>
+
+
+            <p className="
+              mt-2
+              font-semibold
+            ">
+              This ranking was inspired by another opinion.
+            </p>
+
+
+          </div>
+
+        )}
+
+
+
+
+
 
 
 
@@ -175,6 +233,9 @@ export default function RankPage() {
         ">
           #{ranking.category}
         </p>
+
+
+
 
 
 
@@ -192,12 +253,16 @@ export default function RankPage() {
 
 
 
+
+
         <p className="
           mt-4
           text-gray-400
         ">
           Created by {ranking.creator}
         </p>
+
+
 
 
 
@@ -230,6 +295,8 @@ export default function RankPage() {
 
 
 
+
+
         <div className="
           mt-12
           space-y-4
@@ -237,7 +304,10 @@ export default function RankPage() {
 
 
 
+
+
           {ranking.items.map((item:any) => (
+
 
             <div
 
@@ -267,11 +337,13 @@ export default function RankPage() {
 
 
 
+
               <span className="
                 text-gray-500
               ">
                 {item.votes}
               </span>
+
 
 
 
@@ -282,11 +354,16 @@ export default function RankPage() {
 
 
 
+
+
         </div>
 
 
 
+
+
       </div>
+
 
 
 
