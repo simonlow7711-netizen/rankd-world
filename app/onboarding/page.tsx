@@ -88,12 +88,73 @@ export default function OnboardingPage(){
 
 
 
-    const {
+
+    /*
+      Get existing user.
+      If none exists, create anonymous account.
+    */
+
+
+    let {
+
       data:{
         user
+
       }
 
     } = await supabase.auth.getUser()
+
+
+
+
+
+
+    if(!user){
+
+
+
+      const {
+
+        data,
+        error
+
+      } = await supabase.auth.signInAnonymously()
+
+
+
+
+
+
+      if(error){
+
+
+        console.error(
+          "AUTH ERROR:",
+          error
+        )
+
+
+        setMessage(
+          error.message
+        )
+
+
+        setLoading(false)
+
+
+        return
+
+      }
+
+
+
+
+      user = data.user
+
+
+
+    }
+
 
 
 
@@ -105,7 +166,7 @@ export default function OnboardingPage(){
 
 
       setMessage(
-        "No account found"
+        "Unable to create account"
       )
 
 
@@ -123,9 +184,15 @@ export default function OnboardingPage(){
 
 
 
+    /*
+      Check username availability
+    */
+
 
     const {
-      data:existing
+
+      data:existing,
+      error:existingError
 
     } = await supabase
 
@@ -139,6 +206,32 @@ export default function OnboardingPage(){
       )
 
       .maybeSingle()
+
+
+
+
+
+
+    if(existingError){
+
+
+      console.error(
+        existingError
+      )
+
+
+      setMessage(
+        existingError.message
+      )
+
+
+      setLoading(false)
+
+
+      return
+
+    }
+
 
 
 
@@ -168,8 +261,13 @@ export default function OnboardingPage(){
 
 
 
+    /*
+      Create profile
+    */
+
 
     const {
+
       error
 
     } = await supabase
@@ -197,6 +295,7 @@ export default function OnboardingPage(){
 
 
       console.error(
+        "PROFILE ERROR:",
         error
       )
 
@@ -219,8 +318,8 @@ export default function OnboardingPage(){
 
 
 
-    router.push("/explore")
 
+    router.push("/explore")
 
 
   }
