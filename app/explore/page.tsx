@@ -33,10 +33,14 @@ import {
   calculateChallenge
 } from "@/utils/challengeTaste"
 
+
 export default function Explore() {
+
 
   const [communityRankings, setCommunityRankings] =
     useState<any[]>([])
+
+
 
   useEffect(() => {
 
@@ -46,9 +50,14 @@ export default function Explore() {
 
     )
 
+
     setCommunityRankings(storedRankings)
 
+
   }, [])
+
+
+
 
   const allRankings = [
 
@@ -56,25 +65,50 @@ export default function Explore() {
 
     ...rankings
 
-  ]
+  ].filter(
+
+    (ranking, index, self) =>
+
+      index === self.findIndex(
+
+        item =>
+
+          item.id === ranking.id &&
+
+          item.creator === ranking.creator
+
+      )
+
+  )
+
+
+
 
   const trending =
     getTrendingRankings(allRankings)
 
+
   const debates =
     getBiggestDebates(allRankings)
+
 
   const latest =
     getLatestRankings(allRankings)
 
+
   const perspectiveGaps =
     getPerspectiveGaps(allRankings)
+
 
   const people =
     getDiscoverableUsers(allRankings)
 
+
+
   const currentUser =
     people[0]
+
+
 
   const tasteMatches =
 
@@ -90,7 +124,7 @@ export default function Explore() {
 
           calculateTasteMatch(
 
-            currentUser.rankings,
+            currentUser?.rankings || [],
 
             person.rankings
 
@@ -98,7 +132,9 @@ export default function Explore() {
 
       }))
 
-  // ✅ UPDATED FOR THE NEW CHALLENGE ENGINE
+
+
+
 
   const challenges =
 
@@ -108,19 +144,24 @@ export default function Explore() {
 
       .map((person:any)=>{
 
+
         const challenge =
 
           calculateChallenge(
 
-            currentUser.rankings,
+            currentUser?.rankings || [],
 
             person.rankings
 
           )
 
+
+
         if(!challenge)
 
           return null
+
+
 
         return {
 
@@ -130,13 +171,20 @@ export default function Explore() {
 
             challenge.comparedRanking,
 
+
           challenge
 
         }
 
+
       })
 
       .filter(Boolean)
+
+
+
+
+
 
   function Section({
 
@@ -152,57 +200,87 @@ export default function Explore() {
 
   }) {
 
+
     if(items.length === 0)
 
       return null
 
+
+
     return (
 
       <section
+
         className="mb-16"
+
       >
 
+
         <h2
+
           className="
             text-3xl
             font-black
             mb-6
           "
+
         >
+
           {title}
+
         </h2>
 
+
+
+
         <div
+
           className="
             grid
             md:grid-cols-3
             gap-8
           "
+
         >
+
+
 
           {items.map((ranking)=>(
 
+
             <RankingCard
 
-              key={ranking.id}
+              key={`${ranking.id}-${ranking.creator}`}
 
               ranking={ranking}
 
             />
 
+
           ))}
+
+
 
         </div>
 
+
       </section>
+
 
     )
 
+
   }
+
+
+
+
 
   return (
 
+
     <main
+
       className="
         bg-black
         min-h-screen
@@ -210,73 +288,132 @@ export default function Explore() {
         px-6
         py-20
       "
+
     >
 
+
+
       <section
+
         className="
           max-w-6xl
           mx-auto
         "
+
       >
 
+
+
+
         <h1
+
           className="
             text-5xl
             md:text-6xl
             font-black
             mb-4
           "
+
         >
+
           Explore RANKD
+
         </h1>
 
+
+
+
         <p
+
           className="
             text-gray-400
             text-lg
             mb-10
           "
+
         >
+
           Discover opinions. Create your own Top 7.
+
         </p>
+
+
+
+
 
         <DailyRankd />
 
+
+
+
+
         <Section
+
           title="🔥 Trending RANKDs"
+
           items={trending}
+
         />
+
+
+
 
         <Section
+
           title="⚡ Biggest Debates"
+
           items={debates}
+
         />
 
-        <section className="mb-16">
+
+
+
+
+
+        <section
+
+          className="mb-16"
+
+        >
+
+
 
           <h2
+
             className="
               text-3xl
               font-black
               mb-6
             "
+
           >
+
             🌍 Biggest Perspective Gaps
+
           </h2>
 
+
+
+
           <div
+
             className="
               grid
               md:grid-cols-3
               gap-8
             "
+
           >
+
+
 
             {perspectiveGaps.map((item:any)=>(
 
+
               <PerspectiveCard
 
-                key={item.ranking.id}
+                key={`${item.ranking.id}-${item.ranking.creator}`}
 
                 ranking={item.ranking}
 
@@ -284,33 +421,61 @@ export default function Explore() {
 
               />
 
+
             ))}
+
+
 
           </div>
 
+
         </section>
 
-        <section className="mb-16">
+
+
+
+
+
+
+        <section
+
+          className="mb-16"
+
+        >
+
+
 
           <h2
+
             className="
               text-3xl
               font-black
               mb-6
             "
+
           >
+
             👥 People to Explore
+
           </h2>
 
+
+
+
           <div
+
             className="
               grid
               md:grid-cols-3
               gap-8
             "
+
           >
 
+
+
             {people.map((person:any)=>(
+
 
               <PeopleCard
 
@@ -320,33 +485,62 @@ export default function Explore() {
 
               />
 
+
             ))}
+
+
 
           </div>
 
+
+
         </section>
 
-        <section className="mb-16">
+
+
+
+
+
+
+        <section
+
+          className="mb-16"
+
+        >
+
+
 
           <h2
+
             className="
               text-3xl
               font-black
               mb-6
             "
+
           >
+
             🧬 People Who Rank Like You
+
           </h2>
 
+
+
+
           <div
+
             className="
               grid
               md:grid-cols-3
               gap-8
             "
+
           >
 
+
+
             {tasteMatches.map((item:any)=>(
+
 
               <TasteMatchCard
 
@@ -358,33 +552,62 @@ export default function Explore() {
 
               />
 
+
             ))}
+
+
 
           </div>
 
+
+
         </section>
 
-        <section className="mb-16">
+
+
+
+
+
+
+        <section
+
+          className="mb-16"
+
+        >
+
+
 
           <h2
+
             className="
               text-3xl
               font-black
               mb-6
             "
+
           >
+
             🆚 Challenge My Taste
+
           </h2>
 
+
+
+
           <div
+
             className="
               grid
               md:grid-cols-3
               gap-8
             "
+
           >
 
+
+
             {challenges.map((item:any)=>(
+
 
               <ChallengeCard
 
@@ -398,26 +621,54 @@ export default function Explore() {
 
               />
 
+
             ))}
+
+
 
           </div>
 
+
+
         </section>
 
-        <Section
-          title="🆕 Latest Opinions"
-          items={latest}
-        />
+
+
+
+
+
 
         <Section
-          title="All RANKDs"
-          items={allRankings}
+
+          title="🆕 Latest Opinions"
+
+          items={latest}
+
         />
+
+
+
+
+
+        <Section
+
+          title="All RANKDs"
+
+          items={allRankings}
+
+        />
+
+
+
+
 
       </section>
 
+
     </main>
 
+
   )
+
 
 }

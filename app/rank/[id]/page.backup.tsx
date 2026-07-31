@@ -1,100 +1,72 @@
+```tsx
 "use client"
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
-
 import { rankings } from "@/data/rankings"
 import { trackEvent } from "@/utils/analytics"
 
 
-
 export default function RankPage() {
 
-
   const params = useParams()
-
   const router = useRouter()
-
 
   const id = params.id as string
 
-
-
   const [ranking, setRanking] = useState<any>(null)
-
   const [loading, setLoading] = useState(true)
-
-
 
 
 
   useEffect(() => {
 
-
     trackEvent(
       "ranking_viewed",
       {
-        rankingId:id
+        rankingId: id
       }
     )
 
 
-
-    const existingRanking =
-      rankings.find(
-        item => item.id === id
-      )
+    const existingRanking = rankings.find(
+      item => item.id === id
+    )
 
 
-
-    if(existingRanking){
+    if (existingRanking) {
 
       setRanking(existingRanking)
-
       setLoading(false)
-
       return
 
     }
 
 
 
-
-
     const createdRankings = JSON.parse(
-
       localStorage.getItem("createdRankings") || "[]"
-
     )
 
 
 
-    const createdRanking =
-      createdRankings.find(
-        (item:any)=>item.id === id
-      )
-
-
-
-    setRanking(
-      createdRanking || null
+    const createdRanking = createdRankings.findLast(
+      (item:any) => item.id === id
     )
 
+
+
+    setRanking(createdRanking || null)
 
     setLoading(false)
 
 
-
-  },[id])
-
+  }, [id])
 
 
 
 
-
-
-
-  if(loading){
+  if (loading) {
 
     return (
 
@@ -116,11 +88,7 @@ export default function RankPage() {
 
 
 
-
-
-
-
-  if(!ranking){
+  if (!ranking) {
 
     return (
 
@@ -147,39 +115,25 @@ export default function RankPage() {
 
 
 
-
-
-
-
-
-  function rankIt(){
+  function rankIt() {
 
 
     trackEvent(
-
       "rankd_started",
-
       {
-        rankingId:ranking.id
+        rankingId: ranking.id
       }
-
     )
 
 
-
-    const items =
-      ranking.items
-        .map(
-          (item:any)=>item.name
-        )
-        .join("|")
+    const items = ranking.items
+      .map((item:any)=>item.name)
+      .join("|")
 
 
 
     router.push(
-
       `/create?title=${encodeURIComponent(ranking.title)}&items=${encodeURIComponent(items)}&originalId=${ranking.id}`
-
     )
 
   }
@@ -189,24 +143,7 @@ export default function RankPage() {
 
 
 
-
-
-  const creatorName =
-    ranking.creatorDisplayName ||
-    ranking.creator ||
-    "RANKD Community"
-
-
-
-  const creatorUsername =
-    ranking.creatorUsername ||
-    ranking.creatorId ||
-    null
-
-
-
-
-
+  const remixCount = ranking.remixes || 0
 
 
 
@@ -227,75 +164,46 @@ export default function RankPage() {
       ">
 
 
+        {remixCount > 0 && (
 
-
-
-        <p className="
-          text-gray-400
-        ">
-          #{ranking.category}
-        </p>
-
-
-
-
-
-
-        <h1 className="
-          text-5xl
-          font-black
-          mt-4
-        ">
-
-          {ranking.title}
-
-        </h1>
-
-
-
-
-
-
-
-        <div className="
-          mt-4
-          text-gray-400
-        ">
-
-          Created by
-
-          <span className="
-            ml-2
-            font-bold
-            text-white
+          <div className="
+            mb-8
+            bg-zinc-900
+            rounded-3xl
+            p-6
           ">
 
-            {creatorUsername
-              ? `@${creatorUsername}`
-              : creatorName
-            }
-
-          </span>
-
-
-        </div>
+            <p className="
+              text-2xl
+              font-black
+            ">
+              🔥 {remixCount} people ranked this differently
+            </p>
 
 
+            <p className="
+              mt-2
+              text-gray-400
+            ">
+              Your opinion could change the ranking.
+            </p>
 
+          </div>
 
-
+        )}
 
 
 
         {ranking.remixedFrom && (
 
           <div className="
-            mt-8
+            mb-8
             bg-white
             text-black
             rounded-2xl
             p-5
           ">
+
 
             <p className="
               text-xl
@@ -303,6 +211,7 @@ export default function RankPage() {
             ">
               🔁 REMIXED RANKD
             </p>
+
 
             <p className="
               mt-2
@@ -319,7 +228,32 @@ export default function RankPage() {
 
 
 
+        <p className="
+          text-gray-400
+        ">
+          #{ranking.category}
+        </p>
 
+
+
+
+        <h1 className="
+          text-5xl
+          font-black
+          mt-4
+        ">
+          {ranking.title}
+        </h1>
+
+
+
+
+        <p className="
+          mt-4
+          text-gray-400
+        ">
+          Created by {ranking.creator}
+        </p>
 
 
 
@@ -331,14 +265,12 @@ export default function RankPage() {
           p-6
         ">
 
-
           <p className="
             text-xl
             font-black
           ">
             Would you rank this differently?
           </p>
-
 
 
           <p className="
@@ -350,10 +282,6 @@ export default function RankPage() {
 
 
         </div>
-
-
-
-
 
 
 
@@ -384,10 +312,6 @@ export default function RankPage() {
 
 
 
-
-
-
-
         <div className="
           mt-12
           space-y-4
@@ -413,13 +337,13 @@ export default function RankPage() {
 
             >
 
+
               <span className="
                 text-xl
                 font-bold
               ">
                 #{item.position} {item.name}
               </span>
-
 
 
               <span className="
@@ -439,8 +363,6 @@ export default function RankPage() {
 
 
 
-
-
       </div>
 
 
@@ -449,3 +371,4 @@ export default function RankPage() {
   )
 
 }
+```

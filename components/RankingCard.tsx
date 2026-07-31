@@ -1,8 +1,12 @@
 import Link from "next/link"
 
+
 export default function RankingCard({
+
   ranking
+
 }: any) {
+
 
 
   const isCommunity =
@@ -16,14 +20,33 @@ export default function RankingCard({
 
 
   const hasDebate =
-    ranking.remixedFrom || opinionCount > 0
+    ranking.remixedFrom ||
+    opinionCount > 0
+
+
+
+  const creatorUsername =
+    ranking.creatorUsername ||
+    ranking.creatorId ||
+    null
+
+
+
+  const creatorName =
+    ranking.creatorDisplayName ||
+    ranking.creator ||
+    "RANKD Community"
+
 
 
 
 
   return (
 
+
     <Link href={`/rank/${ranking.id}`}>
+
+
 
       <div className="
         bg-white
@@ -35,6 +58,7 @@ export default function RankingCard({
         transition
         cursor-pointer
       ">
+
 
 
 
@@ -50,12 +74,16 @@ export default function RankingCard({
             text-sm
             text-gray-500
           ">
+
             #{ranking.category}
+
           </p>
 
 
 
+
           <span
+
             className={`
               text-xs
               font-bold
@@ -65,20 +93,27 @@ export default function RankingCard({
 
               ${
                 isCommunity
-                  ? "bg-purple-100 text-purple-700"
-                  : "bg-green-100 text-green-700"
+                ? "bg-purple-100 text-purple-700"
+                : "bg-green-100 text-green-700"
               }
             `}
+
           >
 
             {isCommunity
               ? "COMMUNITY"
-              : "OFFICIAL"}
+              : "OFFICIAL"
+            }
+
 
           </span>
 
 
+
         </div>
+
+
+
 
 
 
@@ -97,14 +132,34 @@ export default function RankingCard({
 
 
 
+
         <p className="
           mt-3
           text-gray-600
         ">
 
-          Created by {ranking.creator}
+
+          by
+
+
+          <span className="
+            ml-1
+            font-bold
+          ">
+
+            {creatorUsername
+              ? `@${creatorUsername}`
+              : creatorName
+            }
+
+
+          </span>
+
 
         </p>
+
+
+
 
 
 
@@ -118,8 +173,11 @@ export default function RankingCard({
 
 
           {ranking.items
+
             .slice(0,3)
+
             .map((item:any)=>(
+
 
               <div
 
@@ -146,6 +204,8 @@ export default function RankingCard({
 
 
 
+
+
         <div className="
           mt-6
           border-t
@@ -157,18 +217,26 @@ export default function RankingCard({
 
 
 
+
           <span className="
             text-sm
             font-bold
             text-gray-600
           ">
 
+
             {opinionCount === 0
+
               ? "Be the first to remix"
+
               : `${opinionCount} opinions created`
+
             }
 
+
           </span>
+
+
 
 
 
@@ -186,15 +254,23 @@ export default function RankingCard({
               rounded-full
             ">
 
+
               ⚡ DEBATE
 
+
             </span>
+
 
           )}
 
 
 
+
         </div>
+
+
+
+
 
 
 
@@ -210,7 +286,9 @@ export default function RankingCard({
           font-black
         ">
 
+
           RANKD IT →
+
 
         </div>
 
@@ -221,7 +299,9 @@ export default function RankingCard({
       </div>
 
 
+
     </Link>
+
 
   )
 

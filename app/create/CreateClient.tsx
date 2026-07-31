@@ -3,6 +3,9 @@
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
+import { getUser } from "@/data/user"
+
+
 
 export default function Create() {
 
@@ -38,16 +41,36 @@ export default function Create() {
 
 
 
+  const [creator, setCreator] = useState(
+    {
+      username: "guest",
+      displayName: "Guest"
+    }
+  )
+
+
+
 
 
   useEffect(() => {
 
 
-    const startingTitle = searchParams.get("title")
+    const activeUser = getUser()
 
-    const startingItems = searchParams.get("items")
+    setCreator(activeUser)
 
-    const startingOriginalId = searchParams.get("originalId")
+
+
+    const startingTitle =
+      searchParams.get("title")
+
+
+    const startingItems =
+      searchParams.get("items")
+
+
+    const startingOriginalId =
+      searchParams.get("originalId")
 
 
 
@@ -62,7 +85,9 @@ export default function Create() {
     if (startingItems) {
 
 
-      const loadedItems = startingItems.split("|")
+      const loadedItems =
+        startingItems.split("|")
+
 
 
       setItems([
@@ -120,6 +145,7 @@ export default function Create() {
 
 
 
+
   const ranking = {
 
 
@@ -132,22 +158,42 @@ export default function Create() {
     category: "General",
 
 
-    creator: "Simon",
+    creator:
+      creator.displayName,
+
+
+
+    creatorId:
+      creator.username,
+
+
+
+    creatorUsername:
+      creator.username,
+
+
+
+    creatorDisplayName:
+      creator.displayName,
+
 
 
     source: "community",
 
 
-    createdAt: new Date().toISOString(),
+    createdAt:
+      new Date().toISOString(),
 
 
     views: 0,
 
 
-    remixedFrom: originalId || undefined,
+    remixedFrom:
+      originalId || undefined,
 
 
-    originalId: originalId || undefined,
+    originalId:
+      originalId || undefined,
 
 
 
@@ -156,24 +202,21 @@ export default function Create() {
 
 
 
-    items: items.map((item,index)=>(
+    items:
+      items.map((item,index)=>(
 
+        {
+          position:index + 1,
 
-      {
+          name:item,
 
-        position:index + 1,
+          votes:0
+        }
 
-        name:item,
-
-        votes:0
-
-      }
-
-
-    ))
-
+      ))
 
   }
+
 
 
 
@@ -211,6 +254,7 @@ export default function Create() {
 
 
   }
+
 
 
 
@@ -272,13 +316,10 @@ export default function Create() {
     ">
 
 
-
       <div className="
         max-w-2xl
         mx-auto
       ">
-
-
 
 
 
@@ -293,15 +334,9 @@ export default function Create() {
 
 
 
-
-
-
         {!preview && (
 
           <>
-
-
-
 
 
             <p className="
@@ -313,12 +348,7 @@ export default function Create() {
 
 
 
-
-
-
-
             <input
-
 
               className="
                 mt-8
@@ -327,24 +357,15 @@ export default function Create() {
                 rounded-xl
                 bg-white
                 text-black
-                placeholder:text-gray-500
               "
-
 
               placeholder="Top 7 of what?"
 
-
               value={title}
-
 
               onChange={(e)=>setTitle(e.target.value)}
 
-
             />
-
-
-
-
 
 
 
@@ -356,17 +377,12 @@ export default function Create() {
             ">
 
 
-
               {items.map((item,index)=>(
 
 
                 <input
 
-
-
                   key={index}
-
-
 
                   className="
                     w-full
@@ -374,34 +390,23 @@ export default function Create() {
                     rounded-xl
                     bg-white
                     text-black
-                    placeholder:text-gray-500
                   "
-
-
 
                   placeholder={`#${index + 1}`}
 
-
-
                   value={item}
-
-
 
                   onChange={(e)=>{
 
+                    const updated =
+                      [...items]
 
-                    const updatedItems=[...items]
+                    updated[index] =
+                      e.target.value
 
-
-                    updatedItems[index]=e.target.value
-
-
-                    setItems(updatedItems)
-
+                    setItems(updated)
 
                   }}
-
-
 
                 />
 
@@ -409,11 +414,7 @@ export default function Create() {
               ))}
 
 
-
             </div>
-
-
-
 
 
 
@@ -436,15 +437,9 @@ export default function Create() {
 
 
 
-
-
-
             <button
 
-
               onClick={createPreview}
-
-
 
               className="
                 mt-10
@@ -456,7 +451,6 @@ export default function Create() {
                 font-black
               "
 
-
             >
 
               Preview RANKD
@@ -465,13 +459,9 @@ export default function Create() {
 
 
 
-
-
           </>
 
         )}
-
-
 
 
 
@@ -484,18 +474,12 @@ export default function Create() {
           <>
 
 
-
-
-
             <div className="
               mt-10
               bg-zinc-900
               rounded-3xl
               p-8
             ">
-
-
-
 
 
               <h2 className="
@@ -506,8 +490,12 @@ export default function Create() {
               </h2>
 
 
-
-
+              <p className="
+                mt-2
+                text-gray-400
+              ">
+                Created by @{creator.username}
+              </p>
 
 
 
@@ -517,18 +505,12 @@ export default function Create() {
               ">
 
 
-
-
                 {ranking.items.map(item=>(
-
 
 
                   <div
 
-
                     key={item.position}
-
-
 
                     className="
                       bg-white
@@ -538,7 +520,6 @@ export default function Create() {
                       font-bold
                     "
 
-
                   >
 
                     #{item.position} {item.name}
@@ -546,16 +527,10 @@ export default function Create() {
                   </div>
 
 
-
                 ))}
 
 
-
-
               </div>
-
-
-
 
 
             </div>
@@ -565,16 +540,9 @@ export default function Create() {
 
 
 
-
-
-
             <button
 
-
-
               onClick={publishRankd}
-
-
 
               className="
                 mt-10
@@ -586,8 +554,6 @@ export default function Create() {
                 font-black
               "
 
-
-
             >
 
               Publish RANKD
@@ -596,15 +562,9 @@ export default function Create() {
 
 
 
-
-
-
           </>
 
         )}
-
-
-
 
 
 
