@@ -1,76 +1,15 @@
-export const discoveryUsers = [
+export interface DiscoveryUser {
 
-  {
-    username: "remy",
+  id?: string
 
-    displayName: "Remy",
+  username: string
 
-    rankingIds: [
+  displayName: string
 
-      "best-burgers-london",
+  rankings: any[]
 
-      "best-nolan-films"
-
-    ]
-
-  },
+}
 
 
-  {
-    username: "liv",
 
-    displayName: "Liv",
-
-    rankingIds: [
-
-      "best-nolan-films"
-
-    ]
-
-  },
-
-
-  {
-    username: "immy",
-
-    displayName: "Immy",
-
-    rankingIds: [
-
-      "best-burgers-london"
-
-    ]
-
-  },
-
-
-  {
-    username: "zach",
-
-    displayName: "Zach",
-
-    rankingIds: [
-
-      "best-burgers-london",
-
-      "best-nolan-films"
-
-    ]
-
-  },
-
-
-  {
-    username: "naomi",
-
-    displayName: "Naomi",
-
-    rankingIds: [
-
-      "best-nolan-films"
-
-    ]
-
-  }
-
-]
+export const discoveryUsers: DiscoveryUser[] = []

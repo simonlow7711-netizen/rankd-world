@@ -2,7 +2,11 @@
 
 import { useState, useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
+
 import { trackEvent } from "@/utils/analytics"
+import { supabase } from "@/utils/supabase"
+import { getStoredUserId } from "@/utils/currentUser"
+
 
 
 export default function Create() {
@@ -44,15 +48,20 @@ export default function Create() {
   useEffect(() => {
 
 
-    const startingTitle = searchParams.get("title")
-
-    const startingItems = searchParams.get("items")
-
-    const startingOriginalId = searchParams.get("originalId")
+    const startingTitle =
+      searchParams.get("title")
 
 
+    const startingItems =
+      searchParams.get("items")
 
-    if (startingTitle) {
+
+    const startingOriginalId =
+      searchParams.get("originalId")
+
+
+
+    if(startingTitle){
 
       setTitle(startingTitle)
 
@@ -60,10 +69,12 @@ export default function Create() {
 
 
 
-    if (startingItems) {
+    if(startingItems){
 
 
-      const loadedItems = startingItems.split("|")
+      const loadedItems =
+        startingItems.split("|")
+
 
 
       setItems([
@@ -85,7 +96,7 @@ export default function Create() {
 
 
 
-    if (startingOriginalId) {
+    if(startingOriginalId){
 
       setOriginalId(startingOriginalId)
 
@@ -93,7 +104,7 @@ export default function Create() {
 
 
 
-  }, [searchParams])
+  },[searchParams])
 
 
 
@@ -105,9 +116,11 @@ export default function Create() {
 
     .toLowerCase()
 
-    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/[^a-z0-9]+/g,"-")
 
-    .replace(/(^-|-$)/g, "")
+    .replace(/(^-|-$)/g,"")
+
+
 
 
 
@@ -126,53 +139,40 @@ export default function Create() {
 
     id,
 
-
     title,
 
+    category:"General",
 
-    category: "General",
+    creator:"",
 
+    source:"community",
 
-    creator: "Simon",
+    createdAt:new Date().toISOString(),
 
+    views:0,
 
-    source: "community",
+    remixedFrom:
+      originalId || undefined,
 
-
-    createdAt: new Date().toISOString(),
-
-
-    views: 0,
-
-
-    remixedFrom: originalId || undefined,
-
-
-    originalId: originalId || undefined,
-
+    originalId:
+      originalId || undefined,
 
 
     description:
       "A new community RANKD.",
 
 
+    items:
 
-    items: items.map((item,index)=>(
+      items.map((item,index)=>(
 
+        {
+          position:index + 1,
+          name:item,
+          votes:0
+        }
 
-      {
-
-        position:index + 1,
-
-        name:item,
-
-        votes:0
-
-      }
-
-
-    ))
-
+      ))
 
   }
 
@@ -182,8 +182,8 @@ export default function Create() {
 
 
 
-
   function createPreview(){
+
 
 
     if(!title.trim()){
@@ -196,13 +196,17 @@ export default function Create() {
 
 
 
+
     if(items.some(item=>!item.trim())){
 
-      setMessage("Please complete all 7 rankings")
+      setMessage(
+        "Please complete all 7 rankings"
+      )
 
       return
 
     }
+
 
 
 
@@ -220,7 +224,141 @@ export default function Create() {
 
 
 
-  function publishRankd(){
+
+  async function publishRankd(){
+
+
+
+    const userId =
+      getStoredUserId()
+
+
+
+    if(!userId){
+
+
+      setMessage(
+        "Please create your RANKD identity first."
+      )
+
+
+      return
+
+    }
+
+
+
+
+
+
+    const { error: rankingError } =
+
+      await supabase
+
+        .from("rankings")
+
+        .insert({
+
+          id: ranking.id,
+
+          user_id:userId,
+
+          title:ranking.title,
+
+          category:ranking.category,
+
+          description:ranking.description,
+
+          views:0
+
+        })
+
+
+
+
+
+
+
+    if(rankingError){
+
+
+      console.error(rankingError)
+
+
+      setMessage(
+        rankingError.message
+      )
+
+
+      return
+
+    }
+
+
+
+
+
+
+
+
+
+    const rankingItems =
+
+      ranking.items.map(item=>(
+
+
+        {
+
+          ranking_id:ranking.id,
+
+          position:item.position,
+
+          name:item.name,
+
+          votes:item.votes
+
+        }
+
+
+      ))
+
+
+
+
+
+
+    const { error:itemError } =
+
+      await supabase
+
+        .from("ranking_items")
+
+        .insert(rankingItems)
+
+
+
+
+
+
+    if(itemError){
+
+
+      console.error(itemError)
+
+
+      setMessage(
+        itemError.message
+      )
+
+
+      return
+
+    }
+
+
+
+
+
 
 
 
@@ -230,7 +368,7 @@ export default function Create() {
 
       {
 
-        rankingId: ranking.id
+        rankingId:ranking.id
 
       }
 
@@ -240,33 +378,9 @@ export default function Create() {
 
 
 
-    const existingRankings = JSON.parse(
-
-      localStorage.getItem("createdRankings") || "[]"
-
+    router.push(
+      `/rank/${id}`
     )
-
-
-
-
-    localStorage.setItem(
-
-      "createdRankings",
-
-      JSON.stringify([
-
-        ...existingRankings,
-
-        ranking
-
-      ])
-
-    )
-
-
-
-
-    router.push(`/rank/${id}`)
 
 
   }
@@ -297,8 +411,6 @@ export default function Create() {
 
 
 
-
-
         <h1 className="
           text-5xl
           font-black
@@ -310,15 +422,9 @@ export default function Create() {
 
 
 
-
-
-
         {!preview && (
 
           <>
-
-
-
 
 
             <p className="
@@ -332,10 +438,7 @@ export default function Create() {
 
 
 
-
-
             <input
-
 
               className="
                 mt-8
@@ -344,24 +447,17 @@ export default function Create() {
                 rounded-xl
                 bg-white
                 text-black
-                placeholder:text-gray-500
               "
-
 
               placeholder="Top 7 of what?"
 
-
               value={title}
 
-
-              onChange={(e)=>setTitle(e.target.value)}
-
+              onChange={
+                e=>setTitle(e.target.value)
+              }
 
             />
-
-
-
-
 
 
 
@@ -373,17 +469,12 @@ export default function Create() {
             ">
 
 
-
               {items.map((item,index)=>(
 
 
                 <input
 
-
-
                   key={index}
-
-
 
                   className="
                     w-full
@@ -391,34 +482,23 @@ export default function Create() {
                     rounded-xl
                     bg-white
                     text-black
-                    placeholder:text-gray-500
                   "
 
-
-
-                  placeholder={`#${index + 1}`}
-
-
+                  placeholder={`#${index+1}`}
 
                   value={item}
 
+                  onChange={e=>{
 
 
-                  onChange={(e)=>{
+                    const updated=[...items]
 
+                    updated[index]=e.target.value
 
-                    const updatedItems=[...items]
-
-
-                    updatedItems[index]=e.target.value
-
-
-                    setItems(updatedItems)
+                    setItems(updated)
 
 
                   }}
-
-
 
                 />
 
@@ -426,11 +506,7 @@ export default function Create() {
               ))}
 
 
-
             </div>
-
-
-
 
 
 
@@ -454,14 +530,9 @@ export default function Create() {
 
 
 
-
-
             <button
 
-
               onClick={createPreview}
-
-
 
               className="
                 mt-10
@@ -473,7 +544,6 @@ export default function Create() {
                 font-black
               "
 
-
             >
 
               Preview RANKD
@@ -481,14 +551,9 @@ export default function Create() {
             </button>
 
 
-
-
-
           </>
 
         )}
-
-
 
 
 
@@ -501,9 +566,6 @@ export default function Create() {
           <>
 
 
-
-
-
             <div className="
               mt-10
               bg-zinc-900
@@ -512,17 +574,14 @@ export default function Create() {
             ">
 
 
-
-
-
               <h2 className="
                 text-3xl
                 font-black
               ">
+
                 {title}
+
               </h2>
-
-
 
 
 
@@ -534,18 +593,12 @@ export default function Create() {
               ">
 
 
-
-
                 {ranking.items.map(item=>(
-
 
 
                   <div
 
-
                     key={item.position}
-
-
 
                     className="
                       bg-white
@@ -555,7 +608,6 @@ export default function Create() {
                       font-bold
                     "
 
-
                   >
 
                     #{item.position} {item.name}
@@ -563,16 +615,10 @@ export default function Create() {
                   </div>
 
 
-
                 ))}
 
 
-
-
               </div>
-
-
-
 
 
             </div>
@@ -581,17 +627,9 @@ export default function Create() {
 
 
 
-
-
-
-
             <button
 
-
-
               onClick={publishRankd}
-
-
 
               className="
                 mt-10
@@ -603,8 +641,6 @@ export default function Create() {
                 font-black
               "
 
-
-
             >
 
               Publish RANKD
@@ -613,15 +649,9 @@ export default function Create() {
 
 
 
-
-
-
           </>
 
         )}
-
-
-
 
 
 

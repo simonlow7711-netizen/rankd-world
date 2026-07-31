@@ -1,9 +1,8 @@
 export const currentUser = {
-
-  id: "user_001",
-
-  username: "simon",
-
-  displayName: "Simon Low"
-
+  id: null,
+  username: "",
+  displayName: "",
+  avatar: null,
+  bio: "",
+  rankings: []
 }

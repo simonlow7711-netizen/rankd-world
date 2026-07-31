@@ -7,9 +7,12 @@ import { rankings } from "@/data/rankings"
 import DailyRankd from "@/components/DailyRankd"
 import RankingCard from "@/components/RankingCard"
 import PerspectiveCard from "@/components/PerspectiveCard"
-import PeopleCard from "@/components/PeopleCard"
 import TasteMatchCard from "@/components/TasteMatchCard"
 import ChallengeCard from "@/components/ChallengeCard"
+
+import {
+  getAllSupabaseRankings
+} from "@/utils/supabaseRankings"
 
 
 import {
@@ -50,22 +53,30 @@ export default function Explore(){
 
 
 
-
-
   useEffect(()=>{
 
 
-    const stored = JSON.parse(
-
-      localStorage.getItem("createdRankings") || "[]"
-
-    )
+    async function loadRankings(){
 
 
-    setCommunityRankings(stored)
+      const data =
+        await getAllSupabaseRankings()
+
+
+
+      setCommunityRankings(data)
+
+
+    }
+
+
+
+    loadRankings()
+
 
 
   },[])
+
 
 
 
@@ -92,7 +103,6 @@ export default function Explore(){
       )
 
   )
-
 
 
 
@@ -281,7 +291,6 @@ export default function Explore(){
 
     )
 
-
   }
 
 
@@ -342,11 +351,8 @@ export default function Explore(){
 
 
         <Section
-
           title="🧬 Because You Ranked..."
-
           items={trending}
-
         />
 
 
@@ -354,12 +360,10 @@ export default function Explore(){
 
 
         <Section
-
           title="🔥 Trending Debates"
-
           items={debates}
-
         />
+
 
 
 

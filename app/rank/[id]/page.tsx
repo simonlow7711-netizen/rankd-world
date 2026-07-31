@@ -3,8 +3,11 @@
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
 
-import { rankings } from "@/data/rankings"
 import { trackEvent } from "@/utils/analytics"
+
+import {
+  getSupabaseRanking
+} from "@/utils/supabaseRankings"
 
 import {
   calculateDebate
@@ -27,21 +30,17 @@ export default function RankPage() {
 
 
   const [ranking,setRanking] =
-
     useState<any>(null)
 
 
 
   const [loading,setLoading] =
-
     useState(true)
 
 
 
   const [debate,setDebate] =
-
     useState<any>(null)
-
 
 
 
@@ -51,25 +50,17 @@ export default function RankPage() {
   useEffect(()=>{
 
 
-    trackEvent(
-
-      "ranking_viewed",
-
-      {
-        rankingId:id
-      }
-
-    )
+    async function loadRanking(){
 
 
 
+      trackEvent(
 
+        "ranking_viewed",
 
-    const existingRanking =
-
-      rankings.find(
-
-        item => item.id === id
+        {
+          rankingId:id
+        }
 
       )
 
@@ -77,31 +68,22 @@ export default function RankPage() {
 
 
 
-    let currentRanking = existingRanking
+      const currentRanking =
+
+        await getSupabaseRanking(id)
 
 
 
 
 
-
-    if(!currentRanking){
-
-
-      const createdRankings = JSON.parse(
-
-        localStorage.getItem("createdRankings") || "[]"
-
-      )
+      setRanking(currentRanking)
 
 
 
-      currentRanking = createdRankings.find(
 
-        (item:any)=>
 
-          item.id === id
+      setLoading(false)
 
-      )
 
 
     }
@@ -110,69 +92,7 @@ export default function RankPage() {
 
 
 
-    setRanking(currentRanking)
-
-
-
-
-
-
-
-    if(currentRanking){
-
-
-      const createdRankings = JSON.parse(
-
-        localStorage.getItem("createdRankings") || "[]"
-
-      )
-
-
-
-
-
-      const userRanking =
-
-        createdRankings.find(
-
-          (item:any)=>
-
-            item.originalId === currentRanking.id
-
-        )
-
-
-
-
-
-      if(userRanking){
-
-
-        const result =
-
-          calculateDebate(
-
-            currentRanking,
-
-            userRanking
-
-          )
-
-
-
-        setDebate(result)
-
-
-      }
-
-
-    }
-
-
-
-
-
-    setLoading(false)
+    loadRanking()
 
 
 
@@ -204,9 +124,7 @@ export default function RankPage() {
 
     )
 
-
   }
-
 
 
 
@@ -241,7 +159,6 @@ export default function RankPage() {
 
     )
 
-
   }
 
 
@@ -254,6 +171,7 @@ export default function RankPage() {
   function rankIt(){
 
 
+
     trackEvent(
 
       "rankd_started",
@@ -263,6 +181,7 @@ export default function RankPage() {
       }
 
     )
+
 
 
 
@@ -313,25 +232,6 @@ export default function RankPage() {
         mx-auto
       ">
 
-
-
-
-
-        {debate && (
-
-          <div className="mb-10">
-
-            <DebateCard
-
-              debate={debate}
-
-              rankingId={ranking.id}
-
-            />
-
-          </div>
-
-        )}
 
 
 
