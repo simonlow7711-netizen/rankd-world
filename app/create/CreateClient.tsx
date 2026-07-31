@@ -5,11 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation"
 
 import { trackEvent } from "@/utils/analytics"
 import { supabase } from "@/utils/supabase"
-import { getStoredUserId } from "@/utils/currentUser"
 
 
 
-export default function Create() {
+export default function CreateClient() {
 
 
   const router = useRouter()
@@ -19,7 +18,6 @@ export default function Create() {
 
 
   const [title, setTitle] = useState("")
-
 
   const [items, setItems] = useState([
     "",
@@ -31,13 +29,9 @@ export default function Create() {
     ""
   ])
 
-
-
   const [originalId, setOriginalId] = useState("")
 
-
   const [preview, setPreview] = useState(false)
-
 
   const [message, setMessage] = useState("")
 
@@ -71,10 +65,8 @@ export default function Create() {
 
     if(startingItems){
 
-
       const loadedItems =
         startingItems.split("|")
-
 
 
       setItems([
@@ -91,7 +83,6 @@ export default function Create() {
 
       ].slice(0,7))
 
-
     }
 
 
@@ -103,7 +94,6 @@ export default function Create() {
     }
 
 
-
   },[searchParams])
 
 
@@ -112,21 +102,7 @@ export default function Create() {
 
 
 
-  const slug = title
-
-    .toLowerCase()
-
-    .replace(/[^a-z0-9]+/g,"-")
-
-    .replace(/(^-|-$)/g,"")
-
-
-
-
-
-  const id = `${slug}-${Math.random()
-    .toString(36)
-    .substring(2,6)}`
+  const id = crypto.randomUUID()
 
 
 
@@ -143,24 +119,8 @@ export default function Create() {
 
     category:"General",
 
-    creator:"",
-
-    source:"community",
-
-    createdAt:new Date().toISOString(),
-
-    views:0,
-
-    remixedFrom:
-      originalId || undefined,
-
-    originalId:
-      originalId || undefined,
-
-
     description:
       "A new community RANKD.",
-
 
     items:
 
@@ -168,7 +128,9 @@ export default function Create() {
 
         {
           position:index + 1,
+
           name:item,
+
           votes:0
         }
 
@@ -185,15 +147,15 @@ export default function Create() {
   function createPreview(){
 
 
-
     if(!title.trim()){
 
-      setMessage("Please add a title")
+      setMessage(
+        "Please add a title"
+      )
 
       return
 
     }
-
 
 
 
@@ -206,7 +168,6 @@ export default function Create() {
       return
 
     }
-
 
 
 
@@ -228,17 +189,136 @@ export default function Create() {
   async function publishRankd(){
 
 
+    setMessage(
+      "Publishing..."
+    )
 
-    const userId =
-      getStoredUserId()
+
+
+
+    const {
+      data:{
+        user
+      }
+
+    } = await supabase.auth.getUser()
+
+
+
+
+
+    let userId = user?.id
+
+
+
+
 
 
 
     if(!userId){
 
 
+      const {
+        data,
+        error
+
+      } = await supabase.auth.signInAnonymously()
+
+
+
+
+
+      if(error){
+
+
+        console.error(
+          "AUTH ERROR:",
+          JSON.stringify(
+            error,
+            null,
+            2
+          )
+        )
+
+
+        setMessage(
+          error.message
+        )
+
+
+        return
+
+      }
+
+
+
+
+
+
+      if(!data.user){
+
+
+        setMessage(
+          "No authenticated user created"
+        )
+
+
+        return
+
+      }
+
+
+
+
+
+      userId = data.user.id
+
+
+    }
+
+
+
+
+
+
+
+
+    // CHECK PROFILE EXISTS
+
+    const {
+      data:existingProfile,
+      error:profileLookupError
+
+    } = await supabase
+
+      .from("profiles")
+
+      .select("id")
+
+      .eq("id",userId)
+
+      .maybeSingle()
+
+
+
+
+
+
+    if(profileLookupError){
+
+
+      console.error(
+        "PROFILE LOOKUP ERROR:",
+        JSON.stringify(
+          profileLookupError,
+          null,
+          2
+        )
+      )
+
+
       setMessage(
-        "Please create your RANKD identity first."
+        profileLookupError.message
       )
 
 
@@ -251,28 +331,99 @@ export default function Create() {
 
 
 
-    const { error: rankingError } =
 
-      await supabase
 
-        .from("rankings")
+    // CREATE PROFILE IF MISSING
+
+    if(!existingProfile){
+
+
+
+      const {
+        error:profileCreateError
+
+      } = await supabase
+
+        .from("profiles")
 
         .insert({
 
-          id: ranking.id,
+          id:userId,
 
-          user_id:userId,
+          username:
+            `user-${userId.substring(0,6)}`,
 
-          title:ranking.title,
-
-          category:ranking.category,
-
-          description:ranking.description,
-
-          views:0
+          display_name:
+            "RANKD User"
 
         })
 
+
+
+
+
+
+      if(profileCreateError){
+
+
+
+        console.error(
+
+          "PROFILE CREATE ERROR:",
+
+          JSON.stringify(
+            profileCreateError,
+            null,
+            2
+          )
+
+        )
+
+
+
+        setMessage(
+          profileCreateError.message
+        )
+
+
+        return
+
+
+      }
+
+
+    }
+
+
+
+
+
+
+
+
+
+    const {
+      error:rankingError
+
+    } = await supabase
+
+      .from("rankings")
+
+      .insert({
+
+        id:ranking.id,
+
+        user_id:userId,
+
+        title:ranking.title,
+
+        category:ranking.category,
+
+        description:ranking.description,
+
+        views:0
+
+      })
 
 
 
@@ -282,7 +433,17 @@ export default function Create() {
     if(rankingError){
 
 
-      console.error(rankingError)
+      console.error(
+
+        "RANKING INSERT ERROR:",
+
+        JSON.stringify(
+          rankingError,
+          null,
+          2
+        )
+
+      )
 
 
       setMessage(
@@ -291,6 +452,7 @@ export default function Create() {
 
 
       return
+
 
     }
 
@@ -306,7 +468,6 @@ export default function Create() {
 
       ranking.items.map(item=>(
 
-
         {
 
           ranking_id:ranking.id,
@@ -319,7 +480,6 @@ export default function Create() {
 
         }
 
-
       ))
 
 
@@ -327,13 +487,16 @@ export default function Create() {
 
 
 
-    const { error:itemError } =
 
-      await supabase
+    const {
+      error:itemError
 
-        .from("ranking_items")
+    } = await supabase
 
-        .insert(rankingItems)
+      .from("ranking_items")
+
+      .insert(rankingItems)
+
 
 
 
@@ -343,7 +506,17 @@ export default function Create() {
     if(itemError){
 
 
-      console.error(itemError)
+      console.error(
+
+        "ITEM INSERT ERROR:",
+
+        JSON.stringify(
+          itemError,
+          null,
+          2
+        )
+
+      )
 
 
       setMessage(
@@ -353,8 +526,8 @@ export default function Create() {
 
       return
 
-    }
 
+    }
 
 
 
@@ -378,8 +551,11 @@ export default function Create() {
 
 
 
+
     router.push(
-      `/rank/${id}`
+
+      `/rank/${ranking.id}`
+
     )
 
 
@@ -403,19 +579,19 @@ export default function Create() {
     ">
 
 
-
       <div className="
         max-w-2xl
         mx-auto
       ">
 
 
-
         <h1 className="
           text-5xl
           font-black
         ">
+
           Create Your RANKD
+
         </h1>
 
 
@@ -431,7 +607,9 @@ export default function Create() {
               mt-4
               text-gray-400
             ">
+
               What is your Top 7?
+
             </p>
 
 
@@ -491,9 +669,13 @@ export default function Create() {
                   onChange={e=>{
 
 
-                    const updated=[...items]
+                    const updated =
+                      [...items]
 
-                    updated[index]=e.target.value
+
+                    updated[index] =
+                      e.target.value
+
 
                     setItems(updated)
 
@@ -512,6 +694,7 @@ export default function Create() {
 
 
 
+
             {message && (
 
               <p className="
@@ -519,11 +702,12 @@ export default function Create() {
                 text-gray-300
                 font-bold
               ">
+
                 {message}
+
               </p>
 
             )}
-
 
 
 
@@ -605,7 +789,6 @@ export default function Create() {
                       text-black
                       rounded-xl
                       p-4
-                      font-bold
                     "
 
                   >

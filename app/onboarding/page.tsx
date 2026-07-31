@@ -1,34 +1,32 @@
 "use client"
 
-
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 
 import { supabase } from "@/utils/supabase"
 
-import { setStoredUserId } from "@/utils/currentUser"
-
-import { useRouter } from "next/navigation"
 
 
-
-
-
-export default function Onboarding(){
+export default function OnboardingPage(){
 
 
   const router = useRouter()
-
-
-  const [username,setUsername] =
-    useState("")
 
 
   const [displayName,setDisplayName] =
     useState("")
 
 
-  const [error,setError] =
+  const [username,setUsername] =
     useState("")
+
+
+  const [message,setMessage] =
+    useState("")
+
+
+  const [loading,setLoading] =
+    useState(false)
 
 
 
@@ -37,52 +35,27 @@ export default function Onboarding(){
   async function createProfile(){
 
 
-    setError("")
+    setMessage("")
 
 
 
     const cleanUsername =
-
       username
         .toLowerCase()
-        .replace(/\s/g,"")
-
-
-
-
-    const {
-
-      data,
-
-      error
-
-    } = await supabase
-
-      .from("profiles")
-
-      .insert({
-
-        username:
-          cleanUsername,
-
-        display_name:
-          displayName
-
-      })
-
-      .select()
-
-      .single()
+        .trim()
+        .replace(/[^a-z0-9]/g,"")
 
 
 
 
 
-    if(error){
+    if(!displayName.trim()){
 
-      setError(
-        error.message
+
+      setMessage(
+        "Please add your name"
       )
+
 
       return
 
@@ -92,20 +65,167 @@ export default function Onboarding(){
 
 
 
-    setStoredUserId(
-
-      data.id
-
-    )
+    if(cleanUsername.length < 3){
 
 
+      setMessage(
+        "Username must be at least 3 characters"
+      )
+
+
+      return
+
+    }
 
 
 
-    router.push("/profile")
+
+
+
+    setLoading(true)
+
+
+
+
+
+    const {
+      data:{
+        user
+      }
+
+    } = await supabase.auth.getUser()
+
+
+
+
+
+
+
+    if(!user){
+
+
+      setMessage(
+        "No account found"
+      )
+
+
+      setLoading(false)
+
+
+      return
+
+    }
+
+
+
+
+
+
+
+
+
+    const {
+      data:existing
+
+    } = await supabase
+
+      .from("profiles")
+
+      .select("id")
+
+      .eq(
+        "username",
+        cleanUsername
+      )
+
+      .maybeSingle()
+
+
+
+
+
+
+
+    if(existing){
+
+
+      setMessage(
+        "Username already taken"
+      )
+
+
+      setLoading(false)
+
+
+      return
+
+    }
+
+
+
+
+
+
+
+
+
+    const {
+      error
+
+    } = await supabase
+
+      .from("profiles")
+
+      .upsert({
+
+        id:user.id,
+
+        username:cleanUsername,
+
+        display_name:
+          displayName.trim()
+
+      })
+
+
+
+
+
+
+
+    if(error){
+
+
+      console.error(
+        error
+      )
+
+
+      setMessage(
+        error.message
+      )
+
+
+      setLoading(false)
+
+
+      return
+
+    }
+
+
+
+
+
+
+
+    router.push("/explore")
+
 
 
   }
+
+
 
 
 
@@ -119,16 +239,14 @@ export default function Onboarding(){
       min-h-screen
       bg-black
       text-white
-      flex
-      items-center
-      justify-center
       px-6
+      py-20
     ">
 
 
       <div className="
-        max-w-md
-        w-full
+        max-w-xl
+        mx-auto
       ">
 
 
@@ -137,18 +255,20 @@ export default function Onboarding(){
           font-black
         ">
 
-          Welcome to RANKD
+          Create your RANKD identity
 
         </h1>
 
 
 
+
+
         <p className="
-          text-gray-400
           mt-4
+          text-gray-400
         ">
 
-          Create your identity and start ranking.
+          Your rankings become your taste profile.
 
         </p>
 
@@ -156,45 +276,82 @@ export default function Onboarding(){
 
 
 
+
         <input
-
-          placeholder="Username"
-
-          value={username}
-
-          onChange={e=>setUsername(e.target.value)}
 
           className="
-            mt-8
+            mt-10
             w-full
-            bg-zinc-900
-            rounded-xl
             p-4
+            rounded-xl
+            bg-white
+            text-black
+            placeholder-gray-500
+            outline-none
           "
-
-        />
-
-
-
-
-
-        <input
 
           placeholder="Display name"
 
           value={displayName}
 
-          onChange={e=>setDisplayName(e.target.value)}
+          onChange={
+            e=>setDisplayName(e.target.value)
+          }
+
+        />
+
+
+
+
+
+
+
+        <input
 
           className="
             mt-4
             w-full
-            bg-zinc-900
-            rounded-xl
             p-4
+            rounded-xl
+            bg-white
+            text-black
+            placeholder-gray-500
+            outline-none
           "
 
+          placeholder="Username"
+
+          value={username}
+
+          onChange={
+            e=>setUsername(e.target.value)
+          }
+
         />
+
+
+
+
+
+
+
+
+        {message && (
+
+          <p className="
+            mt-6
+            text-gray-300
+            font-bold
+          ">
+
+            {message}
+
+          </p>
+
+        )}
+
+
+
 
 
 
@@ -204,40 +361,30 @@ export default function Onboarding(){
 
           onClick={createProfile}
 
+          disabled={loading}
+
           className="
-            mt-6
-            w-full
+            mt-8
             bg-white
             text-black
-            rounded-full
+            px-8
             py-4
+            rounded-full
             font-black
           "
 
         >
 
-          Create Identity →
+          {loading
+            ? "Creating..."
+            : "Create Identity →"
+          }
+
 
         </button>
 
 
 
-
-
-        {
-
-          error &&
-
-          <p className="
-            text-red-400
-            mt-4
-          ">
-
-            {error}
-
-          </p>
-
-        }
 
 
 

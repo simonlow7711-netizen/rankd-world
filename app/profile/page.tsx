@@ -1,47 +1,70 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
+
 import Link from "next/link"
-import { useParams } from "next/navigation"
 
-import TasteDNA from "@/components/TasteDNA"
-import Achievements from "@/components/Achievements"
-
-import { calculateTasteDNA } from "@/utils/tasteProfile"
-import { calculateAchievements } from "@/utils/achievements"
-
-import {
-  getProfileByUsername
-} from "@/utils/supabaseProfiles"
-
-import {
-  getUserRankings
-} from "@/utils/supabaseRankings"
+import { supabase } from "@/utils/supabase"
 
 
 
-export default function PublicProfilePage(){
+type Profile = {
+
+  id:string
+
+  username:string
+
+  display_name:string
+
+}
 
 
-  const params = useParams()
 
-  const username =
-    params.username as string
+type Ranking = {
 
+  id:string
+
+  title:string
+
+  category:string | null
+
+  description:string | null
+
+  views:number | null
+
+  created_at:string | null
+
+}
+
+
+
+
+
+
+
+export default function ProfilePage(){
+
+
+  const router = useRouter()
 
 
   const [profile,setProfile] =
-    useState<any>(null)
+    useState<Profile | null>(null)
 
 
 
   const [rankings,setRankings] =
-    useState<any[]>([])
+    useState<Ranking[]>([])
 
 
 
   const [loading,setLoading] =
     useState(true)
+
+
+
+
 
 
 
@@ -53,18 +76,73 @@ export default function PublicProfilePage(){
     async function loadProfile(){
 
 
-      const profileData =
-        await getProfileByUsername(username)
+
+      const {
+        data:{
+          user
+        }
+
+      } = await supabase.auth.getUser()
 
 
 
-      if(!profileData){
 
-        setLoading(false)
+
+
+      if(!user){
+
+
+        router.push("/onboarding")
+
 
         return
 
       }
+
+
+
+
+
+
+
+
+      const {
+        data:profileData,
+        error:profileError
+
+      } = await supabase
+
+        .from("profiles")
+
+        .select(
+          "id, username, display_name"
+        )
+
+        .eq(
+          "id",
+          user.id
+        )
+
+        .single()
+
+
+
+
+
+
+      if(profileError || !profileData){
+
+
+        console.error(profileError)
+
+
+        router.push("/onboarding")
+
+
+        return
+
+      }
+
 
 
 
@@ -76,19 +154,74 @@ export default function PublicProfilePage(){
 
 
 
-      const userRankings =
-        await getUserRankings(profileData.id)
 
 
 
-      setRankings(userRankings)
+      const {
+        data:rankingData,
+        error:rankingError
+
+      } = await supabase
+
+        .from("rankings")
+
+        .select(
+          `
+          id,
+          title,
+          category,
+          description,
+          views,
+          created_at
+          `
+        )
+
+        .eq(
+          "user_id",
+          user.id
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        )
+
+
+
+
+
+
+
+
+      if(rankingError){
+
+
+        console.error(rankingError)
+
+
+      } else {
+
+
+        setRankings(
+          rankingData ?? []
+        )
+
+
+      }
+
+
+
 
 
 
       setLoading(false)
 
 
+
     }
+
 
 
 
@@ -96,7 +229,8 @@ export default function PublicProfilePage(){
 
 
 
-  },[username])
+  },[router])
+
 
 
 
@@ -117,7 +251,7 @@ export default function PublicProfilePage(){
         p-10
       ">
 
-        Loading...
+        Loading profile...
 
       </main>
 
@@ -135,60 +269,11 @@ export default function PublicProfilePage(){
   if(!profile){
 
 
-    return (
+    return null
 
-      <main className="
-        min-h-screen
-        bg-black
-        text-white
-        p-10
-      ">
-
-
-        <h1 className="
-          text-4xl
-          font-black
-        ">
-
-          Profile not found
-
-        </h1>
-
-
-      </main>
-
-    )
 
   }
 
-
-
-
-
-
-
-
-  const categories = new Set(
-
-    rankings.map(
-
-      ranking => ranking.category
-
-    )
-
-  )
-
-
-
-
-
-  const tasteData =
-    calculateTasteDNA(rankings)
-
-
-
-  const achievementData =
-    calculateAchievements(rankings)
 
 
 
@@ -203,14 +288,12 @@ export default function PublicProfilePage(){
       min-h-screen
       bg-black
       text-white
-      px-6
-      py-16
+      p-8
     ">
 
 
-
       <div className="
-        max-w-5xl
+        max-w-4xl
         mx-auto
       ">
 
@@ -218,14 +301,11 @@ export default function PublicProfilePage(){
 
 
 
-
-        <div className="
+        <section className="
           bg-zinc-900
           rounded-3xl
-          p-10
-          mb-12
+          p-8
         ">
-
 
 
           <h1 className="
@@ -239,12 +319,10 @@ export default function PublicProfilePage(){
 
 
 
-
-
-
           <p className="
             mt-3
             text-gray-400
+            text-xl
           ">
 
             @{profile.username}
@@ -252,190 +330,31 @@ export default function PublicProfilePage(){
           </p>
 
 
+        </section>
 
 
 
 
-          <p className="
-            mt-3
-            text-gray-400
-          ">
 
-            RANKD identity.
 
-          </p>
 
 
-
-
-
-
-
-
-          <div className="
-            mt-10
-            grid
-            md:grid-cols-3
-            gap-6
-          ">
-
-
-
-
-
-            <div className="
-              bg-black
-              rounded-2xl
-              p-6
-            ">
-
-              <p className="text-gray-500">
-
-                RANKDs Created
-
-              </p>
-
-
-              <p className="
-                text-4xl
-                font-black
-                mt-2
-              ">
-
-                {rankings.length}
-
-              </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div className="
-              bg-black
-              rounded-2xl
-              p-6
-            ">
-
-              <p className="text-gray-500">
-
-                Categories
-
-              </p>
-
-
-              <p className="
-                text-4xl
-                font-black
-                mt-2
-              ">
-
-                {categories.size}
-
-              </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div className="
-              bg-black
-              rounded-2xl
-              p-6
-            ">
-
-              <p className="text-gray-500">
-
-                Achievements
-
-              </p>
-
-
-              <p className="
-                text-4xl
-                font-black
-                mt-2
-              ">
-
-                {achievementData.length}
-
-              </p>
-
-
-            </div>
-
-
-
-          </div>
-
-
-
-
-
-
-        </div>
-
-
-
-
-
-
-
-
-        <TasteDNA
-
-          data={tasteData}
-
-        />
-
-
-
-
-
-
-
-
-        <Achievements
-
-          achievements={achievementData}
-
-        />
-
-
-
-
-
-
-
-
-        <h2 className="
-          text-3xl
-          font-black
-          mb-8
+        <section className="
+          mt-10
         ">
 
-          {profile.display_name}'s RANKDs
 
-        </h2>
+          <h2 className="
+            text-3xl
+            font-black
+            mb-6
+          ">
+
+            Your RANKDs
+
+          </h2>
 
 
-
-
-
-
-
-        <div className="
-          space-y-4
-        ">
 
 
 
@@ -444,23 +363,24 @@ export default function PublicProfilePage(){
 
           {rankings.length === 0 && (
 
+
             <div className="
               bg-zinc-900
-              rounded-2xl
+              rounded-3xl
               p-8
             ">
 
               <p className="
-                text-xl
-                font-bold
+                text-gray-400
               ">
 
-                No RANKDs created yet.
+                You haven't created any RANKDs yet.
 
               </p>
 
 
             </div>
+
 
           )}
 
@@ -471,36 +391,32 @@ export default function PublicProfilePage(){
 
 
 
-          {rankings.map((ranking)=>(
+
+          <div className="
+            grid
+            gap-6
+          ">
 
 
-            <Link
-
-              key={ranking.id}
-
-              href={`/rank/${ranking.id}`}
-
-            >
+            {rankings.map((ranking)=>(
 
 
-              <div className="
-                bg-white
-                text-black
-                rounded-2xl
-                p-6
-                mb-4
-                hover:scale-[1.02]
-                transition
-              ">
+              <Link
 
+                key={ranking.id}
 
-                <p className="text-gray-500">
+                href={`/rank/${ranking.id}`}
 
-                  #{ranking.category}
+                className="
+                  bg-white
+                  text-black
+                  rounded-3xl
+                  p-6
+                  hover:scale-[1.02]
+                  transition
+                "
 
-                </p>
-
-
+              >
 
 
                 <h3 className="
@@ -513,27 +429,48 @@ export default function PublicProfilePage(){
                 </h3>
 
 
-              </div>
 
 
-            </Link>
+                <p className="
+                  mt-2
+                  text-gray-600
+                ">
+
+                  #{ranking.category ?? "General"}
+
+                </p>
 
 
-          ))}
+
+
+                <p className="
+                  mt-4
+                  text-sm
+                  text-gray-500
+                ">
+
+                  {ranking.views ?? 0} views
+
+                </p>
 
 
 
-        </div>
+              </Link>
 
 
+            ))}
 
+
+          </div>
+
+
+        </section>
 
 
 
 
 
       </div>
-
 
 
     </main>
