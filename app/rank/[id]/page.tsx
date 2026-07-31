@@ -6,6 +6,12 @@ import { useParams, useRouter } from "next/navigation"
 import { rankings } from "@/data/rankings"
 import { trackEvent } from "@/utils/analytics"
 
+import {
+  calculateDebate
+} from "@/utils/debateEngine"
+
+import DebateCard from "@/components/DebateCard"
+
 
 
 export default function RankPage() {
@@ -20,40 +26,83 @@ export default function RankPage() {
 
 
 
-  const [ranking, setRanking] = useState<any>(null)
+  const [ranking,setRanking] =
 
-  const [loading, setLoading] = useState(true)
-
-
+    useState<any>(null)
 
 
 
-  useEffect(() => {
+  const [loading,setLoading] =
+
+    useState(true)
+
+
+
+  const [debate,setDebate] =
+
+    useState<any>(null)
+
+
+
+
+
+
+
+  useEffect(()=>{
 
 
     trackEvent(
+
       "ranking_viewed",
+
       {
         rankingId:id
       }
+
     )
 
 
 
+
+
     const existingRanking =
+
       rankings.find(
+
         item => item.id === id
+
       )
 
 
 
-    if(existingRanking){
 
-      setRanking(existingRanking)
 
-      setLoading(false)
+    let currentRanking = existingRanking
 
-      return
+
+
+
+
+
+    if(!currentRanking){
+
+
+      const createdRankings = JSON.parse(
+
+        localStorage.getItem("createdRankings") || "[]"
+
+      )
+
+
+
+      currentRanking = createdRankings.find(
+
+        (item:any)=>
+
+          item.id === id
+
+      )
+
 
     }
 
@@ -61,24 +110,66 @@ export default function RankPage() {
 
 
 
-    const createdRankings = JSON.parse(
-
-      localStorage.getItem("createdRankings") || "[]"
-
-    )
+    setRanking(currentRanking)
 
 
 
-    const createdRanking =
-      createdRankings.find(
-        (item:any)=>item.id === id
+
+
+
+
+    if(currentRanking){
+
+
+      const createdRankings = JSON.parse(
+
+        localStorage.getItem("createdRankings") || "[]"
+
       )
 
 
 
-    setRanking(
-      createdRanking || null
-    )
+
+
+      const userRanking =
+
+        createdRankings.find(
+
+          (item:any)=>
+
+            item.originalId === currentRanking.id
+
+        )
+
+
+
+
+
+      if(userRanking){
+
+
+        const result =
+
+          calculateDebate(
+
+            currentRanking,
+
+            userRanking
+
+          )
+
+
+
+        setDebate(result)
+
+
+      }
+
+
+    }
+
+
+
 
 
     setLoading(false)
@@ -94,7 +185,9 @@ export default function RankPage() {
 
 
 
+
   if(loading){
+
 
     return (
 
@@ -111,6 +204,7 @@ export default function RankPage() {
 
     )
 
+
   }
 
 
@@ -122,6 +216,7 @@ export default function RankPage() {
 
   if(!ranking){
 
+
     return (
 
       <main className="
@@ -131,19 +226,23 @@ export default function RankPage() {
         p-10
       ">
 
+
         <h1 className="
           text-4xl
           font-black
         ">
+
           Ranking not found
+
         </h1>
+
 
       </main>
 
     )
 
-  }
 
+  }
 
 
 
@@ -167,41 +266,29 @@ export default function RankPage() {
 
 
 
-    const items =
-      ranking.items
-        .map(
-          (item:any)=>item.name
-        )
-        .join("|")
+
+
+    const items = ranking.items
+
+      .map((item:any)=>item.name)
+
+      .join("|")
+
+
+
 
 
 
     router.push(
 
-      `/create?title=${encodeURIComponent(ranking.title)}&items=${encodeURIComponent(items)}&originalId=${ranking.id}`
+      `/create?title=${encodeURIComponent(
+        ranking.title
+      )}&items=${encodeURIComponent(items)}&originalId=${ranking.id}`
 
     )
 
+
   }
-
-
-
-
-
-
-
-
-  const creatorName =
-    ranking.creatorDisplayName ||
-    ranking.creator ||
-    "RANKD Community"
-
-
-
-  const creatorUsername =
-    ranking.creatorUsername ||
-    ranking.creatorId ||
-    null
 
 
 
@@ -230,10 +317,72 @@ export default function RankPage() {
 
 
 
-        <p className="
-          text-gray-400
-        ">
+        {debate && (
+
+          <div className="mb-10">
+
+            <DebateCard
+
+              debate={debate}
+
+              rankingId={ranking.id}
+
+            />
+
+          </div>
+
+        )}
+
+
+
+
+
+
+
+        {ranking.remixes > 0 && (
+
+          <div className="
+            mb-8
+            bg-zinc-900
+            rounded-3xl
+            p-6
+          ">
+
+
+            <p className="
+              text-2xl
+              font-black
+            ">
+
+              🔥 {ranking.remixes} people ranked this differently
+
+            </p>
+
+
+            <p className="
+              mt-2
+              text-gray-400
+            ">
+
+              Your opinion could change the ranking.
+
+            </p>
+
+
+          </div>
+
+        )}
+
+
+
+
+
+
+
+        <p className="text-gray-400">
+
           #{ranking.category}
+
         </p>
 
 
@@ -256,66 +405,14 @@ export default function RankPage() {
 
 
 
-
-        <div className="
+        <p className="
           mt-4
           text-gray-400
         ">
 
-          Created by
+          Created by {ranking.creator}
 
-          <span className="
-            ml-2
-            font-bold
-            text-white
-          ">
-
-            {creatorUsername
-              ? `@${creatorUsername}`
-              : creatorName
-            }
-
-          </span>
-
-
-        </div>
-
-
-
-
-
-
-
-
-        {ranking.remixedFrom && (
-
-          <div className="
-            mt-8
-            bg-white
-            text-black
-            rounded-2xl
-            p-5
-          ">
-
-            <p className="
-              text-xl
-              font-black
-            ">
-              🔁 REMIXED RANKD
-            </p>
-
-            <p className="
-              mt-2
-              font-semibold
-            ">
-              This ranking was inspired by another opinion.
-            </p>
-
-
-          </div>
-
-        )}
-
+        </p>
 
 
 
@@ -336,7 +433,9 @@ export default function RankPage() {
             text-xl
             font-black
           ">
+
             Would you rank this differently?
+
           </p>
 
 
@@ -345,8 +444,11 @@ export default function RankPage() {
             mt-2
             text-gray-400
           ">
+
             Everyone has their own Top 7.
+
           </p>
+
 
 
         </div>
@@ -387,11 +489,11 @@ export default function RankPage() {
 
 
 
-
         <div className="
           mt-12
           space-y-4
         ">
+
 
 
           {ranking.items.map((item:any)=>(
@@ -413,19 +515,23 @@ export default function RankPage() {
 
             >
 
+
               <span className="
                 text-xl
                 font-bold
               ">
+
                 #{item.position} {item.name}
+
               </span>
 
 
 
-              <span className="
-                text-gray-500
-              ">
+
+              <span className="text-gray-500">
+
                 {item.votes}
+
               </span>
 
 
@@ -447,5 +553,6 @@ export default function RankPage() {
     </main>
 
   )
+
 
 }
