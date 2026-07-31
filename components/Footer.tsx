@@ -1,5 +1,10 @@
+import Link from "next/link"
+
+
 export default function Footer() {
+
   return (
+
     <footer className="
       bg-black
       text-white
@@ -8,6 +13,7 @@ export default function Footer() {
       px-6
       py-12
     ">
+
 
       <div className="
         max-w-6xl
@@ -19,21 +25,43 @@ export default function Footer() {
         gap-8
       ">
 
+
+
         <div>
-          <h2 className="
-            text-3xl
-            font-black
-          ">
-            RANKD
-          </h2>
+
+          <Link href="/">
+
+            <h2 className="
+              text-3xl
+              font-black
+              cursor-pointer
+            ">
+
+              RANKD
+
+            </h2>
+
+          </Link>
+
+
+
 
           <p className="
             text-gray-400
             mt-3
           ">
+
             The world's Top 7 everything.
+
           </p>
+
+
         </div>
+
+
+
+
+
 
 
         <div className="
@@ -42,21 +70,71 @@ export default function Footer() {
           text-gray-400
         ">
 
-          <span>
+
+          <Link
+
+            href="/explore"
+
+            className="
+              hover:text-white
+              transition
+            "
+
+          >
+
             Explore
-          </span>
 
-          <span>
+          </Link>
+
+
+
+
+
+          <Link
+
+            href="/create"
+
+            className="
+              hover:text-white
+              transition
+            "
+
+          >
+
             Create
-          </span>
 
-          <span>
+          </Link>
+
+
+
+
+
+          <Link
+
+            href="/"
+
+            className="
+              hover:text-white
+              transition
+            "
+
+          >
+
             About
-          </span>
+
+          </Link>
+
+
+
 
         </div>
 
+
+
       </div>
+
+
+
 
 
       <p className="
@@ -64,9 +142,16 @@ export default function Footer() {
         text-sm
         mt-10
       ">
+
         © {new Date().getFullYear()} RANKD. All opinions welcome.
+
       </p>
 
+
+
+
     </footer>
-  );
+
+  )
+
 }
