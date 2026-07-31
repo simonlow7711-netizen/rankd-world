@@ -2,6 +2,10 @@
 
 import Link from "next/link"
 
+
+
+
+
 export default function ChallengeCard({
 
   person,
@@ -10,143 +14,148 @@ export default function ChallengeCard({
 
   challenge
 
-}: any) {
+}:{
 
-  const biggest = challenge.biggestDifference
+  person:any
+
+  ranking:any
+
+  challenge:any
+
+}) {
+
+
 
   return (
 
-    <div
-      className="
-        bg-white
-        text-black
-        rounded-3xl
-        p-6
-        hover:scale-105
-        transition
-      "
+    <Link
+
+      href={`/rank/${ranking.id}`}
+
     >
 
-      <p
-        className="
-          text-red-500
-          font-black
-        "
-      >
-        🆚 Challenge My Taste
-      </p>
-
-      <h3
-        className="
-          text-2xl
-          font-black
-          mt-3
-        "
-      >
-        {person.displayName}
-      </h3>
-
-      <p
-        className="
-          text-gray-500
-          mt-2
-        "
-      >
-        {ranking.title}
-      </p>
-
       <div
+
         className="
-          mt-6
+          bg-zinc-900
+          rounded-3xl
+          p-8
+          hover:scale-105
+          transition
+          cursor-pointer
         "
+
       >
 
-        <p className="text-sm text-gray-500">
-          Challenge Score
-        </p>
 
-        <p
-          className="
-            text-5xl
-            font-black
-          "
-        >
-          {challenge.challengeScore}%
-        </p>
 
-      </div>
+        <div className="
+          text-3xl
+          mb-4
+        ">
 
-      {biggest && (
-
-        <div
-          className="
-            mt-6
-            rounded-2xl
-            bg-gray-100
-            p-4
-          "
-        >
-
-          <p
-            className="
-              font-bold
-            "
-          >
-            Biggest disagreement
-          </p>
-
-          <p
-            className="
-              mt-2
-              text-lg
-            "
-          >
-            {biggest.item}
-          </p>
-
-          <p
-            className="
-              text-gray-600
-              mt-2
-            "
-          >
-            {person.displayName}: #{biggest.remixPosition}
-          </p>
-
-          <p
-            className="
-              text-gray-600
-            "
-          >
-            You: #{biggest.originalPosition}
-          </p>
+          🆚
 
         </div>
 
-      )}
 
-      <Link
-        href="/create"
-      >
 
-        <button
-          className="
-            mt-8
-            w-full
-            bg-black
-            text-white
-            py-4
-            rounded-full
+
+
+        <p className="
+          text-gray-400
+          font-bold
+        ">
+
+          Challenge My Taste
+
+        </p>
+
+
+
+
+
+        <h3 className="
+          text-2xl
+          font-black
+          mt-4
+        ">
+
+          {ranking.title}
+
+        </h3>
+
+
+
+
+
+        <p className="
+          mt-5
+          text-gray-400
+        ">
+
+          You and {person.username} rank this differently.
+
+        </p>
+
+
+
+
+
+        <div className="
+          mt-6
+          inline-flex
+          items-center
+          gap-2
+          bg-black
+          rounded-full
+          px-4
+          py-2
+        ">
+
+
+          <span>
+
+            ⚡
+
+          </span>
+
+
+          <span className="
+            text-sm
             font-black
-          "
-        >
-          Create Your Top 7 →
-        </button>
+          ">
 
-      </Link>
+            Difference Score {challenge.difference}
 
-    </div>
+          </span>
+
+
+        </div>
+
+
+
+
+
+        <p className="
+          mt-6
+          text-orange-400
+          font-black
+        ">
+
+          Compare opinions →
+
+        </p>
+
+
+
+
+      </div>
+
+
+    </Link>
 
   )
+
 
 }

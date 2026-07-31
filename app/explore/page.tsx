@@ -4,12 +4,13 @@ import { useEffect, useState } from "react"
 
 import { rankings } from "@/data/rankings"
 
-import RankingCard from "@/components/RankingCard"
 import DailyRankd from "@/components/DailyRankd"
+import RankingCard from "@/components/RankingCard"
 import PerspectiveCard from "@/components/PerspectiveCard"
 import PeopleCard from "@/components/PeopleCard"
 import TasteMatchCard from "@/components/TasteMatchCard"
 import ChallengeCard from "@/components/ChallengeCard"
+
 
 import {
   getTrendingRankings,
@@ -17,44 +18,57 @@ import {
   getBiggestDebates
 } from "@/utils/rankingMetrics"
 
+
 import {
   getPerspectiveGaps
 } from "@/utils/perspectiveMetrics"
+
 
 import {
   getDiscoverableUsers
 } from "@/utils/userDiscovery"
 
+
 import {
   calculateTasteMatch
 } from "@/utils/tasteMatching"
 
+
 import {
-  calculateChallenge
-} from "@/utils/challengeTaste"
+  calculateTasteChallenge
+} from "@/utils/tasteChallenge"
 
 
-export default function Explore() {
 
 
-  const [communityRankings, setCommunityRankings] =
+
+export default function Explore(){
+
+
+  const [communityRankings,setCommunityRankings] =
     useState<any[]>([])
 
 
 
-  useEffect(() => {
 
-    const storedRankings = JSON.parse(
+
+  useEffect(()=>{
+
+
+    const stored = JSON.parse(
 
       localStorage.getItem("createdRankings") || "[]"
 
     )
 
 
-    setCommunityRankings(storedRankings)
+    setCommunityRankings(stored)
 
 
-  }, [])
+  },[])
+
+
+
 
 
 
@@ -67,19 +81,21 @@ export default function Explore() {
 
   ].filter(
 
-    (ranking, index, self) =>
+    (ranking,index,self)=>
 
       index === self.findIndex(
 
         item =>
 
-          item.id === ranking.id &&
-
-          item.creator === ranking.creator
+          item.id === ranking.id
 
       )
 
   )
+
+
+
+
 
 
 
@@ -96,8 +112,14 @@ export default function Explore() {
     getLatestRankings(allRankings)
 
 
+
+
+
   const perspectiveGaps =
     getPerspectiveGaps(allRankings)
+
+
+
 
 
   const people =
@@ -105,8 +127,14 @@ export default function Explore() {
 
 
 
+
+
   const currentUser =
     people[0]
+
+
+
+
 
 
 
@@ -116,9 +144,11 @@ export default function Explore() {
 
       .slice(1)
 
-      .map((person:any)=>({
+      .map(person=>({
+
 
         person,
+
 
         match:
 
@@ -130,7 +160,10 @@ export default function Explore() {
 
           )
 
+
       }))
+
+
 
 
 
@@ -142,44 +175,35 @@ export default function Explore() {
 
       .slice(1)
 
-      .map((person:any)=>{
+      .flatMap(person=>{
 
 
-        const challenge =
+        return calculateTasteChallenge(
 
-          calculateChallenge(
+          currentUser?.rankings || [],
 
-            currentUser?.rankings || [],
+          person.rankings || []
 
-            person.rankings
+        )
 
-          )
-
-
-
-        if(!challenge)
-
-          return null
-
-
-
-        return {
+        .map(challenge=>({
 
           person,
 
           ranking:
 
-            challenge.comparedRanking,
+            challenge.ranking,
 
 
           challenge
 
-        }
+
+        }))
 
 
       })
 
-      .filter(Boolean)
+
 
 
 
@@ -198,33 +222,27 @@ export default function Explore() {
 
     items:any[]
 
-  }) {
+  }){
 
 
-    if(items.length === 0)
+    if(!items || items.length === 0)
 
       return null
 
 
 
+
+
     return (
 
-      <section
-
-        className="mb-16"
-
-      >
+      <section className="mb-16">
 
 
-        <h2
-
-          className="
-            text-3xl
-            font-black
-            mb-6
-          "
-
-        >
+        <h2 className="
+          text-3xl
+          font-black
+          mb-6
+        ">
 
           {title}
 
@@ -233,26 +251,22 @@ export default function Explore() {
 
 
 
-        <div
 
-          className="
-            grid
-            md:grid-cols-3
-            gap-8
-          "
-
-        >
+        <div className="
+          grid
+          md:grid-cols-3
+          gap-8
+        ">
 
 
-
-          {items.map((ranking)=>(
+          {items.map(item=>(
 
 
             <RankingCard
 
-              key={`${ranking.id}-${ranking.creator}`}
+              key={item.id}
 
-              ranking={ranking}
+              ranking={item}
 
             />
 
@@ -260,12 +274,10 @@ export default function Explore() {
           ))}
 
 
-
         </div>
 
 
       </section>
-
 
     )
 
@@ -276,45 +288,32 @@ export default function Explore() {
 
 
 
+
+
+
   return (
 
-
-    <main
-
-      className="
-        bg-black
-        min-h-screen
-        text-white
-        px-6
-        py-20
-      "
-
-    >
+    <main className="
+      bg-black
+      min-h-screen
+      text-white
+      px-6
+      py-20
+    ">
 
 
-
-      <section
-
-        className="
-          max-w-6xl
-          mx-auto
-        "
-
-      >
+      <div className="
+        max-w-6xl
+        mx-auto
+      ">
 
 
 
-
-        <h1
-
-          className="
-            text-5xl
-            md:text-6xl
-            font-black
-            mb-4
-          "
-
-        >
+        <h1 className="
+          text-5xl
+          md:text-6xl
+          font-black
+        ">
 
           Explore RANKD
 
@@ -322,16 +321,11 @@ export default function Explore() {
 
 
 
-
-        <p
-
-          className="
-            text-gray-400
-            text-lg
-            mb-10
-          "
-
-        >
+        <p className="
+          mt-4
+          text-gray-400
+          text-lg
+        ">
 
           Discover opinions. Create your own Top 7.
 
@@ -349,7 +343,7 @@ export default function Explore() {
 
         <Section
 
-          title="🔥 Trending RANKDs"
+          title="🧬 Because You Ranked..."
 
           items={trending}
 
@@ -358,9 +352,10 @@ export default function Explore() {
 
 
 
+
         <Section
 
-          title="⚡ Biggest Debates"
+          title="🔥 Trending Debates"
 
           items={debates}
 
@@ -371,23 +366,14 @@ export default function Explore() {
 
 
 
-        <section
-
-          className="mb-16"
-
-        >
+        <section className="mb-16">
 
 
-
-          <h2
-
-            className="
-              text-3xl
-              font-black
-              mb-6
-            "
-
-          >
+          <h2 className="
+            text-3xl
+            font-black
+            mb-6
+          ">
 
             🌍 Biggest Perspective Gaps
 
@@ -395,25 +381,19 @@ export default function Explore() {
 
 
 
-
-          <div
-
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-
-          >
+          <div className="
+            grid
+            md:grid-cols-3
+            gap-8
+          ">
 
 
-
-            {perspectiveGaps.map((item:any)=>(
+            {perspectiveGaps.map(item=>(
 
 
               <PerspectiveCard
 
-                key={`${item.ranking.id}-${item.ranking.creator}`}
+                key={item.ranking.id}
 
                 ranking={item.ranking}
 
@@ -425,7 +405,6 @@ export default function Explore() {
             ))}
 
 
-
           </div>
 
 
@@ -437,109 +416,29 @@ export default function Explore() {
 
 
 
-        <section
-
-          className="mb-16"
-
-        >
+        <section className="mb-16">
 
 
+          <h2 className="
+            text-3xl
+            font-black
+            mb-6
+          ">
 
-          <h2
-
-            className="
-              text-3xl
-              font-black
-              mb-6
-            "
-
-          >
-
-            👥 People to Explore
+            👥 People Who Rank Like You
 
           </h2>
 
 
 
-
-          <div
-
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-
-          >
+          <div className="
+            grid
+            md:grid-cols-3
+            gap-8
+          ">
 
 
-
-            {people.map((person:any)=>(
-
-
-              <PeopleCard
-
-                key={person.username}
-
-                person={person}
-
-              />
-
-
-            ))}
-
-
-
-          </div>
-
-
-
-        </section>
-
-
-
-
-
-
-
-        <section
-
-          className="mb-16"
-
-        >
-
-
-
-          <h2
-
-            className="
-              text-3xl
-              font-black
-              mb-6
-            "
-
-          >
-
-            🧬 People Who Rank Like You
-
-          </h2>
-
-
-
-
-          <div
-
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-
-          >
-
-
-
-            {tasteMatches.map((item:any)=>(
+            {tasteMatches.map(item=>(
 
 
               <TasteMatchCard
@@ -556,9 +455,7 @@ export default function Explore() {
             ))}
 
 
-
           </div>
-
 
 
         </section>
@@ -569,23 +466,15 @@ export default function Explore() {
 
 
 
-        <section
 
-          className="mb-16"
-
-        >
+        <section className="mb-16">
 
 
-
-          <h2
-
-            className="
-              text-3xl
-              font-black
-              mb-6
-            "
-
-          >
+          <h2 className="
+            text-3xl
+            font-black
+            mb-6
+          ">
 
             🆚 Challenge My Taste
 
@@ -593,20 +482,14 @@ export default function Explore() {
 
 
 
-
-          <div
-
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-
-          >
+          <div className="
+            grid
+            md:grid-cols-3
+            gap-8
+          ">
 
 
-
-            {challenges.map((item:any)=>(
+            {challenges.map(item=>(
 
 
               <ChallengeCard
@@ -625,9 +508,7 @@ export default function Explore() {
             ))}
 
 
-
           </div>
-
 
 
         </section>
@@ -661,12 +542,10 @@ export default function Explore() {
 
 
 
-
-      </section>
+      </div>
 
 
     </main>
-
 
   )
 

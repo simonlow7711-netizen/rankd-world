@@ -1,92 +1,58 @@
 import { Ranking } from "@/types/ranking"
-import { calculatePerspectiveGap } from "@/utils/perspectiveGap"
+
+import {
+  calculatePerspectiveScore
+} from "@/utils/perspectiveScore"
+
+
 
 
 
 export function getPerspectiveGaps(
+
   rankings: Ranking[]
-) {
+
+){
 
 
-  const gaps:any[] = []
+  return rankings
+
+    .map((ranking)=>({
 
 
+      ranking,
 
 
-  const remixes = rankings.filter(
+      gap:
 
-    ranking => ranking.remixedFrom
+        calculatePerspectiveScore(
 
-  )
+          ranking
 
-
-
-
+        )
 
 
-  remixes.forEach((remix)=>{
+    }))
 
 
-    const original = rankings.find(
+    .sort(
 
-      ranking =>
-        ranking.id === remix.remixedFrom
+      (a,b)=>
+
+        b.gap -
+
+        a.gap
 
     )
 
 
+    .slice(
 
-    if(!original) return
+      0,
 
+      5
 
-
-
-
-
-    const differences =
-      calculatePerspectiveGap(
-        original,
-        remix
-      )
-
-
-
-
-
-    if(differences.length){
-
-
-      gaps.push({
-
-        ranking: original,
-
-        gap: differences[0],
-
-        remix
-
-      })
-
-
-    }
-
-
-
-  })
-
-
-
-
-
-
-  return gaps.sort(
-
-    (a,b)=>
-
-      b.gap.difference -
-      a.gap.difference
-
-  ).slice(0,6)
-
+    )
 
 
 }

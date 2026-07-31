@@ -1,4 +1,8 @@
+"use client"
+
 import Link from "next/link"
+
+
 
 
 
@@ -8,7 +12,13 @@ export default function PerspectiveCard({
 
   gap
 
-}:any) {
+}:{
+
+  ranking:any
+
+  gap:number
+
+}) {
 
 
   return (
@@ -19,15 +29,12 @@ export default function PerspectiveCard({
 
     >
 
-
-
       <div
 
         className="
-          bg-white
-          text-black
+          bg-zinc-900
           rounded-3xl
-          p-6
+          p-8
           hover:scale-105
           transition
           cursor-pointer
@@ -37,17 +44,12 @@ export default function PerspectiveCard({
 
 
 
+        <p className="
+          text-gray-400
+          font-bold
+        ">
 
-        <p
-
-          className="
-            text-purple-600
-            font-black
-          "
-
-        >
-
-          🌍 Perspective Gap
+          {ranking.category}
 
         </p>
 
@@ -55,16 +57,11 @@ export default function PerspectiveCard({
 
 
 
-
-        <h3
-
-          className="
-            text-2xl
-            font-black
-            mt-3
-          "
-
-        >
+        <h3 className="
+          text-2xl
+          font-black
+          mt-4
+        ">
 
           {ranking.title}
 
@@ -74,59 +71,63 @@ export default function PerspectiveCard({
 
 
 
+        <div className="
+          mt-6
+          inline-flex
+          items-center
+          gap-2
+          bg-black
+          rounded-full
+          px-4
+          py-2
+        ">
 
 
-        <p
+          <span>
 
-          className="
-            mt-4
-            text-gray-600
-          "
+            🌍
 
-        >
-
-          Biggest disagreement:
-
-        </p>
+          </span>
 
 
-
-
-
-
-        <p
-
-          className="
-            mt-2
+          <span className="
+            text-sm
             font-black
-          "
+          ">
 
-        >
+            Perspective Gap {gap}%
 
-          {gap.item}
-
-        </p>
+          </span>
 
 
-
+        </div>
 
 
 
 
-        <p
 
-          className="
-            mt-3
-            text-gray-500
-          "
+        <p className="
+          mt-5
+          text-gray-400
+        ">
 
-        >
-
-          Moved {gap.difference} places
+          Different people rank this differently.
 
         </p>
 
 
+
+
+
+        <p className="
+          mt-6
+          text-orange-400
+          font-black
+        ">
+
+          Compare opinions →
+
+        </p>
 
 
 
@@ -134,10 +135,9 @@ export default function PerspectiveCard({
       </div>
 
 
-
     </Link>
 
-
   )
+
 
 }

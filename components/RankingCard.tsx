@@ -1,41 +1,36 @@
+"use client"
+
 import Link from "next/link"
+
+import {
+  calculateDebateScore
+} from "@/utils/debateScore"
+
+
+
 
 
 export default function RankingCard({
 
   ranking
 
-}: any) {
+}:{
+
+  ranking:any
+
+}) {
 
 
 
-  const isCommunity =
-    ranking.source === "community"
+  const debateScore =
+
+    calculateDebateScore(
+
+      ranking
+
+    )
 
 
-
-  const opinionCount =
-    ranking.remixes || 0
-
-
-
-  const hasDebate =
-    ranking.remixedFrom ||
-    opinionCount > 0
-
-
-
-  const creatorUsername =
-    ranking.creatorUsername ||
-    ranking.creatorId ||
-    null
-
-
-
-  const creatorName =
-    ranking.creatorDisplayName ||
-    ranking.creator ||
-    "RANKD Community"
 
 
 
@@ -43,118 +38,33 @@ export default function RankingCard({
 
   return (
 
+    <Link
 
-    <Link href={`/rank/${ranking.id}`}>
+      href={`/rank/${ranking.id}`}
 
+    >
 
+      <div
 
-      <div className="
-        bg-white
-        text-black
-        rounded-3xl
-        p-6
-        shadow-lg
-        hover:scale-105
-        transition
-        cursor-pointer
-      ">
+        className="
+          bg-zinc-900
+          rounded-3xl
+          p-8
+          hover:scale-105
+          transition
+          cursor-pointer
+        "
 
-
-
-
-        <div className="
-          flex
-          justify-between
-          items-center
-          mb-4
-        ">
-
-
-          <p className="
-            text-sm
-            text-gray-500
-          ">
-
-            #{ranking.category}
-
-          </p>
-
-
-
-
-          <span
-
-            className={`
-              text-xs
-              font-bold
-              px-3
-              py-1
-              rounded-full
-
-              ${
-                isCommunity
-                ? "bg-purple-100 text-purple-700"
-                : "bg-green-100 text-green-700"
-              }
-            `}
-
-          >
-
-            {isCommunity
-              ? "COMMUNITY"
-              : "OFFICIAL"
-            }
-
-
-          </span>
-
-
-
-        </div>
-
-
-
-
-
-
-
-
-        <h2 className="
-          text-2xl
-          font-black
-        ">
-
-          {ranking.title}
-
-        </h2>
-
-
-
+      >
 
 
 
         <p className="
-          mt-3
-          text-gray-600
+          text-gray-400
+          font-bold
         ">
 
-
-          by
-
-
-          <span className="
-            ml-1
-            font-bold
-          ">
-
-            {creatorUsername
-              ? `@${creatorUsername}`
-              : creatorName
-            }
-
-
-          </span>
-
+          {ranking.category}
 
         </p>
 
@@ -162,108 +72,47 @@ export default function RankingCard({
 
 
 
+        <h3 className="
+          text-2xl
+          font-black
+          mt-4
+        ">
+
+          {ranking.title}
+
+        </h3>
+
 
 
 
 
         <div className="
           mt-5
-          space-y-2
-        ">
-
-
-          {ranking.items
-
-            .slice(0,3)
-
-            .map((item:any)=>(
-
-
-              <div
-
-                key={item.position}
-
-                className="
-                  font-semibold
-                "
-
-              >
-
-                #{item.position} {item.name}
-
-              </div>
-
-
-            ))}
-
-
-        </div>
-
-
-
-
-
-
-
-
-        <div className="
-          mt-6
-          border-t
-          pt-4
-          flex
-          justify-between
+          inline-flex
           items-center
+          gap-2
+          bg-black
+          rounded-full
+          px-4
+          py-2
         ">
 
 
+          <span>
 
-
-          <span className="
-            text-sm
-            font-bold
-            text-gray-600
-          ">
-
-
-            {opinionCount === 0
-
-              ? "Be the first to remix"
-
-              : `${opinionCount} opinions created`
-
-            }
-
+            🔥
 
           </span>
 
 
+          <span className="
+            text-sm
+            font-black
+          ">
 
+            Debate Heat {debateScore}%
 
-
-
-
-          {hasDebate && (
-
-            <span className="
-              text-xs
-              font-black
-              bg-black
-              text-white
-              px-3
-              py-1
-              rounded-full
-            ">
-
-
-              ⚡ DEBATE
-
-
-            </span>
-
-
-          )}
-
-
+          </span>
 
 
         </div>
@@ -272,26 +121,15 @@ export default function RankingCard({
 
 
 
-
-
-
-
-        <div className="
-          mt-5
-          text-center
-          bg-black
-          text-white
-          rounded-full
-          py-3
+        <p className="
+          mt-6
+          text-orange-400
           font-black
         ">
 
+          Decide your #1 →
 
-          RANKD IT →
-
-
-        </div>
-
+        </p>
 
 
 
@@ -299,9 +137,7 @@ export default function RankingCard({
       </div>
 
 
-
     </Link>
-
 
   )
 
