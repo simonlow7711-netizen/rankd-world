@@ -1,36 +1,6 @@
 import Link from "next/link"
 
 
-const rankings = [
-
-  {
-    id: "best-burgers-london",
-    title: "Top 7 Burgers in London",
-    category: "Food",
-  },
-
-  {
-    id: "best-nolan-films",
-    title: "Top 7 Christopher Nolan Films",
-    category: "Movies",
-  },
-
-  {
-    id: "top-7-premier-league-kits",
-    title: "Top 7 Premier League Kits",
-    category: "Sport",
-  },
-
-  {
-    id: "best-games-ever",
-    title: "Top 7 Games of All Time",
-    category: "Gaming",
-  },
-
-]
-
-
-
 export default function Trending() {
 
 
@@ -44,101 +14,65 @@ export default function Trending() {
     ">
 
 
-      <h2 className="
-        text-4xl
-        font-black
-        mb-10
-      ">
-
-        🔥 Trending Today
-
-      </h2>
-
-
-
-
-
       <div className="
-        grid
-        md:grid-cols-2
-        gap-6
+        max-w-6xl
+        mx-auto
       ">
 
 
-        {rankings.map((ranking)=>(
+        <h2 className="
+          text-4xl
+          font-black
+          mb-10
+        ">
+
+          🔥 Trending Today
+
+        </h2>
+
+
+
+
+
+        <div className="
+          bg-zinc-900
+          rounded-3xl
+          p-8
+        ">
+
+
+          <p className="
+            text-gray-400
+          ">
+
+            Trending RANKDs are coming soon.
+
+          </p>
 
 
           <Link
 
-            key={ranking.id}
+            href="/explore"
 
-            href={`/rank/${ranking.id}`}
+            className="
+              inline-block
+              mt-6
+              bg-white
+              text-black
+              px-6
+              py-3
+              rounded-full
+              font-black
+            "
 
           >
 
-
-            <div
-
-              className="
-                bg-zinc-900
-                rounded-3xl
-                p-8
-                hover:scale-105
-                transition
-                cursor-pointer
-              "
-
-            >
-
-
-              <p className="
-                text-gray-400
-                mb-3
-              ">
-
-                {ranking.category}
-
-              </p>
-
-
-
-
-
-              <h3 className="
-                text-2xl
-                font-bold
-              ">
-
-                {ranking.title}
-
-              </h3>
-
-
-
-
-
-
-              <button className="
-                mt-6
-                text-sm
-                font-bold
-              ">
-
-                View Ranking →
-
-              </button>
-
-
-
-
-
-            </div>
-
+            Explore RANKDs →
 
           </Link>
 
 
-        ))}
+        </div>
 
 
       </div>
