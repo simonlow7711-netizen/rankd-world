@@ -54,9 +54,6 @@ export default function CreateClient() {
 
   const [originalId,setOriginalId] = useState("")
 
-  const [parentId,setParentId] = useState("")
-
-
   const [message,setMessage] = useState("")
 
   const [publishing,setPublishing] = useState(false)
@@ -74,10 +71,6 @@ export default function CreateClient() {
 
     const startingItems =
       searchParams.get("items")
-
-
-    const startingOriginalId =
-      searchParams.get("originalId")
 
 
     const startingParentId =
@@ -117,17 +110,9 @@ export default function CreateClient() {
 
 
 
-    if(startingOriginalId){
-
-      setOriginalId(startingOriginalId)
-
-    }
-
-
-
     if(startingParentId){
 
-      setParentId(startingParentId)
+      setOriginalId(startingParentId)
 
     }
 
@@ -258,9 +243,7 @@ export default function CreateClient() {
 
       if(error){
 
-        console.error(
-          error
-        )
+        console.error(error)
 
         setMessage(
           error.message
@@ -381,9 +364,7 @@ export default function CreateClient() {
 
       if(error){
 
-        console.error(
-          error
-        )
+        console.error(error)
 
         setMessage(
           error.message
@@ -428,13 +409,11 @@ export default function CreateClient() {
 
         views:0,
 
-
         parent_id:
-          parentId || null,
-
+          originalId || null,
 
         source_type:
-          parentId
+          originalId
             ? "remix"
             : "original"
 
@@ -541,7 +520,7 @@ export default function CreateClient() {
         rankingId,
 
         parentId:
-          parentId || null
+          originalId || null
 
       }
 
