@@ -7,6 +7,25 @@ import { trackEvent } from "@/utils/analytics"
 import { supabase } from "@/utils/supabase"
 
 
+const categories = [
+  "Food & Drink",
+  "Film & TV",
+  "Music",
+  "Sport",
+  "Travel",
+  "Gaming",
+  "Books",
+  "Technology",
+  "Places",
+  "Lifestyle",
+  "Entertainment",
+  "Business",
+  "Art & Design",
+  "Education",
+  "Science",
+  "General"
+]
+
 
 export default function CreateClient() {
 
@@ -17,9 +36,12 @@ export default function CreateClient() {
 
 
 
-  const [title, setTitle] = useState("")
+  const [title,setTitle] = useState("")
 
-  const [items, setItems] = useState([
+  const [category,setCategory] = useState("")
+
+
+  const [items,setItems] = useState([
     "",
     "",
     "",
@@ -29,17 +51,18 @@ export default function CreateClient() {
     ""
   ])
 
-  const [originalId, setOriginalId] = useState("")
 
-  const [preview, setPreview] = useState(false)
+  const [originalId,setOriginalId] = useState("")
 
-  const [message, setMessage] = useState("")
+  const [message,setMessage] = useState("")
 
-
-
+  const [publishing,setPublishing] = useState(false)
 
 
-  useEffect(() => {
+
+
+
+  useEffect(()=>{
 
 
     const startingTitle =
@@ -102,49 +125,22 @@ export default function CreateClient() {
 
 
 
-  const id = crypto.randomUUID()
+
+
+  async function publishRankd(){
+
+
+    if(publishing){
+
+      return
+
+    }
+
+
+    setPublishing(true)
 
 
 
-
-
-
-
-  const ranking = {
-
-
-    id,
-
-    title,
-
-    category:"General",
-
-    description:
-      "A new community RANKD.",
-
-    items:
-
-      items.map((item,index)=>(
-
-        {
-          position:index + 1,
-
-          name:item,
-
-          votes:0
-        }
-
-      ))
-
-  }
-
-
-
-
-
-
-
-  function createPreview(){
 
 
     if(!title.trim()){
@@ -153,9 +149,29 @@ export default function CreateClient() {
         "Please add a title"
       )
 
+      setPublishing(false)
+
       return
 
     }
+
+
+
+
+
+    if(!category){
+
+      setMessage(
+        "Please choose a category"
+      )
+
+      setPublishing(false)
+
+      return
+
+    }
+
+
 
 
 
@@ -165,33 +181,29 @@ export default function CreateClient() {
         "Please complete all 7 rankings"
       )
 
+      setPublishing(false)
+
       return
 
     }
 
 
 
-    setMessage("")
 
-    setPreview(true)
-
-
-  }
-
-
-
-
-
-
-
-
-
-  async function publishRankd(){
 
 
     setMessage(
       "Publishing..."
     )
+
+
+
+
+
+    const rankingId =
+      crypto.randomUUID()
+
+
 
 
 
@@ -207,7 +219,8 @@ export default function CreateClient() {
 
 
 
-    let userId = user?.id
+    let userId =
+      user?.id
 
 
 
@@ -230,21 +243,15 @@ export default function CreateClient() {
 
       if(error){
 
-
         console.error(
-          "AUTH ERROR:",
-          JSON.stringify(
-            error,
-            null,
-            2
-          )
+          error
         )
-
 
         setMessage(
           error.message
         )
 
+        setPublishing(false)
 
         return
 
@@ -253,25 +260,8 @@ export default function CreateClient() {
 
 
 
-
-
-      if(!data.user){
-
-
-        setMessage(
-          "No authenticated user created"
-        )
-
-
-        return
-
-      }
-
-
-
-
-
-      userId = data.user.id
+      userId =
+        data.user?.id
 
 
     }
@@ -282,45 +272,14 @@ export default function CreateClient() {
 
 
 
-
-    // CHECK PROFILE EXISTS
-
-    const {
-      data:existingProfile,
-      error:profileLookupError
-
-    } = await supabase
-
-      .from("profiles")
-
-      .select("id")
-
-      .eq("id",userId)
-
-      .maybeSingle()
-
-
-
-
-
-
-    if(profileLookupError){
-
-
-      console.error(
-        "PROFILE LOOKUP ERROR:",
-        JSON.stringify(
-          profileLookupError,
-          null,
-          2
-        )
-      )
+    if(!userId){
 
 
       setMessage(
-        profileLookupError.message
+        "No authenticated user created"
       )
 
+      setPublishing(false)
 
       return
 
@@ -333,14 +292,57 @@ export default function CreateClient() {
 
 
 
-    // CREATE PROFILE IF MISSING
+
+    const {
+      data:existingProfile,
+      error:profileLookupError
+
+    } = await supabase
+
+      .from("profiles")
+
+      .select("id")
+
+      .eq(
+        "id",
+        userId
+      )
+
+      .maybeSingle()
+
+
+
+
+
+    if(profileLookupError){
+
+      console.error(
+        profileLookupError
+      )
+
+      setMessage(
+        profileLookupError.message
+      )
+
+      setPublishing(false)
+
+      return
+
+    }
+
+
+
+
+
+
+
+
 
     if(!existingProfile){
 
 
-
       const {
-        error:profileCreateError
+        error
 
       } = await supabase
 
@@ -362,32 +364,19 @@ export default function CreateClient() {
 
 
 
-
-      if(profileCreateError){
-
-
+      if(error){
 
         console.error(
-
-          "PROFILE CREATE ERROR:",
-
-          JSON.stringify(
-            profileCreateError,
-            null,
-            2
-          )
-
+          error
         )
-
-
 
         setMessage(
-          profileCreateError.message
+          error.message
         )
 
+        setPublishing(false)
 
         return
-
 
       }
 
@@ -411,15 +400,16 @@ export default function CreateClient() {
 
       .insert({
 
-        id:ranking.id,
+        id:rankingId,
 
         user_id:userId,
 
-        title:ranking.title,
+        title:title.trim(),
 
-        category:ranking.category,
+        category,
 
-        description:ranking.description,
+        description:
+          "A new community RANKD.",
 
         views:0
 
@@ -432,27 +422,17 @@ export default function CreateClient() {
 
     if(rankingError){
 
-
       console.error(
-
-        "RANKING INSERT ERROR:",
-
-        JSON.stringify(
-          rankingError,
-          null,
-          2
-        )
-
+        rankingError
       )
-
 
       setMessage(
         rankingError.message
       )
 
+      setPublishing(false)
 
       return
-
 
     }
 
@@ -466,17 +446,17 @@ export default function CreateClient() {
 
     const rankingItems =
 
-      ranking.items.map(item=>(
+      items.map((item,index)=>(
 
         {
 
-          ranking_id:ranking.id,
+          ranking_id:rankingId,
 
-          position:item.position,
+          position:index + 1,
 
-          name:item.name,
+          name:item.trim(),
 
-          votes:item.votes
+          votes:0
 
         }
 
@@ -495,7 +475,9 @@ export default function CreateClient() {
 
       .from("ranking_items")
 
-      .insert(rankingItems)
+      .insert(
+        rankingItems
+      )
 
 
 
@@ -505,27 +487,17 @@ export default function CreateClient() {
 
     if(itemError){
 
-
       console.error(
-
-        "ITEM INSERT ERROR:",
-
-        JSON.stringify(
-          itemError,
-          null,
-          2
-        )
-
+        itemError
       )
-
 
       setMessage(
         itemError.message
       )
 
+      setPublishing(false)
 
       return
-
 
     }
 
@@ -541,7 +513,7 @@ export default function CreateClient() {
 
       {
 
-        rankingId:ranking.id
+        rankingId
 
       }
 
@@ -552,11 +524,23 @@ export default function CreateClient() {
 
 
 
-    router.push(
 
-      `/rank/${ranking.id}`
-
+    setMessage(
+      "Your RANKD has been published successfully 🎉"
     )
+
+
+
+
+
+    setTimeout(()=>{
+
+      router.push(
+        `/rank/${rankingId}`
+      )
+
+    },1500)
+
 
 
   }
@@ -598,28 +582,123 @@ export default function CreateClient() {
 
 
 
-        {!preview && (
+        <p className="
+          mt-4
+          text-gray-400
+        ">
 
-          <>
+          What is your Top 7?
 
-
-            <p className="
-              mt-4
-              text-gray-400
-            ">
-
-              What is your Top 7?
-
-            </p>
+        </p>
 
 
 
+
+
+
+        <input
+
+          className="
+            mt-8
+            w-full
+            p-4
+            rounded-xl
+            bg-white
+            text-black
+          "
+
+          placeholder="Top 7 of what?"
+
+          value={title}
+
+          onChange={
+            e=>setTitle(e.target.value)
+          }
+
+        />
+
+
+
+
+
+
+
+        <h2 className="
+          mt-10
+          text-xl
+          font-black
+        ">
+
+          Choose a category
+
+        </h2>
+
+
+
+
+
+
+        <div className="
+          mt-4
+          flex
+          flex-wrap
+          gap-3
+        ">
+
+
+          {categories.map(item=>(
+
+
+            <button
+
+              key={item}
+
+              onClick={()=>setCategory(item)}
+
+              className={`
+                px-4
+                py-3
+                rounded-full
+                font-bold
+                ${
+                  category === item
+                  ? "bg-white text-black"
+                  : "bg-zinc-800 text-white"
+                }
+              `}
+
+            >
+
+              {item}
+
+            </button>
+
+
+          ))}
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="
+          mt-10
+          space-y-3
+        ">
+
+
+          {items.map((item,index)=>(
 
 
             <input
 
+              key={index}
+
               className="
-                mt-8
                 w-full
                 p-4
                 rounded-xl
@@ -627,115 +706,51 @@ export default function CreateClient() {
                 text-black
               "
 
-              placeholder="Top 7 of what?"
+              placeholder={`#${index + 1}`}
 
-              value={title}
+              value={item}
 
-              onChange={
-                e=>setTitle(e.target.value)
-              }
+              onChange={e=>{
+
+
+                const updated =
+                  [...items]
+
+
+                updated[index] =
+                  e.target.value
+
+
+                setItems(updated)
+
+
+              }}
 
             />
 
 
+          ))}
 
 
-
-            <div className="
-              mt-8
-              space-y-3
-            ">
-
-
-              {items.map((item,index)=>(
-
-
-                <input
-
-                  key={index}
-
-                  className="
-                    w-full
-                    p-4
-                    rounded-xl
-                    bg-white
-                    text-black
-                  "
-
-                  placeholder={`#${index+1}`}
-
-                  value={item}
-
-                  onChange={e=>{
-
-
-                    const updated =
-                      [...items]
-
-
-                    updated[index] =
-                      e.target.value
-
-
-                    setItems(updated)
-
-
-                  }}
-
-                />
-
-
-              ))}
-
-
-            </div>
+        </div>
 
 
 
 
 
 
-            {message && (
 
-              <p className="
-                mt-6
-                text-gray-300
-                font-bold
-              ">
+        {message && (
 
-                {message}
+          <p className="
+            mt-6
+            text-gray-300
+            font-bold
+          ">
 
-              </p>
+            {message}
 
-            )}
-
-
-
-
-
-
-            <button
-
-              onClick={createPreview}
-
-              className="
-                mt-10
-                bg-white
-                text-black
-                px-8
-                py-4
-                rounded-full
-                font-black
-              "
-
-            >
-
-              Preview RANKD
-
-            </button>
-
-
-          </>
+          </p>
 
         )}
 
@@ -745,96 +760,35 @@ export default function CreateClient() {
 
 
 
-        {preview && (
+        <button
 
-          <>
+          onClick={publishRankd}
 
+          disabled={publishing}
 
-            <div className="
-              mt-10
-              bg-zinc-900
-              rounded-3xl
-              p-8
-            ">
+          className="
+            mt-10
+            bg-white
+            text-black
+            px-8
+            py-4
+            rounded-full
+            font-black
+            disabled:opacity-50
+          "
 
+        >
 
-              <h2 className="
-                text-3xl
-                font-black
-              ">
-
-                {title}
-
-              </h2>
-
-
-
-
-
-              <div className="
-                mt-6
-                space-y-3
-              ">
+          {publishing
+            ? "Published ✓"
+            : "Publish RANKD →"
+          }
 
 
-                {ranking.items.map(item=>(
-
-
-                  <div
-
-                    key={item.position}
-
-                    className="
-                      bg-white
-                      text-black
-                      rounded-xl
-                      p-4
-                    "
-
-                  >
-
-                    #{item.position} {item.name}
-
-                  </div>
-
-
-                ))}
-
-
-              </div>
-
-
-            </div>
+        </button>
 
 
 
-
-
-            <button
-
-              onClick={publishRankd}
-
-              className="
-                mt-10
-                bg-white
-                text-black
-                px-8
-                py-4
-                rounded-full
-                font-black
-              "
-
-            >
-
-              Publish RANKD
-
-            </button>
-
-
-
-          </>
-
-        )}
 
 
 
