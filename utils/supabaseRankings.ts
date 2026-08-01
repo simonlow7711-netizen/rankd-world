@@ -2,30 +2,62 @@ import { supabase } from "@/utils/supabase"
 import { Ranking, RankingItem } from "@/types/ranking"
 
 
+
 type RankingRow = {
+
   id: string
+
   title: string
+
   category: string | null
+
   description: string | null
+
   user_id: string
+
   views: number | null
+
   created_at: string | null
+
+  parent_id: string | null
+
+  source_type: string | null
+
 }
+
+
+
 
 
 type ProfileRow = {
+
   id: string
+
   username: string
+
   display_name: string
+
 }
+
+
+
 
 
 type RankingItemRow = {
+
   ranking_id: string
+
   position: number
+
   name: string
+
   votes: number | null
+
 }
+
+
+
+
 
 
 
@@ -34,17 +66,34 @@ type RankingItemRow = {
 export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
-  const { data: rankings, error } = await supabase
+  const {
+    data: rankings,
+    error
+
+  } = await supabase
+
     .from("rankings")
+
     .select("*")
-    .order("created_at", { ascending: false })
+
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    )
 
 
-  if (error || !rankings) {
+
+
+
+  if(error || !rankings){
+
 
     console.error(error)
 
     return []
+
 
   }
 
@@ -52,29 +101,68 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
+
+
+
+
   const userIds = [
+
     ...new Set(
-      rankings.map(r => r.user_id)
+
+      rankings.map(
+        r => r.user_id
+      )
+
     )
+
   ]
 
 
 
 
 
-  const { data: profiles } = await supabase
+
+
+
+
+  const {
+    data:profiles
+
+  } = await supabase
+
     .from("profiles")
-    .select("id, username, display_name")
-    .in("id", userIds)
+
+    .select(
+      "id, username, display_name"
+    )
+
+    .in(
+      "id",
+      userIds
+    )
 
 
 
 
 
-  const { data: items } = await supabase
+
+
+
+
+  const {
+    data:items
+
+  } = await supabase
+
     .from("ranking_items")
+
     .select("*")
-    .order("position")
+
+    .order(
+      "position"
+    )
+
+
 
 
 
@@ -89,14 +177,21 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-  ;(profiles ?? []).forEach(profile => {
+  ;(profiles ?? []).forEach(profile=>{
+
 
     profileMap.set(
+
       profile.id,
+
       profile as ProfileRow
+
     )
 
+
   })
+
+
 
 
 
@@ -111,7 +206,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-  ;(items ?? []).forEach(item => {
+  ;(items ?? []).forEach(item=>{
 
 
     const row =
@@ -120,12 +215,18 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-    if (!itemMap.has(row.ranking_id)) {
+
+    if(!itemMap.has(row.ranking_id)){
+
 
       itemMap.set(
+
         row.ranking_id,
+
         []
+
       )
+
 
     }
 
@@ -133,17 +234,25 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
+
+
     itemMap
+
       .get(row.ranking_id)!
+
       .push({
 
-        position: row.position,
+        position:
+          row.position,
 
-        name: row.name,
+        name:
+          row.name,
 
-        votes: row.votes ?? 0
+        votes:
+          row.votes ?? 0
 
       })
+
 
 
   })
@@ -154,12 +263,19 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
+
+
   return (rankings as RankingRow[])
-    .map(row => {
+
+    .map(row=>{
 
 
       const profile =
-        profileMap.get(row.user_id)
+        profileMap.get(
+          row.user_id
+        )
+
+
 
 
 
@@ -167,46 +283,80 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
       return {
 
-        id: row.id,
 
-        title: row.title,
+        id:
+          row.id,
+
+
+
+        title:
+          row.title,
+
+
 
         category:
           row.category ?? "General",
 
+
+
         creator:
           profile?.display_name ?? "Anonymous",
+
+
 
         creatorId:
           row.user_id,
 
+
+
         creatorUsername:
           profile?.username,
+
+
 
         creatorDisplayName:
           profile?.display_name,
 
+
+
         description:
           row.description ?? "",
+
+
 
         items:
           itemMap.get(row.id) ?? [],
 
+
+
         createdAt:
           row.created_at ?? undefined,
 
+
+
         source:
-          "community",
+          row.source_type ?? "community",
+
+
 
         views:
-          row.views ?? 0
+          row.views ?? 0,
+
+
+
+        parent_id:
+          row.parent_id ?? undefined
+
+
 
       }
 
 
     })
 
+
 }
+
 
 
 
@@ -216,20 +366,32 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 export async function getSupabaseRanking(
-  id: string
-): Promise<Ranking | null> {
+
+  id:string
+
+):Promise<Ranking | null>{
+
 
 
   const rankings =
     await getAllSupabaseRankings()
 
 
+
   return (
+
     rankings.find(
+
       ranking =>
+
         ranking.id === id
-    ) ?? null
+
+    )
+
+    ?? null
+
   )
+
 
 }
 
@@ -240,9 +402,13 @@ export async function getSupabaseRanking(
 
 
 
+
 export async function getUserRankings(
-  userId: string
-): Promise<Ranking[]> {
+
+  userId:string
+
+):Promise<Ranking[]>{
+
 
 
   const rankings =
@@ -253,6 +419,7 @@ export async function getUserRankings(
   return rankings.filter(
 
     ranking =>
+
       ranking.creatorId === userId
 
   )
@@ -270,31 +437,51 @@ export async function getUserRankings(
 
 export async function createSupabaseRanking(
 
-  ranking: Ranking,
+  ranking:Ranking,
 
-  userId: string
+  userId:string
 
-) {
+){
 
 
 
-  const { data, error } = await supabase
+
+
+  const {
+
+    data,
+
+    error
+
+  } = await supabase
 
     .from("rankings")
 
     .insert({
 
-      id: ranking.id,
+      id:
+        ranking.id,
 
-      title: ranking.title,
+      title:
+        ranking.title,
 
-      category: ranking.category,
+      category:
+        ranking.category,
 
-      description: ranking.description,
+      description:
+        ranking.description,
 
-      user_id: userId,
+      user_id:
+        userId,
 
-      views: 0
+      views:
+        0,
+
+      parent_id:
+        ranking.originalId ?? null,
+
+      source_type:
+        ranking.source ?? "community"
 
     })
 
@@ -306,11 +493,15 @@ export async function createSupabaseRanking(
 
 
 
-  if (error) {
+
+
+  if(error){
+
 
     console.error(error)
 
     throw error
+
 
   }
 
@@ -321,30 +512,53 @@ export async function createSupabaseRanking(
 
 
 
-  const items = ranking.items.map(
 
-    (item: RankingItem) => ({
+  const items =
 
-      ranking_id: ranking.id,
+    ranking.items.map(
 
-      position: item.position,
-
-      name: item.name,
-
-      votes: 0
-
-    })
-
-  )
+      (item:RankingItem)=>(
 
 
+        {
+
+
+          ranking_id:
+            ranking.id,
+
+
+          position:
+            item.position,
+
+
+          name:
+            item.name,
+
+
+          votes:
+            0
+
+
+        }
+
+
+      )
+
+    )
 
 
 
 
 
 
-  const { error: itemsError } = await supabase
+
+
+
+  const {
+
+    error:itemsError
+
+  } = await supabase
 
     .from("ranking_items")
 
@@ -357,11 +571,14 @@ export async function createSupabaseRanking(
 
 
 
-  if (itemsError) {
+
+  if(itemsError){
+
 
     console.error(itemsError)
 
     throw itemsError
+
 
   }
 
@@ -371,6 +588,8 @@ export async function createSupabaseRanking(
 
 
 
+
   return data
+
 
 }

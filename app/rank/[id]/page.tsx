@@ -2,14 +2,11 @@
 
 import { useEffect, useState } from "react"
 import { useParams, useRouter } from "next/navigation"
+import Link from "next/link"
 
 import { trackEvent } from "@/utils/analytics"
-
-import {
-  getSupabaseRanking
-} from "@/utils/supabaseRankings"
-
-import DebateCard from "@/components/DebateCard"
+import { getSupabaseRanking } from "@/utils/supabaseRankings"
+import { supabase } from "@/utils/supabase"
 
 
 
@@ -21,7 +18,8 @@ export default function RankPage() {
   const router = useRouter()
 
 
-  const id = params.id as string
+  const id =
+    params.id as string
 
 
 
@@ -30,13 +28,19 @@ export default function RankPage() {
 
 
 
+  const [originalRanking,setOriginalRanking] =
+    useState<any>(null)
+
+
+
+  const [remixes,setRemixes] =
+    useState<any[]>([])
+
+
+
   const [loading,setLoading] =
     useState(true)
 
-
-
-  const [debate,setDebate] =
-    useState<any>(null)
 
 
 
@@ -46,8 +50,7 @@ export default function RankPage() {
   useEffect(()=>{
 
 
-    async function loadRanking(){
-
+    async function load(){
 
 
       trackEvent(
@@ -64,15 +67,121 @@ export default function RankPage() {
 
 
 
-      const currentRanking =
-
+      const current =
         await getSupabaseRanking(id)
 
 
 
 
 
-      setRanking(currentRanking)
+      console.log(
+        "CURRENT RANKING:",
+        current
+      )
+
+
+
+
+
+      if(!current){
+
+        setLoading(false)
+
+        return
+
+      }
+
+
+
+
+
+
+      setRanking(current)
+
+
+
+
+
+
+      let rootId =
+        current.id
+
+
+
+
+
+      if(current.parent_id){
+
+
+        rootId =
+          current.parent_id
+
+
+
+
+
+        const parent =
+          await getSupabaseRanking(
+            current.parent_id
+          )
+
+
+
+        setOriginalRanking(parent)
+
+
+      }
+
+
+
+
+
+
+
+
+      const {
+
+        data:childRankings
+
+      } = await supabase
+
+        .from("rankings")
+
+        .select(
+          "id,title,parent_id,created_at"
+        )
+
+        .eq(
+          "parent_id",
+          rootId
+        )
+
+        .order(
+          "created_at",
+          {
+            ascending:false
+          }
+        )
+
+
+
+
+
+
+
+
+      console.log(
+        "REMIXES:",
+        childRankings
+      )
+
+
+
+
+
+      setRemixes(
+        childRankings ?? []
+      )
 
 
 
@@ -88,7 +197,7 @@ export default function RankPage() {
 
 
 
-    loadRanking()
+    load()
 
 
 
@@ -140,16 +249,7 @@ export default function RankPage() {
         p-10
       ">
 
-
-        <h1 className="
-          text-4xl
-          font-black
-        ">
-
-          Ranking not found
-
-        </h1>
-
+        Ranking not found
 
       </main>
 
@@ -164,30 +264,19 @@ export default function RankPage() {
 
 
 
+
   function rankIt(){
 
 
-    trackEvent(
+    const items =
 
-      "rankd_started",
+      ranking.items
 
-      {
-        rankingId: ranking.id
-      }
+        .map(
+          (item:any)=>item.name
+        )
 
-    )
-
-
-
-
-
-
-    const items = ranking.items
-
-      .map((item:any)=>item.name)
-
-      .join("|")
-
+        .join("|")
 
 
 
@@ -197,7 +286,9 @@ export default function RankPage() {
 
       `/create?title=${encodeURIComponent(
         ranking.title
-      )}&items=${encodeURIComponent(items)}&parentId=${ranking.id}`
+      )}&items=${encodeURIComponent(
+        items
+      )}&originalId=${ranking.parent_id || ranking.id}`
 
     )
 
@@ -223,220 +314,457 @@ export default function RankPage() {
 
 
       <div className="
-        max-w-3xl
+        max-w-6xl
         mx-auto
+        grid
+        lg:grid-cols-3
+        gap-8
       ">
 
 
 
 
 
+        <section className="
+          lg:col-span-2
+        ">
 
 
 
-        {ranking.remixes > 0 && (
-
-          <div className="
-            mb-8
-            bg-zinc-900
-            rounded-3xl
-            p-6
-          ">
 
 
-            <p className="
-              text-2xl
-              font-black
+
+          {originalRanking && (
+
+            <div className="
+              mb-8
+              bg-zinc-900
+              rounded-3xl
+              p-6
             ">
 
-              🔥 {ranking.remixes} people ranked this differently
 
-            </p>
-
-
-            <p className="
-              mt-2
-              text-gray-400
-            ">
-
-              Your opinion could change the ranking.
-
-            </p>
-
-
-          </div>
-
-        )}
-
-
-
-
-
-
-
-        <p className="text-gray-400">
-
-          #{ranking.category}
-
-        </p>
-
-
-
-
-
-
-        <h1 className="
-          text-5xl
-          font-black
-          mt-4
-        ">
-
-          {ranking.title}
-
-        </h1>
-
-
-
-
-
-
-        <p className="
-          mt-4
-          text-gray-400
-        ">
-
-          Created by {ranking.creator}
-
-        </p>
-
-
-
-
-
-
-
-
-        <div className="
-          mt-8
-          bg-zinc-900
-          rounded-3xl
-          p-6
-        ">
-
-
-          <p className="
-            text-xl
-            font-black
-          ">
-
-            Think differently?
-
-          </p>
-
-
-
-          <p className="
-            mt-2
-            text-gray-400
-          ">
-
-            Create your own Top 7 and see how your opinion compares.
-
-          </p>
-
-
-
-        </div>
-
-
-
-
-
-
-
-
-        <button
-
-          onClick={rankIt}
-
-          className="
-            mt-8
-            w-full
-            bg-white
-            text-black
-            px-8
-            py-5
-            rounded-full
-            font-black
-            text-xl
-          "
-
-        >
-
-          Rank Yours →
-
-        </button>
-
-
-
-
-
-
-
-
-        <div className="
-          mt-12
-          space-y-4
-        ">
-
-
-
-          {ranking.items.map((item:any)=>(
-
-
-            <div
-
-              key={item.position}
-
-              className="
-                bg-white
-                text-black
-                rounded-2xl
-                p-5
-                flex
-                justify-between
-                items-center
-              "
-
-            >
-
-
-              <span className="
-                text-xl
-                font-bold
+              <p className="
+                text-gray-400
               ">
 
-                #{item.position} {item.name}
+                Remix of
 
-              </span>
-
-
+              </p>
 
 
-              <span className="text-gray-500">
+              <button
 
-                {item.votes}
+                onClick={()=>router.push(
+                  `/rank/${originalRanking.id}`
+                )}
 
-              </span>
+                className="
+                  mt-2
+                  text-2xl
+                  font-black
+                "
+
+              >
+
+                {originalRanking.title} →
+
+              </button>
 
 
             </div>
 
+          )}
 
-          ))}
 
 
-        </div>
+
+
+
+
+
+          <p className="
+            text-gray-400
+          ">
+
+            #{ranking.category}
+
+          </p>
+
+
+
+
+
+
+
+
+          <h1 className="
+            mt-4
+            text-5xl
+            font-black
+          ">
+
+            {ranking.title}
+
+          </h1>
+
+
+
+
+
+
+
+          <p className="
+            mt-4
+            text-gray-400
+          ">
+
+            Created by {ranking.creator}
+
+          </p>
+
+
+
+
+
+
+
+
+          <button
+
+            onClick={rankIt}
+
+            className="
+              mt-8
+              w-full
+              bg-white
+              text-black
+              py-5
+              rounded-full
+              font-black
+              text-xl
+            "
+
+          >
+
+            RANKD IT
+
+          </button>
+
+
+
+
+
+
+
+
+          <div className="
+            mt-10
+            space-y-4
+          ">
+
+
+
+            {ranking.items.map((item:any)=>(
+
+
+              <div
+
+                key={item.position}
+
+                className="
+                  bg-white
+                  text-black
+                  rounded-2xl
+                  p-5
+                  flex
+                  justify-between
+                  items-center
+                "
+
+              >
+
+                <span className="
+                  font-bold
+                ">
+
+                  #{item.position} {item.name}
+
+                </span>
+
+
+                <span>
+
+                  {item.votes}
+
+                </span>
+
+
+              </div>
+
+
+            ))}
+
+
+          </div>
+
+
+
+
+
+
+
+        </section>
+
+
+
+
+
+
+
+
+
+        <aside className="
+          space-y-6
+        ">
+
+
+
+
+
+
+          {remixes.length > 0 && (
+
+            <div className="
+              bg-zinc-900
+              rounded-3xl
+              p-6
+            ">
+
+
+              <h2 className="
+                text-2xl
+                font-black
+              ">
+
+                🔥 Different Perspectives
+
+              </h2>
+
+
+
+              <p className="
+                mt-2
+                text-gray-400
+              ">
+
+                {remixes.length} people ranked this differently.
+
+              </p>
+
+
+
+
+
+
+              <div className="
+                mt-5
+                space-y-3
+              ">
+
+
+                {remixes.map((remix:any)=>(
+
+
+                  <button
+
+                    key={remix.id}
+
+                    onClick={()=>router.push(
+                      `/rank/${remix.id}`
+                    )}
+
+                    className="
+                      w-full
+                      bg-white
+                      text-black
+                      rounded-xl
+                      p-4
+                      text-left
+                      font-bold
+                    "
+
+                  >
+
+                    {remix.title}
+
+
+                    <span className="
+                      block
+                      text-sm
+                      text-gray-500
+                      mt-1
+                    ">
+
+                      View perspective →
+
+                    </span>
+
+
+                  </button>
+
+
+                ))}
+
+
+              </div>
+
+
+            </div>
+
+          )}
+
+
+
+
+
+
+
+
+
+          <Link
+
+            href="/explore"
+
+            className="
+              block
+              bg-zinc-900
+              rounded-3xl
+              p-6
+              hover:scale-105
+              transition
+            "
+
+          >
+
+            <h2 className="
+              text-2xl
+              font-black
+            ">
+
+              ⚡ Perspective Gap
+
+            </h2>
+
+
+            <p className="
+              mt-3
+              text-gray-400
+            ">
+
+              See where opinions differ most →
+
+            </p>
+
+
+          </Link>
+
+
+
+
+
+
+
+
+
+          <Link
+
+            href="/explore"
+
+            className="
+              block
+              bg-zinc-900
+              rounded-3xl
+              p-6
+              hover:scale-105
+              transition
+            "
+
+          >
+
+            <h2 className="
+              text-2xl
+              font-black
+            ">
+
+              🔥 Trending
+
+            </h2>
+
+
+            <p className="
+              mt-3
+              text-gray-400
+            ">
+
+              Discover active RANKDs →
+
+            </p>
+
+
+          </Link>
+
+
+
+
+
+
+
+
+
+          <Link
+
+            href="/explore"
+
+            className="
+              block
+              bg-zinc-900
+              rounded-3xl
+              p-6
+              hover:scale-105
+              transition
+            "
+
+          >
+
+            <h2 className="
+              text-2xl
+              font-black
+            ">
+
+              Explore Categories
+
+            </h2>
+
+
+            <p className="
+              mt-3
+              text-gray-400
+            ">
+
+              Find more Top 7 lists →
+
+            </p>
+
+
+          </Link>
+
+
+
+
+
+
+        </aside>
 
 
 
@@ -448,6 +776,5 @@ export default function RankPage() {
     </main>
 
   )
-
 
 }
