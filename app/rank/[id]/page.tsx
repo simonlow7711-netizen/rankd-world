@@ -27,19 +27,18 @@ export default function RankPage() {
     useState<any>(null)
 
 
-
   const [originalRanking,setOriginalRanking] =
     useState<any>(null)
-
 
 
   const [remixes,setRemixes] =
     useState<any[]>([])
 
 
-
   const [loading,setLoading] =
     useState(true)
+
+
 
 
 
@@ -54,10 +53,13 @@ export default function RankPage() {
 
 
       trackEvent(
+
         "ranking_viewed",
+
         {
           rankingId:id
         }
+
       )
 
 
@@ -92,6 +94,7 @@ export default function RankPage() {
 
 
 
+
       setRanking(current)
 
 
@@ -101,6 +104,7 @@ export default function RankPage() {
 
       let rootId =
         current.id
+
 
 
 
@@ -123,11 +127,7 @@ export default function RankPage() {
           )
 
 
-
-        setOriginalRanking(
-          parent
-        )
-
+        setOriginalRanking(parent)
 
       }
 
@@ -138,8 +138,11 @@ export default function RankPage() {
 
 
 
+
       const {
+
         data:childRankings,
+
         error
 
       } = await supabase
@@ -167,6 +170,7 @@ export default function RankPage() {
 
 
 
+
       if(error){
 
         console.error(
@@ -181,18 +185,49 @@ export default function RankPage() {
 
 
 
+
+
+      const formattedRemixes =
+
+        (childRankings ?? [])
+
+          .map((item:any)=>({
+
+            id:item.id,
+
+            title:item.title,
+
+            parentId:item.parent_id
+
+          }))
+
+
+
+
+
+
+
       console.log(
-        "REMIXES:",
-        childRankings
+
+        "FORMATTED REMIXES:",
+
+        formattedRemixes
+
       )
+
+
 
 
 
 
 
       setRemixes(
-        childRankings ?? []
+
+        formattedRemixes
+
       )
+
+
 
 
 
@@ -247,6 +282,7 @@ export default function RankPage() {
 
 
 
+
   if(!ranking){
 
 
@@ -287,7 +323,6 @@ export default function RankPage() {
         )
 
         .join("|")
-
 
 
 
@@ -344,6 +379,7 @@ export default function RankPage() {
 
 
 
+
           {originalRanking && (
 
             <div className="
@@ -392,7 +428,6 @@ export default function RankPage() {
 
 
 
-
           <p className="
             text-gray-400
           ">
@@ -400,6 +435,7 @@ export default function RankPage() {
             #{ranking.category}
 
           </p>
+
 
 
 
@@ -430,7 +466,6 @@ export default function RankPage() {
             Created by {ranking.creator}
 
           </p>
-
 
 
 
@@ -470,7 +505,6 @@ export default function RankPage() {
             mt-10
             space-y-4
           ">
-
 
 
             {ranking.items.map((item:any)=>(
@@ -520,6 +554,7 @@ export default function RankPage() {
 
 
 
+
         </section>
 
 
@@ -539,95 +574,103 @@ export default function RankPage() {
 
 
 
-          {remixes.length > 0 && (
+
+          <div className="
+            bg-zinc-900
+            rounded-3xl
+            p-6
+          ">
+
+
+            <h2 className="
+              text-2xl
+              font-black
+            ">
+
+              🔥 Different Perspectives
+
+            </h2>
+
+
+
+
+
+            <p className="
+              mt-2
+              text-gray-400
+            ">
+
+              {remixes.length === 0
+
+                ? "Be the first person to rank this differently."
+
+                : `${remixes.length} people ranked this differently.`
+
+              }
+
+            </p>
+
+
+
+
+
+
+
 
             <div className="
-              bg-zinc-900
-              rounded-3xl
-              p-6
+              mt-5
+              space-y-3
             ">
 
 
-              <h2 className="
-                text-2xl
-                font-black
-              ">
-
-                🔥 Different Perspectives
-
-              </h2>
+              {remixes.map((remix:any)=>(
 
 
-              <p className="
-                mt-2
-                text-gray-400
-              ">
+                <button
 
-                {remixes.length} people ranked this differently.
+                  key={remix.id}
 
-              </p>
+                  onClick={()=>router.push(
+                    `/rank/${remix.id}`
+                  )}
 
+                  className="
+                    w-full
+                    bg-white
+                    text-black
+                    rounded-xl
+                    p-4
+                    text-left
+                    font-bold
+                  "
 
+                >
 
-
-
-
-              <div className="
-                mt-5
-                space-y-3
-              ">
-
-
-                {remixes.map((remix:any)=>(
-
-
-                  <button
-
-                    key={remix.id}
-
-                    onClick={()=>router.push(
-                      `/rank/${remix.id}`
-                    )}
-
-                    className="
-                      w-full
-                      bg-white
-                      text-black
-                      rounded-xl
-                      p-4
-                      text-left
-                      font-bold
-                    "
-
-                  >
-
-                    {remix.title}
+                  {remix.title}
 
 
-                    <span className="
-                      block
-                      text-sm
-                      text-gray-500
-                      mt-1
-                    ">
+                  <span className="
+                    block
+                    text-sm
+                    text-gray-500
+                    mt-1
+                  ">
 
-                      View perspective →
+                    View perspective →
 
-                    </span>
-
-
-                  </button>
+                  </span>
 
 
-                ))}
+                </button>
 
 
-              </div>
+              ))}
 
 
             </div>
 
-          )}
+
+          </div>
 
 
 
@@ -681,7 +724,6 @@ export default function RankPage() {
 
 
 
-
           <Link
 
             href="/explore"
@@ -694,6 +736,7 @@ export default function RankPage() {
               hover:scale-105
               transition
             "
+
 
           >
 
@@ -718,7 +761,6 @@ export default function RankPage() {
 
 
           </Link>
-
 
 
 
@@ -763,6 +805,7 @@ export default function RankPage() {
 
 
           </Link>
+
 
 
 
