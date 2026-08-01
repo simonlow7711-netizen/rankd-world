@@ -25,6 +25,7 @@ export interface Ranking {
   items: RankingItem[]
 
 
+
   // Ownership / identity
 
   creatorId?: string
@@ -39,6 +40,15 @@ export interface Ranking {
 
   source?: string
 
+  sourceType?: "original" | "remix"
+
+
+
+  // Parent / child relationship
+
+  parentId?: string | null
+
+
 
   // Dates / metrics
 
@@ -48,11 +58,12 @@ export interface Ranking {
 
 
 
-  // Remix system
+  // Legacy compatibility
 
   remixedFrom?: string
 
   originalId?: string
+
 
 
   // Future social metrics

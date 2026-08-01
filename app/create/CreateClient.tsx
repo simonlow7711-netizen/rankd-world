@@ -54,6 +54,9 @@ export default function CreateClient() {
 
   const [originalId,setOriginalId] = useState("")
 
+  const [parentId,setParentId] = useState("")
+
+
   const [message,setMessage] = useState("")
 
   const [publishing,setPublishing] = useState(false)
@@ -75,6 +78,10 @@ export default function CreateClient() {
 
     const startingOriginalId =
       searchParams.get("originalId")
+
+
+    const startingParentId =
+      searchParams.get("parentId")
 
 
 
@@ -113,6 +120,14 @@ export default function CreateClient() {
     if(startingOriginalId){
 
       setOriginalId(startingOriginalId)
+
+    }
+
+
+
+    if(startingParentId){
+
+      setParentId(startingParentId)
 
     }
 
@@ -411,7 +426,17 @@ export default function CreateClient() {
         description:
           "A new community RANKD.",
 
-        views:0
+        views:0,
+
+
+        parent_id:
+          parentId || null,
+
+
+        source_type:
+          parentId
+            ? "remix"
+            : "original"
 
       })
 
@@ -513,7 +538,10 @@ export default function CreateClient() {
 
       {
 
-        rankingId
+        rankingId,
+
+        parentId:
+          parentId || null
 
       }
 

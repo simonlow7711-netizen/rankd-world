@@ -9,10 +9,6 @@ import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
-import {
-  calculateDebate
-} from "@/utils/debateEngine"
-
 import DebateCard from "@/components/DebateCard"
 
 
@@ -171,13 +167,12 @@ export default function RankPage() {
   function rankIt(){
 
 
-
     trackEvent(
 
       "rankd_started",
 
       {
-        rankingId:ranking.id
+        rankingId: ranking.id
       }
 
     )
@@ -202,7 +197,7 @@ export default function RankPage() {
 
       `/create?title=${encodeURIComponent(
         ranking.title
-      )}&items=${encodeURIComponent(items)}&originalId=${ranking.id}`
+      )}&items=${encodeURIComponent(items)}&parentId=${ranking.id}`
 
     )
 
@@ -334,7 +329,7 @@ export default function RankPage() {
             font-black
           ">
 
-            Would you rank this differently?
+            Think differently?
 
           </p>
 
@@ -345,7 +340,7 @@ export default function RankPage() {
             text-gray-400
           ">
 
-            Everyone has their own Top 7.
+            Create your own Top 7 and see how your opinion compares.
 
           </p>
 
@@ -378,7 +373,7 @@ export default function RankPage() {
 
         >
 
-          RANKD IT
+          Rank Yours →
 
         </button>
 
