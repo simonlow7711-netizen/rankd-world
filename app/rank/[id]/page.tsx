@@ -54,13 +54,10 @@ export default function RankPage() {
 
 
       trackEvent(
-
         "ranking_viewed",
-
         {
           rankingId:id
         }
-
       )
 
 
@@ -95,7 +92,6 @@ export default function RankPage() {
 
 
 
-
       setRanking(current)
 
 
@@ -110,11 +106,12 @@ export default function RankPage() {
 
 
 
-      if(current.parent_id){
+
+      if(current.parentId){
 
 
         rootId =
-          current.parent_id
+          current.parentId
 
 
 
@@ -122,12 +119,14 @@ export default function RankPage() {
 
         const parent =
           await getSupabaseRanking(
-            current.parent_id
+            current.parentId
           )
 
 
 
-        setOriginalRanking(parent)
+        setOriginalRanking(
+          parent
+        )
 
 
       }
@@ -140,8 +139,8 @@ export default function RankPage() {
 
 
       const {
-
-        data:childRankings
+        data:childRankings,
+        error
 
       } = await supabase
 
@@ -164,6 +163,18 @@ export default function RankPage() {
         )
 
 
+
+
+
+
+      if(error){
+
+        console.error(
+          "REMIX ERROR:",
+          error
+        )
+
+      }
 
 
 
@@ -198,7 +209,6 @@ export default function RankPage() {
 
 
     load()
-
 
 
   },[id])
@@ -282,13 +292,14 @@ export default function RankPage() {
 
 
 
+
     router.push(
 
       `/create?title=${encodeURIComponent(
         ranking.title
       )}&items=${encodeURIComponent(
         items
-      )}&originalId=${ranking.parent_id || ranking.id}`
+      )}&originalId=${ranking.parentId || ranking.id}`
 
     )
 
@@ -328,7 +339,6 @@ export default function RankPage() {
         <section className="
           lg:col-span-2
         ">
-
 
 
 
@@ -390,8 +400,6 @@ export default function RankPage() {
             #{ranking.category}
 
           </p>
-
-
 
 
 
@@ -512,8 +520,6 @@ export default function RankPage() {
 
 
 
-
-
         </section>
 
 
@@ -550,7 +556,6 @@ export default function RankPage() {
                 🔥 Different Perspectives
 
               </h2>
-
 
 
               <p className="
