@@ -34,6 +34,7 @@ const categories = [
 
 
 
+
 export default function CreateClient(){
 
 
@@ -43,8 +44,11 @@ export default function CreateClient(){
 
 
 
+
+
   const [title,setTitle] =
     useState("")
+
 
 
   const [category,setCategory] =
@@ -66,15 +70,9 @@ export default function CreateClient(){
 
 
 
-  // Immediate parent ranking
   const [originalId,setOriginalId] =
     useState<string | null>(null)
 
-
-
-  // Original conversation root
-  const [rootId,setRootId] =
-    useState<string | null>(null)
 
 
 
@@ -83,9 +81,9 @@ export default function CreateClient(){
 
 
 
+
   const [publishing,setPublishing] =
     useState(false)
-
 
 
 
@@ -114,20 +112,14 @@ export default function CreateClient(){
 
 
 
-    const startingRootId =
-      searchParams.get("rootId")
-      ||
-      startingOriginalId
-
-
-
-
 
 
 
     if(startingTitle){
 
-      setTitle(startingTitle)
+      setTitle(
+        startingTitle
+      )
 
     }
 
@@ -181,19 +173,6 @@ export default function CreateClient(){
 
 
 
-
-    if(startingRootId){
-
-      setRootId(
-        startingRootId
-      )
-
-    }
-
-
-
-
-
   },[searchParams])
 
 
@@ -204,103 +183,227 @@ export default function CreateClient(){
 
 
 
-async function publishRankd(){
+  /*
+    Find the original conversation root.
+
+    Example:
+
+    Original
+       id=A
+       root_id=A
+
+    Remix
+       parent_id=A
+       root_id=A
+
+    Remix of remix
+       parent_id=B
+       root_id=A
+
+  */
 
 
 
-  if(publishing){
 
-    return
+
+  async function getConversationRoot(
+    parentId:string
+  ){
+
+
+    let currentId =
+      parentId
+
+
+
+
+    while(currentId){
+
+
+      const {
+
+        data:parent,
+
+        error
+
+      } = await supabase
+
+        .from("rankings")
+
+        .select(
+          "id,parent_id,root_id"
+        )
+
+        .eq(
+          "id",
+          currentId
+        )
+
+        .single()
+
+
+
+
+
+
+      if(error || !parent){
+
+
+        break
+
+      }
+
+
+
+
+
+
+
+      if(parent.root_id){
+
+
+        return parent.root_id
+
+
+      }
+
+
+
+
+
+
+
+      if(!parent.parent_id){
+
+
+        return parent.id
+
+
+      }
+
+
+
+
+
+
+
+      currentId =
+        parent.parent_id
+
+
+
+    }
+
+
+
+
+
+
+
+    return parentId
+
 
   }
 
 
 
-  setPublishing(true)
 
 
 
 
 
 
-  if(!title.trim()){
+  async function publishRankd(){
+
+
+
+    if(publishing){
+
+      return
+
+    }
+
+
+
+    setPublishing(true)
+
+
+
+
+
+
+    if(!title.trim()){
+
+
+      setMessage(
+        "Please add a title"
+      )
+
+
+      setPublishing(false)
+
+      return
+
+    }
+
+
+
+
+
+
+
+    if(!category){
+
+
+      setMessage(
+        "Please choose a category"
+      )
+
+
+      setPublishing(false)
+
+      return
+
+    }
+
+
+
+
+
+
+
+    if(items.some(item=>!item.trim())){
+
+
+      setMessage(
+        "Please complete all 7 rankings"
+      )
+
+
+      setPublishing(false)
+
+      return
+
+    }
+
+
+
+
+
 
 
     setMessage(
-      "Please add a title"
-    )
-
-    setPublishing(false)
-
-    return
-
-  }
-
-
-
-
-
-
-
-  if(!category){
-
-
-    setMessage(
-      "Please choose a category"
+      "Publishing..."
     )
 
 
-    setPublishing(false)
-
-    return
-
-  }
 
 
 
 
-
-
-
-  if(items.some(item=>!item.trim())){
-
-
-    setMessage(
-      "Please complete all 7 rankings"
-    )
-
-
-    setPublishing(false)
-
-    return
-
-  }
-
-
-
-
-
-
-
-  setMessage(
-    "Publishing..."
-  )
-
-
-
-
-
-
-  const rankingId =
-    crypto.randomUUID()
-
-
-
-
-
-
-
-  const {
+    const rankingId =
+      crypto.randomUUID()
+        const {
 
     data:{
       user
@@ -345,6 +448,7 @@ async function publishRankd(){
         error.message
       )
 
+
       setPublishing(false)
 
       return
@@ -372,6 +476,7 @@ async function publishRankd(){
     setMessage(
       "Unable to create user"
     )
+
 
     setPublishing(false)
 
@@ -431,7 +536,6 @@ async function publishRankd(){
       })
 
 
-
   }
 
 
@@ -448,8 +552,14 @@ async function publishRankd(){
     New RANKD:
       root_id = itself
 
+
     Remix:
       root_id = original conversation root
+
+
+    Child of remix:
+      root_id = original conversation root
+
   */
 
 
@@ -464,59 +574,13 @@ async function publishRankd(){
 
 
 
-
   if(originalId){
 
 
-    if(rootId){
-
-
-      finalRootId =
-        rootId
-
-
-    }
-
-    else{
-
-
-      const {
-
-        data:parentRanking
-
-      } = await supabase
-
-        .from("rankings")
-
-        .select(
-          "root_id,id"
-        )
-
-        .eq(
-          "id",
-          originalId
-        )
-
-        .single()
-
-
-
-
-
-      finalRootId =
-
-        parentRanking?.root_id
-
-        ||
-
-        parentRanking?.id
-
-        ||
-
+    finalRootId =
+      await getConversationRoot(
         originalId
-
-
-    }
+      )
 
 
   }
@@ -527,21 +591,11 @@ async function publishRankd(){
 
 
 
-
-
   console.log(
 
-    "CREATING RANKD:",
+    "FINAL ROOT ID:",
 
-    {
-
-      rankingId,
-
-      parentId:originalId,
-
-      rootId:finalRootId
-
-    }
+    finalRootId
 
   )
 
@@ -579,7 +633,7 @@ async function publishRankd(){
 
         originalId
 
-        ? "A community perspective added to an existing RANKD."
+        ? "A community remix of another RANKD."
 
         : "A new community RANKD.",
 
@@ -611,6 +665,14 @@ async function publishRankd(){
 
 
     })
+
+
+
+
+
+
+
+
   if(rankingError){
 
 
@@ -627,7 +689,6 @@ async function publishRankd(){
     setPublishing(false)
 
     return
-
 
   }
 
@@ -709,7 +770,6 @@ async function publishRankd(){
 
     return
 
-
   }
 
 
@@ -728,7 +788,7 @@ async function publishRankd(){
 
       rankingId,
 
-      parentId:originalId,
+      originalId,
 
       rootId:finalRootId
 
@@ -811,9 +871,6 @@ Create Your RANKD
 
 
 
-
-
-
 {originalId && (
 
 <div className="
@@ -828,7 +885,7 @@ p-5
 font-bold
 ">
 
-🔥 Add your perspective
+🔥 You are creating a remix
 
 </p>
 
@@ -838,7 +895,7 @@ text-gray-400
 mt-2
 ">
 
-Your RANKD will join this conversation and stay connected to the original.
+Your ranking will be linked to the original conversation.
 
 </p>
 
@@ -957,13 +1014,14 @@ value={item}
 onChange={e=>{
 
 
-const updated = [
-  ...items
+const updated =
+[
+ ...items
 ]
 
 
 updated[index] =
-  e.target.value
+e.target.value
 
 
 setItems(updated)
