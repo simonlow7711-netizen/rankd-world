@@ -1,6 +1,8 @@
 import dotenv from "dotenv"
 import { createClient } from "@supabase/supabase-js"
 
+import { seedRankings } from "../data/seedRankings"
+
 
 dotenv.config({
   path: ".env.local"
@@ -12,12 +14,13 @@ const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL
 
 
+
 const serviceRoleKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY
 
 
 
-if (!supabaseUrl || !serviceRoleKey) {
+if(!supabaseUrl || !serviceRoleKey){
 
   console.error(
     "Missing Supabase environment variables"
@@ -37,100 +40,12 @@ const supabase =
 
 
 
+
+
 const RANKD_TEAM_ID =
   "00000000-0000-0000-0000-000000000001"
 
 
-
-
-
-const rankings = [
-
-  {
-    title: "Best Burgers London",
-    category: "Food",
-    description:
-      "The ultimate ranking of London's best burgers.",
-    items: [
-      "Patty & Bun",
-      "Bleecker Burger",
-      "Honest Burgers",
-      "Burger & Beyond",
-      "Black Bear Burger",
-      "Shake Shack",
-      "Five Guys"
-    ]
-  },
-
-
-  {
-    title: "Greatest Films Ever",
-    category: "Film",
-    description:
-      "The greatest films ranked by RANKD.",
-    items: [
-      "The Shawshank Redemption",
-      "The Godfather",
-      "The Dark Knight",
-      "Pulp Fiction",
-      "Goodfellas",
-      "Inception",
-      "The Lord of the Rings"
-    ]
-  },
-
-
-  {
-    title: "Greatest Footballers Ever",
-    category: "Sport",
-    description:
-      "The greatest footballers of all time.",
-    items: [
-      "Lionel Messi",
-      "Diego Maradona",
-      "Pelé",
-      "Cristiano Ronaldo",
-      "Johan Cruyff",
-      "Zinedine Zidane",
-      "Ronaldinho"
-    ]
-  },
-
-
-  {
-    title: "Places Everyone Should Visit",
-    category: "Travel",
-    description:
-      "Seven places everyone should experience.",
-    items: [
-      "Kyoto",
-      "Rome",
-      "New York",
-      "Iceland",
-      "Paris",
-      "Cape Town",
-      "Sydney"
-    ]
-  },
-
-
-  {
-    title: "Greatest Albums Ever",
-    category: "Music",
-    description:
-      "The greatest albums ranked by RANKD.",
-    items: [
-      "Pink Floyd - The Dark Side of the Moon",
-      "Michael Jackson - Thriller",
-      "The Beatles - Abbey Road",
-      "Nirvana - Nevermind",
-      "Fleetwood Mac - Rumours",
-      "Bob Dylan - Highway 61 Revisited",
-      "Radiohead - OK Computer"
-    ]
-  }
-
-]
 
 
 
@@ -141,164 +56,148 @@ const rankings = [
 async function seed(){
 
 
-  console.log(
-    "Creating RANKD Team profile..."
-  )
+console.log(
+  "🚀 Starting RANKD seed..."
+)
 
 
 
-  const {
-    error:profileError
 
-  } = await supabase
 
-    .from("profiles")
 
-    .upsert({
 
-      id:RANKD_TEAM_ID,
+//
+// Ensure RAND Team profile exists
+//
 
-      username:"rankd",
 
-      display_name:"RANKD Team"
+const {
 
-    })
+error:profileError
 
+}=await supabase
 
+.from("profiles")
 
+.upsert({
 
+id:RANKD_TEAM_ID,
 
-  if(profileError){
+username:"rankd",
 
-    console.error(
-      "PROFILE ERROR:",
-      profileError
-    )
+display_name:"RANKD Team"
 
-    process.exit(1)
+})
 
-  }
 
 
 
 
+if(profileError){
 
-  console.log(
-    "Creating rankings..."
-  )
+console.error(
+"Profile error:",
+profileError
+)
 
+process.exit(1)
 
+}
 
 
 
-  for(const ranking of rankings){
 
 
-    const {
-      data:existing,
-      error:existingError
 
-    } = await supabase
 
-      .from("rankings")
+console.log(
+"✅ RANKD Team ready"
+)
 
-      .select("id")
 
-      .eq(
-        "title",
-        ranking.title
-      )
 
-      .eq(
-        "user_id",
-        RANKD_TEAM_ID
-      )
 
-      .maybeSingle()
 
 
 
 
+let created = 0
 
+let skipped = 0
 
-    if(existingError){
 
-      console.error(
-        existingError
-      )
 
-      continue
 
-    }
 
 
 
+for(const ranking of seedRankings){
 
 
 
-    if(existing){
+const {
 
-      console.log(
-        `Skipping existing: ${ranking.title}`
-      )
+data:existing
 
-      continue
+}=await supabase
 
-    }
+.from("rankings")
 
+.select("id")
 
+.eq(
+"user_id",
+RANKD_TEAM_ID
+)
 
+.eq(
+"title",
+ranking.title
+)
 
+.maybeSingle()
 
 
 
-    const rankingId =
-      crypto.randomUUID()
 
 
 
+if(existing){
 
 
+console.log(
+`⏭ Skipping ${ranking.title}`
+)
 
 
-    const {
-      error:rankingError
+skipped++
 
-    } = await supabase
+continue
 
-      .from("rankings")
 
-      .insert({
+}
 
-        id: rankingId,
 
-        user_id: RANKD_TEAM_ID,
 
-        title: ranking.title,
 
-        category: ranking.category,
 
-        description: ranking.description,
 
-        views: 0
 
-      })
 
+const rankingId =
+crypto.randomUUID()
 
 
 
 
 
-    if(rankingError){
 
-      console.error(
-        "RANKING ERROR:",
-        rankingError
-      )
 
-      continue
+const views =
+Math.floor(
+Math.random()*900
+)+100
 
-    }
 
 
 
@@ -306,70 +205,162 @@ async function seed(){
 
 
 
-    const items =
-      ranking.items.map(
-        (item,index)=>({
+const {
 
-          ranking_id: rankingId,
+error:rankingError
 
-          position: index + 1,
+}=await supabase
 
-          name: item,
+.from("rankings")
 
-          votes: 0
+.insert({
 
-        })
-      )
+id:rankingId,
 
+user_id:RANKD_TEAM_ID,
 
+title:ranking.title,
 
+category:ranking.category,
 
+description:ranking.description,
 
+views,
 
-    const {
-      error:itemError
+parent_id:null,
 
-    } = await supabase
+root_id:rankingId,
 
-      .from("ranking_items")
+source_type:"team"
 
-      .insert(items)
+})
 
 
 
 
 
 
-    if(itemError){
 
-      console.error(
-        "ITEM ERROR:",
-        itemError
-      )
+if(rankingError){
 
-      continue
+console.error(
 
-    }
+"Ranking error:",
+ranking.title,
 
+rankingError
 
+)
 
+continue
 
+}
 
 
-    console.log(
-      `Created: ${ranking.title}`
-    )
 
 
-  }
 
 
 
 
+const rankingItems =
 
-  console.log(
-    "RANKD seed complete 🚀"
-  )
+ranking.items.map(
+
+(item,index)=>({
+
+ranking_id:rankingId,
+
+position:index+1,
+
+name:item,
+
+votes:
+Math.floor(
+Math.random()*200
+)
+
+})
+
+)
+
+
+
+
+
+
+
+
+const {
+
+error:itemError
+
+}=await supabase
+
+.from("ranking_items")
+
+.insert(
+rankingItems
+)
+
+
+
+
+
+
+
+
+if(itemError){
+
+console.error(
+
+"Items error:",
+ranking.title,
+
+itemError
+
+)
+
+continue
+
+}
+
+
+
+
+
+
+
+
+console.log(
+`✅ Created ${ranking.title}`
+)
+
+
+created++
+
+
+}
+
+
+
+
+
+
+
+
+console.log(
+`
+🎉 RANKD seed complete
+
+Created:
+${created}
+
+Skipped:
+${skipped}
+
+`
+)
 
 
 }
