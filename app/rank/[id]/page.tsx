@@ -64,10 +64,13 @@ export default function RankPage(){
 
 
       trackEvent(
+
         "ranking_viewed",
+
         {
           rankingId:id
         }
+
       )
 
 
@@ -93,7 +96,6 @@ export default function RankPage(){
 
 
 
-
       if(!current){
 
         setLoading(false)
@@ -101,23 +103,6 @@ export default function RankPage(){
         return
 
       }
-
-
-
-
-
-
-
-      console.log(
-        "PARENT ID:",
-        current.parentId
-      )
-
-      console.log(
-        "ROOT ID:",
-        current.rootId
-      )
-
 
 
 
@@ -133,10 +118,12 @@ export default function RankPage(){
 
 
 
-
       /*
-        Immediate parent
+        Load immediate parent
       */
+
+
+
 
 
       if(current.parentId){
@@ -148,7 +135,9 @@ export default function RankPage(){
           )
 
 
+
         setParentRanking(parent)
+
 
 
       }
@@ -160,40 +149,28 @@ export default function RankPage(){
 
 
 
-
       /*
-        Original conversation
-
-        Fallback:
-        if rootId missing,
-        use current id
+        Load original conversation root
       */
 
 
-      const rootId =
-
-        current.rootId
-        ||
-        current.id
 
 
 
-
-
-
-
-      if(rootId){
+      if(current.rootId){
 
 
         const root =
           await getSupabaseRanking(
-            rootId
+            current.rootId
           )
+
 
 
         setRootRanking(root)
 
 
+
       }
 
 
@@ -203,11 +180,19 @@ export default function RankPage(){
 
 
 
-
       /*
-        Load all perspectives
-        from the same conversation
+        Find all perspectives
       */
+
+
+      const conversationRoot =
+
+        current.rootId
+
+        ||
+
+        current.id
+
 
 
 
@@ -228,22 +213,30 @@ export default function RankPage(){
           "id,title,parent_id,root_id,created_at"
         )
 
-        .eq(
-          "root_id",
-          rootId
+        .or(
+
+          `root_id.eq.${conversationRoot},parent_id.eq.${conversationRoot}`
+
         )
 
         .neq(
+
           "id",
+
           current.id
+
         )
 
         .order(
+
           "created_at",
+
           {
             ascending:false
           }
+
         )
+
 
 
 
@@ -254,11 +247,39 @@ export default function RankPage(){
       if(error){
 
         console.error(
+
           "REMIX ERROR:",
+
           error
+
         )
 
       }
+
+
+
+
+
+
+
+
+      console.log(
+
+        "CONVERSATION ROOT:",
+
+        conversationRoot
+
+      )
+
+
+
+      console.log(
+
+        "ALL PERSPECTIVES FOUND:",
+
+        childRankings
+
+      )
 
 
 
@@ -273,13 +294,18 @@ export default function RankPage(){
 
           .map((item:any)=>({
 
+
             id:item.id,
+
 
             title:item.title,
 
+
             parentId:item.parent_id,
 
+
             rootId:item.root_id
+
 
           }))
 
@@ -289,9 +315,13 @@ export default function RankPage(){
 
 
 
+
       console.log(
-        "REMIXES:",
+
+        "FORMATTED PERSPECTIVES:",
+
         formattedRemixes
+
       )
 
 
@@ -301,7 +331,9 @@ export default function RankPage(){
 
 
       setRemixes(
+
         formattedRemixes
+
       )
 
 
@@ -313,6 +345,7 @@ export default function RankPage(){
       setLoading(false)
 
 
+
     }
 
 
@@ -322,17 +355,9 @@ export default function RankPage(){
     load()
 
 
+
   },[id])
-
-
-
-
-
-
-
-
-
-  if(loading){
+    if(loading){
 
 
     return (
@@ -457,6 +482,7 @@ export default function RankPage(){
 
 
 
+
           {parentRanking && (
 
             <div className="
@@ -474,6 +500,7 @@ export default function RankPage(){
                 ✨ Inspired by
 
               </p>
+
 
 
               <button
@@ -509,7 +536,7 @@ export default function RankPage(){
 
           {rootRanking &&
 
-          rootRanking.id !== ranking.id && (
+           rootRanking.id !== ranking.id && (
 
             <div className="
               mb-8
@@ -526,6 +553,7 @@ export default function RankPage(){
                 🌎 Original conversation
 
               </p>
+
 
 
               <button
@@ -546,6 +574,7 @@ export default function RankPage(){
                 {rootRanking.title} →
 
               </button>
+
 
 
             </div>
@@ -620,9 +649,10 @@ export default function RankPage(){
 
           >
 
-            RANKD IT
+            Add Your Perspective →
 
           </button>
+
 
 
 
@@ -693,6 +723,7 @@ export default function RankPage(){
 
 
 
+
         <aside className="
           space-y-6
         ">
@@ -720,6 +751,9 @@ export default function RankPage(){
             </h2>
 
 
+
+
+
             <p className="
               mt-2
               text-gray-400
@@ -727,13 +761,46 @@ export default function RankPage(){
 
               {remixes.length === 0
 
-                ? "Be the first person to rank this differently."
+                ? "Be the first person to create a different perspective."
+
+                : remixes.length === 1
+
+                ? "1 person created a different perspective."
 
                 : `${remixes.length} people created different perspectives.`
 
               }
 
             </p>
+
+
+
+
+
+
+
+
+            <button
+
+              onClick={rankIt}
+
+              className="
+                mt-5
+                w-full
+                bg-white
+                text-black
+                rounded-xl
+                p-4
+                font-black
+              "
+
+            >
+
+              + Create Yours
+
+            </button>
+
+
 
 
 
@@ -771,6 +838,7 @@ export default function RankPage(){
 
                   {remix.title}
 
+
                   <span className="
                     block
                     text-sm
@@ -800,29 +868,42 @@ export default function RankPage(){
 
 
 
+
+
           <Link
+
             href="/explore"
+
             className="
               block
               bg-zinc-900
               rounded-3xl
               p-6
+              hover:scale-105
+              transition
             "
+
           >
 
             <h2 className="
               text-2xl
               font-black
             ">
+
               ⚡ Perspective Gap
+
             </h2>
+
 
             <p className="
               mt-3
               text-gray-400
             ">
+
               See where opinions differ most →
+
             </p>
+
 
           </Link>
 
@@ -832,29 +913,41 @@ export default function RankPage(){
 
 
 
+
           <Link
+
             href="/explore"
+
             className="
               block
               bg-zinc-900
               rounded-3xl
               p-6
+              hover:scale-105
+              transition
             "
+
           >
 
             <h2 className="
               text-2xl
               font-black
             ">
+
               🔥 Trending
+
             </h2>
+
 
             <p className="
               mt-3
               text-gray-400
             ">
+
               Discover active RANKDs →
+
             </p>
+
 
           </Link>
 
@@ -864,29 +957,41 @@ export default function RankPage(){
 
 
 
+
           <Link
+
             href="/explore"
+
             className="
               block
               bg-zinc-900
               rounded-3xl
               p-6
+              hover:scale-105
+              transition
             "
+
           >
 
             <h2 className="
               text-2xl
               font-black
             ">
+
               Explore Categories
+
             </h2>
+
 
             <p className="
               mt-3
               text-gray-400
             ">
+
               Find more Top 7 lists →
+
             </p>
+
 
           </Link>
 
