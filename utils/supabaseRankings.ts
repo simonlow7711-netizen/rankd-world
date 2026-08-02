@@ -21,9 +21,8 @@ type RankingRow = {
 
   parent_id: string | null
 
-  source_type: string | null
-
 }
+
 
 
 
@@ -38,6 +37,7 @@ type ProfileRow = {
   display_name: string
 
 }
+
 
 
 
@@ -89,11 +89,9 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
   if(error || !rankings){
 
-
     console.error(error)
 
     return []
-
 
   }
 
@@ -126,7 +124,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
   const {
-    data:profiles
+    data: profiles
 
   } = await supabase
 
@@ -150,7 +148,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
   const {
-    data:items
+    data: items
 
   } = await supabase
 
@@ -177,7 +175,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-  ;(profiles ?? []).forEach(profile=>{
+  ;(profiles ?? []).forEach(profile => {
 
 
     profileMap.set(
@@ -206,7 +204,11 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-  ;(items ?? []).forEach(item=>{
+
+
+
+
+  ;(items ?? []).forEach(item => {
 
 
     const row =
@@ -229,7 +231,6 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
     }
-
 
 
 
@@ -267,10 +268,13 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
   return (rankings as RankingRow[])
 
-    .map(row=>{
+    .map(row => {
+
+
 
 
       const profile =
+
         profileMap.get(
           row.user_id
         )
@@ -334,17 +338,19 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-        source:
-          row.source_type ?? "community",
-
-
-
         views:
           row.views ?? 0,
 
 
 
-        parent_id:
+        source:
+          "community",
+
+
+
+        // Parent / child relationship
+
+        parentId:
           row.parent_id ?? undefined
 
 
@@ -369,12 +375,14 @@ export async function getSupabaseRanking(
 
   id:string
 
-):Promise<Ranking | null>{
-
+): Promise<Ranking | null> {
 
 
   const rankings =
+
     await getAllSupabaseRankings()
+
+
 
 
 
@@ -388,7 +396,9 @@ export async function getSupabaseRanking(
 
     )
 
-    ?? null
+    ??
+
+    null
 
   )
 
@@ -407,12 +417,14 @@ export async function getUserRankings(
 
   userId:string
 
-):Promise<Ranking[]>{
-
+): Promise<Ranking[]> {
 
 
   const rankings =
+
     await getAllSupabaseRankings()
+
+
 
 
 
@@ -441,16 +453,12 @@ export async function createSupabaseRanking(
 
   userId:string
 
-){
-
-
+) {
 
 
 
   const {
-
     data,
-
     error
 
   } = await supabase
@@ -477,11 +485,12 @@ export async function createSupabaseRanking(
       views:
         0,
 
-      parent_id:
-        ranking.originalId ?? null,
 
-      source_type:
-        ranking.source ?? "community"
+      // Parent / remix relationship
+
+      parent_id:
+        ranking.parentId ?? null
+
 
     })
 
@@ -497,11 +506,9 @@ export async function createSupabaseRanking(
 
   if(error){
 
-
     console.error(error)
 
     throw error
-
 
   }
 
@@ -519,28 +526,21 @@ export async function createSupabaseRanking(
 
       (item:RankingItem)=>(
 
-
         {
-
 
           ranking_id:
             ranking.id,
 
-
           position:
             item.position,
-
 
           name:
             item.name,
 
-
           votes:
             0
 
-
         }
-
 
       )
 
@@ -555,7 +555,6 @@ export async function createSupabaseRanking(
 
 
   const {
-
     error:itemsError
 
   } = await supabase
@@ -574,11 +573,9 @@ export async function createSupabaseRanking(
 
   if(itemsError){
 
-
     console.error(itemsError)
 
     throw itemsError
-
 
   }
 
