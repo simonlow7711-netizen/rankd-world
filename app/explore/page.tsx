@@ -53,6 +53,8 @@ export default function Explore(){
 
 
 
+
+
   useEffect(()=>{
 
 
@@ -76,6 +78,7 @@ export default function Explore(){
 
 
   },[])
+
 
 
 
@@ -110,12 +113,16 @@ export default function Explore(){
 
 
 
+
+
   const trending =
     getTrendingRankings(allRankings)
 
 
+
   const debates =
     getBiggestDebates(allRankings)
+
 
 
   const latest =
@@ -148,6 +155,7 @@ export default function Explore(){
 
 
 
+
   const tasteMatches =
 
     people
@@ -172,6 +180,9 @@ export default function Explore(){
 
 
       }))
+
+
+
 
 
 
@@ -220,6 +231,7 @@ export default function Explore(){
 
 
 
+
   function Section({
 
     title,
@@ -245,13 +257,15 @@ export default function Explore(){
 
     return (
 
-      <section className="mb-16">
+      <section className="
+        mb-20
+      ">
 
 
         <h2 className="
-          text-3xl
+          text-4xl
           font-black
-          mb-6
+          mb-8
         ">
 
           {title}
@@ -300,12 +314,13 @@ export default function Explore(){
 
 
 
+
   return (
 
     <main className="
-      bg-black
       min-h-screen
-      text-white
+      bg-[#F7F4EE]
+      text-black
       px-6
       py-20
     ">
@@ -318,27 +333,84 @@ export default function Explore(){
 
 
 
-        <h1 className="
-          text-5xl
-          md:text-6xl
-          font-black
+
+
+        <header className="
+          text-center
+          max-w-4xl
+          mx-auto
+          mb-20
         ">
 
-          Explore RANKD
-
-        </h1>
 
 
+          <p className="
+            rankd-accent
+            uppercase
+            tracking-[0.3em]
+            text-sm
+            font-black
+          ">
 
-        <p className="
-          mt-4
-          text-gray-400
-          text-lg
-        ">
+            Discover
 
-          Discover opinions. Create your own Top 7.
+          </p>
 
-        </p>
+
+
+
+
+
+          <h1 className="
+            text-6xl
+            md:text-8xl
+            font-black
+            mt-6
+            leading-none
+          ">
+
+            Explore RANKD
+
+          </h1>
+
+
+
+
+
+
+          <p className="
+            mt-8
+            text-xl
+            md:text-2xl
+            rankd-muted
+            leading-relaxed
+          ">
+
+            See what people think.
+
+            <br />
+
+            Find rankings that make you say:
+
+            <br />
+
+            <span className="
+              font-black
+              text-black
+            ">
+
+              "I'd rank it differently."
+
+            </span>
+
+          </p>
+
+
+
+        </header>
+
+
+
 
 
 
@@ -350,18 +422,16 @@ export default function Explore(){
 
 
 
-        <Section
-          title="🧬 Because You Ranked..."
-          items={trending}
-        />
-
 
 
 
 
         <Section
-          title="🔥 Trending Debates"
+
+          title="Trending debates"
+
           items={debates}
+
         />
 
 
@@ -370,18 +440,24 @@ export default function Explore(){
 
 
 
-        <section className="mb-16">
+
+
+        <section className="
+          mb-20
+        ">
 
 
           <h2 className="
-            text-3xl
+            text-4xl
             font-black
-            mb-6
+            mb-8
           ">
 
-            🌍 Biggest Perspective Gaps
+            Biggest perspective gaps
 
           </h2>
+
+
 
 
 
@@ -420,18 +496,24 @@ export default function Explore(){
 
 
 
-        <section className="mb-16">
+
+
+        <section className="
+          mb-20
+        ">
 
 
           <h2 className="
-            text-3xl
+            text-4xl
             font-black
-            mb-6
+            mb-8
           ">
 
-            👥 People Who Rank Like You
+            People who rank like you
 
           </h2>
+
+
 
 
 
@@ -471,18 +553,23 @@ export default function Explore(){
 
 
 
-        <section className="mb-16">
+
+        <section className="
+          mb-20
+        ">
 
 
           <h2 className="
-            text-3xl
+            text-4xl
             font-black
-            mb-6
+            mb-8
           ">
 
-            🆚 Challenge My Taste
+            Challenge your taste
 
           </h2>
+
+
 
 
 
@@ -523,13 +610,19 @@ export default function Explore(){
 
 
 
+
+
         <Section
 
-          title="🆕 Latest Opinions"
+          title="Latest opinions"
 
           items={latest}
 
         />
+
+
+
+
 
 
 
@@ -542,6 +635,7 @@ export default function Explore(){
           items={allRankings}
 
         />
+
 
 
 

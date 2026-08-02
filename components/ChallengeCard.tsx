@@ -1,8 +1,4 @@
-"use client"
-
 import Link from "next/link"
-
-
 
 
 
@@ -25,7 +21,6 @@ export default function ChallengeCard({
 }) {
 
 
-
   return (
 
     <Link
@@ -34,40 +29,28 @@ export default function ChallengeCard({
 
     >
 
-      <div
 
-        className="
-          bg-zinc-900
-          rounded-3xl
-          p-8
-          hover:scale-105
-          transition
-          cursor-pointer
-        "
-
-      >
-
-
-
-        <div className="
-          text-3xl
-          mb-4
-        ">
-
-          🆚
-
-        </div>
+      <div className="
+        rankd-card
+        p-8
+        h-full
+        hover:-translate-y-2
+        transition
+      ">
 
 
 
 
 
         <p className="
-          text-gray-400
-          font-bold
+          rankd-accent
+          uppercase
+          tracking-widest
+          text-sm
+          font-black
         ">
 
-          Challenge My Taste
+          Taste Challenge
 
         </p>
 
@@ -75,10 +58,13 @@ export default function ChallengeCard({
 
 
 
+
+
         <h3 className="
-          text-2xl
+          text-3xl
           font-black
-          mt-4
+          mt-5
+          leading-tight
         ">
 
           {ranking.title}
@@ -89,12 +75,15 @@ export default function ChallengeCard({
 
 
 
+
+
         <p className="
-          mt-5
-          text-gray-400
+          mt-6
+          text-lg
+          rankd-muted
         ">
 
-          You and {person.username} rank this differently.
+          {person.username} ranked this differently.
 
         </p>
 
@@ -102,33 +91,41 @@ export default function ChallengeCard({
 
 
 
+
+
         <div className="
-          mt-6
-          inline-flex
-          items-center
-          gap-2
-          bg-black
-          rounded-full
-          px-4
-          py-2
+          mt-8
+          bg-[#F7F4EE]
+          rounded-3xl
+          p-6
         ">
 
 
-          <span>
 
-            ⚡
-
-          </span>
-
-
-          <span className="
-            text-sm
+          <p className="
+            text-2xl
             font-black
           ">
 
-            Difference Score {challenge.difference}
+            👀
 
-          </span>
+            Someone disagrees.
+
+          </p>
+
+
+
+
+
+          <p className="
+            mt-3
+            rankd-muted
+          ">
+
+            Would you rank it differently?
+
+          </p>
+
 
 
         </div>
@@ -137,15 +134,17 @@ export default function ChallengeCard({
 
 
 
+
+
         <p className="
-          mt-6
-          text-orange-400
+          mt-8
           font-black
         ">
 
-          Compare opinions →
+          View their RANKD →
 
         </p>
+
 
 
 
@@ -155,7 +154,7 @@ export default function ChallengeCard({
 
     </Link>
 
-  )
 
+  )
 
 }

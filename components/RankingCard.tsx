@@ -35,7 +35,6 @@ export default function RankingCard({
 
 
 
-
   return (
 
     <Link
@@ -44,13 +43,14 @@ export default function RankingCard({
 
     >
 
-      <div
+
+      <article
 
         className="
-          bg-zinc-900
-          rounded-3xl
+          rankd-card
           p-8
-          hover:scale-105
+          h-full
+          hover:-translate-y-2
           transition
           cursor-pointer
         "
@@ -59,12 +59,17 @@ export default function RankingCard({
 
 
 
+
+
         <p className="
-          text-gray-400
-          font-bold
+          rankd-accent
+          uppercase
+          tracking-widest
+          text-xs
+          font-black
         ">
 
-          {ranking.category}
+          {ranking.category || "General"}
 
         </p>
 
@@ -72,10 +77,13 @@ export default function RankingCard({
 
 
 
+
+
         <h3 className="
-          text-2xl
+          text-3xl
           font-black
-          mt-4
+          mt-5
+          leading-tight
         ">
 
           {ranking.title}
@@ -86,33 +94,52 @@ export default function RankingCard({
 
 
 
+
+
         <div className="
-          mt-5
-          inline-flex
+          mt-8
+          flex
           items-center
-          gap-2
-          bg-black
-          rounded-full
-          px-4
-          py-2
+          justify-between
         ">
 
 
-          <span>
 
-            🔥
 
-          </span>
+          <div className="
+            bg-[#F7F4EE]
+            rounded-full
+            px-5
+            py-3
+          ">
+
+
+            <span className="
+              font-black
+            ">
+
+              🔥 {debateScore}%
+
+            </span>
+
+
+          </div>
+
+
+
+
+
 
 
           <span className="
-            text-sm
-            font-black
+            rankd-muted
+            font-bold
           ">
 
-            Debate Heat {debateScore}%
+            Debate heat
 
           </span>
+
 
 
         </div>
@@ -121,23 +148,53 @@ export default function RankingCard({
 
 
 
-        <p className="
-          mt-6
-          text-orange-400
-          font-black
+
+
+        <div className="
+          mt-8
+          pt-6
+          border-t
+          border-black/10
         ">
 
-          Decide your #1 →
-
-        </p>
 
 
+          <p className="
+            font-black
+          ">
+
+            Would you rank it differently?
+
+          </p>
 
 
-      </div>
+
+
+
+
+          <p className="
+            mt-3
+            rankd-accent
+            font-black
+          ">
+
+            View RANKD →
+
+          </p>
+
+
+
+        </div>
+
+
+
+
+
+      </article>
 
 
     </Link>
+
 
   )
 

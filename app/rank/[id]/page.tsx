@@ -1,16 +1,29 @@
 "use client"
 
 import { useEffect, useState } from "react"
+
 import { useParams, useRouter } from "next/navigation"
+
 import Link from "next/link"
 
+
 import { trackEvent } from "@/utils/analytics"
+
 import { getSupabaseRanking } from "@/utils/supabaseRankings"
+
 import { supabase } from "@/utils/supabase"
+
+import ConversationTree from "@/components/ConversationTree"
+
+import { buildConversationTree } from "@/utils/conversationTree"
+
+
+
 
 
 
 export default function RankPage(){
+
 
 
   const params = useParams()
@@ -18,8 +31,8 @@ export default function RankPage(){
   const router = useRouter()
 
 
-  const id =
-    params.id as string
+
+  const id = params.id as string
 
 
 
@@ -36,12 +49,12 @@ export default function RankPage(){
 
 
 
-  const [rootRanking,setRootRanking] =
-    useState<any>(null)
-
-
-
   const [remixes,setRemixes] =
+    useState<any[]>([])
+
+
+
+  const [conversationTree,setConversationTree] =
     useState<any[]>([])
 
 
@@ -63,15 +76,19 @@ export default function RankPage(){
     async function load(){
 
 
+
       trackEvent(
 
         "ranking_viewed",
 
         {
+
           rankingId:id
+
         }
 
       )
+
 
 
 
@@ -86,23 +103,16 @@ export default function RankPage(){
 
 
 
-      console.log(
-        "CURRENT RANKING:",
-        current
-      )
-
-
-
-
-
-
       if(!current){
+
 
         setLoading(false)
 
         return
 
+
       }
+
 
 
 
@@ -118,18 +128,11 @@ export default function RankPage(){
 
 
 
-      /*
-        Load immediate parent
-      */
-
-
-
-
-
       if(current.parentId){
 
 
         const parent =
+
           await getSupabaseRanking(
             current.parentId
           )
@@ -139,7 +142,6 @@ export default function RankPage(){
         setParentRanking(parent)
 
 
-
       }
 
 
@@ -148,41 +150,6 @@ export default function RankPage(){
 
 
 
-
-      /*
-        Load original conversation root
-      */
-
-
-
-
-
-      if(current.rootId){
-
-
-        const root =
-          await getSupabaseRanking(
-            current.rootId
-          )
-
-
-
-        setRootRanking(root)
-
-
-
-      }
-
-
-
-
-
-
-
-
-      /*
-        Find all perspectives
-      */
 
 
       const conversationRoot =
@@ -201,21 +168,99 @@ export default function RankPage(){
 
       const {
 
-        data:childRankings,
-
-        error
+        data:conversationRankings
 
       } = await supabase
 
         .from("rankings")
 
         .select(
+
           "id,title,parent_id,root_id,created_at"
+
         )
 
-        .or(
+        .eq(
 
-          `root_id.eq.${conversationRoot},parent_id.eq.${conversationRoot}`
+          "root_id",
+
+          conversationRoot
+
+        )
+
+        .order(
+
+          "created_at",
+
+          {
+
+            ascending:false
+
+          }
+
+        )
+
+
+
+
+
+
+
+
+      const tree =
+
+        buildConversationTree(
+
+          (conversationRankings ?? [])
+
+          .map((item:any)=>({
+
+            id:item.id,
+
+            title:item.title,
+
+            parentId:item.parent_id,
+
+            rootId:item.root_id
+
+          }))
+
+        )
+
+
+
+
+
+
+      setConversationTree(tree)
+
+
+
+
+
+
+
+
+
+      const {
+
+        data:childRankings
+
+      } = await supabase
+
+        .from("rankings")
+
+        .select(
+
+          "id,title,parent_id,root_id"
+
+        )
+
+        .eq(
+
+          "root_id",
+
+          conversationRoot
 
         )
 
@@ -232,7 +277,9 @@ export default function RankPage(){
           "created_at",
 
           {
+
             ascending:false
+
           }
 
         )
@@ -244,95 +291,21 @@ export default function RankPage(){
 
 
 
-      if(error){
-
-        console.error(
-
-          "REMIX ERROR:",
-
-          error
-
-        )
-
-      }
-
-
-
-
-
-
-
-
-      console.log(
-
-        "CONVERSATION ROOT:",
-
-        conversationRoot
-
-      )
-
-
-
-      console.log(
-
-        "ALL PERSPECTIVES FOUND:",
-
-        childRankings
-
-      )
-
-
-
-
-
-
-
-
-      const formattedRemixes =
+      setRemixes(
 
         (childRankings ?? [])
 
-          .map((item:any)=>({
+        .map((item:any)=>({
 
+          id:item.id,
 
-            id:item.id,
+          title:item.title,
 
+          parentId:item.parent_id,
 
-            title:item.title,
+          rootId:item.root_id
 
-
-            parentId:item.parent_id,
-
-
-            rootId:item.root_id
-
-
-          }))
-
-
-
-
-
-
-
-
-      console.log(
-
-        "FORMATTED PERSPECTIVES:",
-
-        formattedRemixes
-
-      )
-
-
-
-
-
-
-
-      setRemixes(
-
-        formattedRemixes
+        }))
 
       )
 
@@ -351,58 +324,14 @@ export default function RankPage(){
 
 
 
-
     load()
 
 
 
   },[id])
-    if(loading){
-
-
-    return (
-
-      <main className="
-        min-h-screen
-        bg-black
-        text-white
-        p-10
-      ">
-
-        Loading...
-
-      </main>
-
-    )
-
-  }
 
 
 
-
-
-
-
-
-  if(!ranking){
-
-
-    return (
-
-      <main className="
-        min-h-screen
-        bg-black
-        text-white
-        p-10
-      ">
-
-        Ranking not found
-
-      </main>
-
-    )
-
-  }
 
 
 
@@ -415,15 +344,21 @@ export default function RankPage(){
   function rankIt(){
 
 
+
     const items =
 
       ranking.items
 
-        .map(
-          (item:any)=>item.name
-        )
+      .map(
 
-        .join("|")
+        (item:any)=>
+
+          item.name
+
+      )
+
+      .join("|")
+
 
 
 
@@ -450,271 +385,137 @@ export default function RankPage(){
 
 
 
+  if(loading){
+
+
+    return (
+
+      <main className="
+        min-h-screen
+        bg-[#F7F4EE]
+        flex
+        items-center
+        justify-center
+        text-black
+        font-black
+        text-2xl
+      ">
+
+        Loading RANKD...
+
+      </main>
+
+    )
+
+  }
+
+
+
+
+
+
+
+
+
+  if(!ranking){
+
+
+    return (
+
+      <main className="
+        min-h-screen
+        bg-[#F7F4EE]
+        flex
+        items-center
+        justify-center
+        font-black
+      ">
+
+        Ranking not found
+
+      </main>
+
+    )
+
+  }
+
+
+
+
+
+
+
+
+
   return (
 
     <main className="
       min-h-screen
-      bg-black
-      text-white
-      p-8
+      bg-[#F7F4EE]
+      text-black
+      px-6
+      py-12
     ">
+
 
 
       <div className="
         max-w-6xl
         mx-auto
-        grid
-        lg:grid-cols-3
-        gap-8
       ">
 
 
 
 
 
-        <section className="
-          lg:col-span-2
-        ">
 
 
-
-
-
-
-
-
-          {parentRanking && (
-
-            <div className="
-              mb-6
-              bg-zinc-900
-              rounded-3xl
-              p-6
-            ">
-
-
-              <p className="
-                text-gray-400
-              ">
-
-                ✨ Inspired by
-
-              </p>
-
-
-
-              <button
-
-                onClick={()=>router.push(
-                  `/rank/${parentRanking.id}`
-                )}
-
-                className="
-                  mt-2
-                  text-2xl
-                  font-black
-                  text-left
-                "
-
-              >
-
-                {parentRanking.title} →
-
-              </button>
-
-
-            </div>
-
-          )}
-
-
-
-
-
-
-
-
-          {rootRanking &&
-
-           rootRanking.id !== ranking.id && (
-
-            <div className="
-              mb-8
-              bg-zinc-900
-              rounded-3xl
-              p-6
-            ">
-
-
-              <p className="
-                text-gray-400
-              ">
-
-                🌎 Original conversation
-
-              </p>
-
-
-
-              <button
-
-                onClick={()=>router.push(
-                  `/rank/${rootRanking.id}`
-                )}
-
-                className="
-                  mt-2
-                  text-xl
-                  font-black
-                  text-left
-                "
-
-              >
-
-                {rootRanking.title} →
-
-              </button>
-
-
-
-            </div>
-
-          )}
-
-
-
-
-
-
-
-          <p className="
-            text-gray-400
-          ">
-
-            #{ranking.category}
-
-          </p>
-
-
-
-
-
-
-
-          <h1 className="
-            mt-4
-            text-5xl
-            font-black
-          ">
-
-            {ranking.title}
-
-          </h1>
-
-
-
-
-
-
-
-          <p className="
-            mt-4
-            text-gray-400
-          ">
-
-            Created by {ranking.creator}
-
-          </p>
-
-
-
-
-
-
-
-          <button
-
-            onClick={rankIt}
-
-            className="
-              mt-8
-              w-full
-              bg-white
-              text-black
-              py-5
-              rounded-full
-              font-black
-              text-xl
-            "
-
-          >
-
-            Add Your Perspective →
-
-          </button>
-
-
-
-
-
-
-
+        {parentRanking && (
 
           <div className="
-            mt-10
-            space-y-4
+            rankd-card
+            p-6
+            mb-8
           ">
 
 
-            {ranking.items.map((item:any)=>(
+            <p className="
+              rankd-accent
+              uppercase
+              tracking-widest
+              text-sm
+              font-black
+            ">
+
+              Inspired by
+
+            </p>
 
 
-              <div
-
-                key={item.position}
-
-                className="
-                  bg-white
-                  text-black
-                  rounded-2xl
-                  p-5
-                  flex
-                  justify-between
-                  items-center
-                "
-
-              >
-
-                <span className="
-                  font-bold
-                ">
-
-                  #{item.position} {item.name}
-
-                </span>
 
 
-                <span>
+            <button
 
-                  {item.votes}
+              onClick={()=>router.push(
+                `/rank/${parentRanking.id}`
+              )}
 
-                </span>
+              className="
+                mt-3
+                text-2xl
+                font-black
+              "
 
+            >
 
-              </div>
+              {parentRanking.title} →
 
-
-            ))}
+            </button>
 
 
           </div>
 
-
-
-
-
-
-        </section>
+        )}
 
 
 
@@ -724,8 +525,38 @@ export default function RankPage(){
 
 
 
-        <aside className="
-          space-y-6
+        {conversationTree.length > 0 && (
+
+          <div className="
+            mb-10
+          ">
+
+
+            <ConversationTree
+
+              nodes={conversationTree}
+
+              currentId={ranking.id}
+
+            />
+
+
+          </div>
+
+        )}
+
+
+
+
+
+
+
+
+
+        <div className="
+          grid
+          lg:grid-cols-3
+          gap-10
         ">
 
 
@@ -734,44 +565,128 @@ export default function RankPage(){
 
 
 
-          <div className="
-            bg-zinc-900
-            rounded-3xl
-            p-6
+
+
+          <section className="
+            lg:col-span-2
           ">
-
-
-            <h2 className="
-              text-2xl
-              font-black
-            ">
-
-              🔥 Different Perspectives
-
-            </h2>
 
 
 
 
 
             <p className="
-              mt-2
-              text-gray-400
+              rankd-accent
+              uppercase
+              tracking-widest
+              text-sm
+              font-black
             ">
 
-              {remixes.length === 0
-
-                ? "Be the first person to create a different perspective."
-
-                : remixes.length === 1
-
-                ? "1 person created a different perspective."
-
-                : `${remixes.length} people created different perspectives.`
-
-              }
+              {ranking.category || "General"}
 
             </p>
+
+
+
+
+
+
+
+            <h1 className="
+              text-6xl
+              md:text-8xl
+              font-black
+              leading-none
+              mt-6
+            ">
+
+              {ranking.title}
+
+            </h1>
+
+
+
+
+
+
+
+            <p className="
+              mt-6
+              rankd-muted
+              text-lg
+            ">
+
+              Created by {ranking.creator || "RANKD user"}
+
+            </p>
+
+
+
+
+
+
+
+
+            <div className="
+              mt-10
+              space-y-4
+            ">
+
+
+              {ranking.items.map((item:any)=>(
+
+
+
+                <div
+
+                  key={item.position}
+
+                  className="
+                    rankd-card
+                    p-6
+                    flex
+                    items-center
+                    gap-6
+                  "
+
+                >
+
+
+
+                  <div className="
+                    text-4xl
+                    font-black
+                    rankd-accent
+                  ">
+
+                    #{item.position}
+
+                  </div>
+
+
+
+
+
+                  <div className="
+                    text-2xl
+                    font-black
+                  ">
+
+                    {item.name}
+
+                  </div>
+
+
+
+                </div>
+
+
+              ))}
+
+
+
+            </div>
 
 
 
@@ -785,18 +700,15 @@ export default function RankPage(){
               onClick={rankIt}
 
               className="
-                mt-5
+                mt-10
                 w-full
-                bg-white
-                text-black
-                rounded-xl
-                p-4
-                font-black
+                rankd-button
+                text-xl
               "
 
             >
 
-              + Create Yours
+              Would you rank it differently?
 
             </button>
 
@@ -805,62 +717,109 @@ export default function RankPage(){
 
 
 
+          </section>
+
+
+
+
+
+
+
+
+
+          <aside className="
+            space-y-6
+          ">
+
+
+
+
 
 
             <div className="
-              mt-5
-              space-y-3
+              rankd-card
+              p-8
             ">
 
 
-              {remixes.map((remix:any)=>(
+              <h2 className="
+                text-3xl
+                font-black
+              ">
+
+                Different Perspectives
+
+              </h2>
 
 
-                <button
-
-                  key={remix.id}
-
-                  onClick={()=>router.push(
-                    `/rank/${remix.id}`
-                  )}
-
-                  className="
-                    w-full
-                    bg-white
-                    text-black
-                    rounded-xl
-                    p-4
-                    text-left
-                    font-bold
-                  "
-
-                >
-
-                  {remix.title}
 
 
-                  <span className="
-                    block
-                    text-sm
-                    text-gray-500
-                    mt-1
-                  ">
+              <p className="
+                mt-4
+                rankd-muted
+              ">
 
-                    View perspective →
+                {remixes.length === 0
 
-                  </span>
+                ?
+
+                "No alternative rankings yet."
+
+                :
+
+                `${remixes.length} people ranked this differently.`
+
+                }
+
+              </p>
 
 
-                </button>
 
 
-              ))}
+
+
+              <div className="
+                mt-6
+                space-y-3
+              ">
+
+
+                {remixes.map((remix:any)=>(
+
+
+                  <button
+
+                    key={remix.id}
+
+                    onClick={()=>router.push(
+                      `/rank/${remix.id}`
+                    )}
+
+                    className="
+                      w-full
+                      bg-[#F7F4EE]
+                      rounded-2xl
+                      p-4
+                      text-left
+                      font-black
+                    "
+
+                  >
+
+                    {remix.title}
+
+                  </button>
+
+
+                ))}
+
+
+              </div>
 
 
             </div>
 
 
-          </div>
 
 
 
@@ -868,140 +827,57 @@ export default function RankPage(){
 
 
 
+            <Link
 
+              href="/explore"
 
-          <Link
+              className="
+                block
+                rankd-card
+                p-8
+                hover:-translate-y-1
+                transition
+              "
 
-            href="/explore"
+            >
 
-            className="
-              block
-              bg-zinc-900
-              rounded-3xl
-              p-6
-              hover:scale-105
-              transition
-            "
 
-          >
+              <h2 className="
+                text-2xl
+                font-black
+              ">
 
-            <h2 className="
-              text-2xl
-              font-black
-            ">
+                Find another debate →
 
-              ⚡ Perspective Gap
+              </h2>
 
-            </h2>
 
 
-            <p className="
-              mt-3
-              text-gray-400
-            ">
+              <p className="
+                mt-3
+                rankd-muted
+              ">
 
-              See where opinions differ most →
+                Discover more opinions.
 
-            </p>
+              </p>
 
 
-          </Link>
+            </Link>
 
 
 
 
 
 
+          </aside>
 
 
-          <Link
 
-            href="/explore"
 
-            className="
-              block
-              bg-zinc-900
-              rounded-3xl
-              p-6
-              hover:scale-105
-              transition
-            "
 
-          >
 
-            <h2 className="
-              text-2xl
-              font-black
-            ">
-
-              🔥 Trending
-
-            </h2>
-
-
-            <p className="
-              mt-3
-              text-gray-400
-            ">
-
-              Discover active RANKDs →
-
-            </p>
-
-
-          </Link>
-
-
-
-
-
-
-
-
-          <Link
-
-            href="/explore"
-
-            className="
-              block
-              bg-zinc-900
-              rounded-3xl
-              p-6
-              hover:scale-105
-              transition
-            "
-
-          >
-
-            <h2 className="
-              text-2xl
-              font-black
-            ">
-
-              Explore Categories
-
-            </h2>
-
-
-            <p className="
-              mt-3
-              text-gray-400
-            ">
-
-              Find more Top 7 lists →
-
-            </p>
-
-
-          </Link>
-
-
-
-
-
-
-
-        </aside>
+        </div>
 
 
 
@@ -1011,6 +887,7 @@ export default function RankPage(){
 
 
     </main>
+
 
   )
 

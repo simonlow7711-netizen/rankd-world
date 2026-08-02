@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-
 import Link from "next/link"
 
 import { supabase } from "@/utils/supabase"
@@ -43,10 +42,13 @@ type Ranking = {
 
 
 
+
 export default function ProfilePage(){
 
 
+
   const router = useRouter()
+
 
 
   const [profile,setProfile] =
@@ -94,10 +96,10 @@ export default function ProfilePage(){
 
         router.push("/onboarding")
 
-
         return
 
       }
+
 
 
 
@@ -115,7 +117,7 @@ export default function ProfilePage(){
         .from("profiles")
 
         .select(
-          "id, username, display_name"
+          "id,username,display_name"
         )
 
         .eq(
@@ -130,18 +132,18 @@ export default function ProfilePage(){
 
 
 
+
+
       if(profileError || !profileData){
-
-
-        console.error(profileError)
 
 
         router.push("/onboarding")
 
-
         return
 
       }
+
+
 
 
 
@@ -157,9 +159,9 @@ export default function ProfilePage(){
 
 
 
+
       const {
-        data:rankingData,
-        error:rankingError
+        data:rankingData
 
       } = await supabase
 
@@ -195,22 +197,11 @@ export default function ProfilePage(){
 
 
 
-      if(rankingError){
+      setRankings(
 
+        rankingData ?? []
 
-        console.error(rankingError)
-
-
-      } else {
-
-
-        setRankings(
-          rankingData ?? []
-        )
-
-
-      }
-
+      )
 
 
 
@@ -221,6 +212,7 @@ export default function ProfilePage(){
 
 
     }
+
 
 
 
@@ -239,6 +231,9 @@ export default function ProfilePage(){
 
 
 
+
+
+
   if(loading){
 
 
@@ -246,12 +241,14 @@ export default function ProfilePage(){
 
       <main className="
         min-h-screen
-        bg-black
-        text-white
-        p-10
+        bg-[#F7F4EE]
+        flex
+        items-center
+        justify-center
+        font-black
       ">
 
-        Loading profile...
+        Loading your opinions...
 
       </main>
 
@@ -268,9 +265,7 @@ export default function ProfilePage(){
 
   if(!profile){
 
-
     return null
-
 
   }
 
@@ -286,14 +281,15 @@ export default function ProfilePage(){
 
     <main className="
       min-h-screen
-      bg-black
-      text-white
-      p-8
+      bg-[#F7F4EE]
+      text-black
+      px-6
+      py-12
     ">
 
 
       <div className="
-        max-w-4xl
+        max-w-6xl
         mx-auto
       ">
 
@@ -301,16 +297,39 @@ export default function ProfilePage(){
 
 
 
+
+
+
+
         <section className="
-          bg-zinc-900
-          rounded-3xl
-          p-8
+          rankd-card
+          p-10
+          md:p-14
+          text-center
         ">
+
+
+
+          <div className="
+            text-7xl
+            font-black
+            opacity-10
+          ">
+
+            7
+
+          </div>
+
+
+
+
 
 
           <h1 className="
             text-5xl
+            md:text-7xl
             font-black
+            -mt-10
           ">
 
             {profile.display_name}
@@ -319,15 +338,120 @@ export default function ProfilePage(){
 
 
 
+
+
+
+
           <p className="
-            mt-3
-            text-gray-400
+            mt-4
             text-xl
+            text-gray-500
           ">
 
             @{profile.username}
 
           </p>
+
+
+
+
+
+
+
+
+          <div className="
+            mt-10
+            flex
+            justify-center
+            gap-6
+            flex-wrap
+          ">
+
+
+
+
+            <div>
+
+              <p className="
+                text-4xl
+                font-black
+              ">
+
+                {rankings.length}
+
+              </p>
+
+
+              <p className="
+                text-gray-500
+                font-bold
+              ">
+
+                RANKDs
+
+              </p>
+
+            </div>
+
+
+
+
+
+            <div>
+
+              <p className="
+                text-4xl
+                font-black
+              ">
+
+                {rankings.reduce(
+                  (total,item)=>
+                  total+(item.views ?? 0),
+                  0
+                )}
+
+              </p>
+
+
+              <p className="
+                text-gray-500
+                font-bold
+              ">
+
+                Views
+
+              </p>
+
+            </div>
+
+
+
+          </div>
+
+
+
+
+
+
+
+
+          <Link
+
+            href="/create"
+
+            className="
+              inline-block
+              mt-10
+              rankd-button
+            "
+
+          >
+
+            Create another Top 7 →
+
+          </Link>
+
+
 
 
         </section>
@@ -339,18 +463,19 @@ export default function ProfilePage(){
 
 
 
+
         <section className="
-          mt-10
+          mt-16
         ">
 
 
           <h2 className="
-            text-3xl
+            text-4xl
             font-black
-            mb-6
+            mb-8
           ">
 
-            Your RANKDs
+            Your opinions
 
           </h2>
 
@@ -365,18 +490,38 @@ export default function ProfilePage(){
 
 
             <div className="
-              bg-zinc-900
-              rounded-3xl
-              p-8
+              rankd-card
+              p-10
+              text-center
             ">
 
+
               <p className="
-                text-gray-400
+                text-xl
+                font-bold
               ">
 
-                You haven't created any RANKDs yet.
+                You haven't created your first RANKD yet.
 
               </p>
+
+
+
+              <Link
+
+                href="/create"
+
+                className="
+                  inline-block
+                  mt-6
+                  rankd-button
+                "
+
+              >
+
+                Create your first →
+
+              </Link>
 
 
             </div>
@@ -394,8 +539,10 @@ export default function ProfilePage(){
 
           <div className="
             grid
-            gap-6
+            md:grid-cols-2
+            gap-8
           ">
+
 
 
             {rankings.map((ranking)=>(
@@ -408,32 +555,22 @@ export default function ProfilePage(){
                 href={`/rank/${ranking.id}`}
 
                 className="
-                  bg-white
-                  text-black
-                  rounded-3xl
-                  p-6
-                  hover:scale-[1.02]
+                  rankd-card
+                  p-8
+                  hover:-translate-y-1
                   transition
                 "
 
               >
 
 
-                <h3 className="
-                  text-2xl
-                  font-black
-                ">
-
-                  {ranking.title}
-
-                </h3>
-
-
-
 
                 <p className="
-                  mt-2
-                  text-gray-600
+                  rankd-accent
+                  font-black
+                  uppercase
+                  tracking-wide
+                  text-sm
                 ">
 
                   #{ranking.category ?? "General"}
@@ -443,15 +580,43 @@ export default function ProfilePage(){
 
 
 
-                <p className="
+
+                <h3 className="
+                  text-3xl
+                  font-black
                   mt-4
-                  text-sm
+                ">
+
+                  {ranking.title}
+
+                </h3>
+
+
+
+
+
+                <p className="
+                  mt-6
                   text-gray-500
                 ">
 
-                  {ranking.views ?? 0} views
+                  {ranking.views ?? 0} people viewed this opinion
 
                 </p>
+
+
+
+
+
+                <p className="
+                  mt-6
+                  font-black
+                ">
+
+                  View conversation →
+
+                </p>
+
 
 
 
@@ -465,6 +630,7 @@ export default function ProfilePage(){
 
 
         </section>
+
 
 
 

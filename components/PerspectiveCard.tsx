@@ -1,8 +1,4 @@
-"use client"
-
 import Link from "next/link"
-
-
 
 
 
@@ -21,6 +17,7 @@ export default function PerspectiveCard({
 }) {
 
 
+
   return (
 
     <Link
@@ -29,27 +26,28 @@ export default function PerspectiveCard({
 
     >
 
-      <div
 
-        className="
-          bg-zinc-900
-          rounded-3xl
-          p-8
-          hover:scale-105
-          transition
-          cursor-pointer
-        "
+      <div className="
+        rankd-card
+        p-8
+        hover:-translate-y-2
+        transition
+        h-full
+      ">
 
-      >
+
 
 
 
         <p className="
-          text-gray-400
-          font-bold
+          rankd-accent
+          uppercase
+          tracking-widest
+          text-sm
+          font-black
         ">
 
-          {ranking.category}
+          Perspective Gap
 
         </p>
 
@@ -57,10 +55,13 @@ export default function PerspectiveCard({
 
 
 
+
+
         <h3 className="
-          text-2xl
+          text-3xl
           font-black
-          mt-4
+          mt-5
+          leading-tight
         ">
 
           {ranking.title}
@@ -71,33 +72,36 @@ export default function PerspectiveCard({
 
 
 
+
+
         <div className="
-          mt-6
-          inline-flex
-          items-center
-          gap-2
-          bg-black
-          rounded-full
-          px-4
-          py-2
+          mt-8
+          bg-[#F7F4EE]
+          rounded-3xl
+          p-6
         ">
 
 
-          <span>
-
-            🌍
-
-          </span>
-
-
-          <span className="
-            text-sm
+          <p className="
+            text-5xl
             font-black
           ">
 
-            Perspective Gap {gap}%
+            {gap}%
 
-          </span>
+          </p>
+
+
+
+
+          <p className="
+            mt-2
+            rankd-muted
+          ">
+
+            difference in opinion
+
+          </p>
 
 
         </div>
@@ -106,26 +110,14 @@ export default function PerspectiveCard({
 
 
 
-        <p className="
-          mt-5
-          text-gray-400
-        ">
-
-          Different people rank this differently.
-
-        </p>
-
-
-
 
 
         <p className="
-          mt-6
-          text-orange-400
+          mt-8
           font-black
         ">
 
-          Compare opinions →
+          See where people disagree →
 
         </p>
 
@@ -137,7 +129,7 @@ export default function PerspectiveCard({
 
     </Link>
 
-  )
 
+  )
 
 }

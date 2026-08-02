@@ -1,28 +1,73 @@
 import Link from "next/link"
 
 
-export default function Hero() {
+
+export default function Hero(){
+
 
   return (
 
     <section className="
       min-h-screen
-      bg-black
-      text-white
+      bg-[#F7F4EE]
+      text-black
       flex
       flex-col
       justify-center
       items-center
       text-center
       px-6
+      relative
+      overflow-hidden
     ">
 
 
+
+      <div className="
+        absolute
+        -top-10
+        -right-10
+        text-[220px]
+        opacity-5
+        font-black
+        leading-none
+      ">
+
+        7
+
+      </div>
+
+
+
+
+
+
+
+      <p className="
+        rankd-accent
+        uppercase
+        tracking-[0.35em]
+        text-sm
+        font-black
+      ">
+
+        The world's opinions, ranked
+
+      </p>
+
+
+
+
+
+
+
       <h1 className="
-        text-8xl
-        md:text-[140px]
+        text-7xl
+        md:text-[130px]
         font-black
         tracking-tight
+        mt-6
+        leading-none
       ">
 
         RANKD
@@ -33,14 +78,22 @@ export default function Hero() {
 
 
 
+
+
       <h2 className="
-        text-3xl
-        md:text-5xl
-        font-bold
-        mt-6
+        text-4xl
+        md:text-7xl
+        font-black
+        mt-8
+        max-w-5xl
+        leading-[0.95]
       ">
 
-        The world's Top 7 everything.
+        Everyone has an opinion.
+
+        <br />
+
+        Now rank it.
 
       </h2>
 
@@ -48,18 +101,34 @@ export default function Hero() {
 
 
 
+
+
       <p className="
-        text-gray-400
-        max-w-xl
-        mt-6
+        max-w-2xl
+        mt-8
         text-lg
+        md:text-xl
+        rankd-muted
+        leading-relaxed
       ">
 
-        Discover the best recommendations.
-        Create your own rankings.
-        Decide what deserves the top spot.
+        Create your Top 7.
+        Discover how the world thinks.
+        Find the rankings that make you say:
+
+        <br />
+
+        <span className="
+          font-black
+          text-black
+        ">
+
+          "I'd rank it differently."
+
+        </span>
 
       </p>
+
 
 
 
@@ -78,20 +147,14 @@ export default function Hero() {
 
 
 
-        <Link href="/explore">
+        <Link href="/create">
 
           <button className="
-            bg-white
-            text-black
-            px-8
-            py-4
-            rounded-full
-            font-bold
-            hover:scale-105
-            transition
+            rankd-button
+            text-lg
           ">
 
-            Explore Rankings
+            Create Your Top 7
 
           </button>
 
@@ -103,21 +166,23 @@ export default function Hero() {
 
 
 
-        <Link href="/create">
+        <Link href="/explore">
 
           <button className="
+            bg-white
             border
-            border-white
-            text-white
+            border-black/10
+            text-black
             px-8
             py-4
             rounded-full
-            font-bold
-            hover:scale-105
+            font-black
+            text-lg
+            hover:-translate-y-1
             transition
           ">
 
-            Create Your Top 7
+            Explore Perspectives
 
           </button>
 

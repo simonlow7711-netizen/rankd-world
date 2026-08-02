@@ -8,12 +8,20 @@ export default function TasteMatchCard({
 
   match
 
-}:any){
+}:{
+
+  person:any
+
+  match:{
+    score:number
+    sharedCategories:any[]
+  }
+
+}){
 
 
 
   return (
-
 
     <Link
 
@@ -21,36 +29,23 @@ export default function TasteMatchCard({
 
     >
 
+      <div className="
+        rankd-card
+        p-6
+        hover:-translate-y-1
+        transition
+      ">
 
 
-      <div
+        <p className="
+          text-sm
+          uppercase
+          tracking-widest
+          rankd-muted
+          font-black
+        ">
 
-        className="
-          bg-white
-          text-black
-          rounded-3xl
-          p-6
-          hover:scale-105
-          transition
-          cursor-pointer
-        "
-
-      >
-
-
-
-
-
-        <p
-
-          className="
-            text-green-600
-            font-black
-          "
-
-        >
-
-          🧬 Taste Match
+          Taste Match
 
         </p>
 
@@ -58,19 +53,13 @@ export default function TasteMatchCard({
 
 
 
+        <h3 className="
+          text-2xl
+          font-black
+          mt-4
+        ">
 
-
-        <h3
-
-          className="
-            text-2xl
-            font-black
-            mt-3
-          "
-
-        >
-
-          {person.displayName}
+          @{person.username}
 
         </h3>
 
@@ -79,36 +68,33 @@ export default function TasteMatchCard({
 
 
 
-        <p
 
-          className="
-            text-gray-500
-            mt-2
-          "
-
-        >
-
-          @{person.username}
-
-        </p>
-
-
+        <div className="
+          mt-6
+          inline-flex
+          items-center
+          gap-2
+          bg-black
+          text-white
+          rounded-full
+          px-5
+          py-3
+        ">
 
 
+          <span>
+            🤝
+          </span>
 
 
-
-        <div
-
-          className="
-            mt-6
-            text-5xl
+          <span className="
             font-black
-          "
+          ">
 
-        >
+            {match.score}% Match
 
-          {match.score}%
+          </span>
+
 
         </div>
 
@@ -118,29 +104,71 @@ export default function TasteMatchCard({
 
 
 
-        <p
 
-          className="
-            mt-4
-            text-gray-600
-          "
+        {match.sharedCategories?.length > 0 && (
 
-        >
-
-          Shared:
-
-          {" "}
-
-          {match.sharedCategories.length > 0
-
-            ? match.sharedCategories.join(", ")
-
-            : "None yet"
-
-          }
+          <div className="
+            mt-5
+          ">
 
 
-        </p>
+            <p className="
+              text-sm
+              text-gray-500
+              font-bold
+            ">
+
+              You both ranked:
+
+            </p>
+
+
+
+
+            <div className="
+              flex
+              flex-wrap
+              gap-2
+              mt-3
+            ">
+
+
+              {match.sharedCategories.map(
+
+                (category:any)=>(
+
+                  <span
+
+                    key={category}
+
+                    className="
+                      bg-[#F7F4EE]
+                      px-3
+                      py-2
+                      rounded-full
+                      text-sm
+                      font-bold
+                    "
+
+                  >
+
+                    {category}
+
+                  </span>
+
+                )
+
+              )}
+
+
+            </div>
+
+
+          </div>
+
+        )}
+
+
 
 
 
@@ -148,12 +176,8 @@ export default function TasteMatchCard({
 
       </div>
 
-
-
     </Link>
 
-
   )
-
 
 }

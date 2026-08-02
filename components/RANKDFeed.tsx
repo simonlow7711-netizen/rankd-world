@@ -1,11 +1,21 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect, useState } from "react"
+
+import RankingCard from "@/components/RankingCard"
+
+import { rankings } from "@/data/rankings"
 
 import {
-  getFeedSections
-} from "@/utils/feedRecommendations"
+  useEffect,
+  useState
+} from "react"
+
+import {
+  getAllSupabaseRankings
+} from "@/utils/supabaseRankings"
+
+
 
 
 
@@ -14,188 +24,131 @@ import {
 export default function RANKDFeed(){
 
 
-  const [mounted, setMounted] = useState(false)
 
+  const [communityRankings,setCommunityRankings] =
+    useState<any[]>([])
 
 
-  useEffect(() => {
 
-    setMounted(true)
+  const [loading,setLoading] =
+    useState(true)
 
-  }, [])
 
 
 
 
 
-  if(!mounted){
 
-    return null
 
-  }
 
+  useEffect(()=>{
 
 
 
+    async function loadRankings(){
 
-  const feed = getFeedSections()
 
 
+      const data =
 
+        await getAllSupabaseRankings()
 
 
-  function RankingCard({
 
-    ranking
 
-  }:{
 
-    ranking:any
+      setCommunityRankings(
 
-  }) {
+        data ?? []
 
+      )
 
-    return (
 
-      <Link
 
-        href={`/rank/${ranking.id}`}
 
-      >
 
-        <div
+      setLoading(false)
 
-          className="
-            bg-zinc-900
-            rounded-3xl
-            p-8
-            hover:scale-105
-            transition
-            cursor-pointer
-          "
 
-        >
-
-
-          <p className="
-            text-gray-400
-            font-bold
-          ">
-
-            {ranking.category}
-
-          </p>
-
-
-
-
-
-          <h3 className="
-            text-2xl
-            font-black
-            mt-4
-          ">
-
-            {ranking.title}
-
-          </h3>
-
-
-
-
-
-          <p className="
-            mt-6
-            text-orange-400
-            font-black
-          ">
-
-            Decide your #1 →
-
-          </p>
-
-
-
-
-        </div>
-
-
-      </Link>
-
-    )
-
-  }
-
-
-
-
-
-
-
-
-  function Section({
-
-    title,
-
-    items
-
-  }:{
-
-    title:string
-
-    items:any[]
-
-  }) {
-
-
-    if(!items || items.length === 0){
-
-      return null
 
     }
 
 
 
+
+
+    loadRankings()
+
+
+
+  },[])
+
+
+
+
+
+
+
+
+
+  const allRankings = [
+
+    ...communityRankings,
+
+    ...rankings
+
+  ]
+
+  .filter(
+
+    (ranking,index,self)=>
+
+      index === self.findIndex(
+
+        item =>
+
+          item.id === ranking.id
+
+      )
+
+  )
+
+  .slice(0,6)
+
+
+
+
+
+
+
+
+
+  if(loading){
+
+
     return (
 
       <section className="
-        mb-12
+        py-20
       ">
 
 
-        <h2 className="
-          text-3xl
-          font-black
-          mb-6
-        ">
-
-          {title}
-
-        </h2>
-
-
-
-
         <div className="
-          grid
-          md:grid-cols-3
-          gap-6
+          max-w-6xl
+          mx-auto
         ">
 
 
-          {items.map((ranking:any)=>(
+          <div className="
+            rankd-card
+            p-8
+            text-center
+            font-black
+          ">
 
+            Loading opinions...
 
-            <RankingCard
-
-              key={ranking.id}
-
-              ranking={ranking}
-
-            />
-
-
-          ))}
+          </div>
 
 
         </div>
@@ -205,7 +158,9 @@ export default function RANKDFeed(){
 
     )
 
+
   }
+
 
 
 
@@ -217,9 +172,6 @@ export default function RANKDFeed(){
   return (
 
     <section className="
-      bg-black
-      text-white
-      px-6
       py-20
     ">
 
@@ -231,79 +183,88 @@ export default function RANKDFeed(){
 
 
 
-        <h2 className="
-          text-4xl
-          md:text-5xl
-          font-black
+
+
+        <div className="
+          flex
+          justify-between
+          items-end
+          mb-10
         ">
 
-          Your RANKD Feed
-
-        </h2>
 
 
+          <div>
 
 
-        <p className="
-          mt-4
-          text-gray-400
-          text-lg
-        ">
+            <p className="
+              rankd-accent
+              uppercase
+              tracking-[0.3em]
+              text-sm
+              font-black
+            ">
 
-          Discover opinions that match your curiosity.
+              Community opinions
 
-        </p>
-
-
-
-
-
-        <div className="mt-12">
-
-
-          <Section
-
-            title="🧬 Because You Ranked..."
-
-            items={feed.personalised}
-
-          />
+            </p>
 
 
 
 
 
-          <Section
+            <h2 className="
+              text-4xl
+              md:text-5xl
+              font-black
+              mt-3
+            ">
 
-            title="🔥 Trending Debates"
+              Latest RANKDs
 
-            items={feed.trending}
-
-          />
-
-
-
-
-
-          <Section
-
-            title="🔥 Most Debated"
-
-            items={feed.debates}
-
-          />
+            </h2>
 
 
 
+            <p className="
+              mt-4
+              text-gray-500
+              max-w-xl
+            ">
+
+              Real people. Real choices.
+              Discover what the world is ranking.
+
+            </p>
 
 
-          <Section
+          </div>
 
-            title="🆕 New Opinions"
 
-            items={feed.newest}
 
-          />
+
+
+
+
+
+          <Link
+
+            href="/explore"
+
+            className="
+              hidden
+              md:block
+              font-black
+              hover:opacity-60
+              transition
+            "
+
+          >
+
+            Explore all →
+
+          </Link>
+
 
 
 
@@ -312,11 +273,105 @@ export default function RANKDFeed(){
 
 
 
+
+
+
+
+
+        {allRankings.length === 0 ? (
+
+
+          <div className="
+            rankd-card
+            p-10
+            text-center
+          ">
+
+
+            <h3 className="
+              text-2xl
+              font-black
+            ">
+
+              No RANKDs yet
+
+            </h3>
+
+
+
+            <p className="
+              mt-3
+              text-gray-500
+            ">
+
+              Be the first person to decide the Top 7.
+
+            </p>
+
+
+
+            <Link
+
+              href="/create"
+
+              className="
+                inline-block
+                mt-6
+                rankd-button
+              "
+
+            >
+
+              Create a RANKD →
+
+            </Link>
+
+
+          </div>
+
+
+        ) : (
+
+
+          <div className="
+            grid
+            md:grid-cols-3
+            gap-8
+          ">
+
+
+            {allRankings.map(ranking=>(
+
+
+              <RankingCard
+
+                key={ranking.id}
+
+                ranking={ranking}
+
+              />
+
+
+            ))}
+
+
+          </div>
+
+
+        )}
+
+
+
+
+
+
+
+
+
       </div>
 
 
     </section>
-
 
   )
 
