@@ -9,7 +9,6 @@ import { getSupabaseRanking } from "@/utils/supabaseRankings"
 import { supabase } from "@/utils/supabase"
 
 
-
 export default function RankPage() {
 
 
@@ -37,9 +36,6 @@ export default function RankPage() {
 
   const [loading,setLoading] =
     useState(true)
-
-
-
 
 
 
@@ -94,9 +90,7 @@ export default function RankPage() {
 
 
 
-
       setRanking(current)
-
 
 
 
@@ -104,8 +98,6 @@ export default function RankPage() {
 
       let rootId =
         current.id
-
-
 
 
 
@@ -130,8 +122,6 @@ export default function RankPage() {
         setOriginalRanking(parent)
 
       }
-
-
 
 
 
@@ -186,7 +176,6 @@ export default function RankPage() {
 
 
 
-
       const formattedRemixes =
 
         (childRankings ?? [])
@@ -205,29 +194,18 @@ export default function RankPage() {
 
 
 
-
-
       console.log(
-
         "FORMATTED REMIXES:",
-
         formattedRemixes
-
       )
-
-
 
 
 
 
 
       setRemixes(
-
         formattedRemixes
-
       )
-
-
 
 
 
@@ -282,7 +260,6 @@ export default function RankPage() {
 
 
 
-
   if(!ranking){
 
 
@@ -302,7 +279,6 @@ export default function RankPage() {
     )
 
   }
-
 
 
 
@@ -368,9 +344,6 @@ export default function RankPage() {
       ">
 
 
-
-
-
         <section className="
           lg:col-span-2
         ">
@@ -379,56 +352,75 @@ export default function RankPage() {
 
 
 
-
           {originalRanking && (
 
-            <div className="
-              mb-8
-              bg-zinc-900
-              rounded-3xl
-              p-6
-            ">
+            <button
 
+              onClick={()=>router.push(
+                `/rank/${originalRanking.id}`
+              )}
+
+              className="
+                w-full
+                mb-8
+                bg-zinc-900
+                hover:bg-zinc-800
+                rounded-3xl
+                p-6
+                text-left
+                transition
+              "
+
+            >
 
               <p className="
-                text-gray-400
+                text-sm
+                uppercase
+                tracking-widest
+                text-gray-500
+                font-bold
               ">
 
-                Remix of
+                ✨ Inspired by
 
               </p>
 
 
-              <button
+              <h2 className="
+                mt-2
+                text-2xl
+                font-black
+              ">
 
-                onClick={()=>router.push(
-                  `/rank/${originalRanking.id}`
-                )}
+                {originalRanking.title}
 
-                className="
-                  mt-2
-                  text-2xl
-                  font-black
-                "
-
-              >
-
-                {originalRanking.title} →
-
-              </button>
+              </h2>
 
 
-            </div>
+              <p className="
+                mt-3
+                text-gray-400
+              ">
+
+                This Top 7 was inspired by another perspective.
+
+              </p>
+
+
+              <p className="
+                mt-5
+                font-bold
+              ">
+
+                View the original →
+
+              </p>
+
+
+            </button>
 
           )}
-
-
-
-
-
-
-
-          <p className="
+                    <p className="
             text-gray-400
           ">
 
@@ -568,6 +560,7 @@ export default function RankPage() {
         <aside className="
           space-y-6
         ">
+
 
 
 
@@ -736,7 +729,6 @@ export default function RankPage() {
               hover:scale-105
               transition
             "
-
 
           >
 
