@@ -1,243 +1,158 @@
 import Link from "next/link"
 
 
-
 const categories = [
 
   {
     name:"Food & Drink",
-    emoji:"🍔",
-    description:"The things worth tasting."
+    slug:"food-drink",
+    emoji:"🍕"
   },
 
   {
     name:"Film & TV",
-    emoji:"🎬",
-    description:"The stories everyone debates."
+    slug:"film-tv",
+    emoji:"🎬"
   },
 
   {
     name:"Music",
-    emoji:"🎵",
-    description:"Songs, artists and moments."
+    slug:"music",
+    emoji:"🎵"
   },
 
   {
     name:"Sport",
-    emoji:"⚽",
-    description:"Players, teams and legends."
+    slug:"sport",
+    emoji:"⚽"
   },
 
   {
     name:"Travel",
-    emoji:"✈️",
-    description:"Places worth discovering."
+    slug:"travel",
+    emoji:"🌍"
+  },
+
+  {
+    name:"Gaming",
+    slug:"gaming",
+    emoji:"🎮"
   },
 
   {
     name:"Technology",
-    emoji:"💡",
-    description:"The ideas shaping tomorrow."
+    slug:"technology",
+    emoji:"💡"
   },
 
   {
     name:"Lifestyle",
-    emoji:"✨",
-    description:"How people choose to live."
-  },
-
-  {
-    name:"Entertainment",
-    emoji:"🔥",
-    description:"Culture everyone talks about."
+    slug:"lifestyle",
+    emoji:"✨"
   }
 
 ]
 
 
 
-
-
-
-
 export default function Categories(){
 
 
+return (
 
-  return (
+<section className="
+bg-[#F7F4EE]
+text-black
+rounded-3xl
+p-8
+">
 
-    <section className="
-      py-20
-    ">
 
+<h2 className="
+text-4xl
+font-black
+mb-8
+">
 
-      <div className="
-        max-w-6xl
-        mx-auto
-      ">
+Browse Categories
 
+</h2>
 
 
 
 
-        <div className="
-          mb-10
-        ">
+<div className="
+grid
+grid-cols-2
+md:grid-cols-4
+gap-5
+">
 
 
-          <p className="
-            rankd-accent
-            uppercase
-            tracking-[0.3em]
-            text-sm
-            font-black
-          ">
+{categories.map(category=>(
 
-            Discover
 
-          </p>
+<Link
 
+key={category.slug}
 
+href={`/category/${category.slug}`}
 
+className="
+bg-white
+rounded-3xl
+p-6
+font-black
+hover:-translate-y-1
+transition
+"
 
-          <h2 className="
-            text-4xl
-            md:text-5xl
-            font-black
-            mt-3
-          ">
+>
 
-            Browse Categories
 
-          </h2>
+<div className="
+text-4xl
+">
 
+{category.emoji}
 
+</div>
 
 
-          <p className="
-            mt-4
-            text-gray-500
-            max-w-xl
-          ">
 
-            Explore what people are ranking
-            and discover where your opinions differ.
+<h3 className="
+mt-4
+text-xl
+">
 
-          </p>
+{category.name}
 
+</h3>
 
-        </div>
 
+<p className="
+mt-2
+text-sm
+text-gray-500
+">
 
+Explore Top 7s →
 
+</p>
 
 
 
+</Link>
 
 
+))}
 
-        <div className="
-          grid
-          md:grid-cols-4
-          gap-6
-        ">
 
+</div>
 
 
+</section>
 
-
-          {categories.map(category=>(
-
-
-            <Link
-
-              key={category.name}
-
-              href={`/explore?category=${encodeURIComponent(category.name)}`}
-
-            >
-
-
-              <div className="
-                rankd-card
-                p-6
-                h-full
-                hover:-translate-y-1
-                transition
-              ">
-
-
-                <div className="
-                  text-4xl
-                ">
-
-                  {category.emoji}
-
-                </div>
-
-
-
-
-                <h3 className="
-                  text-2xl
-                  font-black
-                  mt-5
-                ">
-
-                  {category.name}
-
-                </h3>
-
-
-
-
-
-                <p className="
-                  mt-3
-                  text-gray-500
-                ">
-
-                  {category.description}
-
-                </p>
-
-
-
-
-
-                <p className="
-                  mt-6
-                  font-black
-                  text-orange-500
-                ">
-
-                  Explore →
-
-                </p>
-
-
-              </div>
-
-
-            </Link>
-
-
-          ))}
-
-
-        </div>
-
-
-
-
-
-
-
-      </div>
-
-
-    </section>
-
-  )
+)
 
 }
