@@ -9,7 +9,8 @@ import { getSupabaseRanking } from "@/utils/supabaseRankings"
 import { supabase } from "@/utils/supabase"
 
 
-export default function RankPage() {
+
+export default function RankPage(){
 
 
   const params = useParams()
@@ -22,20 +23,34 @@ export default function RankPage() {
 
 
 
+
+
+
   const [ranking,setRanking] =
     useState<any>(null)
 
 
-  const [originalRanking,setOriginalRanking] =
+
+  const [parentRanking,setParentRanking] =
     useState<any>(null)
+
+
+
+  const [rootRanking,setRootRanking] =
+    useState<any>(null)
+
 
 
   const [remixes,setRemixes] =
     useState<any[]>([])
 
 
+
   const [loading,setLoading] =
     useState(true)
+
+
+
 
 
 
@@ -49,14 +64,12 @@ export default function RankPage() {
 
 
       trackEvent(
-
         "ranking_viewed",
-
         {
           rankingId:id
         }
-
       )
+
 
 
 
@@ -69,10 +82,13 @@ export default function RankPage() {
 
 
 
+
       console.log(
         "CURRENT RANKING:",
         current
       )
+
+
 
 
 
@@ -90,27 +106,40 @@ export default function RankPage() {
 
 
 
+
+
+      console.log(
+        "PARENT ID:",
+        current.parentId
+      )
+
+      console.log(
+        "ROOT ID:",
+        current.rootId
+      )
+
+
+
+
+
+
+
       setRanking(current)
 
 
 
 
 
-      let rootId =
-        current.id
 
 
 
+
+      /*
+        Immediate parent
+      */
 
 
       if(current.parentId){
-
-
-        rootId =
-          current.parentId
-
-
-
 
 
         const parent =
@@ -119,10 +148,66 @@ export default function RankPage() {
           )
 
 
-        setOriginalRanking(parent)
+        setParentRanking(parent)
+
 
       }
 
+
+
+
+
+
+
+
+
+      /*
+        Original conversation
+
+        Fallback:
+        if rootId missing,
+        use current id
+      */
+
+
+      const rootId =
+
+        current.rootId
+        ||
+        current.id
+
+
+
+
+
+
+
+      if(rootId){
+
+
+        const root =
+          await getSupabaseRanking(
+            rootId
+          )
+
+
+        setRootRanking(root)
+
+
+      }
+
+
+
+
+
+
+
+
+
+      /*
+        Load all perspectives
+        from the same conversation
+      */
 
 
 
@@ -140,12 +225,17 @@ export default function RankPage() {
         .from("rankings")
 
         .select(
-          "id,title,parent_id,created_at"
+          "id,title,parent_id,root_id,created_at"
         )
 
         .eq(
-          "parent_id",
+          "root_id",
           rootId
+        )
+
+        .neq(
+          "id",
+          current.id
         )
 
         .order(
@@ -176,6 +266,7 @@ export default function RankPage() {
 
 
 
+
       const formattedRemixes =
 
         (childRankings ?? [])
@@ -186,7 +277,9 @@ export default function RankPage() {
 
             title:item.title,
 
-            parentId:item.parent_id
+            parentId:item.parent_id,
+
+            rootId:item.root_id
 
           }))
 
@@ -194,10 +287,14 @@ export default function RankPage() {
 
 
 
+
+
       console.log(
-        "FORMATTED REMIXES:",
+        "REMIXES:",
         formattedRemixes
       )
+
+
 
 
 
@@ -211,8 +308,9 @@ export default function RankPage() {
 
 
 
-      setLoading(false)
 
+
+      setLoading(false)
 
 
     }
@@ -260,6 +358,7 @@ export default function RankPage() {
 
 
 
+
   if(!ranking){
 
 
@@ -279,6 +378,7 @@ export default function RankPage() {
     )
 
   }
+
 
 
 
@@ -310,7 +410,7 @@ export default function RankPage() {
         ranking.title
       )}&items=${encodeURIComponent(
         items
-      )}&originalId=${ranking.parentId || ranking.id}`
+      )}&originalId=${ranking.id}&rootId=${ranking.rootId || ranking.id}`
 
     )
 
@@ -344,6 +444,9 @@ export default function RankPage() {
       ">
 
 
+
+
+
         <section className="
           lg:col-span-2
         ">
@@ -352,33 +455,20 @@ export default function RankPage() {
 
 
 
-          {originalRanking && (
 
-            <button
 
-              onClick={()=>router.push(
-                `/rank/${originalRanking.id}`
-              )}
+          {parentRanking && (
 
-              className="
-                w-full
-                mb-8
-                bg-zinc-900
-                hover:bg-zinc-800
-                rounded-3xl
-                p-6
-                text-left
-                transition
-              "
+            <div className="
+              mb-6
+              bg-zinc-900
+              rounded-3xl
+              p-6
+            ">
 
-            >
 
               <p className="
-                text-sm
-                uppercase
-                tracking-widest
-                text-gray-500
-                font-bold
+                text-gray-400
               ">
 
                 ✨ Inspired by
@@ -386,41 +476,89 @@ export default function RankPage() {
               </p>
 
 
-              <h2 className="
-                mt-2
-                text-2xl
-                font-black
-              ">
+              <button
 
-                {originalRanking.title}
+                onClick={()=>router.push(
+                  `/rank/${parentRanking.id}`
+                )}
 
-              </h2>
+                className="
+                  mt-2
+                  text-2xl
+                  font-black
+                  text-left
+                "
+
+              >
+
+                {parentRanking.title} →
+
+              </button>
+
+
+            </div>
+
+          )}
+
+
+
+
+
+
+
+
+          {rootRanking &&
+
+          rootRanking.id !== ranking.id && (
+
+            <div className="
+              mb-8
+              bg-zinc-900
+              rounded-3xl
+              p-6
+            ">
 
 
               <p className="
-                mt-3
                 text-gray-400
               ">
 
-                This Top 7 was inspired by another perspective.
+                🌎 Original conversation
 
               </p>
 
 
-              <p className="
-                mt-5
-                font-bold
-              ">
+              <button
 
-                View the original →
+                onClick={()=>router.push(
+                  `/rank/${rootRanking.id}`
+                )}
 
-              </p>
+                className="
+                  mt-2
+                  text-xl
+                  font-black
+                  text-left
+                "
+
+              >
+
+                {rootRanking.title} →
+
+              </button>
 
 
-            </button>
+            </div>
 
           )}
-                    <p className="
+
+
+
+
+
+
+
+          <p className="
             text-gray-400
           ">
 
@@ -492,7 +630,6 @@ export default function RankPage() {
 
 
 
-
           <div className="
             mt-10
             space-y-4
@@ -556,11 +693,9 @@ export default function RankPage() {
 
 
 
-
         <aside className="
           space-y-6
         ">
-
 
 
 
@@ -585,9 +720,6 @@ export default function RankPage() {
             </h2>
 
 
-
-
-
             <p className="
               mt-2
               text-gray-400
@@ -597,13 +729,11 @@ export default function RankPage() {
 
                 ? "Be the first person to rank this differently."
 
-                : `${remixes.length} people ranked this differently.`
+                : `${remixes.length} people created different perspectives.`
 
               }
 
             </p>
-
-
 
 
 
@@ -641,7 +771,6 @@ export default function RankPage() {
 
                   {remix.title}
 
-
                   <span className="
                     block
                     text-sm
@@ -671,42 +800,29 @@ export default function RankPage() {
 
 
 
-
-
           <Link
-
             href="/explore"
-
             className="
               block
               bg-zinc-900
               rounded-3xl
               p-6
-              hover:scale-105
-              transition
             "
-
           >
 
             <h2 className="
               text-2xl
               font-black
             ">
-
               ⚡ Perspective Gap
-
             </h2>
-
 
             <p className="
               mt-3
               text-gray-400
             ">
-
               See where opinions differ most →
-
             </p>
-
 
           </Link>
 
@@ -716,41 +832,29 @@ export default function RankPage() {
 
 
 
-
           <Link
-
             href="/explore"
-
             className="
               block
               bg-zinc-900
               rounded-3xl
               p-6
-              hover:scale-105
-              transition
             "
-
           >
 
             <h2 className="
               text-2xl
               font-black
             ">
-
               🔥 Trending
-
             </h2>
-
 
             <p className="
               mt-3
               text-gray-400
             ">
-
               Discover active RANKDs →
-
             </p>
-
 
           </Link>
 
@@ -760,41 +864,29 @@ export default function RankPage() {
 
 
 
-
           <Link
-
             href="/explore"
-
             className="
               block
               bg-zinc-900
               rounded-3xl
               p-6
-              hover:scale-105
-              transition
             "
-
           >
 
             <h2 className="
               text-2xl
               font-black
             ">
-
               Explore Categories
-
             </h2>
-
 
             <p className="
               mt-3
               text-gray-400
             ">
-
               Find more Top 7 lists →
-
             </p>
-
 
           </Link>
 

@@ -10,6 +10,8 @@ export interface RankingItem {
 
 
 
+
+
 export interface Ranking {
 
   id: string
@@ -40,14 +42,6 @@ export interface Ranking {
 
   source?: string
 
-  sourceType?: "original" | "remix"
-
-
-
-  // Parent / child relationship
-
-  parentId?: string | null
-
 
 
   // Dates / metrics
@@ -58,7 +52,21 @@ export interface Ranking {
 
 
 
-  // Legacy compatibility
+  // Remix / parent-child system
+
+  // Immediate ranking that inspired this one
+
+  parentId?: string
+
+
+
+  // Original ranking that started the conversation
+
+  rootId?: string
+
+
+
+  // Legacy fields
 
   remixedFrom?: string
 

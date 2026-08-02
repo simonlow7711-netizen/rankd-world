@@ -65,7 +65,15 @@ export default function CreateClient(){
 
 
 
+
+  // Immediate parent ranking
   const [originalId,setOriginalId] =
+    useState<string | null>(null)
+
+
+
+  // Original conversation root
+  const [rootId,setRootId] =
     useState<string | null>(null)
 
 
@@ -106,15 +114,20 @@ export default function CreateClient(){
 
 
 
+    const startingRootId =
+      searchParams.get("rootId")
+      ||
+      startingOriginalId
+
+
+
 
 
 
 
     if(startingTitle){
 
-      setTitle(
-        startingTitle
-      )
+      setTitle(startingTitle)
 
     }
 
@@ -168,10 +181,20 @@ export default function CreateClient(){
 
 
 
+
+    if(startingRootId){
+
+      setRootId(
+        startingRootId
+      )
+
+    }
+
+
+
+
+
   },[searchParams])
-
-
-
 
 
 
@@ -419,6 +442,117 @@ async function publishRankd(){
 
 
 
+  /*
+    Determine conversation root
+
+    New RANKD:
+      root_id = itself
+
+    Remix:
+      root_id = original conversation root
+  */
+
+
+
+
+
+  let finalRootId =
+    rankingId
+
+
+
+
+
+
+
+  if(originalId){
+
+
+    if(rootId){
+
+
+      finalRootId =
+        rootId
+
+
+    }
+
+    else{
+
+
+      const {
+
+        data:parentRanking
+
+      } = await supabase
+
+        .from("rankings")
+
+        .select(
+          "root_id,id"
+        )
+
+        .eq(
+          "id",
+          originalId
+        )
+
+        .single()
+
+
+
+
+
+      finalRootId =
+
+        parentRanking?.root_id
+
+        ||
+
+        parentRanking?.id
+
+        ||
+
+        originalId
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  console.log(
+
+    "CREATING RANKD:",
+
+    {
+
+      rankingId,
+
+      parentId:originalId,
+
+      rootId:finalRootId
+
+    }
+
+  )
+
+
+
+
+
+
+
+
+
   const {
 
     error:rankingError
@@ -442,33 +576,41 @@ async function publishRankd(){
 
 
       description:
+
         originalId
-        ? "A community remix of another RANKD."
+
+        ? "A community perspective added to an existing RANKD."
+
         : "A new community RANKD.",
+
 
 
       views:0,
 
 
+
       parent_id:
+
         originalId ?? null,
 
 
+
+      root_id:
+
+        finalRootId,
+
+
+
       source_type:
+
         originalId
+
         ? "remix"
+
         : "community"
 
 
     })
-
-
-
-
-
-
-
-
   if(rankingError){
 
 
@@ -586,7 +728,9 @@ async function publishRankd(){
 
       rankingId,
 
-      originalId
+      parentId:originalId,
+
+      rootId:finalRootId
 
     }
 
@@ -600,7 +744,9 @@ async function publishRankd(){
 
 
   setMessage(
+
     "Your RANKD has been published successfully 🎉"
+
   )
 
 
@@ -665,6 +811,9 @@ Create Your RANKD
 
 
 
+
+
+
 {originalId && (
 
 <div className="
@@ -679,7 +828,7 @@ p-5
 font-bold
 ">
 
-🔥 You are creating a remix
+🔥 Add your perspective
 
 </p>
 
@@ -689,7 +838,7 @@ text-gray-400
 mt-2
 ">
 
-Your ranking will be linked to the original RANKD.
+Your RANKD will join this conversation and stay connected to the original.
 
 </p>
 
@@ -807,11 +956,18 @@ value={item}
 
 onChange={e=>{
 
-const updated=[...items]
 
-updated[index]=e.target.value
+const updated = [
+  ...items
+]
+
+
+updated[index] =
+  e.target.value
+
 
 setItems(updated)
+
 
 }}
 
@@ -874,10 +1030,15 @@ disabled:opacity-50
 >
 
 {publishing
+
 ?
+
 "Publishing..."
+
 :
+
 "Publish RANKD →"
+
 }
 
 </button>

@@ -21,8 +21,9 @@ type RankingRow = {
 
   parent_id: string | null
 
-}
+  root_id: string | null
 
+}
 
 
 
@@ -37,7 +38,6 @@ type ProfileRow = {
   display_name: string
 
 }
-
 
 
 
@@ -108,7 +108,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     ...new Set(
 
       rankings.map(
-        r => r.user_id
+        ranking => ranking.user_id
       )
 
     )
@@ -237,6 +237,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
+
     itemMap
 
       .get(row.ranking_id)!
@@ -255,7 +256,6 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
       })
 
 
-
   })
 
 
@@ -271,13 +271,12 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     .map(row => {
 
 
-
-
       const profile =
 
         profileMap.get(
           row.user_id
         )
+
 
 
 
@@ -348,10 +347,17 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-        // Parent / child relationship
+        // Immediate inspiration
 
         parentId:
-          row.parent_id ?? undefined
+          row.parent_id ?? undefined,
+
+
+
+        // Original conversation starter
+
+        rootId:
+          row.root_id ?? undefined
 
 
 
@@ -470,26 +476,40 @@ export async function createSupabaseRanking(
       id:
         ranking.id,
 
+
+
       title:
         ranking.title,
+
+
 
       category:
         ranking.category,
 
+
+
       description:
         ranking.description,
 
+
+
       user_id:
         userId,
+
+
 
       views:
         0,
 
 
-      // Parent / remix relationship
 
       parent_id:
-        ranking.parentId ?? null
+        ranking.parentId ?? null,
+
+
+
+      root_id:
+        ranking.rootId ?? ranking.id
 
 
     })
@@ -531,11 +551,17 @@ export async function createSupabaseRanking(
           ranking_id:
             ranking.id,
 
+
+
           position:
             item.position,
 
+
+
           name:
             item.name,
+
+
 
           votes:
             0
