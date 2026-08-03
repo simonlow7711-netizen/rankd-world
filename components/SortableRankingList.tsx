@@ -2,14 +2,14 @@
 
 import {
   useEffect,
-  useMemo
+  useState
 } from "react"
 
 import {
   DndContext,
   DragEndEvent,
-  closestCenter,
   PointerSensor,
+  closestCenter,
   useSensor,
   useSensors
 } from "@dnd-kit/core"
@@ -17,15 +17,13 @@ import {
 import {
   arrayMove,
   SortableContext,
-  verticalListSortingStrategy,
-  useSortable
+  useSortable,
+  verticalListSortingStrategy
 } from "@dnd-kit/sortable"
 
 import {
   CSS
 } from "@dnd-kit/utilities"
-
-
 
 
 
@@ -45,32 +43,13 @@ export type RankingItem = {
 
 
 
-type SortableRankingListProps = {
+type Props = {
 
   items:RankingItem[]
 
   setItems:React.Dispatch<
     React.SetStateAction<RankingItem[]>
   >
-
-}
-
-
-
-
-
-
-
-type SortableItemProps = {
-
-  item:RankingItem
-
-  index:number
-
-  updateItem:(
-    id:string,
-    name:string
-  )=>void
 
 }
 
@@ -90,7 +69,21 @@ function SortableItem({
 
   updateItem
 
-}:SortableItemProps){
+}:{
+
+  item:RankingItem
+
+  index:number
+
+  updateItem:(
+
+    id:string,
+
+    value:string
+
+  )=>void
+
+}){
 
 
 
@@ -104,16 +97,13 @@ function SortableItem({
 
     transform,
 
-    transition,
-
-    isDragging
+    transition
 
   } = useSortable({
 
     id:item.id
 
   })
-
 
 
 
@@ -133,9 +123,7 @@ function SortableItem({
 
     transition
 
-
   }
-
 
 
 
@@ -152,14 +140,16 @@ function SortableItem({
 
       style={style}
 
-      className={`
+      className="
         flex
         items-center
         gap-4
-        ${isDragging ? "opacity-50" : ""}
-      `}
+        touch-none
+      "
 
     >
+
+
 
 
 
@@ -171,20 +161,29 @@ function SortableItem({
 
         type="button"
 
+        aria-label="Drag to reorder"
+
         className="
           w-12
           h-12
           rounded-full
           bg-black
           text-white
+          text-xl
           font-black
-          cursor-grab
+          flex
+          items-center
+          justify-center
           shrink-0
+          cursor-grab
+          active:cursor-grabbing
+          select-none
+          touch-none
         "
 
       >
 
-        {index + 1}
+        ☰
 
       </button>
 
@@ -195,11 +194,34 @@ function SortableItem({
 
 
 
+      <div className="
+        w-10
+        h-10
+        rounded-full
+        bg-[#E8E2D8]
+        flex
+        items-center
+        justify-center
+        font-black
+        shrink-0
+      ">
+
+        {index + 1}
+
+      </div>
+
+
+
+
+
+
+
+
       <input
 
-        value={item.name ?? ""}
+        value={item.name}
 
-        onChange={(e)=>
+        onChange={e=>
 
           updateItem(
 
@@ -211,7 +233,7 @@ function SortableItem({
 
         }
 
-        placeholder={`Rank #${index + 1}`}
+        placeholder={`Choice ${index + 1}`}
 
         className="
           flex-1
@@ -221,6 +243,7 @@ function SortableItem({
           text-lg
           font-bold
           outline-none
+          min-w-0
         "
 
       />
@@ -240,18 +263,46 @@ function SortableItem({
 
 
 
-
 export default function SortableRankingList({
 
   items,
 
   setItems
 
-}:SortableRankingListProps){
+}:Props){
+
+
+
+  const [
+
+    hydrated,
+
+    setHydrated
+
+  ] = useState(false)
+
+
+
+
+
+
+
+  useEffect(()=>{
+
+
+    setHydrated(true)
+
+
+  },[])
+
+
+
+
 
 
 
   const sensors = useSensors(
+
 
 
     useSensor(
@@ -262,7 +313,7 @@ export default function SortableRankingList({
 
         activationConstraint:{
 
-          distance:5
+          distance:8
 
         }
 
@@ -280,131 +331,12 @@ export default function SortableRankingList({
 
 
 
-  const itemIds = useMemo(
-
-    ()=>
-
-      items.map(
-
-        item=>item.id
-
-      ),
-
-    [
-
-      items
-
-    ]
-
-  )
-
-
-
-
-
-
-
-
-  useEffect(()=>{
-
-
-    if(items.length === 0){
-
-
-      setItems(
-
-        Array.from(
-
-          {
-
-            length:7
-
-          },
-
-          ()=>({
-
-
-            id:
-
-              crypto.randomUUID(),
-
-
-            name:""
-
-
-          })
-
-        )
-
-      )
-
-
-    }
-
-
-  },[items.length,setItems])
-
-
-
-
-
-
-
-
-
-  function updateItem(
-
-    id:string,
-
-    name:string
-
-  ){
-
-
-    setItems(
-
-      current =>
-
-        current.map(
-
-          item =>
-
-            item.id === id
-
-            ?
-
-            {
-
-              ...item,
-
-              name
-
-            }
-
-            :
-
-            item
-
-        )
-
-    )
-
-
-  }
-
-
-
-
-
-
-
-
-
   function handleDragEnd(
 
     event:DragEndEvent
 
   ){
+
 
 
     const {
@@ -419,7 +351,20 @@ export default function SortableRankingList({
 
 
 
-    if(!over || active.id === over.id){
+
+
+    if(!over) return
+
+
+
+
+
+
+    if(
+
+      active.id === over.id
+
+    ){
 
       return
 
@@ -430,49 +375,84 @@ export default function SortableRankingList({
 
 
 
-    setItems(
-
-      current => {
 
 
-        const oldIndex =
-
-          current.findIndex(
-
-            item=>
-
-              item.id === active.id
-
-          )
+    setItems(current=>{
 
 
+      const oldIndex =
 
-        const newIndex =
+        current.findIndex(
 
-          current.findIndex(
+          item=>
 
-            item=>
-
-              item.id === over.id
-
-          )
-
-
-
-
-
-        return arrayMove(
-
-          current,
-
-          oldIndex,
-
-          newIndex
+            item.id === active.id
 
         )
 
 
-      }
+
+
+
+      const newIndex =
+
+        current.findIndex(
+
+          item=>
+
+            item.id === over.id
+
+        )
+
+
+
+
+
+      return arrayMove(
+
+        current,
+
+        oldIndex,
+
+        newIndex
+
+      )
+
+
+    })
+
+
+  }
+    function updateItem(
+
+    id:string,
+
+    value:string
+
+  ){
+
+
+    setItems(current=>
+
+      current.map(item=>
+
+        item.id === id
+
+        ?
+
+        {
+
+          ...item,
+
+          name:value
+
+        }
+
+        :
+
+        item
+
+      )
 
     )
 
@@ -486,42 +466,122 @@ export default function SortableRankingList({
 
 
 
+  if(!hydrated){
+
+
+    return (
+
+      <div className="
+        space-y-4
+      ">
+
+
+        {items.map((item,index)=>(
+
+
+          <div
+
+            key={item.id}
+
+            className="
+              flex
+              items-center
+              gap-4
+            "
+
+          >
+
+            <div className="
+              w-12
+              h-12
+              rounded-full
+              bg-black/10
+            " />
+
+
+
+            <div className="
+              flex-1
+              h-14
+              rounded-2xl
+              bg-[#F7F4EE]
+            " />
+
+
+          </div>
+
+
+        ))}
+
+
+      </div>
+
+    )
+
+
+  }
+
+
+
+
+
+
+
 
   return (
-        <DndContext
 
-      sensors={sensors}
-
-      collisionDetection={closestCenter}
-
-      onDragEnd={handleDragEnd}
-
-    >
+    <div>
 
 
-      <SortableContext
+      <p className="
+        text-center
+        rankd-muted
+        text-sm
+        font-bold
+        mb-6
+      ">
 
-        items={itemIds}
+        Hold ☰ and drag to reorder your Top 7
 
-        strategy={verticalListSortingStrategy}
+      </p>
+
+
+
+
+
+      <DndContext
+
+        sensors={sensors}
+
+        collisionDetection={closestCenter}
+
+        onDragEnd={handleDragEnd}
 
       >
 
 
-        <div className="
-          space-y-4
-        ">
+
+        <SortableContext
+
+          items={items.map(
+
+            item => item.id
+
+          )}
+
+          strategy={verticalListSortingStrategy}
+
+        >
 
 
-          {items.map(
 
-            (
+          <div className="
+            space-y-4
+          ">
 
-              item,
 
-              index
 
-            )=>(
+            {items.map((item,index)=>(
 
 
               <SortableItem
@@ -537,19 +597,23 @@ export default function SortableRankingList({
               />
 
 
-            )
+            ))}
 
 
-          )}
+
+          </div>
 
 
-        </div>
+
+        </SortableContext>
 
 
-      </SortableContext>
+
+      </DndContext>
 
 
-    </DndContext>
+
+    </div>
 
   )
 
