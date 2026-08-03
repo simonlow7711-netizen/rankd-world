@@ -10,6 +10,10 @@ import {
   getAllSupabaseRankings
 } from "@/utils/supabaseRankings"
 
+import {
+  calculateLivePerspectiveScore
+} from "@/utils/livePerspectiveScore"
+
 
 
 
@@ -18,11 +22,17 @@ export default function Trending(){
 
 
   const [rankings,setRankings] =
+
     useState<any[]>([])
 
 
+
   const [loading,setLoading] =
+
     useState(true)
+
+
+
 
 
 
@@ -35,29 +45,61 @@ export default function Trending(){
 
 
       const data =
+
         await getAllSupabaseRankings()
+
+
+
+
+
+      const liveRankings =
+
+        (data ?? [])
+
+        .sort(
+
+          (a,b)=>
+
+            calculateLivePerspectiveScore(b)
+
+            -
+
+            calculateLivePerspectiveScore(a)
+
+        )
+
+        .slice(0,3)
+
+
 
 
 
       setRankings(
 
-        data
-          .slice(0,3)
+        liveRankings
 
       )
 
 
+
+
+
       setLoading(false)
+
 
 
     }
 
 
 
+
+
     loadRankings()
 
 
+
   },[])
+
 
 
 
@@ -93,6 +135,7 @@ export default function Trending(){
 
 
 
+
           <div>
 
 
@@ -125,7 +168,21 @@ export default function Trending(){
 
 
 
+
+            <p className="
+              mt-4
+              text-gray-500
+              max-w-xl
+            ">
+
+              The rankings people are debating right now.
+
+            </p>
+
+
+
           </div>
+
 
 
 
@@ -153,6 +210,8 @@ export default function Trending(){
 
 
 
+
+
         </div>
 
 
@@ -168,11 +227,25 @@ export default function Trending(){
           <div className="
             rankd-card
             p-8
-            font-black
             text-center
+            font-black
           ">
 
             Loading perspectives...
+
+          </div>
+
+
+        ) : rankings.length === 0 ? (
+
+
+          <div className="
+            rankd-card
+            p-8
+            text-center
+          ">
+
+            No live perspectives yet.
 
           </div>
 
@@ -186,7 +259,6 @@ export default function Trending(){
             md:grid-cols-3
             gap-8
           ">
-
 
 
             {rankings.map(ranking=>(
@@ -213,12 +285,12 @@ export default function Trending(){
 
 
 
+
       </div>
 
 
     </section>
 
   )
-
 
 }

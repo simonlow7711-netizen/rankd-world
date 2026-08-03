@@ -2,14 +2,12 @@
 
 import Link from "next/link"
 
-import RankingCard from "@/components/RankingCard"
-
-import { rankings } from "@/data/rankings"
-
 import {
   useEffect,
   useState
 } from "react"
+
+import RankingCard from "@/components/RankingCard"
 
 import {
   getAllSupabaseRankings
@@ -19,20 +17,18 @@ import {
 
 
 
-
-
 export default function RANKDFeed(){
 
 
+  const [rankings,setRankings] =
 
-  const [communityRankings,setCommunityRankings] =
     useState<any[]>([])
 
 
 
   const [loading,setLoading] =
-    useState(true)
 
+    useState(true)
 
 
 
@@ -44,9 +40,7 @@ export default function RANKDFeed(){
   useEffect(()=>{
 
 
-
     async function loadRankings(){
-
 
 
       const data =
@@ -57,9 +51,41 @@ export default function RANKDFeed(){
 
 
 
-      setCommunityRankings(
+      const latestRankings =
 
-        data ?? []
+        (data ?? [])
+
+        .sort(
+
+          (a,b)=>
+
+            new Date(
+
+              b.createdAt ?? "1970-01-01"
+
+            ).getTime()
+
+            -
+
+            new Date(
+
+              a.createdAt ?? "1970-01-01"
+
+            ).getTime()
+
+        )
+
+        .slice(0,6)
+
+
+
+
+
+
+
+      setRankings(
+
+        latestRankings
 
       )
 
@@ -82,84 +108,6 @@ export default function RANKDFeed(){
 
 
   },[])
-
-
-
-
-
-
-
-
-
-  const allRankings = [
-
-    ...communityRankings,
-
-    ...rankings
-
-  ]
-
-  .filter(
-
-    (ranking,index,self)=>
-
-      index === self.findIndex(
-
-        item =>
-
-          item.id === ranking.id
-
-      )
-
-  )
-
-  .slice(0,6)
-
-
-
-
-
-
-
-
-
-  if(loading){
-
-
-    return (
-
-      <section className="
-        py-20
-      ">
-
-
-        <div className="
-          max-w-6xl
-          mx-auto
-        ">
-
-
-          <div className="
-            rankd-card
-            p-8
-            text-center
-            font-black
-          ">
-
-            Loading opinions...
-
-          </div>
-
-
-        </div>
-
-
-      </section>
-
-    )
-
-
-  }
 
 
 
@@ -193,7 +141,6 @@ export default function RANKDFeed(){
         ">
 
 
-
           <div>
 
 
@@ -205,7 +152,7 @@ export default function RANKDFeed(){
               font-black
             ">
 
-              Community opinions
+              Community
 
             </p>
 
@@ -226,20 +173,21 @@ export default function RANKDFeed(){
 
 
 
+
+
             <p className="
               mt-4
               text-gray-500
               max-w-xl
             ">
 
-              Real people. Real choices.
-              Discover what the world is ranking.
+              Fresh perspectives from the community.
 
             </p>
 
 
-          </div>
 
+          </div>
 
 
 
@@ -267,7 +215,6 @@ export default function RANKDFeed(){
 
 
 
-
         </div>
 
 
@@ -278,12 +225,27 @@ export default function RANKDFeed(){
 
 
 
-        {allRankings.length === 0 ? (
+        {loading ? (
 
 
           <div className="
             rankd-card
-            p-10
+            p-8
+            text-center
+            font-black
+          ">
+
+            Loading RANKDs...
+
+          </div>
+
+
+        ) : rankings.length === 0 ? (
+
+
+          <div className="
+            rankd-card
+            p-8
             text-center
           ">
 
@@ -304,7 +266,7 @@ export default function RANKDFeed(){
               text-gray-500
             ">
 
-              Be the first person to decide the Top 7.
+              Be the first person to create a Top 7.
 
             </p>
 
@@ -333,6 +295,7 @@ export default function RANKDFeed(){
         ) : (
 
 
+
           <div className="
             grid
             md:grid-cols-3
@@ -340,7 +303,8 @@ export default function RANKDFeed(){
           ">
 
 
-            {allRankings.map(ranking=>(
+
+            {rankings.map(ranking=>(
 
 
               <RankingCard
@@ -355,14 +319,11 @@ export default function RANKDFeed(){
             ))}
 
 
+
           </div>
 
 
         )}
-
-
-
-
 
 
 
@@ -374,6 +335,5 @@ export default function RANKDFeed(){
     </section>
 
   )
-
 
 }
