@@ -1,23 +1,31 @@
+"use client"
+
 import Link from "next/link"
+
+
 
 
 
 export default function TasteMatchCard({
 
-  person,
-
-  match
+  person
 
 }:{
 
   person:any
 
-  match:{
-    score:number
-    sharedCategories:any[]
+}) {
+
+
+
+  if(!person){
+
+    return null
+
   }
 
-}){
+
+
 
 
 
@@ -29,6 +37,7 @@ export default function TasteMatchCard({
 
     >
 
+
       <div className="
         rankd-card
         p-6
@@ -38,10 +47,10 @@ export default function TasteMatchCard({
 
 
         <p className="
-          text-sm
+          rankd-accent
           uppercase
           tracking-widest
-          rankd-muted
+          text-xs
           font-black
         ">
 
@@ -59,7 +68,7 @@ export default function TasteMatchCard({
           mt-4
         ">
 
-          @{person.username}
+          {person.display_name || person.username}
 
         </h3>
 
@@ -67,114 +76,18 @@ export default function TasteMatchCard({
 
 
 
-
-
-        <div className="
-          mt-6
-          inline-flex
-          items-center
-          gap-2
-          bg-black
-          text-white
-          rounded-full
-          px-5
-          py-3
+        <p className="
+          mt-3
+          rankd-muted
         ">
 
+          See how your opinions compare →
 
-          <span>
-            🤝
-          </span>
-
-
-          <span className="
-            font-black
-          ">
-
-            {match.score}% Match
-
-          </span>
-
-
-        </div>
-
-
-
-
-
-
-
-
-        {match.sharedCategories?.length > 0 && (
-
-          <div className="
-            mt-5
-          ">
-
-
-            <p className="
-              text-sm
-              text-gray-500
-              font-bold
-            ">
-
-              You both ranked:
-
-            </p>
-
-
-
-
-            <div className="
-              flex
-              flex-wrap
-              gap-2
-              mt-3
-            ">
-
-
-              {match.sharedCategories.map(
-
-                (category:any)=>(
-
-                  <span
-
-                    key={category}
-
-                    className="
-                      bg-[#F7F4EE]
-                      px-3
-                      py-2
-                      rounded-full
-                      text-sm
-                      font-bold
-                    "
-
-                  >
-
-                    {category}
-
-                  </span>
-
-                )
-
-              )}
-
-
-            </div>
-
-
-          </div>
-
-        )}
-
-
-
-
-
+        </p>
 
 
       </div>
+
 
     </Link>
 

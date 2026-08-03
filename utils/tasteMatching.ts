@@ -1,43 +1,36 @@
-import { calculateTasteDNA } from "@/utils/tasteProfile"
+import {
+  calculateTasteDNA
+} from "./tasteProfile"
+
+
+
+
 
 
 
 export function calculateTasteMatch(
 
-  rankingsA:any[],
-
-  rankingsB:any[]
+  rankings:any[] = []
 
 ){
 
 
-  const tasteA =
-    calculateTasteDNA(rankingsA)
 
+  const safeRankings =
 
-
-  const tasteB =
-    calculateTasteDNA(rankingsB)
-
-
-
-
-
-  const categoriesA =
-    tasteA.tasteDNA.map(
-
-      item => item.category
-
-    )
+    rankings ?? []
 
 
 
 
 
-  const categoriesB =
-    tasteB.tasteDNA.map(
 
-      item => item.category
+
+  const tasteDNA =
+
+    calculateTasteDNA(
+
+      safeRankings
 
     )
 
@@ -46,12 +39,13 @@ export function calculateTasteMatch(
 
 
 
-  const shared =
 
-    categoriesA.filter(
 
-      category =>
-        categoriesB.includes(category)
+  const categories =
+
+    Object.entries(
+
+      tasteDNA
 
     )
 
@@ -60,15 +54,77 @@ export function calculateTasteMatch(
 
 
 
-  const totalCategories =
 
-    new Set([
+  if(categories.length === 0){
 
-      ...categoriesA,
 
-      ...categoriesB
+    return {
 
-    ]).size
+      score:0,
+
+      label:"No match yet",
+
+      sharedCategories:[]
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+  const sortedCategories =
+
+    categories
+
+    .sort(
+
+      (
+        [,a],
+
+        [,b]
+
+      ) =>
+
+        Number(b) -
+
+        Number(a)
+
+    )
+
+
+
+
+
+
+
+
+  const topCategories =
+
+    sortedCategories
+
+    .slice(
+
+      0,
+
+      3
+
+    )
+
+    .map(
+
+      ([category])=>
+
+        category
+
+    )
+
+
 
 
 
@@ -77,20 +133,30 @@ export function calculateTasteMatch(
 
   const score =
 
-    totalCategories === 0
+    Math.min(
 
-      ? 0
-
-      :
+      100,
 
       Math.round(
 
-        (shared.length /
-          totalCategories)
+        (
 
-          * 100
+          topCategories.length /
+
+          categories.length
+
+        )
+
+        *
+
+        100
 
       )
+
+    )
+
+
+
 
 
 
@@ -103,7 +169,31 @@ export function calculateTasteMatch(
     score,
 
 
-    sharedCategories: shared
+    label:
+
+      score >= 70
+
+      ?
+
+      "Strong taste match"
+
+      :
+
+      score >= 40
+
+      ?
+
+      "Similar tastes"
+
+      :
+
+      "Different perspectives",
+
+
+
+    sharedCategories:
+
+      topCategories
 
 
   }

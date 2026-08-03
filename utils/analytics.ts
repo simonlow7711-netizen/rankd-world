@@ -1,73 +1,89 @@
-const SESSION_KEY = "rankdSessionId"
+import { supabase } from "@/utils/supabase"
 
 
-function getSessionId() {
 
-  if (typeof window === "undefined") {
-    return null
+export async function trackEvent(
+
+  eventName:string,
+
+  metadata:any = {}
+
+){
+
+
+  try {
+
+
+    const {
+      data:{
+        user
+      }
+    } = await supabase.auth.getUser()
+
+
+
+
+
+    await supabase
+
+      .from("analytics_events")
+
+      .insert({
+
+        event_name:eventName,
+
+        user_id:user?.id ?? null,
+
+        metadata
+
+      })
+
+
+
+
+
+    // Google Analytics hook will be added next
+
+    if(
+
+      typeof window !== "undefined"
+
+      &&
+
+      window.gtag
+
+    ){
+
+      window.gtag(
+
+        "event",
+
+        eventName,
+
+        metadata
+
+      )
+
+    }
+
+
+
   }
 
 
-  let sessionId =
-    localStorage.getItem(SESSION_KEY)
+  catch(error){
 
 
-  if (!sessionId) {
+    console.error(
 
-    sessionId =
-      crypto.randomUUID()
+      "Analytics error:",
 
-    localStorage.setItem(
-      SESSION_KEY,
-      sessionId
+      error
+
     )
 
+
   }
-
-
-  return sessionId
-
-}
-
-
-
-export function trackEvent(
-  event: string,
-  data = {}
-) {
-
-  if (typeof window === "undefined") {
-    return
-  }
-
-
-  const existingEvents = JSON.parse(
-    localStorage.getItem("rankdEvents") || "[]"
-  )
-
-
-  existingEvents.push({
-
-    event,
-
-    data,
-
-    timestamp:
-      new Date().toISOString(),
-
-    sessionId:
-      getSessionId(),
-
-    version:
-      "beta-1"
-
-  })
-
-
-  localStorage.setItem(
-    "rankdEvents",
-    JSON.stringify(existingEvents)
-  )
 
 
 }

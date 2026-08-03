@@ -1,41 +1,86 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
+import type { Metadata } from "next"
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+import "./globals.css"
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import Navbar from "@/components/Navbar"
+
+import GoogleAnalytics from "@/components/GoogleAnalytics"
+
+import GoogleAnalyticsPageView from "@/components/GoogleAnalyticsPageView"
+
+
+
+
 
 export const metadata: Metadata = {
-  title: "RANKD — The world's Top 7 everything",
+
+  title:
+    "RANKD — The world's Top 7 everything",
+
   description:
-    "Discover opinions. Create rankings. Decide what deserves the top spot.",
-};
+    "Discover, create and debate the world's Top 7 rankings."
+
+}
+
+
+
+
+
+
 
 export default function RootLayout({
+
   children,
+
 }: Readonly<{
-  children: React.ReactNode;
+
+  children: React.ReactNode
+
 }>) {
+
+
   return (
+
     <html
+
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+
+      data-scroll-behavior="smooth"
+
     >
-      <body className="min-h-full flex flex-col">
 
-  <Navbar />
 
-  {children}
+      <body
 
-</body>
+        className="
+          bg-[#F7F4EE]
+          text-black
+          antialiased
+        "
+
+      >
+
+
+        <GoogleAnalytics />
+
+
+        <GoogleAnalyticsPageView />
+
+
+
+        <Navbar />
+
+
+
+        {children}
+
+
+
+      </body>
+
+
     </html>
-  );
+
+  )
+
 }

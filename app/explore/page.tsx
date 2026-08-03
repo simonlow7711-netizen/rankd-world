@@ -1,85 +1,74 @@
-"use client"
-
-import { useEffect, useState } from "react"
-
-import { rankings } from "@/data/rankings"
-
-import DailyRankd from "@/components/DailyRankd"
-import RankingCard from "@/components/RankingCard"
-import PerspectiveCard from "@/components/PerspectiveCard"
-import TasteMatchCard from "@/components/TasteMatchCard"
-import ChallengeCard from "@/components/ChallengeCard"
+import Link from "next/link"
 
 import {
   getAllSupabaseRankings
 } from "@/utils/supabaseRankings"
 
+import {
+  rankings as seedRankings
+} from "@/data/rankings"
+
+import RankingCard from "@/components/RankingCard"
+
+import DailyRankd from "@/components/DailyRankd"
+
+import PerspectiveCard from "@/components/PerspectiveCard"
+
+import TasteMatchCard from "@/components/TasteMatchCard"
+
+import ChallengeCard from "@/components/ChallengeCard"
 
 import {
-  getTrendingRankings,
-  getLatestRankings,
-  getBiggestDebates
+  getTrendingRankings
 } from "@/utils/rankingMetrics"
-
 
 import {
   getPerspectiveGaps
 } from "@/utils/perspectiveMetrics"
 
-
 import {
   getDiscoverableUsers
 } from "@/utils/userDiscovery"
-
 
 import {
   calculateTasteMatch
 } from "@/utils/tasteMatching"
 
-
 import {
-  calculateTasteChallenge
-} from "@/utils/tasteChallenge"
+  calculateChallenge
+} from "@/utils/challengeTaste"
 
 
 
 
 
-export default function Explore(){
+export const metadata = {
 
+  title:
+    "Explore Top 7 Rankings | RANKD",
 
-  const [communityRankings,setCommunityRankings] =
-    useState<any[]>([])
+  description:
+    "Discover what the world is ranking."
 
-
-
-
-
-  useEffect(()=>{
-
-
-    async function loadRankings(){
-
-
-      const data =
-        await getAllSupabaseRankings()
+}
 
 
 
-      setCommunityRankings(data)
-
-
-    }
 
 
 
-    loadRankings()
 
 
 
-  },[])
+export default async function ExplorePage(){
 
 
+
+
+
+  const supabaseRankings =
+
+    await getAllSupabaseRankings()
 
 
 
@@ -89,13 +78,17 @@ export default function Explore(){
 
   const allRankings = [
 
-    ...communityRankings,
+    ...(supabaseRankings ?? []),
 
-    ...rankings
+    ...seedRankings
 
-  ].filter(
+  ]
+
+  .filter(
 
     (ranking,index,self)=>
+
+      ranking &&
 
       index === self.findIndex(
 
@@ -115,197 +108,79 @@ export default function Explore(){
 
 
 
-  const trending =
-    getTrendingRankings(allRankings)
+  const trendingRankings =
+
+    getTrendingRankings(
+
+      allRankings
+
+    )
 
 
 
-  const debates =
-    getBiggestDebates(allRankings)
 
-
-
-  const latest =
-    getLatestRankings(allRankings)
 
 
 
 
 
   const perspectiveGaps =
-    getPerspectiveGaps(allRankings)
 
+    getPerspectiveGaps(
 
-
-
-
-  const people =
-    getDiscoverableUsers(allRankings)
-
-
-
-
-
-  const currentUser =
-    people[0]
-
-
-
-
-
-
-
-
-  const tasteMatches =
-
-    people
-
-      .slice(1)
-
-      .map(person=>({
-
-
-        person,
-
-
-        match:
-
-          calculateTasteMatch(
-
-            currentUser?.rankings || [],
-
-            person.rankings
-
-          )
-
-
-      }))
-
-
-
-
-
-
-
-
-
-
-  const challenges =
-
-    people
-
-      .slice(1)
-
-      .flatMap(person=>{
-
-
-        return calculateTasteChallenge(
-
-          currentUser?.rankings || [],
-
-          person.rankings || []
-
-        )
-
-        .map(challenge=>({
-
-          person,
-
-          ranking:
-
-            challenge.ranking,
-
-
-          challenge
-
-
-        }))
-
-
-      })
-
-
-
-
-
-
-
-
-
-  function Section({
-
-    title,
-
-    items
-
-  }:{
-
-    title:string
-
-    items:any[]
-
-  }){
-
-
-    if(!items || items.length === 0)
-
-      return null
-
-
-
-
-
-    return (
-
-      <section className="
-        mb-20
-      ">
-
-
-        <h2 className="
-          text-4xl
-          font-black
-          mb-8
-        ">
-
-          {title}
-
-        </h2>
-
-
-
-
-
-        <div className="
-          grid
-          md:grid-cols-3
-          gap-8
-        ">
-
-
-          {items.map(item=>(
-
-
-            <RankingCard
-
-              key={item.id}
-
-              ranking={item}
-
-            />
-
-
-          ))}
-
-
-        </div>
-
-
-      </section>
+      allRankings
 
     )
 
-  }
+
+
+
+
+
+
+
+
+  const discoverableUsers =
+
+    getDiscoverableUsers(
+
+      allRankings
+
+    )
+
+
+
+
+
+
+
+
+
+  const tasteMatch =
+
+    calculateTasteMatch(
+
+      allRankings
+
+    )
+
+
+
+
+
+
+
+
+
+  const challenge =
+
+    calculateChallenge(
+
+      allRankings,
+
+      allRankings
+
+    )
 
 
 
@@ -322,12 +197,13 @@ export default function Explore(){
       bg-[#F7F4EE]
       text-black
       px-6
-      py-20
+      py-12
     ">
 
 
+
       <div className="
-        max-w-6xl
+        max-w-7xl
         mx-auto
       ">
 
@@ -335,11 +211,12 @@ export default function Explore(){
 
 
 
-        <header className="
+
+
+
+        <section className="
+          mb-16
           text-center
-          max-w-4xl
-          mx-auto
-          mb-20
         ">
 
 
@@ -361,15 +238,18 @@ export default function Explore(){
 
 
 
+
           <h1 className="
             text-6xl
             md:text-8xl
             font-black
-            mt-6
+            mt-5
             leading-none
           ">
 
-            Explore RANKD
+            Explore
+            <br />
+            RANKD
 
           </h1>
 
@@ -378,36 +258,24 @@ export default function Explore(){
 
 
 
+
           <p className="
-            mt-8
+            mt-6
             text-xl
-            md:text-2xl
             rankd-muted
-            leading-relaxed
+            max-w-xl
+            mx-auto
           ">
 
-            See what people think.
-
-            <br />
-
-            Find rankings that make you say:
-
-            <br />
-
-            <span className="
-              font-black
-              text-black
-            ">
-
-              "I'd rank it differently."
-
-            </span>
+            Discover the Top 7 opinions
+            shaping conversations.
 
           </p>
 
 
 
-        </header>
+        </section>
+
 
 
 
@@ -426,13 +294,84 @@ export default function Explore(){
 
 
 
-        <Section
+        <section className="
+          mb-20
+        ">
 
-          title="Trending debates"
 
-          items={debates}
 
-        />
+          <div className="
+            mb-10
+          ">
+
+
+            <p className="
+              rankd-accent
+              uppercase
+              tracking-widest
+              text-sm
+              font-black
+            ">
+
+              Community
+
+            </p>
+
+
+
+
+
+            <h2 className="
+              text-5xl
+              font-black
+              mt-3
+            ">
+
+              Latest RANKDs
+
+            </h2>
+
+
+          </div>
+
+
+
+
+
+
+
+          <div className="
+            grid
+            md:grid-cols-3
+            gap-8
+          ">
+
+
+
+            {allRankings
+
+              .slice(0,6)
+
+              .map((ranking:any)=>(
+
+
+                <RankingCard
+
+                  key={ranking.id}
+
+                  ranking={ranking}
+
+                />
+
+
+              ))}
+
+
+          </div>
+
+
+
+        </section>
 
 
 
@@ -447,15 +386,18 @@ export default function Explore(){
         ">
 
 
+
           <h2 className="
-            text-4xl
+            text-5xl
             font-black
-            mb-8
+            mb-10
           ">
 
-            Biggest perspective gaps
+            🔥 Trending debates
 
           </h2>
+
+
 
 
 
@@ -468,21 +410,24 @@ export default function Explore(){
           ">
 
 
-            {perspectiveGaps.map(item=>(
+
+            {trendingRankings
+
+              .slice(0,3)
+
+              .map((ranking:any)=>(
 
 
-              <PerspectiveCard
+                <RankingCard
 
-                key={item.ranking.id}
+                  key={ranking.id}
 
-                ranking={item.ranking}
+                  ranking={ranking}
 
-                gap={item.gap}
-
-              />
+                />
 
 
-            ))}
+              ))}
 
 
           </div>
@@ -503,15 +448,18 @@ export default function Explore(){
         ">
 
 
+
           <h2 className="
-            text-4xl
+            text-5xl
             font-black
-            mb-8
+            mb-10
           ">
 
-            People who rank like you
+            Different perspectives
 
           </h2>
+
+
 
 
 
@@ -524,21 +472,24 @@ export default function Explore(){
           ">
 
 
-            {tasteMatches.map(item=>(
+
+            {perspectiveGaps
+
+              .slice(0,3)
+
+              .map((gap:any,index:number)=>(
 
 
-              <TasteMatchCard
+                <PerspectiveCard
 
-                key={item.person.username}
+                  key={index}
 
-                person={item.person}
+                  perspective={gap}
 
-                match={item.match}
-
-              />
+                />
 
 
-            ))}
+              ))}
 
 
           </div>
@@ -559,13 +510,14 @@ export default function Explore(){
         ">
 
 
+
           <h2 className="
-            text-4xl
+            text-5xl
             font-black
-            mb-8
+            mb-10
           ">
 
-            Challenge your taste
+            Your Taste Match
 
           </h2>
 
@@ -573,33 +525,18 @@ export default function Explore(){
 
 
 
-          <div className="
-            grid
-            md:grid-cols-3
-            gap-8
-          ">
 
 
-            {challenges.map(item=>(
+          {discoverableUsers?.[0] && (
 
+            <TasteMatchCard
 
-              <ChallengeCard
+              person={discoverableUsers[0]}
 
-                key={`${item.person.username}-${item.ranking.id}`}
+            />
 
-                person={item.person}
+          )}
 
-                ranking={item.ranking}
-
-                challenge={item.challenge}
-
-              />
-
-
-            ))}
-
-
-          </div>
 
 
         </section>
@@ -612,29 +549,94 @@ export default function Explore(){
 
 
 
-        <Section
-
-          title="Latest opinions"
-
-          items={latest}
-
-        />
+        <section className="
+          mb-20
+        ">
 
 
 
+          <h2 className="
+            text-5xl
+            font-black
+            mb-10
+          ">
+
+            Challenge your opinion
+
+          </h2>
 
 
 
 
 
 
-        <Section
 
-          title="All RANKDs"
+          {allRankings?.[0] && (
 
-          items={allRankings}
+            <ChallengeCard
 
-        />
+              ranking={allRankings[0]}
+
+            />
+
+          )}
+
+
+
+        </section>
+
+
+
+
+
+
+
+
+
+        <Link
+
+          href="/create"
+
+          className="
+            block
+            bg-black
+            text-white
+            rounded-[40px]
+            p-12
+            text-center
+          "
+
+        >
+
+
+          <h2 className="
+            text-5xl
+            font-black
+          ">
+
+            What is your Top 7?
+
+          </h2>
+
+
+
+
+
+          <p className="
+            mt-5
+            text-xl
+            text-gray-300
+          ">
+
+            Create the ranking everyone debates.
+
+          </p>
+
+
+
+        </Link>
+
+
 
 
 
@@ -645,7 +647,7 @@ export default function Explore(){
 
     </main>
 
-  )
 
+  )
 
 }

@@ -1,46 +1,24 @@
+import type { Metadata } from "next"
+
+import Link from "next/link"
+
+import { notFound } from "next/navigation"
+
 import RankingCard from "@/components/RankingCard"
 
-import { rankings } from "@/data/rankings"
-
-import { getAllSupabaseRankings } from "@/utils/supabaseRankings"
-
-
+import {
+  getAllSupabaseRankings
+} from "@/utils/supabaseRankings"
 
 
 
-const categoryNames = {
 
-  "food-drink": "Food & Drink",
 
-  "film-tv": "Film & TV",
+type Props = {
 
-  "music": "Music",
-
-  "sport": "Sport",
-
-  "travel": "Travel",
-
-  "gaming": "Gaming",
-
-  "books": "Books",
-
-  "technology": "Technology",
-
-  "places": "Places",
-
-  "lifestyle": "Lifestyle",
-
-  "entertainment": "Entertainment",
-
-  "business": "Business",
-
-  "art-design": "Art & Design",
-
-  "education": "Education",
-
-  "science": "Science",
-
-  "general": "General"
+  params: Promise<{
+    slug:string
+  }>
 
 }
 
@@ -48,22 +26,111 @@ const categoryNames = {
 
 
 
-export default async function CategoryPage({
-
-  params
-
-}: {
-
-  params: Promise<{
-
-    slug:string
-
-  }>
-
-}) {
 
 
-  const {slug} = await params
+const categoryMap: Record<string,string> = {
+
+
+  "food-drink":
+
+    "Food & Drink",
+
+
+  "film-tv":
+
+    "Film & TV",
+
+
+  "music":
+
+    "Music",
+
+
+  "sport":
+
+    "Sport",
+
+
+  "travel":
+
+    "Travel",
+
+
+  "technology":
+
+    "Technology",
+
+
+  "lifestyle":
+
+    "Lifestyle"
+
+
+}
+
+
+
+
+
+
+
+
+
+function getCategoryName(slug:string){
+
+
+  return (
+
+    categoryMap[slug]
+
+    ??
+
+    slug
+
+      .split("-")
+
+      .map(
+
+        word =>
+
+          word.charAt(0).toUpperCase()
+
+          +
+
+          word.slice(1)
+
+      )
+
+      .join(" ")
+
+  )
+
+
+}
+
+
+
+
+
+
+
+
+
+export async function generateMetadata(
+
+  {
+    params
+
+  }:Props
+
+):Promise<Metadata>{
+
+
+  const {
+
+    slug
+
+  } = await params
 
 
 
@@ -71,19 +138,82 @@ export default async function CategoryPage({
 
   const category =
 
-    categoryNames[
+    getCategoryName(
 
-      slug as keyof typeof categoryNames
+      slug
 
-    ]
-
-
+    )
 
 
 
 
 
-  const communityRankings =
+
+
+  return {
+
+
+    title:
+
+      `${category} Rankings | RANKD`,
+
+
+
+    description:
+
+      `Discover the best ${category} Top 7 rankings from the RANKD community.`
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+export default async function CategoryPage(
+
+  {
+    params
+
+  }:Props
+
+){
+
+
+  const {
+
+    slug
+
+  } = await params
+
+
+
+
+
+
+  const category =
+
+    getCategoryName(
+
+      slug
+
+    )
+
+
+
+
+
+
+
+
+  const allRankings =
 
     await getAllSupabaseRankings()
 
@@ -92,39 +222,34 @@ export default async function CategoryPage({
 
 
 
-  const allRankings = [
 
-    ...communityRankings,
-
-    ...rankings
-
-  ].filter(
-
-    (ranking,index,self)=>
-
-      index === self.findIndex(
-
-        item => item.id === ranking.id
-
-      )
-
-  )
-
-
-
-
-
-
-
-  const categoryRankings =
+  const rankings =
 
     allRankings.filter(
 
-      ranking =>
+      (ranking:any)=>
 
         ranking.category === category
 
     )
+
+
+
+
+
+
+
+  if(
+
+    rankings.length === 0
+
+  ){
+
+    notFound()
+
+  }
+
+
 
 
 
@@ -139,12 +264,12 @@ export default async function CategoryPage({
       bg-[#F7F4EE]
       text-black
       px-6
-      py-16
+      py-20
     ">
 
 
       <div className="
-        max-w-6xl
+        max-w-7xl
         mx-auto
       ">
 
@@ -152,19 +277,35 @@ export default async function CategoryPage({
 
 
 
-        <section className="
-          text-center
+        <header className="
+          mb-16
         ">
+
+
+          <p className="
+            rankd-accent
+            uppercase
+            tracking-[0.3em]
+            text-sm
+            font-black
+          ">
+
+            Category
+
+          </p>
+
+
+
 
 
           <h1 className="
             text-5xl
             md:text-7xl
             font-black
-            tracking-tight
+            mt-4
           ">
 
-            {category ?? "Explore RANKDs"}
+            {category}
 
           </h1>
 
@@ -173,17 +314,59 @@ export default async function CategoryPage({
 
 
           <p className="
-            mt-5
+            mt-6
             text-xl
             text-gray-500
             max-w-2xl
-            mx-auto
           ">
 
-            Discover the Top 7 opinions people are sharing.
+            Explore the community's Top 7 opinions in {category}.
 
           </p>
 
+
+        </header>
+
+
+
+
+
+
+
+
+
+        <section>
+
+
+          <div className="
+            grid
+            md:grid-cols-3
+            gap-8
+          ">
+
+
+            {
+              rankings.map(
+
+                (ranking:any)=>(
+
+
+                  <RankingCard
+
+                    key={ranking.id}
+
+                    ranking={ranking}
+
+                  />
+
+
+                )
+
+              )
+            }
+
+
+          </div>
 
 
         </section>
@@ -195,69 +378,72 @@ export default async function CategoryPage({
 
 
 
-        {categoryRankings.length === 0 && (
+
+        <section className="
+          mt-20
+        ">
+
 
           <div className="
-            mt-12
-            bg-white
-            rounded-3xl
-            p-10
+            bg-black
+            text-white
+            rounded-[40px]
+            px-8
+            py-14
             text-center
           ">
 
 
             <h2 className="
-              text-2xl
+              text-4xl
+              md:text-5xl
               font-black
             ">
 
-              No RANKDs yet
+              Have a different opinion?
 
             </h2>
 
 
+
+
+
             <p className="
-              mt-3
-              text-gray-500
+              mt-4
+              text-gray-300
             ">
 
-              Be the first person to create a Top 7 in this category.
+              Create your own Top 7.
 
             </p>
 
 
+
+
+
+            <Link
+
+              href="/create"
+
+              className="
+                inline-block
+                mt-8
+                bg-white
+                text-black
+                px-8
+                py-4
+                rounded-full
+                font-black
+              "
+
+            >
+
+              Create a RANKD →
+
+            </Link>
+
+
           </div>
-
-        )}
-
-
-
-
-
-
-
-        <section className="
-          mt-14
-          grid
-          md:grid-cols-3
-          gap-8
-        ">
-
-
-          {categoryRankings.map(ranking=>(
-
-
-            <RankingCard
-
-              key={ranking.id}
-
-              ranking={ranking}
-
-            />
-
-
-          ))}
-
 
 
         </section>

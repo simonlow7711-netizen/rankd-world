@@ -1,200 +1,187 @@
 export function calculateChallenge(
 
-  userRankings: any[],
+  userRankings:any[] = [],
 
-  otherRankings: any[]
+  otherRankings:any[] = []
 
-) {
-
-
-  const challenges:any[] = []
+){
 
 
 
+  const safeUserRankings =
 
-  userRankings.forEach((userRanking)=>{
-
-
-    otherRankings.forEach((otherRanking)=>{
+    userRankings ?? []
 
 
 
-      const comparisons =
+  const safeOtherRankings =
 
-        userRanking.items
-
-          .map((item:any)=>{
+    otherRankings ?? []
 
 
-            const otherItem =
 
-              otherRanking.items.find(
 
-                (candidate:any)=>
 
-                  candidate.name === item.name
+
+
+  if(
+
+    safeUserRankings.length === 0
+
+    ||
+
+    safeOtherRankings.length === 0
+
+  ){
+
+    return {
+
+      score:0,
+
+      title:"No challenge yet",
+
+      message:
+
+        "Create more RANKDs to discover your differences."
+
+    }
+
+  }
+
+
+
+
+
+
+
+
+  let comparisons = 0
+
+  let differences = 0
+
+
+
+
+
+
+
+  safeUserRankings.forEach(
+
+    (userRanking)=>{
+
+
+      safeOtherRankings.forEach(
+
+        (otherRanking)=>{
+
+
+
+          if(
+
+            userRanking.category ===
+
+            otherRanking.category
+
+          ){
+
+
+
+            comparisons++
+
+
+
+
+
+
+
+            const userItems =
+
+              userRanking.items
+
+              ?.map(
+
+                (item:any)=>
+
+                  item.name
+
+              )
+
+              ??
+
+              []
+
+
+
+
+
+
+
+
+            const otherItems =
+
+              otherRanking.items
+
+              ?.map(
+
+                (item:any)=>
+
+                  item.name
+
+              )
+
+              ??
+
+              []
+
+
+
+
+
+
+
+
+            const overlap =
+
+              userItems.filter(
+
+                (item:string)=>
+
+                  otherItems.includes(item)
 
               )
 
 
 
-            if(!otherItem)
-
-              return null
 
 
 
-            return {
 
 
-              item:item.name,
+            if(
 
+              overlap.length <
 
-              userPosition:item.position,
+              userItems.length / 2
 
+            ){
 
-              otherPosition:otherItem.position,
-
-
-              difference:
-
-                Math.abs(
-
-                  item.position -
-
-                  otherItem.position
-
-                )
-
+              differences++
 
             }
 
 
-          })
 
-          .filter(Boolean)
-
+          }
 
 
 
-
-
-      if(comparisons.length === 0)
-
-        return
-
-
-
-
-
-
-      comparisons.sort(
-
-        (a:any,b:any)=>
-
-          b.difference -
-
-          a.difference
+        }
 
       )
 
 
 
-
-
-      const biggestDifference =
-
-        comparisons[0]
-
-
-
-
-
-      const totalDifference =
-
-        comparisons.reduce(
-
-          (
-
-            total:number,
-
-            item:any
-
-          )=>
-
-
-            total + item.difference,
-
-
-          0
-
-        )
-
-
-
-
-
-
-
-      challenges.push({
-
-
-        ranking:userRanking,
-
-
-        comparedRanking:otherRanking,
-
-
-        biggestDifference,
-
-
-        challengeScore:
-
-          Math.min(
-
-            Math.round(
-
-              (
-
-                totalDifference /
-
-                (userRanking.items.length * 6)
-
-              )
-
-              * 100
-
-            ),
-
-            100
-
-          )
-
-
-      })
-
-
-
-    })
-
-
-
-  })
-
-
-
-
-
-
-
-
-  challenges.sort(
-
-    (a,b)=>
-
-      b.challengeScore -
-
-      a.challengeScore
+    }
 
   )
 
@@ -203,7 +190,106 @@ export function calculateChallenge(
 
 
 
-  return challenges[0] || null
+
+
+
+  if(comparisons === 0){
+
+
+    return {
+
+      score:0,
+
+      title:"No challenge yet",
+
+      message:
+
+        "No comparable rankings found."
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  const score =
+
+    Math.round(
+
+      (
+
+        differences /
+
+        comparisons
+
+      )
+
+      *
+
+      100
+
+    )
+
+
+
+
+
+
+
+
+
+  return {
+
+
+    score,
+
+
+
+    title:
+
+      score >= 70
+
+      ?
+
+      "High debate potential 🔥"
+
+      :
+
+      score >= 40
+
+      ?
+
+      "Interesting differences"
+
+      :
+
+      "Similar opinions",
+
+
+
+
+    message:
+
+      score >= 70
+
+      ?
+
+      "Your ranking could spark a real debate."
+
+      :
+
+      "See where your opinions differ."
+
+
+
+  }
 
 
 }

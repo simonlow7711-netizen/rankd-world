@@ -1,20 +1,99 @@
+"use client"
+
 import Link from "next/link"
+
+
 
 
 
 export default function PerspectiveCard({
 
-  ranking,
-
-  gap
+  perspective
 
 }:{
 
-  ranking:any
-
-  gap:number
+  perspective:any
 
 }) {
+
+
+
+  if(!perspective){
+
+    return null
+
+  }
+
+
+
+
+
+
+
+  const ranking =
+
+    perspective.ranking
+
+    ||
+
+    perspective.originalRanking
+
+    ||
+
+    perspective.rankingA
+
+    ||
+
+    perspective.first
+
+    ||
+
+    perspective
+
+
+
+
+
+
+
+  if(!ranking?.id){
+
+    return null
+
+  }
+
+
+
+
+
+
+
+  const title =
+
+    ranking.title
+
+    ||
+
+    "Different Perspectives"
+
+
+
+
+
+
+
+  const category =
+
+    ranking.category
+
+    ||
+
+    "Community"
+
+
+
+
+
 
 
 
@@ -27,13 +106,18 @@ export default function PerspectiveCard({
     >
 
 
-      <div className="
-        rankd-card
-        p-8
-        hover:-translate-y-2
-        transition
-        h-full
-      ">
+      <article
+
+        className="
+          rankd-card
+          p-8
+          h-full
+          hover:-translate-y-2
+          transition
+          cursor-pointer
+        "
+
+      >
 
 
 
@@ -43,11 +127,11 @@ export default function PerspectiveCard({
           rankd-accent
           uppercase
           tracking-widest
-          text-sm
+          text-xs
           font-black
         ">
 
-          Perspective Gap
+          {category}
 
         </p>
 
@@ -64,7 +148,7 @@ export default function PerspectiveCard({
           leading-tight
         ">
 
-          {ranking.title}
+          {title}
 
         </h3>
 
@@ -74,34 +158,41 @@ export default function PerspectiveCard({
 
 
 
+        <p className="
+          mt-5
+          rankd-muted
+        ">
+
+          Different people ranked this differently.
+
+          Compare opinions and join the debate.
+
+        </p>
+
+
+
+
+
+
+
         <div className="
           mt-8
-          bg-[#F7F4EE]
-          rounded-3xl
-          p-6
+          pt-6
+          border-t
+          border-black/10
         ">
 
 
+
           <p className="
-            text-5xl
+            rankd-accent
             font-black
           ">
 
-            {gap}%
+            See the perspective gap →
 
           </p>
 
-
-
-
-          <p className="
-            mt-2
-            rankd-muted
-          ">
-
-            difference in opinion
-
-          </p>
 
 
         </div>
@@ -111,20 +202,7 @@ export default function PerspectiveCard({
 
 
 
-
-        <p className="
-          mt-8
-          font-black
-        ">
-
-          See where people disagree →
-
-        </p>
-
-
-
-
-      </div>
+      </article>
 
 
     </Link>

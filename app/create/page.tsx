@@ -4,7 +4,23 @@ import CreateClient from "./CreateClient"
 
 
 
-export default function CreatePage() {
+
+
+export const metadata = {
+
+  title:
+    "Create Your Top 7 | RANKD",
+
+  description:
+    "Create your own ranking and start the debate."
+
+}
+
+
+
+
+
+export default function CreatePage(){
 
 
   return (
@@ -16,56 +32,14 @@ export default function CreatePage() {
         <main className="
           min-h-screen
           bg-[#F7F4EE]
-          text-black
           flex
-          flex-col
           items-center
           justify-center
-          px-6
-          text-center
+          font-black
+          text-2xl
         ">
 
-
-          <p className="
-            rankd-accent
-            uppercase
-            tracking-[0.3em]
-            text-sm
-            font-black
-          ">
-
-            RANKD
-
-          </p>
-
-
-
-
-
-          <h1 className="
-            text-5xl
-            font-black
-            mt-6
-          ">
-
-            Creating your RANKD...
-
-          </h1>
-
-
-
-
-
-          <p className="
-            mt-4
-            rankd-muted
-            text-lg
-          ">
-
-            Preparing your opinion.
-
-          </p>
-
+          Loading RANKD creator...
 
         </main>
 
@@ -78,5 +52,6 @@ export default function CreatePage() {
     </Suspense>
 
   )
+
 
 }
