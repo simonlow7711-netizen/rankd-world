@@ -6,7 +6,6 @@ import {
 } from "react"
 
 import {
-  useParams,
   useRouter
 } from "next/navigation"
 
@@ -42,22 +41,30 @@ import {
 
 
 
+type RankClientProps = {
 
-export default function RankClient(){
+  id:string
+
+}
 
 
 
-  const params = useParams()
+
+
+
+
+
+
+export default function RankClient({
+
+  id
+
+}:RankClientProps){
+
+
 
   const router = useRouter()
 
-
-
-
-
-  const id =
-
-    params.id as string
 
 
 
@@ -66,26 +73,31 @@ export default function RankClient(){
 
 
   const [ranking,setRanking] =
+
     useState<any>(null)
 
 
 
   const [parentRanking,setParentRanking] =
+
     useState<any>(null)
 
 
 
   const [remixes,setRemixes] =
+
     useState<any[]>([])
 
 
 
   const [conversationTree,setConversationTree] =
+
     useState<any[]>([])
 
 
 
   const [loading,setLoading] =
+
     useState(true)
 
 
@@ -99,7 +111,13 @@ export default function RankClient(){
   useEffect(()=>{
 
 
-    if(!id) return
+
+    if(!id){
+
+      return
+
+    }
+
 
 
 
@@ -129,6 +147,7 @@ export default function RankClient(){
 
 
 
+
       const current =
 
         await getSupabaseRanking(id)
@@ -143,12 +162,14 @@ export default function RankClient(){
       if(!current){
 
 
+
         setLoading(false)
 
         return
 
 
       }
+
 
 
 
@@ -165,8 +186,8 @@ export default function RankClient(){
 
 
 
-
       if(current.parentId){
+
 
 
         const parent =
@@ -254,22 +275,25 @@ export default function RankClient(){
 
           (conversationRankings ?? [])
 
-          .map((item:any)=>({
+          .map((item:any)=>(
 
 
-            id:item.id,
+
+            {
+
+              id:item.id,
+
+              title:item.title,
+
+              parentId:item.parent_id,
+
+              rootId:item.root_id
+
+            }
 
 
-            title:item.title,
 
-
-            parentId:item.parent_id,
-
-
-            rootId:item.root_id
-
-
-          }))
+          ))
 
         )
 
@@ -343,22 +367,26 @@ export default function RankClient(){
 
         (childRankings ?? [])
 
-        .map((item:any)=>({
+        .map((item:any)=>(
 
 
-          id:item.id,
+
+          {
+
+            id:item.id,
+
+            title:item.title,
+
+            parentId:item.parent_id,
+
+            rootId:item.root_id
 
 
-          title:item.title,
+          }
 
 
-          parentId:item.parent_id,
 
-
-          rootId:item.root_id
-
-
-        }))
+        ))
 
       )
 
@@ -379,6 +407,8 @@ export default function RankClient(){
 
 
 
+
+
     load()
 
 
@@ -392,16 +422,15 @@ export default function RankClient(){
 
 
 
-
-
-
-
-
   function rankIt(){
 
 
 
-    if(!ranking) return
+    if(!ranking){
+
+      return
+
+    }
 
 
 
@@ -454,7 +483,6 @@ export default function RankClient(){
 
 
 
-
   if(loading){
 
 
@@ -477,8 +505,8 @@ export default function RankClient(){
 
     )
 
-  }
 
+  }
 
 
 
@@ -507,17 +535,9 @@ export default function RankClient(){
 
     )
 
+
   }
-
-
-
-
-
-
-
-
-
-  return (
+    return (
 
     <main className="
       min-h-screen
@@ -537,11 +557,8 @@ export default function RankClient(){
 
 
 
-
-
-
-
         {parentRanking && (
+
 
           <div className="
             rankd-card
@@ -561,7 +578,6 @@ export default function RankClient(){
               Inspired by
 
             </p>
-
 
 
 
@@ -589,9 +605,8 @@ export default function RankClient(){
 
           </div>
 
+
         )}
-
-
 
 
 
@@ -601,9 +616,8 @@ export default function RankClient(){
 
         {conversationTree.length > 0 && (
 
-          <div className="
-            mb-10
-          ">
+
+          <div className="mb-10">
 
 
             <ConversationTree
@@ -617,9 +631,8 @@ export default function RankClient(){
 
           </div>
 
+
         )}
-
-
 
 
 
@@ -632,8 +645,6 @@ export default function RankClient(){
           lg:grid-cols-3
           gap-10
         ">
-
-
 
 
 
@@ -693,7 +704,6 @@ export default function RankClient(){
 
 
 
-
             <div className="
               mt-10
               space-y-4
@@ -729,6 +739,7 @@ export default function RankClient(){
 
 
 
+
                   <div className="
                     text-2xl
                     font-black
@@ -746,7 +757,6 @@ export default function RankClient(){
 
 
             </div>
-
 
 
 
@@ -773,10 +783,7 @@ export default function RankClient(){
 
 
 
-
           </section>
-
-
 
 
 
@@ -813,6 +820,7 @@ export default function RankClient(){
                 rankd-muted
               ">
 
+
                 {remixes.length === 0
 
                 ?
@@ -824,6 +832,7 @@ export default function RankClient(){
                 `${remixes.length} people ranked this differently.`
 
                 }
+
 
               </p>
 
@@ -881,8 +890,6 @@ export default function RankClient(){
 
 
 
-
-
             <Link
 
               href="/explore"
@@ -908,6 +915,7 @@ export default function RankClient(){
 
 
 
+
               <p className="
                 mt-3
                 rankd-muted
@@ -922,11 +930,7 @@ export default function RankClient(){
 
 
 
-
-
-
           </aside>
-
 
 
 

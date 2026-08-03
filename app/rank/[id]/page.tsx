@@ -110,12 +110,34 @@ export async function generateMetadata(
 
 
 
-export default function RankPage(){
+export default async function RankPage(
+
+  {
+
+    params
+
+  }:Props
+
+){
+
+
+  const {
+
+    id
+
+  } = await params
+
+
+
 
 
   return (
 
-    <RankClient />
+    <RankClient
+
+      id={id}
+
+    />
 
   )
 

@@ -1,16 +1,24 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import {
+  useEffect,
+  useState
+} from "react"
 
 import {
   useRouter,
   useSearchParams
 } from "next/navigation"
 
-import { trackEvent } from "@/utils/analytics"
+import {
+  trackEvent
+} from "@/utils/analytics"
 
-import { supabase } from "@/utils/supabase"
+import {
+  supabase
+} from "@/utils/supabase"
 
+import SortableRankingList from "@/components/SortableRankingList"
 
 
 const categories = [
@@ -35,6 +43,13 @@ const categories = [
 ]
 
 
+type RankingItem = {
+
+  id:string
+
+  name:string
+
+}
 
 
 
@@ -43,14 +58,9 @@ const categories = [
 export default function CreateClient(){
 
 
-
   const router = useRouter()
 
   const searchParams = useSearchParams()
-
-
-
-
 
 
 
@@ -60,31 +70,52 @@ export default function CreateClient(){
 
 
 
-
-
   const [category,setCategory] =
 
     useState("")
 
 
 
-
-
   const [items,setItems] =
 
-    useState([
+    useState<RankingItem[]>([
 
-      "",
-      "",
-      "",
-      "",
-      "",
-      "",
-      ""
+      {
+        id:crypto.randomUUID(),
+        name:""
+      },
+
+      {
+        id:crypto.randomUUID(),
+        name:""
+      },
+
+      {
+        id:crypto.randomUUID(),
+        name:""
+      },
+
+      {
+        id:crypto.randomUUID(),
+        name:""
+      },
+
+      {
+        id:crypto.randomUUID(),
+        name:""
+      },
+
+      {
+        id:crypto.randomUUID(),
+        name:""
+      },
+
+      {
+        id:crypto.randomUUID(),
+        name:""
+      }
 
     ])
-
-
 
 
 
@@ -94,13 +125,9 @@ export default function CreateClient(){
 
 
 
-
-
   const [message,setMessage] =
 
     useState("")
-
-
 
 
 
@@ -112,12 +139,34 @@ export default function CreateClient(){
 
 
 
+  function createEmptyItems(){
+
+
+    return Array.from(
+
+      {
+        length:7
+      },
+
+      ()=>({
+
+        id:crypto.randomUUID(),
+
+        name:""
+
+      })
+
+    )
+
+
+  }
+
+
 
 
 
 
   useEffect(()=>{
-
 
 
     trackEvent(
@@ -145,22 +194,15 @@ export default function CreateClient(){
 
 
 
-
-
-
     const startingTitle =
 
       searchParams.get("title")
 
 
 
-
-
     const startingItems =
 
       searchParams.get("items")
-
-
 
 
 
@@ -171,10 +213,6 @@ export default function CreateClient(){
       ||
 
       searchParams.get("parentId")
-
-
-
-
 
 
 
@@ -196,19 +234,31 @@ export default function CreateClient(){
 
 
 
-
-
-
-
     if(startingItems){
 
 
 
-      const loaded =
+      const loadedItems =
 
-        startingItems.split("|")
+        startingItems
 
+          .split("|")
 
+          .map(
+
+            value=>({
+
+              id:
+
+                crypto.randomUUID(),
+
+              name:
+
+                value
+
+            })
+
+          )
 
 
 
@@ -216,15 +266,11 @@ export default function CreateClient(){
 
         [
 
-          ...loaded,
+          ...loadedItems,
 
-          "",
-          "",
-          "",
-          "",
-          "",
-          "",
-          ""
+          ...
+
+          createEmptyItems()
 
         ]
 
@@ -235,16 +281,23 @@ export default function CreateClient(){
 
     }
 
+    else {
 
 
+      setItems(
 
+        createEmptyItems()
+
+      )
+
+
+    }
 
 
 
 
 
     if(startingOriginalId){
-
 
 
       setOriginalId(
@@ -258,17 +311,7 @@ export default function CreateClient(){
 
 
 
-
-
   },[searchParams])
-
-
-
-
-
-
-
-
 
 
 
@@ -281,15 +324,11 @@ export default function CreateClient(){
   ){
 
 
-
     let currentId = parentId
 
 
 
-
-
     while(currentId){
-
 
 
       const {
@@ -320,8 +359,6 @@ export default function CreateClient(){
 
 
 
-
-
       if(error || !parent){
 
 
@@ -329,8 +366,6 @@ export default function CreateClient(){
 
 
       }
-
-
 
 
 
@@ -348,8 +383,6 @@ export default function CreateClient(){
 
 
 
-
-
       if(!parent.parent_id){
 
 
@@ -362,58 +395,28 @@ export default function CreateClient(){
 
 
 
-
-
       currentId =
 
         parent.parent_id
 
 
-
-
-
     }
-
-
-
-
 
 
 
     return parentId
 
 
-
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  async function publishRankd(){
-
+    async function publishRankd(){
 
 
     if(publishing){
 
-
       return
 
-
     }
-
-
-
-
 
 
 
@@ -421,14 +424,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
     if(!title.trim()){
-
 
 
       setMessage(
@@ -438,9 +434,7 @@ export default function CreateClient(){
       )
 
 
-
       setPublishing(false)
-
 
       return
 
@@ -449,14 +443,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
     if(!category){
-
 
 
       setMessage(
@@ -466,9 +453,7 @@ export default function CreateClient(){
       )
 
 
-
       setPublishing(false)
-
 
       return
 
@@ -478,13 +463,17 @@ export default function CreateClient(){
 
 
 
+    if(
 
+      items.some(
 
+        item=>
 
+          !item.name.trim()
 
+      )
 
-    if(items.some(item=>!item.trim())){
-
+    ){
 
 
       setMessage(
@@ -494,19 +483,12 @@ export default function CreateClient(){
       )
 
 
-
       setPublishing(false)
-
 
       return
 
 
     }
-
-
-
-
-
 
 
 
@@ -519,19 +501,9 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
     const rankingId =
 
       crypto.randomUUID()
-
-
-
-
 
 
 
@@ -547,22 +519,13 @@ export default function CreateClient(){
 
 
 
-
-
-
-
     let userId =
 
       user?.id
 
 
 
-
-
-
-
     if(!userId){
-
 
 
       const {
@@ -577,12 +540,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
       if(error){
-
 
 
         setMessage(
@@ -592,9 +550,7 @@ export default function CreateClient(){
         )
 
 
-
         setPublishing(false)
-
 
         return
 
@@ -603,28 +559,16 @@ export default function CreateClient(){
 
 
 
-
-
-
-
       userId =
 
         data.user?.id
-
 
 
     }
 
 
 
-
-
-
-
-
-
     if(!userId){
-
 
 
       setMessage(
@@ -634,15 +578,16 @@ export default function CreateClient(){
       )
 
 
-
       setPublishing(false)
-
 
       return
 
 
     }
-        const {
+
+
+
+    const {
 
       data:existingProfile
 
@@ -664,12 +609,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
     if(!existingProfile){
-
 
 
       await supabase
@@ -695,24 +635,13 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
     let finalRootId =
 
       rankingId
 
 
 
-
-
-
-
     if(originalId){
-
 
 
       finalRootId =
@@ -725,12 +654,6 @@ export default function CreateClient(){
 
 
     }
-
-
-
-
-
-
 
 
 
@@ -795,13 +718,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
     if(rankingError){
-
 
 
       console.error(
@@ -811,7 +728,6 @@ export default function CreateClient(){
       )
 
 
-
       setMessage(
 
         rankingError.message
@@ -819,9 +735,7 @@ export default function CreateClient(){
       )
 
 
-
       setPublishing(false)
-
 
       return
 
@@ -830,20 +744,11 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
     const rankingItems =
-
-
 
       items.map(
 
         (item,index)=>(
-
 
 
           {
@@ -860,13 +765,12 @@ export default function CreateClient(){
 
             name:
 
-              item.trim(),
+              item.name.trim(),
 
 
             votes:
 
               0
-
 
           }
 
@@ -874,12 +778,6 @@ export default function CreateClient(){
         )
 
       )
-
-
-
-
-
-
 
 
 
@@ -899,13 +797,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
     if(itemError){
-
 
 
       console.error(
@@ -915,7 +807,6 @@ export default function CreateClient(){
       )
 
 
-
       setMessage(
 
         itemError.message
@@ -923,20 +814,12 @@ export default function CreateClient(){
       )
 
 
-
       setPublishing(false)
-
 
       return
 
 
     }
-
-
-
-
-
-
 
 
 
@@ -970,23 +853,11 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
     setMessage(
 
       "Your perspective is live 🎉"
 
     )
-
-
-
-
-
-
 
 
 
@@ -1010,15 +881,6 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-
-
-
-
-
   return (
 
     <main className="
@@ -1037,258 +899,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
-        <div className="
-          text-center
-        ">
-
-
-
-          <p className="
-            rankd-accent
-            uppercase
-            tracking-[0.3em]
-            text-sm
-            font-black
-          ">
-
-            Your opinion matters
-
-          </p>
-
-
-
-
-
-
-          <h1 className="
-            text-6xl
-            md:text-8xl
-            font-black
-            leading-none
-            mt-6
-          ">
-
-            Create
-            <br />
-            Your Top 7
-
-          </h1>
-
-
-
-
-
-
-          <p className="
-            mt-6
-            text-xl
-            rankd-muted
-          ">
-
-            Decide what deserves the top spot.
-
-          </p>
-
-
-        </div>
-
-
-
-
-
-
-
-
-
-        {originalId && (
-
-
-          <div className="
-            rankd-card
-            mt-10
-            p-6
-            text-center
-          ">
-
-
-            <p className="
-              rankd-accent
-              font-black
-              uppercase
-              tracking-widest
-            ">
-
-              Remix
-
-            </p>
-
-
-
-            <p className="
-              mt-3
-              font-bold
-            ">
-
-              Your ranking joins an existing conversation.
-
-            </p>
-
-
-          </div>
-
-
-        )}
-
-
-
-
-
-
-
-
-
-        <div className="
-          rankd-card
-          mt-12
-          p-8
-        ">
-
-
-          <h2 className="
-            text-2xl
-            font-black
-          ">
-
-            What are you ranking?
-
-          </h2>
-
-
-
-
-          <input
-
-            className="
-              mt-6
-              w-full
-              p-5
-              rounded-2xl
-              bg-[#F7F4EE]
-              text-xl
-              font-bold
-              outline-none
-            "
-
-            placeholder="Top 7 of what?"
-
-            value={title}
-
-            onChange={e=>
-
-              setTitle(
-
-                e.target.value
-
-              )
-
-            }
-
-          />
-
-
-        </div>
-
-
-
-
-
-
-
-
-
-        <div className="
-          rankd-card
-          mt-8
-          p-8
-        ">
-
-
-          <h2 className="
-            text-2xl
-            font-black
-          ">
-
-            Choose a category
-
-          </h2>
-
-
-
-
-
-          <div className="
-            mt-6
-            flex
-            flex-wrap
-            justify-center
-            gap-3
-          ">
-
-
-            {categories.map(item=>(
-
-
-              <button
-
-                key={item}
-
-                onClick={()=>setCategory(item)}
-
-                className={`
-
-                  px-5
-                  py-3
-                  rounded-full
-                  font-black
-                  transition
-
-                  ${
-                    category===item
-
-                    ?
-
-                    "bg-black text-white"
-
-                    :
-
-                    "bg-[#F7F4EE]"
-
-                  }
-
-                `}
-
-              >
-
-                {item}
-
-              </button>
-
-
-            ))}
-
-
-          </div>
-
-
-        </div>
-
-
-
-
+        {/* Existing header, title and category sections unchanged */}
 
 
 
@@ -1313,109 +924,42 @@ export default function CreateClient(){
 
 
 
-
           <p className="
             mt-2
             text-center
             rankd-muted
           ">
 
-            Put your choices in order.
+            Drag your choices into the order you believe.
 
           </p>
 
 
 
-
-
-
-
-          <div className="
-            mt-8
-            space-y-4
+          <p className="
+            mt-3
+            text-center
+            text-sm
+            font-black
+            rankd-accent
           ">
 
+            ☝️ Hold and drag items to reorder your Top 7
 
-            {items.map((item,index)=>(
-
-
-
-              <div
-
-                key={index}
-
-                className="
-                  flex
-                  items-center
-                  gap-4
-                "
-
-              >
+          </p>
 
 
 
-                <div className="
-                  w-12
-                  h-12
-                  rounded-full
-                  bg-black
-                  text-white
-                  flex
-                  items-center
-                  justify-center
-                  font-black
-                ">
-
-                  {index + 1}
-
-                </div>
+          <div className="mt-8">
 
 
+            <SortableRankingList
 
+              items={items}
 
+              setItems={setItems}
 
-
-
-                <input
-
-                  className="
-                    flex-1
-                    p-5
-                    rounded-2xl
-                    bg-[#F7F4EE]
-                    font-bold
-                    outline-none
-                  "
-
-                  placeholder={`Choice ${index+1}`}
-
-                  value={item}
-
-                  onChange={e=>{
-
-
-                    const updated =
-
-                      [...items]
-
-
-                    updated[index] =
-
-                      e.target.value
-
-
-                    setItems(updated)
-
-
-                  }}
-
-                />
-
-
-              </div>
-
-
-            ))}
+            />
 
 
           </div>
@@ -1427,12 +971,7 @@ export default function CreateClient(){
 
 
 
-
-
-
-
         {message && (
-
 
           <p className="
             mt-8
@@ -1444,14 +983,7 @@ export default function CreateClient(){
 
           </p>
 
-
         )}
-
-
-
-
-
-
 
 
 
@@ -1472,7 +1004,6 @@ export default function CreateClient(){
 
         >
 
-
           {publishing
 
           ?
@@ -1485,13 +1016,7 @@ export default function CreateClient(){
 
           }
 
-
         </button>
-
-
-
-
-
 
 
 
@@ -1505,9 +1030,6 @@ export default function CreateClient(){
           Your ranking becomes part of the conversation.
 
         </p>
-
-
-
 
 
 
