@@ -2,109 +2,186 @@
 
 import { useEffect, useState } from "react"
 
-import { getBetaMetrics } from "@/utils/betaMetrics"
+import {
+  getCommandCentreMetrics
+} from "@/utils/commandCentre"
+
 
 import {
-  getTopViewedRankings,
-  getCategoryBreakdown,
-  getCommunityCount,
-  getHealthScore
-} from "@/utils/betaInsights"
+  getMostViewedRankings,
+  getBiggestDebates,
+  getCategoryIntelligence,
+  getTrendingRankings
+} from "@/utils/commandCentreRankings"
 
 
 
-export default function AdminPage() {
 
 
-  const [events, setEvents] = useState<any[]>([])
 
 
-  const [metrics, setMetrics] = useState({
 
-    views: 0,
+export default function AdminPage(){
 
-    started: 0,
 
-    published: 0,
 
-    opinionRate: 0,
+  const [metrics,setMetrics] = useState({
 
-    publishRate: 0
+    views:0,
+
+    uniqueUsers:0,
+
+    created:0,
+
+    published:0,
+
+    remixes:0,
+
+    opinionRate:0,
+
+    publishRate:0,
+
+    healthScore:0
 
   })
 
 
-  const [topRankings, setTopRankings] = useState<any[]>([])
 
 
-  const [categories, setCategories] = useState<any>({})
+  const [mostViewed,setMostViewed] =
 
-
-  const [communityCount, setCommunityCount] = useState(0)
-
-
-  const [healthScore, setHealthScore] = useState(0)
+    useState<any[]>([])
 
 
 
+  const [trending,setTrending] =
+
+    useState<any[]>([])
 
 
 
-  useEffect(() => {
+  const [debates,setDebates] =
+
+    useState<any[]>([])
 
 
-    setEvents(
 
-      JSON.parse(
+  const [categories,setCategories] =
 
-        localStorage.getItem("rankdEvents") || "[]"
+    useState<any[]>([])
+
+
+
+
+
+
+
+
+  useEffect(()=>{
+
+
+    async function load(){
+
+
+
+      const [
+
+        metricsData,
+
+        viewedData,
+
+        debateData,
+
+        categoryData,
+
+        trendingData
+
+
+      ] = await Promise.all([
+
+
+
+        getCommandCentreMetrics(),
+
+
+        getMostViewedRankings(),
+
+
+        getBiggestDebates(),
+
+
+        getCategoryIntelligence(),
+
+
+        getTrendingRankings()
+
+
+
+      ])
+
+
+
+
+
+
+      console.log(
+
+        "COMMAND CENTRE",
+
+        {
+
+          metricsData,
+
+          viewedData,
+
+          debateData,
+
+          categoryData,
+
+          trendingData
+
+        }
 
       )
 
-    )
 
 
 
-    setMetrics(
 
-      getBetaMetrics()
 
-    )
+      setMetrics(metricsData)
 
 
 
-    setTopRankings(
-
-      getTopViewedRankings()
-
-    )
+      setMostViewed(viewedData)
 
 
 
-    setCategories(
-
-      getCategoryBreakdown()
-
-    )
+      setDebates(debateData)
 
 
 
-    setCommunityCount(
-
-      getCommunityCount()
-
-    )
+      setCategories(categoryData)
 
 
 
-    setHealthScore(
-
-      getHealthScore()
-
-    )
+      setTrending(trendingData)
 
 
-  }, [])
+
+    }
+
+
+
+
+
+    load()
+
+
+
+  },[])
+
+
 
 
 
@@ -114,6 +191,8 @@ export default function AdminPage() {
 
   return (
 
+
+
     <main className="
       min-h-screen
       bg-black
@@ -122,31 +201,48 @@ export default function AdminPage() {
     ">
 
 
+
       <div className="
-        max-w-6xl
+        max-w-7xl
         mx-auto
       ">
 
 
-        <h1 className="
-          text-5xl
-          font-black
-        ">
-
-          RANKD Beta Dashboard
-
-        </h1>
 
 
 
-        <p className="
-          mt-3
-          text-gray-400
-        ">
 
-          Product signals from the private beta.
+        <header>
 
-        </p>
+
+          <h1 className="
+            text-5xl
+            md:text-6xl
+            font-black
+          ">
+
+            RANKD Command Centre
+
+          </h1>
+
+
+
+
+          <p className="
+            mt-4
+            text-gray-400
+            text-xl
+          ">
+
+            Live product intelligence.
+
+          </p>
+
+
+
+        </header>
+
+
 
 
 
@@ -155,9 +251,9 @@ export default function AdminPage() {
 
 
         <section className="
-          mt-10
+          mt-12
           grid
-          md:grid-cols-3
+          md:grid-cols-4
           gap-6
         ">
 
@@ -169,8 +265,14 @@ export default function AdminPage() {
 
 
           <MetricCard
-            title="Started"
-            value={metrics.started}
+            title="Community"
+            value={metrics.uniqueUsers}
+          />
+
+
+          <MetricCard
+            title="Created"
+            value={metrics.created}
           />
 
 
@@ -180,7 +282,10 @@ export default function AdminPage() {
           />
 
 
+
         </section>
+
+
 
 
 
@@ -191,77 +296,37 @@ export default function AdminPage() {
         <section className="
           mt-8
           grid
-          md:grid-cols-2
+          md:grid-cols-4
           gap-6
         ">
 
 
           <MetricCard
-
-            title="Opinion Rate"
-
-            value={`${metrics.opinionRate}%`}
-
+            title="Remixes"
+            value={metrics.remixes}
           />
-
 
 
           <MetricCard
+            title="Opinion Rate"
+            value={`${metrics.opinionRate}%`}
+          />
 
+
+          <MetricCard
             title="Publish Rate"
-
             value={`${metrics.publishRate}%`}
+          />
 
+
+          <MetricCard
+            title="Health"
+            value={`${metrics.healthScore}%`}
           />
 
 
         </section>
 
-
-
-
-
-
-
-
-        <section className="
-          mt-12
-          bg-white
-          text-black
-          rounded-3xl
-          p-8
-        ">
-
-
-          <h2 className="
-            text-3xl
-            font-black
-          ">
-
-            ❤️ RANKD Health
-
-          </h2>
-
-
-          <p className="
-            text-7xl
-            font-black
-            mt-4
-          ">
-
-            {healthScore}%
-
-          </p>
-
-
-          <p className="mt-3">
-
-            Based on discovery, opinions and completed rankings.
-
-          </p>
-
-
-        </section>
 
 
 
@@ -279,62 +344,35 @@ export default function AdminPage() {
 
 
 
+          <Panel title="🔥 Most Viewed RANKDs">
 
 
-          <div className="
-            bg-zinc-900
-            rounded-3xl
-            p-8
-          ">
+            {mostViewed.length === 0 && (
 
+              <Empty />
 
-            <h2 className="
-              text-3xl
-              font-black
-              mb-6
-            ">
-
-              🔥 Most Viewed Rankings
-
-            </h2>
+            )}
 
 
 
-            {topRankings.map((ranking,index)=>(
+            {mostViewed.map((ranking)=>(
 
 
-              <div
-                key={`${ranking.id}-${ranking.creator}`}
-                className="
-                  border-b
-                  border-zinc-700
-                  py-4
-                "
-              >
+              <ListItem
 
-                <p className="font-bold">
+                key={ranking.id}
 
-                  #{index + 1} {ranking.title}
+                title={ranking.title}
 
-                </p>
+                subtitle={`${ranking.views} views`}
 
-
-                <p className="
-                  text-gray-400
-                ">
-
-                  {ranking.views || 0} views
-
-                </p>
-
-
-              </div>
+              />
 
 
             ))}
 
 
-          </div>
+          </Panel>
 
 
 
@@ -343,78 +381,109 @@ export default function AdminPage() {
 
 
 
-          <div className="
-            bg-zinc-900
-            rounded-3xl
-            p-8
-          ">
+          <Panel title="🚀 Trending Now">
 
 
-            <h2 className="
-              text-3xl
-              font-black
-              mb-6
-            ">
+            {trending.length === 0 && (
 
-              📊 Categories
+              <Empty />
 
-            </h2>
+            )}
 
 
 
+            {trending.map((ranking)=>(
 
 
-            {Object.entries(categories).map(([name,count]:any)=>(
+              <ListItem
 
+                key={ranking.id}
 
-              <div
+                title={ranking.title}
 
-                key={name}
+                subtitle={`${ranking.momentum} recent views`}
 
-                className="
-                  flex
-                  justify-between
-                  py-3
-                  border-b
-                  border-zinc-700
-                "
-
-              >
-
-                <span>
-
-                  {name}
-
-                </span>
-
-
-                <span className="font-bold">
-
-                  {count}
-
-                </span>
-
-
-              </div>
+              />
 
 
             ))}
 
 
-
-            <p className="
-              mt-8
-              text-gray-400
-            ">
-
-              Community RANKDs: {communityCount}
-
-            </p>
+          </Panel>
 
 
-          </div>
 
 
+
+
+
+
+          <Panel title="⚔️ Biggest Debates">
+
+
+            {debates.length === 0 && (
+
+              <Empty />
+
+            )}
+
+
+
+            {debates.map((debate:any)=>(
+
+
+              <ListItem
+
+                key={debate.id}
+
+                title={debate.title}
+
+                subtitle={`${debate.replies} perspectives`}
+
+              />
+
+
+            ))}
+
+
+          </Panel>
+
+
+
+
+
+
+
+
+          <Panel title="📊 Categories">
+
+
+            {categories.length === 0 && (
+
+              <Empty />
+
+            )}
+
+
+
+            {categories.map((category:any)=>(
+
+
+              <ListItem
+
+                key={category.name}
+
+                title={category.name}
+
+                subtitle={`${category.count} RANKDs`}
+
+              />
+
+
+            ))}
+
+
+          </Panel>
 
 
 
@@ -429,69 +498,54 @@ export default function AdminPage() {
 
 
         <section className="
-          mt-16
+          mt-12
+          bg-white
+          text-black
+          rounded-3xl
+          p-10
         ">
+
 
 
           <h2 className="
             text-3xl
             font-black
-            mb-6
           ">
 
-            Event Log
+            RANKD Health
 
           </h2>
 
 
 
-          <div className="
-            space-y-4
+
+          <p className="
+            mt-5
+            text-8xl
+            font-black
           ">
 
+            {metrics.healthScore}%
 
-            {events.map((event,index)=>(
-
-
-              <div
-
-                key={index}
-
-                className="
-                  bg-zinc-900
-                  rounded-xl
-                  p-4
-                "
-
-              >
-
-                <p className="font-bold">
-
-                  {event.event}
-
-                </p>
+          </p>
 
 
-                <p className="
-                  text-gray-400
-                  text-sm
-                ">
-
-                  {event.timestamp}
-
-                </p>
 
 
-              </div>
+          <p className="
+            mt-4
+            text-gray-600
+          ">
 
+            Measuring discovery → opinion → creation.
 
-            ))}
+          </p>
 
-
-          </div>
 
 
         </section>
+
+
 
 
 
@@ -501,9 +555,14 @@ export default function AdminPage() {
 
     </main>
 
+
   )
 
+
+
 }
+
+
 
 
 
@@ -517,7 +576,13 @@ function MetricCard({
 
   value
 
-}:any) {
+}:{
+
+  title:string
+
+  value:any
+
+}){
 
 
   return (
@@ -529,17 +594,20 @@ function MetricCard({
     ">
 
 
-      <p className="text-gray-400">
+      <p className="
+        text-gray-400
+      ">
 
         {title}
 
       </p>
 
 
+
       <p className="
+        mt-3
         text-5xl
         font-black
-        mt-3
       ">
 
         {value}
@@ -548,6 +616,149 @@ function MetricCard({
 
 
     </div>
+
+  )
+
+}
+
+
+
+
+
+
+
+
+
+function Panel({
+
+  title,
+
+  children
+
+}:{
+
+  title:string
+
+  children:React.ReactNode
+
+}){
+
+
+  return (
+
+    <div className="
+      bg-zinc-900
+      rounded-3xl
+      p-8
+    ">
+
+
+      <h2 className="
+        text-3xl
+        font-black
+        mb-6
+      ">
+
+        {title}
+
+      </h2>
+
+
+
+      <div className="
+        space-y-3
+      ">
+
+        {children}
+
+      </div>
+
+
+    </div>
+
+
+  )
+
+}
+
+
+
+
+
+
+
+
+
+function ListItem({
+
+  title,
+
+  subtitle
+
+}:{
+
+  title:string
+
+  subtitle:string
+
+}){
+
+
+  return (
+
+    <div className="
+      border-b
+      border-zinc-700
+      pb-3
+    ">
+
+
+      <p className="
+        font-black
+      ">
+
+        {title}
+
+      </p>
+
+
+
+      <p className="
+        text-gray-400
+        text-sm
+      ">
+
+        {subtitle}
+
+      </p>
+
+
+    </div>
+
+  )
+
+}
+
+
+
+
+
+
+
+
+
+function Empty(){
+
+
+  return (
+
+    <p className="
+      text-gray-500
+    ">
+
+      No data yet.
+
+    </p>
 
   )
 

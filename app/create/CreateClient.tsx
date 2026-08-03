@@ -7,14 +7,9 @@ import {
   useSearchParams
 } from "next/navigation"
 
-
 import { trackEvent } from "@/utils/analytics"
 
 import { supabase } from "@/utils/supabase"
-
-
-
-
 
 
 
@@ -45,8 +40,6 @@ const categories = [
 
 
 
-
-
 export default function CreateClient(){
 
 
@@ -62,16 +55,23 @@ export default function CreateClient(){
 
 
   const [title,setTitle] =
+
     useState("")
+
+
 
 
 
   const [category,setCategory] =
+
     useState("")
 
 
 
+
+
   const [items,setItems] =
+
     useState([
 
       "",
@@ -89,16 +89,23 @@ export default function CreateClient(){
 
 
   const [originalId,setOriginalId] =
+
     useState<string | null>(null)
 
 
 
+
+
   const [message,setMessage] =
+
     useState("")
 
 
 
+
+
   const [publishing,setPublishing] =
+
     useState(false)
 
 
@@ -113,13 +120,47 @@ export default function CreateClient(){
 
 
 
+    trackEvent(
+
+      "rank_started",
+
+      {
+
+        metadata:{
+
+          source:"create_page",
+
+          remix:
+
+            !!searchParams.get(
+              "originalId"
+            )
+
+        }
+
+      }
+
+    )
+
+
+
+
+
+
+
     const startingTitle =
+
       searchParams.get("title")
 
 
 
+
+
     const startingItems =
+
       searchParams.get("items")
+
+
 
 
 
@@ -137,11 +178,21 @@ export default function CreateClient(){
 
 
 
+
+
     if(startingTitle){
 
-      setTitle(startingTitle)
+
+      setTitle(
+
+        startingTitle
+
+      )
+
 
     }
+
+
 
 
 
@@ -152,9 +203,12 @@ export default function CreateClient(){
     if(startingItems){
 
 
+
       const loaded =
 
         startingItems.split("|")
+
+
 
 
 
@@ -187,7 +241,10 @@ export default function CreateClient(){
 
 
 
+
+
     if(startingOriginalId){
+
 
 
       setOriginalId(
@@ -267,9 +324,13 @@ export default function CreateClient(){
 
       if(error || !parent){
 
+
         break
 
+
       }
+
+
 
 
 
@@ -277,9 +338,13 @@ export default function CreateClient(){
 
       if(parent.root_id){
 
+
         return parent.root_id
 
+
       }
+
+
 
 
 
@@ -287,9 +352,13 @@ export default function CreateClient(){
 
       if(!parent.parent_id){
 
+
         return parent.id
 
+
       }
+
+
 
 
 
@@ -300,7 +369,12 @@ export default function CreateClient(){
         parent.parent_id
 
 
+
+
+
     }
+
+
 
 
 
@@ -309,7 +383,9 @@ export default function CreateClient(){
     return parentId
 
 
+
   }
+
 
 
 
@@ -329,9 +405,13 @@ export default function CreateClient(){
 
     if(publishing){
 
+
       return
 
+
     }
+
+
 
 
 
@@ -345,19 +425,29 @@ export default function CreateClient(){
 
 
 
+
+
     if(!title.trim()){
 
 
+
       setMessage(
+
         "Please add a title"
+
       )
+
 
 
       setPublishing(false)
 
+
       return
 
+
     }
+
+
 
 
 
@@ -368,16 +458,24 @@ export default function CreateClient(){
     if(!category){
 
 
+
       setMessage(
+
         "Please choose a category"
+
       )
+
 
 
       setPublishing(false)
 
+
       return
 
+
     }
+
+
 
 
 
@@ -388,16 +486,24 @@ export default function CreateClient(){
     if(items.some(item=>!item.trim())){
 
 
+
       setMessage(
+
         "Please complete all 7 rankings"
+
       )
+
 
 
       setPublishing(false)
 
+
       return
 
+
     }
+
+
 
 
 
@@ -410,6 +516,8 @@ export default function CreateClient(){
       "Creating your perspective..."
 
     )
+
+
 
 
 
@@ -471,15 +579,22 @@ export default function CreateClient(){
 
 
 
+
+
       if(error){
 
 
+
         setMessage(
+
           error.message
+
         )
 
 
+
         setPublishing(false)
+
 
         return
 
@@ -506,7 +621,10 @@ export default function CreateClient(){
 
 
 
+
+
     if(!userId){
+
 
 
       setMessage(
@@ -516,22 +634,15 @@ export default function CreateClient(){
       )
 
 
+
       setPublishing(false)
+
 
       return
 
 
     }
-
-
-
-
-
-
-
-
-
-    const {
+        const {
 
       data:existingProfile
 
@@ -550,7 +661,6 @@ export default function CreateClient(){
       )
 
       .maybeSingle()
-
 
 
 
@@ -615,7 +725,16 @@ export default function CreateClient(){
 
 
     }
-        const {
+
+
+
+
+
+
+
+
+
+    const {
 
       error:rankingError
 
@@ -684,7 +803,13 @@ export default function CreateClient(){
     if(rankingError){
 
 
-      console.error(rankingError)
+
+      console.error(
+
+        rankingError
+
+      )
+
 
 
       setMessage(
@@ -694,7 +819,9 @@ export default function CreateClient(){
       )
 
 
+
       setPublishing(false)
+
 
       return
 
@@ -712,9 +839,11 @@ export default function CreateClient(){
     const rankingItems =
 
 
+
       items.map(
 
         (item,index)=>(
+
 
 
           {
@@ -778,7 +907,13 @@ export default function CreateClient(){
     if(itemError){
 
 
-      console.error(itemError)
+
+      console.error(
+
+        itemError
+
+      )
+
 
 
       setMessage(
@@ -788,7 +923,9 @@ export default function CreateClient(){
       )
 
 
+
       setPublishing(false)
+
 
       return
 
@@ -805,15 +942,27 @@ export default function CreateClient(){
 
     trackEvent(
 
-      "rankd_published",
+      "rank_published",
 
       {
 
         rankingId,
 
+        category,
+
         originalId,
 
-        rootId:finalRootId
+        rootId:finalRootId,
+
+        metadata:{
+
+          source:"create_page",
+
+          remix:
+
+            !!originalId
+
+        }
 
       }
 

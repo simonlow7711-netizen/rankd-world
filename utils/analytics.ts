@@ -2,6 +2,8 @@ import { supabase } from "@/utils/supabase"
 
 
 
+
+
 export async function trackEvent(
 
   eventName:string,
@@ -15,16 +17,42 @@ export async function trackEvent(
 
 
     const {
+
       data:{
         user
+
       }
+
     } = await supabase.auth.getUser()
 
 
 
 
 
-    await supabase
+
+    const rankingId =
+
+      metadata?.rankingId
+
+      ??
+
+      metadata?.ranking_id
+
+      ??
+
+      null
+
+
+
+
+
+
+
+    const {
+
+      error
+
+    } = await supabase
 
       .from("analytics_events")
 
@@ -32,9 +60,23 @@ export async function trackEvent(
 
         event_name:eventName,
 
-        user_id:user?.id ?? null,
+        user_id:
+
+          user?.id
+
+          ??
+
+          null,
+
+
+        ranking_id:
+
+          rankingId,
+
 
         metadata
+
+
 
       })
 
@@ -42,7 +84,31 @@ export async function trackEvent(
 
 
 
-    // Google Analytics hook will be added next
+
+
+
+    if(error){
+
+
+      console.error(
+
+        "Analytics insert error:",
+
+        error
+
+      )
+
+
+    }
+
+
+
+
+
+
+
+
+    // Google Analytics hook
 
     if(
 
@@ -54,6 +120,7 @@ export async function trackEvent(
 
     ){
 
+
       window.gtag(
 
         "event",
@@ -63,6 +130,7 @@ export async function trackEvent(
         metadata
 
       )
+
 
     }
 
