@@ -1,51 +1,55 @@
-"use client"
+import type { Metadata } from "next"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
-
-import ProfileCard from "@/components/ProfileCard"
-import ShareCard from "@/components/ShareCard"
-import TasteDNA from "@/components/TasteDNA"
-import Achievements from "@/components/Achievements"
-
-import { calculateTasteDNA } from "@/utils/tasteProfile"
-import { calculateAchievements } from "@/utils/achievements"
-
-import { user } from "@/data/user"
+import ProfileClient from "./ProfileClient"
 
 
 
-export default function PublicProfilePage({
+
+
+type Props = {
+
+  params: Promise<{
+    username:string
+  }>
+
+}
+
+
+
+
+
+
+
+
+export async function generateMetadata({
+
   params
-}: any) {
 
-
-  const username =
-    params.username || user.username
+}:Props):Promise<Metadata>{
 
 
 
-  const [rankings, setRankings] =
-    useState<any[]>([])
+  const {
+
+    username
+
+  } = await params
 
 
 
+  return {
 
+    title:
 
-  useEffect(()=>{
+      `${username}'s RANKD Profile | RANKD`,
 
+    description:
 
-    const created = JSON.parse(
+      `Discover ${username}'s Top 7 rankings and taste profile.`
 
-      localStorage.getItem("createdRankings") || "[]"
+  }
 
-    )
-
-
-    setRankings(created)
-
-
-  },[])
+}
 
 
 
@@ -53,33 +57,20 @@ export default function PublicProfilePage({
 
 
 
-  const categories = new Set(
 
-    rankings.map(
+export default async function PublicProfilePage({
 
-      ranking => ranking.category
+  params
 
-    )
-
-  )
+}:Props){
 
 
 
+  const {
 
+    username
 
-
-
-  const tasteData =
-    calculateTasteDNA(rankings)
-
-
-
-
-
-  const achievementData =
-    calculateAchievements(rankings)
-
-
+  } = await params
 
 
 
@@ -87,408 +78,11 @@ export default function PublicProfilePage({
 
   return (
 
-    <main
+    <ProfileClient
 
-      className="
-        min-h-screen
-        bg-black
-        text-white
-        px-6
-        py-16
-      "
+      username={username}
 
-    >
-
-
-      <div
-
-        className="
-          max-w-5xl
-          mx-auto
-        "
-
-      >
-
-
-
-
-
-
-        <div
-
-          className="
-            bg-zinc-900
-            rounded-3xl
-            p-10
-            mb-12
-          "
-
-        >
-
-
-
-
-
-          <h1
-
-            className="
-              text-5xl
-              font-black
-            "
-
-          >
-
-            {user.displayName}
-
-          </h1>
-
-
-
-
-
-          <p
-
-            className="
-              mt-3
-              text-gray-400
-            "
-
-          >
-
-            @{username}
-
-          </p>
-
-
-
-
-
-          <p
-
-            className="
-              mt-3
-              text-gray-400
-            "
-
-          >
-
-            RANKD identity
-
-          </p>
-
-
-
-
-
-
-          <div
-
-            className="
-              mt-8
-              grid
-              md:grid-cols-3
-              gap-5
-            "
-
-          >
-
-
-
-
-            <div
-
-              className="
-                bg-black
-                rounded-2xl
-                p-5
-              "
-
-            >
-
-              <p className="text-gray-400">
-
-                RANKDs
-
-              </p>
-
-
-              <p
-
-                className="
-                  text-3xl
-                  font-black
-                  mt-2
-                "
-
-              >
-
-                {rankings.length}
-
-              </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div
-
-              className="
-                bg-black
-                rounded-2xl
-                p-5
-              "
-
-            >
-
-              <p className="text-gray-400">
-
-                Categories
-
-              </p>
-
-
-              <p
-
-                className="
-                  text-3xl
-                  font-black
-                  mt-2
-                "
-
-              >
-
-                {categories.size}
-
-              </p>
-
-
-            </div>
-
-
-
-
-
-
-
-            <div
-
-              className="
-                bg-black
-                rounded-2xl
-                p-5
-              "
-
-            >
-
-              <p className="text-gray-400">
-
-                Achievements
-
-              </p>
-
-
-              <p
-
-                className="
-                  text-3xl
-                  font-black
-                  mt-2
-                "
-
-              >
-
-                {achievementData.length}
-
-              </p>
-
-
-            </div>
-
-
-
-
-          </div>
-
-
-
-
-        </div>
-
-
-
-
-
-
-
-        <ShareCard
-
-          username={username}
-
-          rankings={rankings}
-
-          achievements={achievementData}
-
-        />
-
-
-
-
-
-
-
-        <ProfileCard
-
-          username={username}
-
-          rankings={rankings}
-
-          achievements={achievementData}
-
-        />
-
-
-
-
-
-
-
-        <TasteDNA
-
-          data={tasteData}
-
-        />
-
-
-
-
-
-
-
-        <Achievements
-
-          achievements={achievementData}
-
-        />
-
-
-
-
-
-
-
-        <h2
-
-          className="
-            text-3xl
-            font-black
-            mb-8
-          "
-
-        >
-
-          Rankings
-
-        </h2>
-
-
-
-
-
-
-
-        <div
-
-          className="
-            space-y-4
-          "
-
-        >
-
-
-
-
-          {rankings.map((ranking)=>(
-
-
-
-            <Link
-
-              key={ranking.id}
-
-              href={`/rank/${ranking.id}`}
-
-            >
-
-
-
-              <div
-
-                className="
-                  bg-white
-                  text-black
-                  rounded-2xl
-                  p-6
-                  mb-4
-                "
-
-              >
-
-
-
-                <p className="text-gray-500">
-
-                  #{ranking.category}
-
-                </p>
-
-
-
-
-                <h3
-
-                  className="
-                    text-2xl
-                    font-black
-                  "
-
-                >
-
-                  {ranking.title}
-
-                </h3>
-
-
-
-              </div>
-
-
-            </Link>
-
-
-
-          ))}
-
-
-
-
-
-        </div>
-
-
-
-
-
-
-      </div>
-
-
-
-    </main>
+    />
 
   )
 

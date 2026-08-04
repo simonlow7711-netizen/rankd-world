@@ -1,14 +1,16 @@
-import {
-  Ranking
-} from "@/types/ranking"
-
-
-
-
-
 export type TasteDNA = {
 
-  [category:string]:number
+  categories: Record<string, number>
+
+  choices: Record<string, number>
+
+  behaviour: {
+
+    averagePosition:number
+
+    totalRankings:number
+
+  }
 
 }
 
@@ -21,14 +23,21 @@ export type TasteDNA = {
 
 export function calculateTasteDNA(
 
-  rankings:Ranking[] = []
+  rankings:any[] = []
 
-):TasteDNA {
+):TasteDNA{
 
 
 
-  const categories:TasteDNA = {}
+  const categories:Record<string,number> = {}
 
+  const choices:Record<string,number> = {}
+
+
+
+  let totalPosition = 0
+
+  let totalItems = 0
 
 
 
@@ -41,11 +50,7 @@ export function calculateTasteDNA(
 
     const category =
 
-      ranking.category ||
-
-      "General"
-
-
+      ranking.category || "General"
 
 
 
@@ -53,19 +58,55 @@ export function calculateTasteDNA(
 
     categories[category] =
 
-      (
-
-        categories[category] ||
-
-        0
-
-      )
-
-      +
-
-      1
+      (categories[category] || 0) + 1
 
 
+
+
+
+    ranking.items?.forEach(
+
+      (item:any)=>{
+
+
+
+        const name =
+
+          item.name?.toLowerCase()
+
+
+
+        if(!name){
+
+          return
+
+        }
+
+
+
+
+
+        choices[name] =
+
+          (choices[name] || 0) + 1
+
+
+
+
+
+        totalPosition +=
+
+          item.position ?? 7
+
+
+
+        totalItems++
+
+
+
+      }
+
+    )
 
 
 
@@ -77,7 +118,44 @@ export function calculateTasteDNA(
 
 
 
-  return categories
+  return {
+
+
+    categories,
+
+
+
+    choices,
+
+
+
+    behaviour:{
+
+
+      averagePosition:
+
+        totalItems
+
+        ?
+
+        totalPosition / totalItems
+
+        :
+
+        0,
+
+
+
+      totalRankings:
+
+        rankings.length
+
+
+    }
+
+
+
+  }
 
 
 }

@@ -1,70 +1,311 @@
-import type { Ranking } from "@/types/ranking"
+import {
+  supabase
+} from "@/utils/supabase"
 
-export interface DiscoveryUser {
 
-  id: string
+import {
+  calculateTasteDNA
+} from "@/utils/tasteProfile"
 
-  username: string
 
-  displayName: string
+import {
+  calculateTasteMatch
+} from "@/utils/tasteMatching"
 
-  rankings: Ranking[]
 
-}
 
-export function getDiscoverableUsers(
 
-  rankings: Ranking[] = []
 
-): DiscoveryUser[] {
 
-  const users = new Map<string, DiscoveryUser>()
 
-  rankings.forEach((ranking) => {
 
-    const id =
-      ranking.creatorId ??
-      ranking.creator ??
-      "anonymous"
+export async function getDiscoverableUsers(
 
-    if (!users.has(id)) {
+  currentUserId:string,
 
-      users.set(id, {
+  currentRankings:any[] = []
 
-        id,
+){
 
-        username:
-          ranking.creatorUsername ??
-          ranking.creator ??
-          "anonymous",
 
-        displayName:
-          ranking.creatorDisplayName ??
-          ranking.creator ??
-          "RANKD User",
 
-        rankings: []
 
-      })
 
-    }
+  const {
 
-    users.get(id)!.rankings.push(ranking)
+    data:profiles,
 
-  })
+    error
 
-  return Array
+  } = await supabase
 
-    .from(users.values())
+    .from("profiles")
+
+    .select(
+
+      `
+      id,
+      username,
+      display_name
+      `
+
+    )
+
+    .limit(50)
+
+
+
+
+
+
+
+  if(error || !profiles){
+
+
+    console.error(
+
+      "Discoverable users error:",
+
+      JSON.stringify(
+
+        error,
+
+        null,
+
+        2
+
+      )
+
+    )
+
+
+    return []
+
+  }
+
+
+
+
+
+
+
+
+
+  const currentTasteDNA =
+
+    calculateTasteDNA(
+
+      currentRankings
+
+    )
+
+
+
+
+
+
+
+
+
+  const users = await Promise.all(
+
+
+    profiles
+
+      .filter(
+
+        profile =>
+
+          profile.id !== currentUserId
+
+      )
+
+
+      .map(
+
+        async(profile)=>{
+
+
+
+          const {
+
+            data:rankings,
+
+            error:rankingError
+
+          } = await supabase
+
+            .from("rankings")
+
+            .select(
+
+              `
+              id,
+              title,
+              category,
+              description,
+              created_at
+              `
+
+            )
+
+            .eq(
+
+              "user_id",
+
+              profile.id
+
+            )
+
+
+
+
+
+
+
+          if(rankingError){
+
+
+            console.error(
+
+              "Ranking lookup error:",
+
+              rankingError
+
+            )
+
+
+          }
+
+
+
+
+
+
+
+
+
+          const userRankings =
+
+            rankings ?? []
+
+
+
+
+
+
+
+
+
+          const userTasteDNA =
+
+            calculateTasteDNA(
+
+              userRankings
+
+            )
+
+
+
+
+
+
+
+
+          const tasteMatch =
+
+            calculateTasteMatch(
+
+              currentTasteDNA,
+
+              userTasteDNA
+
+            )
+
+
+
+
+
+
+
+
+
+          return {
+
+
+            id:
+
+              profile.id,
+
+
+
+            username:
+
+              profile.username,
+
+
+
+            displayName:
+
+              profile.display_name,
+
+
+
+            rankings:
+
+              userRankings,
+
+
+
+            tasteDNA:
+
+              userTasteDNA,
+
+
+
+            tasteMatch
+
+
+
+          }
+
+
+
+        }
+
+
+      )
+
+
+  )
+
+
+
+
+
+
+
+
+
+  return users
+
+    .filter(
+
+      user =>
+
+        user.rankings.length > 0
+
+    )
 
     .sort(
 
-      (a, b) =>
+      (a,b)=>
 
-        b.rankings.length -
+        b.tasteMatch.score -
 
-        a.rankings.length
+        a.tasteMatch.score
 
     )
+
 
 }

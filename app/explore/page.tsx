@@ -38,14 +38,11 @@ import {
 
 
 
-
-
 export const metadata = {
 
   title:
 
     "Explore Top 7 Rankings | RANKD",
-
 
 
   description:
@@ -63,8 +60,6 @@ export const metadata = {
 
 
 export default async function ExplorePage(){
-
-
 
 
 
@@ -144,7 +139,9 @@ export default async function ExplorePage(){
 
   const discoverableUsers =
 
-    getDiscoverableUsers(
+    await getDiscoverableUsers(
+
+      "",
 
       allRankings
 
@@ -167,7 +164,15 @@ export default async function ExplorePage(){
       allRankings
 
     )
-      return (
+
+
+
+
+
+
+
+
+  return (
 
     <main className="
       min-h-screen
@@ -178,14 +183,10 @@ export default async function ExplorePage(){
     ">
 
 
-
       <div className="
         max-w-7xl
         mx-auto
       ">
-
-
-
 
 
 
@@ -260,6 +261,8 @@ export default async function ExplorePage(){
 
 
 
+
+        <DailyRankd />
 
         <DailyRankd />
 
@@ -411,7 +414,16 @@ export default async function ExplorePage(){
 
 
         </section>
-                <section className="
+
+
+
+
+
+
+
+
+
+        <section className="
           mb-20
         ">
 
@@ -495,7 +507,8 @@ export default async function ExplorePage(){
 
 
 
-          {discoverableUsers?.[0] && (
+          {discoverableUsers.length > 0 ? (
+
 
             <TasteMatchCard
 
@@ -505,12 +518,34 @@ export default async function ExplorePage(){
 
             />
 
+
+          ) : (
+
+
+            <div className="
+              rankd-card
+              p-8
+            ">
+
+
+              <p className="
+                text-xl
+                font-black
+              ">
+
+                Create more RANKDs to discover your taste matches.
+
+              </p>
+
+
+            </div>
+
+
           )}
 
 
 
         </section>
-
 
 
 

@@ -37,11 +37,13 @@ export default function TasteMatchCard({
 
 
 
+
+
   const currentTasteDNA =
 
     calculateTasteDNA(
 
-      rankings
+      rankings ?? []
 
     )
 
@@ -53,7 +55,7 @@ export default function TasteMatchCard({
 
     calculateTasteDNA(
 
-      person.rankings || []
+      person?.rankings ?? []
 
     )
 
@@ -73,6 +75,8 @@ export default function TasteMatchCard({
       personTasteDNA
 
     )
+
+
 
 
 
@@ -100,7 +104,10 @@ export default function TasteMatchCard({
 
 
 
+
+
         <div>
+
 
           <p className="
             rankd-accent
@@ -117,15 +124,20 @@ export default function TasteMatchCard({
 
 
 
+
+
           <h3 className="
             text-3xl
             font-black
             mt-3
           ">
 
-            {person.displayName}
+            {person?.displayName ?? "RANKD User"}
 
           </h3>
+
+
+
 
 
 
@@ -134,12 +146,14 @@ export default function TasteMatchCard({
             mt-2
           ">
 
-            @{person.username}
+            @{person?.username ?? "anonymous"}
 
           </p>
 
 
+
         </div>
+
 
 
 
@@ -161,7 +175,9 @@ export default function TasteMatchCard({
           shrink-0
         ">
 
+
           {match.score}%
+
 
         </div>
 
@@ -175,9 +191,12 @@ export default function TasteMatchCard({
 
 
 
+
+
       <div className="
         mt-8
       ">
+
 
 
         <p className="
@@ -193,14 +212,16 @@ export default function TasteMatchCard({
 
 
 
+
         <p className="
           mt-3
           rankd-muted
         ">
 
-          Based on your ranking behaviour and shared interests.
+          {match.explanation}
 
         </p>
+
 
 
       </div>
@@ -211,7 +232,10 @@ export default function TasteMatchCard({
 
 
 
-      {Object.keys(personTasteDNA).length > 0 && (
+
+
+      {match.sharedCategories.length > 0 && (
+
 
         <div className="
           mt-8
@@ -227,7 +251,7 @@ export default function TasteMatchCard({
             mb-3
           ">
 
-            Their taste profile
+            Shared taste areas
 
           </p>
 
@@ -243,7 +267,7 @@ export default function TasteMatchCard({
 
 
 
-            {Object.keys(personTasteDNA)
+            {match.sharedCategories
 
               .slice(0,5)
 
@@ -273,12 +297,266 @@ export default function TasteMatchCard({
               ))}
 
 
+
           </div>
+
 
 
         </div>
 
+
       )}
+
+
+
+
+
+
+
+
+
+      <div className="
+        mt-8
+        pt-6
+        border-t
+        border-black/10
+      ">
+
+
+
+
+        <p className="
+          font-black
+          mb-4
+        ">
+
+          Taste breakdown
+
+        </p>
+
+
+
+
+
+
+
+        <div className="
+          grid
+          grid-cols-3
+          gap-3
+        ">
+
+
+
+
+          <div className="
+            bg-black
+            text-white
+            rounded-2xl
+            p-4
+            text-center
+          ">
+
+            <p className="
+              text-xs
+              opacity-60
+            ">
+
+              Categories
+
+            </p>
+
+
+            <p className="
+              text-xl
+              font-black
+            ">
+
+              {match.breakdown.categoryScore}%
+
+            </p>
+
+
+          </div>
+
+
+
+
+
+
+
+          <div className="
+            bg-black
+            text-white
+            rounded-2xl
+            p-4
+            text-center
+          ">
+
+            <p className="
+              text-xs
+              opacity-60
+            ">
+
+              Choices
+
+            </p>
+
+
+            <p className="
+              text-xl
+              font-black
+            ">
+
+              {match.breakdown.choiceScore}%
+
+            </p>
+
+
+          </div>
+
+
+
+
+
+
+
+
+          <div className="
+            bg-black
+            text-white
+            rounded-2xl
+            p-4
+            text-center
+          ">
+
+            <p className="
+              text-xs
+              opacity-60
+            ">
+
+              Style
+
+            </p>
+
+
+            <p className="
+              text-xl
+              font-black
+            ">
+
+              {match.breakdown.behaviourScore}%
+
+            </p>
+
+
+          </div>
+
+
+
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+
+
+
+      {match.differences.length > 0 && (
+
+
+        <div className="
+          mt-8
+          pt-6
+          border-t
+          border-black/10
+        ">
+
+
+
+          <p className="
+            font-black
+            mb-3
+          ">
+
+            Perspective differences
+
+          </p>
+
+
+
+
+
+          <div className="
+            space-y-2
+          ">
+
+
+
+            {match.differences
+
+              .slice(0,3)
+
+              .map((difference,index)=>(
+
+
+                <div
+
+                  key={`${difference.type}-${index}`}
+
+                  className="
+                    flex
+                    justify-between
+                    text-sm
+                    font-bold
+                  "
+
+                >
+
+
+                  <span>
+
+                    {difference.type}
+
+                  </span>
+
+
+
+
+                  <span>
+
+                    {difference.value}% difference
+
+                  </span>
+
+
+
+                </div>
+
+
+              ))}
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+      )}
+
+
+
+
 
 
 
