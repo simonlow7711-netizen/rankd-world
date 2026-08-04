@@ -1,6 +1,27 @@
 "use client"
 
-import Link from "next/link"
+import {
+  calculateTasteDNA
+} from "@/utils/tasteProfile"
+
+import {
+  calculateTasteMatch
+} from "@/utils/tasteMatching"
+
+
+
+
+
+type Props = {
+
+  person:any
+
+  rankings:any[]
+
+}
+
+
+
 
 
 
@@ -8,21 +29,51 @@ import Link from "next/link"
 
 export default function TasteMatchCard({
 
-  person
+  person,
 
-}:{
+  rankings
 
-  person:any
-
-}) {
+}:Props){
 
 
 
-  if(!person){
+  const currentTasteDNA =
 
-    return null
+    calculateTasteDNA(
 
-  }
+      rankings
+
+    )
+
+
+
+
+
+  const personTasteDNA =
+
+    calculateTasteDNA(
+
+      person.rankings || []
+
+    )
+
+
+
+
+
+
+
+
+  const match =
+
+    calculateTasteMatch(
+
+      currentTasteDNA,
+
+      personTasteDNA
+
+    )
+
 
 
 
@@ -31,46 +82,112 @@ export default function TasteMatchCard({
 
   return (
 
-    <Link
+    <div className="
+      rankd-card
+      p-8
+    ">
 
-      href={`/profile/${person.username}`}
 
-    >
+
 
 
       <div className="
-        rankd-card
-        p-6
-        hover:-translate-y-1
-        transition
+        flex
+        items-center
+        justify-between
+        gap-4
+      ">
+
+
+
+        <div>
+
+          <p className="
+            rankd-accent
+            uppercase
+            tracking-widest
+            text-sm
+            font-black
+          ">
+
+            Taste Match
+
+          </p>
+
+
+
+
+          <h3 className="
+            text-3xl
+            font-black
+            mt-3
+          ">
+
+            {person.displayName}
+
+          </h3>
+
+
+
+          <p className="
+            rankd-muted
+            mt-2
+          ">
+
+            @{person.username}
+
+          </p>
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="
+          w-24
+          h-24
+          rounded-full
+          bg-black
+          text-white
+          flex
+          items-center
+          justify-center
+          text-3xl
+          font-black
+          shrink-0
+        ">
+
+          {match.score}%
+
+        </div>
+
+
+
+      </div>
+
+
+
+
+
+
+
+      <div className="
+        mt-8
       ">
 
 
         <p className="
-          rankd-accent
-          uppercase
-          tracking-widest
-          text-xs
+          text-xl
           font-black
         ">
 
-          Taste Match
+          {match.label}
 
         </p>
-
-
-
-
-
-        <h3 className="
-          text-2xl
-          font-black
-          mt-4
-        ">
-
-          {person.display_name || person.username}
-
-        </h3>
 
 
 
@@ -81,7 +198,7 @@ export default function TasteMatchCard({
           rankd-muted
         ">
 
-          See how your opinions compare →
+          Based on your ranking behaviour and shared interests.
 
         </p>
 
@@ -89,7 +206,83 @@ export default function TasteMatchCard({
       </div>
 
 
-    </Link>
+
+
+
+
+
+      {Object.keys(personTasteDNA).length > 0 && (
+
+        <div className="
+          mt-8
+          pt-6
+          border-t
+          border-black/10
+        ">
+
+
+
+          <p className="
+            font-black
+            mb-3
+          ">
+
+            Their taste profile
+
+          </p>
+
+
+
+
+
+          <div className="
+            flex
+            flex-wrap
+            gap-2
+          ">
+
+
+
+            {Object.keys(personTasteDNA)
+
+              .slice(0,5)
+
+              .map(category=>(
+
+
+                <span
+
+                  key={category}
+
+                  className="
+                    bg-[#F7F4EE]
+                    rounded-full
+                    px-4
+                    py-2
+                    text-sm
+                    font-bold
+                  "
+
+                >
+
+                  {category}
+
+                </span>
+
+
+              ))}
+
+
+          </div>
+
+
+        </div>
+
+      )}
+
+
+
+    </div>
 
   )
 

@@ -38,12 +38,18 @@ import {
 
 
 
+
+
 export const metadata = {
 
   title:
+
     "Explore Top 7 Rankings | RANKD",
 
+
+
   description:
+
     "Discover what the world is ranking."
 
 }
@@ -143,7 +149,16 @@ export default async function ExplorePage(){
       allRankings
 
     )
-      const challenge =
+
+
+
+
+
+
+
+
+
+  const challenge =
 
     calculateChallenge(
 
@@ -152,16 +167,7 @@ export default async function ExplorePage(){
       allRankings
 
     )
-
-
-
-
-
-
-
-
-
-  return (
+      return (
 
     <main className="
       min-h-screen
@@ -494,6 +500,8 @@ export default async function ExplorePage(){
             <TasteMatchCard
 
               person={discoverableUsers[0]}
+
+              rankings={allRankings}
 
             />
 
