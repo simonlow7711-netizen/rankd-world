@@ -1,23 +1,71 @@
-export function calculateTasteDNA(
-  rankings:any[] = []
-){
+import {
+  Ranking
+} from "@/types/ranking"
 
-  const categories:Record<string,number> = {}
+
+
+
+
+export type TasteDNA = {
+
+  [category:string]:number
+
+}
+
+
+
+
+
+
+
+
+export function calculateTasteDNA(
+
+  rankings:Ranking[] = []
+
+):TasteDNA {
+
+
+
+  const categories:TasteDNA = {}
+
+
+
+
 
 
 
   rankings.forEach((ranking)=>{
 
 
+
     const category =
 
-      ranking.category || "General"
+      ranking.category ||
+
+      "General"
+
+
+
+
 
 
 
     categories[category] =
 
-      (categories[category] || 0) + 1
+      (
+
+        categories[category] ||
+
+        0
+
+      )
+
+      +
+
+      1
+
+
 
 
 
@@ -26,6 +74,10 @@ export function calculateTasteDNA(
 
 
 
+
+
+
   return categories
+
 
 }

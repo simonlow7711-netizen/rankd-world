@@ -31,10 +31,6 @@ import {
 } from "@/utils/userDiscovery"
 
 import {
-  calculateTasteMatch
-} from "@/utils/tasteMatching"
-
-import {
   calculateChallenge
 } from "@/utils/challengeTaste"
 
@@ -147,32 +143,7 @@ export default async function ExplorePage(){
       allRankings
 
     )
-
-
-
-
-
-
-
-
-
-  const tasteMatch =
-
-    calculateTasteMatch(
-
-      allRankings
-
-    )
-
-
-
-
-
-
-
-
-
-  const challenge =
+      const challenge =
 
     calculateChallenge(
 
@@ -434,16 +405,7 @@ export default async function ExplorePage(){
 
 
         </section>
-
-
-
-
-
-
-
-
-
-        <section className="
+                <section className="
           mb-20
         ">
 

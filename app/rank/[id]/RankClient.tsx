@@ -35,6 +35,12 @@ import {
 } from "@/utils/conversationTree"
 
 
+import {
+  Ranking
+} from "@/types/ranking"
+
+
+
 
 
 
@@ -44,6 +50,46 @@ import {
 type RankClientProps = {
 
   id:string
+
+}
+
+
+
+
+
+
+
+
+
+type RemixRanking = {
+
+  id:string
+
+  title:string
+
+  parentId:string | null
+
+  rootId:string | null
+
+}
+
+
+
+
+
+
+
+
+
+type ConversationNode = {
+
+  id:string
+
+  title:string
+
+  parentId:string | null
+
+  rootId:string | null
 
 }
 
@@ -74,19 +120,31 @@ export default function RankClient({
 
   const [ranking,setRanking] =
 
-    useState<any>(null)
+    useState<Ranking | null>(null)
+
+
+
+
 
 
 
   const [parentRanking,setParentRanking] =
 
-    useState<any>(null)
+    useState<Ranking | null>(null)
+
+
+
+
 
 
 
   const [remixes,setRemixes] =
 
-    useState<any[]>([])
+    useState<RemixRanking[]>([])
+
+
+
+
 
 
 
@@ -96,20 +154,15 @@ export default function RankClient({
 
 
 
+
+
+
+
   const [loading,setLoading] =
 
     useState(true)
 
-
-
-
-
-
-
-
-
-  useEffect(()=>{
-
+      useEffect(()=>{
 
 
     if(!id){
@@ -268,32 +321,41 @@ export default function RankClient({
 
 
 
+      const conversationItems:ConversationNode[] =
+
+        (conversationRankings ?? [])
+
+        .map((item:any)=>(
+
+
+
+          {
+
+            id:item.id,
+
+            title:item.title,
+
+            parentId:item.parent_id,
+
+            rootId:item.root_id
+
+          }
+
+
+
+        ))
+
+
+
+
+
+
 
       const tree =
 
         buildConversationTree(
 
-          (conversationRankings ?? [])
-
-          .map((item:any)=>(
-
-
-
-            {
-
-              id:item.id,
-
-              title:item.title,
-
-              parentId:item.parent_id,
-
-              rootId:item.root_id
-
-            }
-
-
-
-          ))
+          conversationItems
 
         )
 
@@ -314,45 +376,31 @@ export default function RankClient({
 
 
 
-      const {
+      const remixItems:RemixRanking[] =
 
-        data:childRankings
+        conversationItems
 
-      } = await supabase
+        .filter(
 
-        .from("rankings")
+          item =>
 
-        .select(
-
-          "id,title,parent_id,root_id,created_at"
+            item.id !== current.id
 
         )
 
-        .eq(
+        .map(
 
-          "root_id",
+          item => ({
 
-          conversationRoot
+            id:item.id,
 
-        )
+            title:item.title,
 
-        .neq(
+            parentId:item.parentId,
 
-          "id",
+            rootId:item.rootId
 
-          current.id
-
-        )
-
-        .order(
-
-          "created_at",
-
-          {
-
-            ascending:false
-
-          }
+          })
 
         )
 
@@ -365,28 +413,7 @@ export default function RankClient({
 
       setRemixes(
 
-        (childRankings ?? [])
-
-        .map((item:any)=>(
-
-
-
-          {
-
-            id:item.id,
-
-            title:item.title,
-
-            parentId:item.parent_id,
-
-            rootId:item.root_id
-
-
-          }
-
-
-
-        ))
+        remixItems
 
       )
 
@@ -444,7 +471,7 @@ export default function RankClient({
 
       .map(
 
-        (item:any)=>
+        item =>
 
           item.name
 
@@ -476,14 +503,7 @@ export default function RankClient({
 
   }
 
-
-
-
-
-
-
-
-  if(loading){
+    if(loading){
 
 
     return (
@@ -537,7 +557,16 @@ export default function RankClient({
 
 
   }
-    return (
+
+
+
+
+
+
+
+
+
+  return (
 
     <main className="
       min-h-screen
@@ -710,7 +739,7 @@ export default function RankClient({
             ">
 
 
-              {ranking.items.map((item:any)=>(
+              {ranking.items.map(item=>(
 
 
                 <div
@@ -847,7 +876,7 @@ export default function RankClient({
               ">
 
 
-                {remixes.map((remix:any)=>(
+                {remixes.map(remix=>(
 
 
                   <button

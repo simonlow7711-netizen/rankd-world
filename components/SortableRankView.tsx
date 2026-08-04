@@ -1,6 +1,10 @@
 "use client"
 
 import {
+  useState
+} from "react"
+
+import {
   DndContext,
   closestCenter,
   PointerSensor,
@@ -20,17 +24,11 @@ import {
   CSS
 } from "@dnd-kit/utilities"
 
-import { useState } from "react"
+import {
+  RankingBuilderItem
+} from "@/types/ranking"
 
 
-
-interface Item {
-
-  id:string
-
-  name:string
-
-}
 
 
 
@@ -42,7 +40,7 @@ function SortableItem({
 
 }:{
 
-  item:Item
+  item:RankingBuilderItem
 
   index:number
 
@@ -70,14 +68,23 @@ function SortableItem({
 
 
 
+
   const style={
 
     transform:
-      CSS.Transform.toString(transform),
+
+      CSS.Transform.toString(
+
+        transform
+
+      ),
 
     transition
 
   }
+
+
+
 
 
 
@@ -100,11 +107,18 @@ function SortableItem({
 
     >
 
+
       <button
 
         {...attributes}
 
         {...listeners}
+
+        type="button"
+
+        aria-label={`Move ${
+          item.name || `choice ${index+1}`
+        }`}
 
         className="
           w-12
@@ -124,6 +138,7 @@ function SortableItem({
 
 
 
+
       <p className="
         font-bold
         text-lg
@@ -132,6 +147,7 @@ function SortableItem({
         {item.name}
 
       </p>
+
 
 
     </div>
@@ -146,13 +162,14 @@ function SortableItem({
 
 
 
+
 export default function SortableRankView({
 
   initialItems
 
 }:{
 
-  initialItems:Item[]
+  initialItems:RankingBuilderItem[]
 
 }){
 
@@ -160,14 +177,19 @@ export default function SortableRankView({
 
   const [items,setItems] =
 
-    useState(initialItems)
+    useState<RankingBuilderItem[]>(
+
+      initialItems
+
+    )
 
 
 
 
 
 
-  const sensors=
+
+  const sensors =
 
     useSensors(
 
@@ -195,6 +217,7 @@ export default function SortableRankView({
 
 
 
+
   function handleDragEnd(
 
     event:DragEndEvent
@@ -215,11 +238,12 @@ export default function SortableRankView({
 
 
 
+
     if(
 
       !over ||
 
-      active.id===over.id
+      active.id === over.id
 
     ){
 
@@ -230,28 +254,34 @@ export default function SortableRankView({
 
 
 
-    const oldIndex=
+
+
+    const oldIndex =
 
       items.findIndex(
 
-        item=>
+        item =>
 
-          item.id===active.id
+          item.id === active.id
 
       )
 
 
 
 
-    const newIndex=
+
+
+    const newIndex =
 
       items.findIndex(
 
-        item=>
+        item =>
 
-          item.id===over.id
+          item.id === over.id
 
       )
+
+
 
 
 
@@ -293,11 +323,12 @@ export default function SortableRankView({
     >
 
 
+
       <SortableContext
 
         items={items.map(
 
-          item=>item.id
+          item => item.id
 
         )}
 
@@ -306,40 +337,41 @@ export default function SortableRankView({
       >
 
 
+
         <div className="
           space-y-4
         ">
 
 
-          {
 
-            items.map(
+          {items.map(
 
-              (item,index)=>(
-
-
-                <SortableItem
-
-                  key={item.id}
-
-                  item={item}
-
-                  index={index}
-
-                />
+            (item,index)=>(
 
 
-              )
+              <SortableItem
+
+                key={item.id}
+
+                item={item}
+
+                index={index}
+
+              />
+
 
             )
 
-          }
+          )}
+
 
 
         </div>
 
 
+
       </SortableContext>
+
 
 
     </DndContext>

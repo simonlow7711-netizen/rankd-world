@@ -3,35 +3,28 @@
 import Link from "next/link"
 
 import {
-  calculateDebateScore
-} from "@/utils/debateScore"
+  Ranking
+} from "@/types/ranking"
 
 
+
+type RankingCardProps = {
+
+  ranking: Ranking
+
+  debateScore?: number
+
+}
 
 
 
 export default function RankingCard({
 
-  ranking
+  ranking,
 
-}:{
+  debateScore = 0
 
-  ranking:any
-
-}) {
-
-
-
-  const debateScore =
-
-    calculateDebateScore(
-
-      ranking
-
-    )
-
-
-
+}: RankingCardProps) {
 
 
 
@@ -61,13 +54,17 @@ export default function RankingCard({
 
 
 
-        <p className="
-          rankd-accent
-          uppercase
-          tracking-widest
-          text-xs
-          font-black
-        ">
+        <p
+
+          className="
+            rankd-accent
+            uppercase
+            tracking-widest
+            text-xs
+            font-black
+          "
+
+        >
 
           {ranking.category || "General"}
 
@@ -79,12 +76,16 @@ export default function RankingCard({
 
 
 
-        <h3 className="
-          text-3xl
-          font-black
-          mt-5
-          leading-tight
-        ">
+        <h3
+
+          className="
+            text-3xl
+            font-black
+            mt-5
+            leading-tight
+          "
+
+        >
 
           {ranking.title}
 
@@ -96,27 +97,39 @@ export default function RankingCard({
 
 
 
-        <div className="
-          mt-8
-          flex
-          items-center
-          justify-between
-        ">
+        <div
+
+          className="
+            mt-8
+            flex
+            items-center
+            justify-between
+          "
+
+        >
 
 
 
 
-          <div className="
-            bg-[#F7F4EE]
-            rounded-full
-            px-5
-            py-3
-          ">
+          <div
+
+            className="
+              bg-[#F7F4EE]
+              rounded-full
+              px-5
+              py-3
+            "
+
+          >
 
 
-            <span className="
-              font-black
-            ">
+            <span
+
+              className="
+                font-black
+              "
+
+            >
 
               🔥 {debateScore}%
 
@@ -131,10 +144,14 @@ export default function RankingCard({
 
 
 
-          <span className="
-            rankd-muted
-            font-bold
-          ">
+          <span
+
+            className="
+              rankd-muted
+              font-bold
+            "
+
+          >
 
             Debate heat
 
@@ -150,18 +167,26 @@ export default function RankingCard({
 
 
 
-        <div className="
-          mt-8
-          pt-6
-          border-t
-          border-black/10
-        ">
+        <div
+
+          className="
+            mt-8
+            pt-6
+            border-t
+            border-black/10
+          "
+
+        >
 
 
 
-          <p className="
-            font-black
-          ">
+          <p
+
+            className="
+              font-black
+            "
+
+          >
 
             Would you rank it differently?
 
@@ -172,13 +197,17 @@ export default function RankingCard({
 
 
 
-          <p className="
-            mt-3
-            rankd-accent
-            font-black
-          ">
+          <p
 
-            View RANKD →
+            className="
+              mt-3
+              rankd-accent
+              font-black
+            "
+
+          >
+
+            Rank it yourself →
 
           </p>
 

@@ -25,19 +25,9 @@ import {
   CSS
 } from "@dnd-kit/utilities"
 
-
-
-
-
-export type RankingItem = {
-
-  id:string
-
-  name:string
-
-}
-
-
+import {
+  RankingBuilderItem
+} from "@/types/ranking"
 
 
 
@@ -45,10 +35,10 @@ export type RankingItem = {
 
 type Props = {
 
-  items:RankingItem[]
+  items: RankingBuilderItem[]
 
-  setItems:React.Dispatch<
-    React.SetStateAction<RankingItem[]>
+  setItems: React.Dispatch<
+    React.SetStateAction<RankingBuilderItem[]>
   >
 
 }
@@ -67,15 +57,15 @@ function SortableItem({
 
   index,
 
-  updateItem
+  updateRankingItem
 
 }:{
 
-  item:RankingItem
+  item: RankingBuilderItem
 
-  index:number
+  index: number
 
-  updateItem:(
+  updateRankingItem:(
 
     id:string,
 
@@ -161,7 +151,9 @@ function SortableItem({
 
         type="button"
 
-        aria-label="Drag to reorder"
+        aria-label={`Move ${
+          item.name || `choice ${index + 1}`
+        }`}
 
         className="
           w-12
@@ -194,17 +186,21 @@ function SortableItem({
 
 
 
-      <div className="
-        w-10
-        h-10
-        rounded-full
-        bg-[#E8E2D8]
-        flex
-        items-center
-        justify-center
-        font-black
-        shrink-0
-      ">
+      <div
+
+        className="
+          w-10
+          h-10
+          rounded-full
+          bg-[#E8E2D8]
+          flex
+          items-center
+          justify-center
+          font-black
+          shrink-0
+        "
+
+      >
 
         {index + 1}
 
@@ -221,9 +217,9 @@ function SortableItem({
 
         value={item.name}
 
-        onChange={e=>
+        onChange={e =>
 
-          updateItem(
+          updateRankingItem(
 
             item.id,
 
@@ -263,6 +259,7 @@ function SortableItem({
 
 
 
+
 export default function SortableRankingList({
 
   items,
@@ -289,9 +286,7 @@ export default function SortableRankingList({
 
   useEffect(()=>{
 
-
     setHydrated(true)
-
 
   },[])
 
@@ -353,18 +348,19 @@ export default function SortableRankingList({
 
 
 
-    if(!over) return
+    if(!over){
+
+      return
+
+    }
 
 
 
 
 
 
-    if(
 
-      active.id === over.id
-
-    ){
+    if(active.id === over.id){
 
       return
 
@@ -384,7 +380,7 @@ export default function SortableRankingList({
 
         current.findIndex(
 
-          item=>
+          item =>
 
             item.id === active.id
 
@@ -398,7 +394,7 @@ export default function SortableRankingList({
 
         current.findIndex(
 
-          item=>
+          item =>
 
             item.id === over.id
 
@@ -423,7 +419,15 @@ export default function SortableRankingList({
 
 
   }
-    function updateItem(
+
+
+
+
+
+
+
+
+  function updateRankingItem(
 
     id:string,
 
@@ -432,9 +436,10 @@ export default function SortableRankingList({
   ){
 
 
-    setItems(current=>
 
-      current.map(item=>
+    setItems(current =>
+
+      current.map(item =>
 
         item.id === id
 
@@ -466,6 +471,7 @@ export default function SortableRankingList({
 
 
 
+
   if(!hydrated){
 
 
@@ -476,7 +482,7 @@ export default function SortableRankingList({
       ">
 
 
-        {items.map((item,index)=>(
+        {items.map(item=>(
 
 
           <div
@@ -491,12 +497,13 @@ export default function SortableRankingList({
 
           >
 
+
             <div className="
               w-12
               h-12
               rounded-full
               bg-black/10
-            " />
+            "/>
 
 
 
@@ -505,7 +512,7 @@ export default function SortableRankingList({
               h-14
               rounded-2xl
               bg-[#F7F4EE]
-            " />
+            "/>
 
 
           </div>
@@ -592,7 +599,7 @@ export default function SortableRankingList({
 
                 index={index}
 
-                updateItem={updateItem}
+                updateRankingItem={updateRankingItem}
 
               />
 

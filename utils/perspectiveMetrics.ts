@@ -1,4 +1,6 @@
-import { Ranking } from "@/types/ranking"
+import {
+  Ranking
+} from "@/types/ranking"
 
 import {
   calculatePerspectiveScore
@@ -8,11 +10,14 @@ import {
 
 
 
-export function getPerspectiveGaps(
 
-  rankings: Ranking[]
+
+export function getInterestingPerspectives(
+
+  rankings:Ranking[] = []
 
 ){
+
 
 
   return rankings
@@ -20,10 +25,12 @@ export function getPerspectiveGaps(
     .map((ranking)=>({
 
 
+
       ranking,
 
 
-      gap:
+
+      score:
 
         calculatePerspectiveScore(
 
@@ -32,18 +39,21 @@ export function getPerspectiveGaps(
         )
 
 
+
     }))
+
 
 
     .sort(
 
       (a,b)=>
 
-        b.gap -
+        b.score -
 
-        a.gap
+        a.score
 
     )
+
 
 
     .slice(
@@ -56,3 +66,17 @@ export function getPerspectiveGaps(
 
 
 }
+
+
+
+
+
+
+
+
+// Backwards compatibility
+// Existing components can continue using getPerspectiveGaps
+
+export const getPerspectiveGaps =
+
+  getInterestingPerspectives

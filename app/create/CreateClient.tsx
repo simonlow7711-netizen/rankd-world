@@ -20,6 +20,12 @@ import {
 
 import SortableRankingList from "@/components/SortableRankingList"
 
+import {
+  RankingBuilderItem
+} from "@/types/ranking"
+
+
+
 
 
 const categories = [
@@ -45,13 +51,7 @@ const categories = [
 
 
 
-type RankingItem = {
 
-  id:string
-
-  name:string
-
-}
 
 
 
@@ -66,9 +66,14 @@ export default function CreateClient(){
 
 
 
+
+
+
   const [title,setTitle] =
 
     useState("")
+
+
 
 
 
@@ -78,9 +83,12 @@ export default function CreateClient(){
 
 
 
+
+
+
   const [items,setItems] =
 
-    useState<RankingItem[]>([
+    useState<RankingBuilderItem[]>([
 
       {
         id:crypto.randomUUID(),
@@ -121,15 +129,25 @@ export default function CreateClient(){
 
 
 
+
+
+
+
   const [originalId,setOriginalId] =
 
     useState<string | null>(null)
 
 
 
+
+
+
   const [message,setMessage] =
 
     useState("")
+
+
+
 
 
 
@@ -142,7 +160,10 @@ export default function CreateClient(){
 
 
 
-  function createEmptyItems(){
+
+
+
+  function createEmptyItems():RankingBuilderItem[]{
 
 
     return Array.from(
@@ -170,6 +191,8 @@ export default function CreateClient(){
 
 
 
+
+
   useEffect(()=>{
 
 
@@ -186,7 +209,9 @@ export default function CreateClient(){
           remix:
 
             !!searchParams.get(
+
               "originalId"
+
             )
 
         }
@@ -198,33 +223,51 @@ export default function CreateClient(){
 
 
 
+
+
     const startingTitle =
 
       searchParams.get(
+
         "title"
+
       )
+
+
+
 
 
 
     const startingItems =
 
       searchParams.get(
+
         "items"
+
       )
+
+
+
 
 
 
     const startingOriginalId =
 
       searchParams.get(
+
         "originalId"
+
       )
 
       ||
 
       searchParams.get(
+
         "parentId"
+
       )
+
+
 
 
 
@@ -247,10 +290,11 @@ export default function CreateClient(){
 
 
 
+
     if(startingItems){
 
 
-      const loadedItems =
+      const loadedItems:RankingBuilderItem[] =
 
         startingItems
 
@@ -326,11 +370,6 @@ export default function CreateClient(){
   },[])
 
 
-
-
-
-
-
   async function getConversationRoot(
 
     parentId:string
@@ -373,6 +412,8 @@ export default function CreateClient(){
 
 
 
+
+
       if(error || !parent){
 
 
@@ -380,6 +421,7 @@ export default function CreateClient(){
 
 
       }
+
 
 
 
@@ -397,6 +439,7 @@ export default function CreateClient(){
 
 
 
+
       if(!parent.parent_id){
 
 
@@ -409,12 +452,16 @@ export default function CreateClient(){
 
 
 
+
       currentId =
 
         parent.parent_id
 
 
+
     }
+
+
 
 
 
@@ -422,7 +469,17 @@ export default function CreateClient(){
 
 
   }
-    async function publishRankd(){
+
+
+
+
+
+
+
+
+
+  async function publishRankd(){
+
 
 
     if(publishing){
@@ -433,7 +490,12 @@ export default function CreateClient(){
 
 
 
+
     setPublishing(true)
+
+
+
+
 
 
 
@@ -453,6 +515,8 @@ export default function CreateClient(){
 
 
     }
+
+
 
 
 
@@ -479,11 +543,13 @@ export default function CreateClient(){
 
 
 
+
+
     if(
 
       items.some(
 
-        item=>
+        item =>
 
           !item.name.trim()
 
@@ -510,6 +576,9 @@ export default function CreateClient(){
 
 
 
+
+
+
     setMessage(
 
       "Creating your perspective..."
@@ -520,9 +589,13 @@ export default function CreateClient(){
 
 
 
+
+
     const rankingId =
 
       crypto.randomUUID()
+
+
 
 
 
@@ -542,6 +615,7 @@ export default function CreateClient(){
 
 
 
+
     let userId =
 
       user?.id
@@ -554,6 +628,7 @@ export default function CreateClient(){
     if(!userId){
 
 
+
       const {
 
         data,
@@ -563,6 +638,8 @@ export default function CreateClient(){
       } = await supabase.auth
 
         .signInAnonymously()
+
+
 
 
 
@@ -587,12 +664,16 @@ export default function CreateClient(){
 
 
 
+
+
       userId =
 
         data.user?.id
 
 
+
     }
+
 
 
 
@@ -615,6 +696,7 @@ export default function CreateClient(){
 
 
     }
+
 
 
 
@@ -673,6 +755,7 @@ export default function CreateClient(){
 
 
     }
+
 
 
 
@@ -809,6 +892,8 @@ export default function CreateClient(){
 
 
 
+
+
     const rankingItems =
 
       items.map(
@@ -846,7 +931,6 @@ export default function CreateClient(){
         )
 
       )
-
 
 
 
@@ -900,7 +984,14 @@ export default function CreateClient(){
 
 
     }
-        trackEvent(
+
+
+
+
+
+
+
+    trackEvent(
 
       "rank_published",
 
@@ -920,7 +1011,11 @@ export default function CreateClient(){
 
           remix:
 
-            !!originalId
+            !!originalId,
+
+          itemCount:
+
+            items.length
 
         }
 
@@ -932,11 +1027,14 @@ export default function CreateClient(){
 
 
 
+
+
     setMessage(
 
       "Your perspective is live 🎉"
 
     )
+
 
 
 
@@ -959,13 +1057,7 @@ export default function CreateClient(){
 
   }
 
-
-
-
-
-
-
-  return (
+    return (
 
     <main className="
       min-h-screen
@@ -1082,7 +1174,7 @@ export default function CreateClient(){
 
             value={title}
 
-            onChange={e=>
+            onChange={e =>
 
               setTitle(
 
@@ -1140,7 +1232,7 @@ export default function CreateClient(){
 
             {categories.map(
 
-              item=>(
+              item => (
 
 
                 <button
@@ -1149,7 +1241,11 @@ export default function CreateClient(){
 
                   type="button"
 
-                  onClick={()=>setCategory(item)}
+                  onClick={() =>
+
+                    setCategory(item)
+
+                  }
 
                   className={
 
@@ -1226,7 +1322,11 @@ export default function CreateClient(){
             Drag your choices into the order you believe.
 
           </p>
-                    <p className="
+
+
+
+
+          <p className="
             mt-3
             text-center
             text-sm

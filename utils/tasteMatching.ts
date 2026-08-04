@@ -1,8 +1,6 @@
 import {
-  calculateTasteDNA
-} from "./tasteProfile"
-
-
+  TasteDNA
+} from "@/utils/tasteProfile"
 
 
 
@@ -10,30 +8,23 @@ import {
 
 export function calculateTasteMatch(
 
-  rankings:any[] = []
+  dnaA:TasteDNA = {},
+
+  dnaB:TasteDNA = {}
 
 ){
 
 
 
-  const safeRankings =
+  const safeDnaA =
 
-    rankings ?? []
-
-
+    dnaA ?? {}
 
 
 
+  const safeDnaB =
 
-
-  const tasteDNA =
-
-    calculateTasteDNA(
-
-      safeRankings
-
-    )
-
+    dnaB ?? {}
 
 
 
@@ -43,19 +34,21 @@ export function calculateTasteMatch(
 
   const categories =
 
-    Object.entries(
+    new Set([
 
-      tasteDNA
+      ...Object.keys(safeDnaA),
 
-    )
+      ...Object.keys(safeDnaB)
 
-
-
-
+    ])
 
 
 
-  if(categories.length === 0){
+
+
+
+
+  if(categories.size === 0){
 
 
     return {
@@ -77,25 +70,11 @@ export function calculateTasteMatch(
 
 
 
+  let difference = 0
 
-  const sortedCategories =
 
-    categories
 
-    .sort(
-
-      (
-        [,a],
-
-        [,b]
-
-      ) =>
-
-        Number(b) -
-
-        Number(a)
-
-    )
+  const sharedCategories:string[] = []
 
 
 
@@ -103,27 +82,59 @@ export function calculateTasteMatch(
 
 
 
+  categories.forEach(category=>{
 
-  const topCategories =
 
-    sortedCategories
+    const a =
 
-    .slice(
+      safeDnaA[category] ?? 0
 
-      0,
 
-      3
 
-    )
 
-    .map(
+    const b =
 
-      ([category])=>
+      safeDnaB[category] ?? 0
+
+
+
+
+
+    if(
+
+      a > 0 &&
+
+      b > 0
+
+    ){
+
+
+      sharedCategories.push(
 
         category
 
-    )
+      )
 
+
+    }
+
+
+
+
+
+
+
+    difference +=
+
+      Math.abs(
+
+        a - b
+
+      )
+
+
+
+  })
 
 
 
@@ -133,29 +144,27 @@ export function calculateTasteMatch(
 
   const score =
 
-    Math.min(
+    Math.max(
 
-      100,
+      0,
 
-      Math.round(
+      Math.min(
 
-        (
+        100,
 
-          topCategories.length /
+        100 -
 
-          categories.length
+        Math.round(
+
+          difference /
+
+          categories.size
 
         )
-
-        *
-
-        100
 
       )
 
     )
-
-
 
 
 
@@ -169,21 +178,22 @@ export function calculateTasteMatch(
     score,
 
 
+
     label:
 
-      score >= 70
+      score >= 80
 
       ?
 
-      "Strong taste match"
+      "Strong taste alignment"
 
       :
 
-      score >= 40
+      score >= 60
 
       ?
 
-      "Similar tastes"
+      "Similar perspectives"
 
       :
 
@@ -191,9 +201,8 @@ export function calculateTasteMatch(
 
 
 
-    sharedCategories:
 
-      topCategories
+    sharedCategories
 
 
   }

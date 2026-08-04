@@ -1,3 +1,15 @@
+export interface RankingBuilderItem {
+
+  id: string
+
+  name: string
+
+}
+
+
+
+
+
 export interface RankingItem {
 
   position: number
