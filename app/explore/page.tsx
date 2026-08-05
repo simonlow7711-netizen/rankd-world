@@ -1,12 +1,8 @@
 import Link from "next/link"
 
 import {
-  getAllSupabaseRankings
+  getAllRankings
 } from "@/utils/supabaseRankings"
-
-import {
-  rankings as seedRankings
-} from "@/data/rankings"
 
 import RankingCard from "@/components/RankingCard"
 
@@ -63,39 +59,9 @@ export default async function ExplorePage(){
 
 
 
-  const supabaseRankings =
+  const allRankings =
 
-    await getAllSupabaseRankings()
-
-
-
-
-
-
-
-  const allRankings = [
-
-    ...(supabaseRankings ?? []),
-
-    ...seedRankings
-
-  ]
-
-  .filter(
-
-    (ranking,index,self)=>
-
-      ranking &&
-
-      index === self.findIndex(
-
-        item =>
-
-          item.id === ranking.id
-
-      )
-
-  )
+    await getAllRankings()
 
 
 
@@ -263,7 +229,13 @@ export default async function ExplorePage(){
 
 
         <DailyRankd />
-                
+
+
+
+
+
+
+
 
 
         <section className="

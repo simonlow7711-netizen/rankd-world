@@ -2,12 +2,15 @@
 
 import Link from "next/link"
 
-import { useEffect, useState } from "react"
+import {
+  useEffect,
+  useState
+} from "react"
 
 import RankingCard from "@/components/RankingCard"
 
 import {
-  getAllSupabaseRankings
+  getAllRankings
 } from "@/utils/supabaseRankings"
 
 import {
@@ -46,7 +49,7 @@ export default function Trending(){
 
       const data =
 
-        await getAllSupabaseRankings()
+        await getAllRankings()
 
 
 

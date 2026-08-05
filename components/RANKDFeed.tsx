@@ -10,7 +10,7 @@ import {
 import RankingCard from "@/components/RankingCard"
 
 import {
-  getAllSupabaseRankings
+  getAllRankings
 } from "@/utils/supabaseRankings"
 
 
@@ -45,7 +45,7 @@ export default function RANKDFeed(){
 
       const data =
 
-        await getAllSupabaseRankings()
+        await getAllRankings()
 
 
 

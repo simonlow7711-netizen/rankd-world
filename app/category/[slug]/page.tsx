@@ -7,7 +7,7 @@ import { notFound } from "next/navigation"
 import RankingCard from "@/components/RankingCard"
 
 import {
-  getAllSupabaseRankings
+  getAllRankings
 } from "@/utils/supabaseRankings"
 
 
@@ -215,7 +215,7 @@ export default async function CategoryPage(
 
   const allRankings =
 
-    await getAllSupabaseRankings()
+    await getAllRankings()
 
 
 

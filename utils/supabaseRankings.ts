@@ -1,5 +1,15 @@
 import { supabase } from "@/utils/supabase"
-import { Ranking, RankingItem } from "@/types/ranking"
+
+import {
+  Ranking,
+  RankingItem
+} from "@/types/ranking"
+
+import {
+  rankings as seedRankings
+} from "@/data/rankings"
+
+
 
 
 
@@ -347,14 +357,10 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-        // Immediate inspiration
-
         parentId:
           row.parent_id ?? undefined,
 
 
-
-        // Original conversation starter
 
         rootId:
           row.root_id ?? undefined
@@ -365,6 +371,60 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
     })
+
+
+}
+
+
+
+
+
+
+
+
+
+export async function getAllRankings(): Promise<Ranking[]> {
+
+
+  const supabaseRankings =
+
+    await getAllSupabaseRankings()
+
+
+
+
+
+  const allRankings = [
+
+    ...supabaseRankings,
+
+    ...seedRankings
+
+  ]
+
+  .filter(
+
+    (ranking,index,self)=>
+
+      ranking &&
+
+      index === self.findIndex(
+
+        item =>
+
+          item.id === ranking.id
+
+      )
+
+  )
+
+
+
+
+
+
+
+  return allRankings
 
 
 }
