@@ -6,25 +6,43 @@ import {
   Ranking
 } from "@/types/ranking"
 
+import {
+  calculateLivePerspectiveScore
+} from "@/utils/livePerspectiveScore"
+
+
+
 
 
 type RankingCardProps = {
 
   ranking: Ranking
 
-  debateScore?: number
-
 }
+
+
+
+
 
 
 
 export default function RankingCard({
 
-  ranking,
-
-  debateScore = 0
+  ranking
 
 }: RankingCardProps) {
+
+
+
+  const perspectiveHeat =
+
+    calculateLivePerspectiveScore(
+
+      ranking
+
+    )
+
+
 
 
 
@@ -131,7 +149,7 @@ export default function RankingCard({
 
             >
 
-              🔥 {debateScore}%
+              🔥 {perspectiveHeat}
 
             </span>
 
@@ -153,7 +171,7 @@ export default function RankingCard({
 
           >
 
-            Debate heat
+            Perspective Heat
 
           </span>
 

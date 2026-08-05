@@ -1,5 +1,12 @@
 import { Ranking } from "@/types/ranking"
 
+import {
+  calculateLivePerspectiveScore
+} from "@/utils/livePerspectiveScore"
+
+
+
+
 
 export function getRemixCount(
   rankings: Ranking[],
@@ -14,6 +21,12 @@ export function getRemixCount(
 
 
 
+
+
+
+
+
+
 export function getTrendingRankings(
   rankings: Ranking[]
 ) {
@@ -21,12 +34,19 @@ export function getTrendingRankings(
   return [...rankings]
     .sort(
       (a,b) =>
-        (b.views || 0) -
-        (a.views || 0)
+        calculateLivePerspectiveScore(b)
+        -
+        calculateLivePerspectiveScore(a)
     )
     .slice(0,3)
 
 }
+
+
+
+
+
+
 
 
 
@@ -43,6 +63,12 @@ export function getLatestRankings(
     .slice(0,3)
 
 }
+
+
+
+
+
+
 
 
 
