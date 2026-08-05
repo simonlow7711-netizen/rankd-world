@@ -24,6 +24,24 @@ export interface RankingItem {
 
 
 
+export interface RankingSignals {
+
+  rankdScore?: number
+
+  liveScore?: number
+
+  debateHeat?: number
+
+  perspectiveScore?: number
+
+  views?: number
+
+}
+
+
+
+
+
 export interface Ranking {
 
   id: string
@@ -37,6 +55,12 @@ export interface Ranking {
   description: string
 
   items: RankingItem[]
+
+
+
+  // Intelligence layer
+
+  signals?: RankingSignals
 
 
 

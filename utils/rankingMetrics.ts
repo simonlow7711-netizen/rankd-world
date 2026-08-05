@@ -1,21 +1,26 @@
 import { Ranking } from "@/types/ranking"
 
-import {
-  calculateLivePerspectiveScore
-} from "@/utils/livePerspectiveScore"
-
 
 
 
 
 export function getRemixCount(
+
   rankings: Ranking[],
+
   id: string
+
 ) {
 
+
   return rankings.filter(
-    ranking => ranking.originalId === id
+
+    ranking =>
+
+      ranking.originalId === id
+
   ).length
+
 
 }
 
@@ -28,17 +33,28 @@ export function getRemixCount(
 
 
 export function getTrendingRankings(
+
   rankings: Ranking[]
+
 ) {
 
+
   return [...rankings]
+
     .sort(
+
       (a,b) =>
-        calculateLivePerspectiveScore(b)
+
+        (b.signals?.rankdScore ?? 0)
+
         -
-        calculateLivePerspectiveScore(a)
+
+        (a.signals?.rankdScore ?? 0)
+
     )
+
     .slice(0,3)
+
 
 }
 
@@ -51,16 +67,36 @@ export function getTrendingRankings(
 
 
 export function getLatestRankings(
+
   rankings: Ranking[]
+
 ) {
 
+
   return [...rankings]
+
     .sort(
+
       (a,b) =>
-        new Date(b.createdAt || 0).getTime() -
-        new Date(a.createdAt || 0).getTime()
+
+        new Date(
+
+          b.createdAt || 0
+
+        ).getTime()
+
+        -
+
+        new Date(
+
+          a.createdAt || 0
+
+        ).getTime()
+
     )
+
     .slice(0,3)
+
 
 }
 
@@ -73,13 +109,27 @@ export function getLatestRankings(
 
 
 export function getBiggestDebates(
+
   rankings: Ranking[]
+
 ) {
 
+
   return rankings
-    .filter(
-      ranking => ranking.remixedFrom
+
+    .sort(
+
+      (a,b) =>
+
+        (b.signals?.debateHeat ?? 0)
+
+        -
+
+        (a.signals?.debateHeat ?? 0)
+
     )
+
     .slice(0,3)
+
 
 }

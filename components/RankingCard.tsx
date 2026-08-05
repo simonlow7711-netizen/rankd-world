@@ -6,9 +6,13 @@ import {
   Ranking
 } from "@/types/ranking"
 
+import RankdExplanation from "@/components/RankdExplanation"
+
+import RankingDebug from "@/components/RankingDebug"
+
 import {
-  calculateLivePerspectiveScore
-} from "@/utils/livePerspectiveScore"
+  SHOW_RANKD_DEBUG
+} from "@/utils/featureFlags"
 
 
 
@@ -34,13 +38,9 @@ export default function RankingCard({
 
 
 
-  const perspectiveHeat =
+  const debateScore =
 
-    calculateLivePerspectiveScore(
-
-      ranking
-
-    )
+    ranking.signals?.debateHeat ?? 0
 
 
 
@@ -149,7 +149,7 @@ export default function RankingCard({
 
             >
 
-              🔥 {perspectiveHeat}
+              🔥 {debateScore}%
 
             </span>
 
@@ -171,7 +171,7 @@ export default function RankingCard({
 
           >
 
-            Perspective Heat
+            Debate heat
 
           </span>
 
@@ -232,6 +232,34 @@ export default function RankingCard({
 
 
         </div>
+
+
+
+
+
+
+
+        <RankdExplanation
+
+          ranking={ranking}
+
+        />
+
+
+
+
+
+
+
+        {SHOW_RANKD_DEBUG && (
+
+          <RankingDebug
+
+            ranking={ranking}
+
+          />
+
+        )}
 
 
 

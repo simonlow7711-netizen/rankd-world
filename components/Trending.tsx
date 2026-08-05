@@ -13,10 +13,6 @@ import {
   getAllRankings
 } from "@/utils/supabaseRankings"
 
-import {
-  calculateLivePerspectiveScore
-} from "@/utils/livePerspectiveScore"
-
 
 
 
@@ -55,7 +51,7 @@ export default function Trending(){
 
 
 
-      const liveRankings =
+      const trendingRankings =
 
         (data ?? [])
 
@@ -63,11 +59,11 @@ export default function Trending(){
 
           (a,b)=>
 
-            calculateLivePerspectiveScore(b)
+            (b.signals?.rankdScore ?? 0)
 
             -
 
-            calculateLivePerspectiveScore(a)
+            (a.signals?.rankdScore ?? 0)
 
         )
 
@@ -79,7 +75,7 @@ export default function Trending(){
 
       setRankings(
 
-        liveRankings
+        trendingRankings
 
       )
 
@@ -164,7 +160,7 @@ export default function Trending(){
               mt-4
             ">
 
-              🔥 Live Perspectives
+              🔥 Trending RANKDs
 
             </h2>
 
@@ -178,7 +174,7 @@ export default function Trending(){
               max-w-xl
             ">
 
-              The rankings people are debating right now.
+              The rankings generating the most interesting opinions.
 
             </p>
 
@@ -248,7 +244,7 @@ export default function Trending(){
             text-center
           ">
 
-            No live perspectives yet.
+            No trending RANKDs yet.
 
           </div>
 

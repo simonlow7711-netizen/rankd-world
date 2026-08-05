@@ -9,6 +9,10 @@ import {
   rankings as seedRankings
 } from "@/data/rankings"
 
+import {
+  getRankingSignals
+} from "@/utils/rankingSignals"
+
 
 
 
@@ -87,10 +91,13 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     .select("*")
 
     .order(
+
       "created_at",
+
       {
         ascending:false
       }
+
     )
 
 
@@ -118,7 +125,9 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     ...new Set(
 
       rankings.map(
+
         ranking => ranking.user_id
+
       )
 
     )
@@ -145,8 +154,11 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     )
 
     .in(
+
       "id",
+
       userIds
+
     )
 
 
@@ -167,7 +179,9 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     .select("*")
 
     .order(
+
       "position"
+
     )
 
 
@@ -179,6 +193,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
   const profileMap =
+
     new Map<string, ProfileRow>()
 
 
@@ -208,6 +223,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
   const itemMap =
+
     new Map<string, RankingItem[]>()
 
 
@@ -222,6 +238,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
     const row =
+
       item as RankingItemRow
 
 
@@ -255,12 +272,15 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
       .push({
 
         position:
+
           row.position,
 
         name:
+
           row.name,
 
         votes:
+
           row.votes ?? 0
 
       })
@@ -276,101 +296,144 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
 
 
-  return (rankings as RankingRow[])
+  return (
 
-    .map(row => {
+    rankings as RankingRow[]
+
+  )
+
+  .map(row => {
 
 
-      const profile =
+    const profile =
 
-        profileMap.get(
-          row.user_id
+      profileMap.get(
+
+        row.user_id
+
+      )
+
+
+
+
+
+
+
+
+    const ranking: Ranking = {
+
+
+      id:
+
+        row.id,
+
+
+
+      title:
+
+        row.title,
+
+
+
+      category:
+
+        row.category ?? "General",
+
+
+
+      creator:
+
+        profile?.display_name ?? "Anonymous",
+
+
+
+      creatorId:
+
+        row.user_id,
+
+
+
+      creatorUsername:
+
+        profile?.username,
+
+
+
+      creatorDisplayName:
+
+        profile?.display_name,
+
+
+
+      description:
+
+        row.description ?? "",
+
+
+
+      items:
+
+        itemMap.get(row.id) ?? [],
+
+
+
+      createdAt:
+
+        row.created_at ?? undefined,
+
+
+
+      views:
+
+        row.views ?? 0,
+
+
+
+      source:
+
+        "community",
+
+
+
+      parentId:
+
+        row.parent_id ?? undefined,
+
+
+
+      rootId:
+
+        row.root_id ?? undefined
+
+
+
+    }
+
+
+
+
+
+
+
+    return {
+
+
+      ...ranking,
+
+
+      signals:
+
+        getRankingSignals(
+
+          ranking
+
         )
 
 
+    }
 
 
-
-
-
-
-      return {
-
-
-        id:
-          row.id,
-
-
-
-        title:
-          row.title,
-
-
-
-        category:
-          row.category ?? "General",
-
-
-
-        creator:
-          profile?.display_name ?? "Anonymous",
-
-
-
-        creatorId:
-          row.user_id,
-
-
-
-        creatorUsername:
-          profile?.username,
-
-
-
-        creatorDisplayName:
-          profile?.display_name,
-
-
-
-        description:
-          row.description ?? "",
-
-
-
-        items:
-          itemMap.get(row.id) ?? [],
-
-
-
-        createdAt:
-          row.created_at ?? undefined,
-
-
-
-        views:
-          row.views ?? 0,
-
-
-
-        source:
-          "community",
-
-
-
-        parentId:
-          row.parent_id ?? undefined,
-
-
-
-        rootId:
-          row.root_id ?? undefined
-
-
-
-      }
-
-
-    })
+  })
 
 
 }
@@ -424,7 +487,32 @@ export async function getAllRankings(): Promise<Ranking[]> {
 
 
 
-  return allRankings
+
+
+  return (
+
+    allRankings.map(
+
+      ranking => ({
+
+
+        ...ranking,
+
+
+        signals:
+
+          getRankingSignals(
+
+            ranking
+
+          )
+
+
+      })
+
+    )
+
+  )
 
 
 }
@@ -446,7 +534,7 @@ export async function getSupabaseRanking(
 
   const rankings =
 
-    await getAllSupabaseRankings()
+    await getAllRankings()
 
 
 
@@ -488,7 +576,7 @@ export async function getUserRankings(
 
   const rankings =
 
-    await getAllSupabaseRankings()
+    await getAllRankings()
 
 
 
@@ -534,41 +622,49 @@ export async function createSupabaseRanking(
     .insert({
 
       id:
+
         ranking.id,
 
 
 
       title:
+
         ranking.title,
 
 
 
       category:
+
         ranking.category,
 
 
 
       description:
+
         ranking.description,
 
 
 
       user_id:
+
         userId,
 
 
 
       views:
+
         0,
 
 
 
       parent_id:
+
         ranking.parentId ?? null,
 
 
 
       root_id:
+
         ranking.rootId ?? ranking.id
 
 
@@ -609,21 +705,25 @@ export async function createSupabaseRanking(
         {
 
           ranking_id:
+
             ranking.id,
 
 
 
           position:
+
             item.position,
 
 
 
           name:
+
             item.name,
 
 
 
           votes:
+
             0
 
         }
