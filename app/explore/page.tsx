@@ -263,15 +263,7 @@ export default async function ExplorePage(){
 
 
         <DailyRankd />
-
-        <DailyRankd />
-
-
-
-
-
-
-
+                
 
 
         <section className="
