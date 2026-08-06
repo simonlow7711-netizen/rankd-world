@@ -62,16 +62,21 @@ function createEmptyItems():RankingBuilderItem[]{
   return Array.from(
 
     {
+
       length:7
+
     },
 
     ()=>({
+
 
       id:
 
         crypto.randomUUID(),
 
+
       name:""
+
 
     })
 
@@ -91,7 +96,9 @@ function createEmptyItems():RankingBuilderItem[]{
 export default function CreateClient(){
 
 
+
   const router = useRouter()
+
 
   const searchParams = useSearchParams()
 
@@ -145,18 +152,6 @@ export default function CreateClient(){
 
 
 
-
-  /*
-    Remix lineage
-
-    parentId:
-    the ranking this was directly inspired by
-
-    rootId:
-    the original conversation family root
-  */
-
-
   const parentIdRef =
 
     useRef<string | null>(null)
@@ -165,11 +160,11 @@ export default function CreateClient(){
 
 
 
+
+
   const rootIdRef =
 
     useRef<string | null>(null)
-
-
 
 
 
@@ -186,13 +181,9 @@ export default function CreateClient(){
 
 
 
-
-
     const importedCategory =
 
       searchParams.get("category")
-
-
 
 
 
@@ -202,30 +193,9 @@ export default function CreateClient(){
 
 
 
-
-
-    /*
-      Support both:
-
-      ?parentId=
-
-      and older links:
-
-      ?originalId=
-    */
-
-
     const importedParentId =
 
       searchParams.get("parentId")
-
-      ||
-
-      searchParams.get("originalId")
-
-
-
-
 
 
 
@@ -259,8 +229,6 @@ export default function CreateClient(){
 
 
 
-
-
     if(importedCategory){
 
 
@@ -272,8 +240,6 @@ export default function CreateClient(){
 
 
     }
-
-
 
 
 
@@ -297,8 +263,6 @@ export default function CreateClient(){
 
 
 
-
-
     if(importedRootId){
 
 
@@ -308,8 +272,6 @@ export default function CreateClient(){
 
 
     }
-
-
 
 
 
@@ -339,19 +301,20 @@ export default function CreateClient(){
 
           item => ({
 
+
             id:
 
               crypto.randomUUID(),
+
 
             name:
 
               item.trim()
 
+
           })
 
         )
-
-
 
 
 
@@ -384,14 +347,13 @@ export default function CreateClient(){
 
             crypto.randomUUID(),
 
+
           name:""
 
 
         }))
 
       ]
-
-
 
 
 
@@ -425,6 +387,7 @@ export default function CreateClient(){
 
 
 
+
   async function handlePublish(){
 
 
@@ -442,6 +405,7 @@ export default function CreateClient(){
 
 
     }
+
 
 
 
@@ -474,7 +438,6 @@ export default function CreateClient(){
 
 
 
-
     if(cleanedItems.length !== 7){
 
 
@@ -496,9 +459,7 @@ export default function CreateClient(){
 
 
 
-
     setLoading(true)
-
 
 
 
@@ -510,17 +471,9 @@ export default function CreateClient(){
 
       crypto.randomUUID()
 
+          const finalParentId =
 
-
-
-
-
-
-    const finalParentId =
-
-      parentIdRef.current
-
-
+      parentIdRef.current ?? null
 
 
 
@@ -528,17 +481,9 @@ export default function CreateClient(){
 
     const finalRootId =
 
-      rootIdRef.current
-
-      ||
-
-      finalParentId
-
-      ||
+      rootIdRef.current ??
 
       rankingId
-
-
 
 
 
@@ -631,11 +576,7 @@ export default function CreateClient(){
 
       parentId:
 
-        finalParentId
-
-        ||
-
-        undefined,
+        finalParentId,
 
 
 
@@ -643,40 +584,8 @@ export default function CreateClient(){
 
         finalRootId
 
+
     }
-
-
-
-
-
-
-
-
-
-    console.log(
-
-      "CREATING RANKD",
-
-      {
-
-        id:
-
-          ranking.id,
-
-
-        parentId:
-
-          ranking.parentId,
-
-
-        rootId:
-
-          ranking.rootId
-
-      }
-
-    )
-
 
 
 
@@ -936,6 +845,9 @@ export default function CreateClient(){
 
 
 
+
+
+
         <div className="
           mt-10
           space-y-8
@@ -966,12 +878,6 @@ export default function CreateClient(){
             }
 
           />
-
-
-
-
-
-
 
 
 
@@ -1063,16 +969,7 @@ export default function CreateClient(){
 
 
           </div>
-
-
-
-
-
-
-
-
-
-          <div className="
+                    <div className="
             space-y-4
           ">
 
