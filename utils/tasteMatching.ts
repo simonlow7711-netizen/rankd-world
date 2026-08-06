@@ -8,6 +8,65 @@ import {
 
 
 
+function normaliseScores(
+
+  values:Record<string,number> = {}
+
+){
+
+  const total =
+
+    Object.values(values)
+
+    .reduce(
+
+      (sum,value)=>
+
+        sum + value,
+
+      0
+
+    )
+
+
+
+
+
+  if(!total){
+
+    return {}
+
+  }
+
+
+
+
+
+  return Object.fromEntries(
+
+    Object.entries(values)
+
+    .map(([key,value])=>[
+
+      key,
+
+      value / total
+
+    ])
+
+  )
+
+
+}
+
+
+
+
+
+
+
+
+
 function calculateCategorySimilarity(
 
   a:Record<string,number> = {},
@@ -17,11 +76,25 @@ function calculateCategorySimilarity(
 ){
 
 
+  const normalA =
+
+    normaliseScores(a)
+
+
+
+  const normalB =
+
+    normaliseScores(b)
+
+
+
+
+
   const categories = new Set([
 
-    ...Object.keys(a),
+    ...Object.keys(normalA),
 
-    ...Object.keys(b)
+    ...Object.keys(normalB)
 
   ])
 
@@ -50,23 +123,13 @@ function calculateCategorySimilarity(
   categories.forEach(category=>{
 
 
-    const valueA =
-
-      a[category] ?? 0
-
-
-
-    const valueB =
-
-      b[category] ?? 0
-
-
-
-
-
     difference += Math.abs(
 
-      valueA - valueB
+      (normalA[category] ?? 0)
+
+      -
+
+      (normalB[category] ?? 0)
 
     )
 
@@ -88,9 +151,7 @@ function calculateCategorySimilarity(
 
     (
 
-      difference /
-
-      categories.size
+      difference * 100
 
     )
 
@@ -117,29 +178,33 @@ function calculateChoiceSimilarity(
 
 
 
-  const choicesA =
+  const normalA =
 
-    Object.keys(a)
-
-
-
-  const choicesB =
-
-    Object.keys(b)
+    normaliseScores(a)
 
 
+
+  const normalB =
+
+    normaliseScores(b)
 
 
 
 
 
-  if(
+  const choices = new Set([
 
-    choicesA.length === 0 ||
+    ...Object.keys(normalA),
 
-    choicesB.length === 0
+    ...Object.keys(normalB)
 
-  ){
+  ])
+
+
+
+
+
+  if(choices.size === 0){
 
     return 0
 
@@ -151,31 +216,27 @@ function calculateChoiceSimilarity(
 
 
 
-  const sharedChoices =
+  let difference = 0
 
-    choicesA.filter(
 
-      choice =>
 
-        choicesB.includes(choice)
+
+
+  choices.forEach(choice=>{
+
+
+    difference += Math.abs(
+
+      (normalA[choice] ?? 0)
+
+      -
+
+      (normalB[choice] ?? 0)
 
     )
 
 
-
-
-
-
-
-  const totalChoices =
-
-    new Set([
-
-      ...choicesA,
-
-      ...choicesB
-
-    ]).size
+  })
 
 
 
@@ -183,13 +244,20 @@ function calculateChoiceSimilarity(
 
 
 
-  return (
 
-    sharedChoices.length /
+  return Math.max(
 
-    totalChoices
+    0,
 
-  ) * 100
+    100 -
+
+    (
+
+      difference * 100
+
+    )
+
+  )
 
 
 }
@@ -250,23 +318,6 @@ function calculateBehaviourSimilarity(
 
 
 
-  const rankingDifference =
-
-    Math.abs(
-
-      a.totalRankings -
-
-      b.totalRankings
-
-    )
-
-
-
-
-
-
-
-
   return Math.max(
 
     0,
@@ -275,15 +326,61 @@ function calculateBehaviourSimilarity(
 
     (
 
-      positionDifference * 10
+      positionDifference * 20
 
     )
 
-    -
+  )
+
+
+}
+
+
+
+
+
+
+
+
+
+function calculatePerspectiveScore(
+
+  choiceScore:number,
+
+  behaviourScore:number
+
+){
+
+
+  const difference =
+
+    100 - choiceScore
+
+
+
+
+
+  const judgementDifference =
+
+    100 - behaviourScore
+
+
+
+
+
+  return Math.round(
 
     (
 
-      rankingDifference * 5
+      difference * 0.7
+
+    )
+
+    +
+
+    (
+
+      judgementDifference * 0.3
 
     )
 
@@ -389,13 +486,29 @@ export function calculateTasteMatch(
 
 
 
+  const perspectiveScore =
+
+    calculatePerspectiveScore(
+
+      choiceScore,
+
+      behaviourScore
+
+    )
+
+
+
+
+
+
+
 
 
   const score = Math.round(
 
     (
 
-      categoryScore * 0.30
+      categoryScore * 0.35
 
     )
 
@@ -403,7 +516,7 @@ export function calculateTasteMatch(
 
     (
 
-      choiceScore * 0.50
+      choiceScore * 0.45
 
     )
 
@@ -544,7 +657,7 @@ export function calculateTasteMatch(
 
 
 
-  if(choiceScore >= 70){
+  if(choiceScore >= 75){
 
 
     explanation +=
@@ -553,7 +666,7 @@ export function calculateTasteMatch(
 
   }
 
-  else if(choiceScore >= 40){
+  else if(choiceScore >= 45){
 
 
     explanation +=
@@ -562,22 +675,14 @@ export function calculateTasteMatch(
 
   }
 
-
-
-
-
-
-
-  if(behaviourScore >= 70){
+  else {
 
 
     explanation +=
 
-      " You rank with a similar style."
+      " Your rankings create an interesting contrast."
 
   }
-
-
 
 
 
@@ -642,6 +747,12 @@ export function calculateTasteMatch(
 
 
 
+    perspectiveScore,
+
+
+
+
+
     breakdown:{
 
 
@@ -659,8 +770,11 @@ export function calculateTasteMatch(
 
       behaviourScore:
 
-        Math.round(behaviourScore)
+        Math.round(behaviourScore),
 
+
+
+      perspectiveScore
 
     }
 

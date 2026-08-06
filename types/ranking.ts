@@ -1,8 +1,8 @@
 export interface RankingBuilderItem {
 
-  id: string
+  id:string
 
-  name: string
+  name:string
 
 }
 
@@ -12,11 +12,11 @@ export interface RankingBuilderItem {
 
 export interface RankingItem {
 
-  position: number
+  position:number
 
-  name: string
+  name:string
 
-  votes: number
+  votes:number
 
 }
 
@@ -26,15 +26,15 @@ export interface RankingItem {
 
 export interface RankingSignals {
 
-  rankdScore?: number
+  rankdScore?:number
 
-  liveScore?: number
+  liveScore?:number
 
-  debateHeat?: number
+  debateHeat?:number
 
-  perspectiveScore?: number
+  perspectiveScore?:number
 
-  views?: number
+  views?:number
 
 }
 
@@ -42,76 +42,77 @@ export interface RankingSignals {
 
 
 
+export type RankingSource =
+
+  | "community"
+
+  | "seed"
+
+  | "remix"
+
+  | "challenge"
+
+
+
+
+
+
+
 export interface Ranking {
 
-  id: string
 
-  title: string
-
-  category: string
-
-  creator: string
-
-  description: string
-
-  items: RankingItem[]
+  id:string
 
 
-
-  // Intelligence layer
-
-  signals?: RankingSignals
+  title:string
 
 
+  category:string
 
-  // Ownership / identity
 
-  creatorId?: string
+  creator?:string
 
-  creatorUsername?: string
 
-  creatorDisplayName?: string
+  description:string
+
+
+  items:RankingItem[]
 
 
 
-  // Ranking source
-
-  source?: string
+  signals?:RankingSignals
 
 
 
-  // Dates / metrics
-
-  createdAt?: string
-
-  views?: number
+  creatorId?:string
 
 
+  creatorUsername?:string
 
-  // Remix / parent-child system
 
-  // Immediate ranking that inspired this one
-
-  parentId?: string
+  creatorDisplayName?:string
 
 
 
-  // Original ranking that started the conversation
-
-  rootId?: string
+  source?:RankingSource
 
 
 
-  // Legacy fields
-
-  remixedFrom?: string
-
-  originalId?: string
+  createdAt?:string
 
 
+  views?:number
 
-  // Future social metrics
 
-  remixes?: number
+
+  parentId:string | null
+
+
+  rootId:string | null
+
+
+
+  remixes?:number
+
 
 }
