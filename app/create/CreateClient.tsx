@@ -11,18 +11,19 @@ import {
 } from "next/navigation"
 
 import {
-  trackEvent
-} from "@/utils/analytics"
+  Ranking,
+  RankingBuilderItem
+} from "@/types/ranking"
+
+import {
+  createSupabaseRanking
+} from "@/utils/supabaseRankings"
 
 import {
   supabase
 } from "@/utils/supabase"
 
 import SortableRankingList from "@/components/SortableRankingList"
-
-import {
-  RankingBuilderItem
-} from "@/types/ranking"
 
 
 
@@ -35,16 +36,8 @@ const categories = [
   "Music",
   "Sport",
   "Travel",
-  "Gaming",
-  "Books",
   "Technology",
-  "Places",
   "Lifestyle",
-  "Entertainment",
-  "Business",
-  "Art & Design",
-  "Education",
-  "Science",
   "General"
 
 ]
@@ -68,21 +61,15 @@ export default function CreateClient(){
 
 
 
-
   const [title,setTitle] =
 
     useState("")
 
 
 
-
-
   const [category,setCategory] =
 
-    useState("")
-
-
-
+    useState("General")
 
 
 
@@ -91,37 +78,37 @@ export default function CreateClient(){
     useState<RankingBuilderItem[]>([
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       },
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       },
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       },
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       },
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       },
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       },
 
       {
-        id:crypto.randomUUID(),
+        id: crypto.randomUUID(),
         name:""
       }
 
@@ -131,59 +118,9 @@ export default function CreateClient(){
 
 
 
-
-
-  const [originalId,setOriginalId] =
-
-    useState<string | null>(null)
-
-
-
-
-
-
-  const [message,setMessage] =
-
-    useState("")
-
-
-
-
-
-
-  const [publishing,setPublishing] =
+  const [loading,setLoading] =
 
     useState(false)
-
-
-
-
-
-
-
-
-
-  function createEmptyItems():RankingBuilderItem[]{
-
-
-    return Array.from(
-
-      {
-        length:7
-      },
-
-      ()=>({
-
-        id:crypto.randomUUID(),
-
-        name:""
-
-      })
-
-    )
-
-
-  }
 
 
 
@@ -196,293 +133,61 @@ export default function CreateClient(){
   useEffect(()=>{
 
 
-    trackEvent(
+    const dailyTitle =
 
-      "rank_started",
+      searchParams.get("title")
 
-      {
 
-        metadata:{
 
-          source:"create_page",
+    const dailyCategory =
 
-          remix:
-
-            !!searchParams.get(
-
-              "originalId"
-
-            )
-
-        }
-
-      }
-
-    )
+      searchParams.get("category")
 
 
 
 
 
-
-    const startingTitle =
-
-      searchParams.get(
-
-        "title"
-
-      )
-
-
-
-
-
-
-    const startingItems =
-
-      searchParams.get(
-
-        "items"
-
-      )
-
-
-
-
-
-
-    const startingOriginalId =
-
-      searchParams.get(
-
-        "originalId"
-
-      )
-
-      ||
-
-      searchParams.get(
-
-        "parentId"
-
-      )
-
-
-
-
-
-
-
-    if(startingTitle){
-
+    if(dailyTitle){
 
       setTitle(
 
-        startingTitle
+        dailyTitle
 
       )
 
-
     }
 
 
 
 
 
+    if(dailyCategory){
 
+      setCategory(
 
-    if(startingItems){
-
-
-      const loadedItems:RankingBuilderItem[] =
-
-        startingItems
-
-          .split("|")
-
-          .map(
-
-            value=>({
-
-              id:
-
-                crypto.randomUUID(),
-
-              name:
-
-                value
-
-            })
-
-          )
-
-
-
-      setItems(
-
-        [
-
-          ...loadedItems,
-
-          ...
-
-          createEmptyItems()
-
-        ]
-
-        .slice(0,7)
+        dailyCategory
 
       )
 
-
     }
 
-    else{
 
 
-      setItems(
+  },[searchParams])
+    async function handlePublish(){
 
-        createEmptyItems()
+
+    if(
+
+      !title.trim()
+
+    ){
+
+      alert(
+
+        "Add a title"
 
       )
-
-
-    }
-
-
-
-
-
-    if(startingOriginalId){
-
-
-      setOriginalId(
-
-        startingOriginalId
-
-      )
-
-
-    }
-
-
-
-  },[])
-
-
-  async function getConversationRoot(
-
-    parentId:string
-
-  ){
-
-
-    let currentId = parentId
-
-
-
-    while(currentId){
-
-
-      const {
-
-        data:parent,
-
-        error
-
-      } = await supabase
-
-        .from("rankings")
-
-        .select(
-
-          "id,parent_id,root_id"
-
-        )
-
-        .eq(
-
-          "id",
-
-          currentId
-
-        )
-
-        .single()
-
-
-
-
-
-      if(error || !parent){
-
-
-        break
-
-
-      }
-
-
-
-
-
-
-      if(parent.root_id){
-
-
-        return parent.root_id
-
-
-      }
-
-
-
-
-
-
-      if(!parent.parent_id){
-
-
-        return parent.id
-
-
-      }
-
-
-
-
-
-
-      currentId =
-
-        parent.parent_id
-
-
-
-    }
-
-
-
-
-
-    return parentId
-
-
-  }
-
-
-
-
-
-
-
-
-
-  async function publishRankd(){
-
-
-
-    if(publishing){
 
       return
 
@@ -491,55 +196,16 @@ export default function CreateClient(){
 
 
 
-    setPublishing(true)
 
+    const cleanedItems =
 
+      items.filter(
 
+        item =>
 
-
-
-
-    if(!title.trim()){
-
-
-      setMessage(
-
-        "Please add a title"
+          item.name.trim()
 
       )
-
-
-      setPublishing(false)
-
-      return
-
-
-    }
-
-
-
-
-
-
-
-    if(!category){
-
-
-      setMessage(
-
-        "Please choose a category"
-
-      )
-
-
-      setPublishing(false)
-
-      return
-
-
-    }
-
-
 
 
 
@@ -547,366 +213,78 @@ export default function CreateClient(){
 
     if(
 
-      items.some(
-
-        item =>
-
-          !item.name.trim()
-
-      )
+      cleanedItems.length !== 7
 
     ){
 
+      alert(
 
-      setMessage(
-
-        "Please complete all 7 rankings"
+        "Your RANKD needs exactly 7 items"
 
       )
-
-
-      setPublishing(false)
 
       return
 
-
     }
 
 
 
 
 
+    setLoading(true)
 
 
 
-    setMessage(
 
-      "Creating your perspective..."
 
-    )
 
 
 
 
+    const ranking:Ranking = {
 
 
+      id:
 
-    const rankingId =
+        crypto.randomUUID(),
 
-      crypto.randomUUID()
 
 
+      title:
 
+        title,
 
 
 
-
-    const {
-
-      data:{
-
-        user
-
-      }
-
-    } = await supabase.auth.getUser()
-
-
-
-
-
-
-    let userId =
-
-      user?.id
-
-
-
-
-
-
-    if(!userId){
-
-
-
-      const {
-
-        data,
-
-        error
-
-      } = await supabase.auth
-
-        .signInAnonymously()
-
-
-
-
-
-      if(error){
-
-
-        setMessage(
-
-          error.message
-
-        )
-
-
-        setPublishing(false)
-
-        return
-
-
-      }
-
-
-
-
-
-
-
-      userId =
-
-        data.user?.id
-
-
-
-    }
-
-
-
-
-
-
-
-    if(!userId){
-
-
-      setMessage(
-
-        "Unable to create user"
-
-      )
-
-
-      setPublishing(false)
-
-      return
-
-
-    }
-
-
-
-
-
-
-
-    const {
-
-      data:existingProfile
-
-    } = await supabase
-
-      .from("profiles")
-
-      .select(
-
-        "id"
-
-      )
-
-      .eq(
-
-        "id",
-
-        userId
-
-      )
-
-      .maybeSingle()
-
-
-
-
-
-
-    if(!existingProfile){
-
-
-      await supabase
-
-        .from("profiles")
-
-        .insert({
-
-          id:userId,
-
-          username:
-
-            `user-${userId.substring(0,6)}`,
-
-          display_name:
-
-            "RANKD User"
-
-        })
-
-
-    }
-
-
-
-
-
-
-
-    let finalRootId =
-
-      rankingId
-
-
-
-
-
-
-    if(originalId){
-
-
-      finalRootId =
-
-        await getConversationRoot(
-
-          originalId
-
-        )
-
-
-    }
-
-
-
-
-
-
-
-
-    const {
-
-      error:rankingError
-
-    } = await supabase
-
-      .from("rankings")
-
-      .insert({
-
-        id:rankingId,
-
-        user_id:userId,
-
-        title:title.trim(),
+      category:
 
         category,
 
-        description:
 
-          originalId
 
-          ?
+      creator:
 
-          "A community remix of another RANKD."
-
-          :
-
-          "A new community RANKD.",
+        "You",
 
 
 
-        views:0,
+      description:
+
+        "",
 
 
 
-        parent_id:
+      items:
 
-          originalId ?? null,
+        cleanedItems.map(
 
+          (
 
+            item,
 
-        root_id:
+            index
 
-          finalRootId,
-
-
-
-        source_type:
-
-          originalId
-
-          ?
-
-          "remix"
-
-          :
-
-          "community"
-
-      })
-
-
-
-
-
-
-
-
-    if(rankingError){
-
-
-      console.error(
-
-        rankingError
-
-      )
-
-
-
-      setMessage(
-
-        rankingError.message
-
-      )
-
-
-
-      setPublishing(false)
-
-      return
-
-
-    }
-
-
-
-
-
-
-
-
-    const rankingItems =
-
-      items.map(
-
-        (item,index)=>(
-
-
-          {
-
-            ranking_id:
-
-              rankingId,
-
+          ) => ({
 
 
             position:
@@ -917,7 +295,7 @@ export default function CreateClient(){
 
             name:
 
-              item.name.trim(),
+              item.name,
 
 
 
@@ -925,62 +303,28 @@ export default function CreateClient(){
 
               0
 
-          }
 
+          })
 
-        )
-
-      )
-
+        ),
 
 
 
+      createdAt:
+
+        new Date().toISOString(),
 
 
 
-    const {
+      views:
 
-      error:itemError
-
-    } = await supabase
-
-      .from("ranking_items")
-
-      .insert(
-
-        rankingItems
-
-      )
+        0,
 
 
 
+      source:
 
-
-
-
-
-    if(itemError){
-
-
-      console.error(
-
-        itemError
-
-      )
-
-
-
-      setMessage(
-
-        itemError.message
-
-      )
-
-
-
-      setPublishing(false)
-
-      return
+        "community"
 
 
     }
@@ -991,158 +335,223 @@ export default function CreateClient(){
 
 
 
-    trackEvent(
 
-      "rank_published",
 
-      {
+    try {
 
-        rankingId,
 
-        category,
+      const {
 
-        originalId,
+        data:{
 
-        rootId:finalRootId,
-
-        metadata:{
-
-          source:"create_page",
-
-          remix:
-
-            !!originalId,
-
-          itemCount:
-
-            items.length
+          user
 
         }
 
+      } = await supabase.auth.getUser()
+
+
+
+
+
+
+
+      if(user){
+
+
+        await createSupabaseRanking(
+
+          ranking,
+
+          user.id
+
+        )
+
+
       }
 
-    )
+      else {
+
+
+        const existing =
+
+          JSON.parse(
+
+            localStorage.getItem(
+
+              "createdRankings"
+
+            )
+
+            ||
+
+            "[]"
+
+          )
 
 
 
 
 
+        localStorage.setItem(
+
+          "createdRankings",
+
+          JSON.stringify([
+
+            ranking,
+
+            ...existing
+
+          ])
+
+        )
 
 
-    setMessage(
-
-      "Your perspective is live 🎉"
-
-    )
+      }
 
 
 
 
 
-
-
-    setTimeout(()=>{
 
 
       router.push(
 
-        `/rank/${rankingId}`
+        `/rank/${ranking.id}`
 
       )
 
 
-    },1200)
 
+    }
+
+    catch(error){
+
+
+      console.error(
+
+        error
+
+      )
+
+
+      alert(
+
+        "Something went wrong creating your RANKD"
+
+      )
+
+
+    }
+
+    finally {
+
+
+      setLoading(false)
+
+
+    }
 
 
   }
 
+
+
+
+
+
+
+
+
+  const inputClass = `
+
+    w-full
+
+    rounded-2xl
+
+    p-5
+
+    font-bold
+
+    bg-[#F7F4EE]
+
+    border
+
+    border-black/10
+
+    focus:outline-none
+
+    focus:ring-2
+
+    focus:ring-black
+
+  `
     return (
 
     <main className="
       min-h-screen
       bg-[#F7F4EE]
-      text-black
       px-6
       py-16
+      text-black
     ">
 
 
       <div className="
         max-w-3xl
         mx-auto
+        bg-white
+        rounded-[40px]
+        p-8
+        md:p-12
+        shadow-sm
       ">
 
 
-
-        <div className="
-          text-center
+        <p className="
+          rankd-accent
+          uppercase
+          tracking-[0.3em]
+          text-sm
+          font-black
         ">
 
+          Create
 
-          <h1 className="
-            text-5xl
-            font-black
-            tracking-tight
-          ">
-
-            Create your RANKD
-
-          </h1>
-
-
-
-          <p className="
-            mt-4
-            rankd-muted
-            text-lg
-          ">
-
-            Build your personal Top 7 and share your perspective.
-
-          </p>
-
-
-        </div>
+        </p>
 
 
 
 
 
-        {originalId && (
+        <h1 className="
+          text-5xl
+          md:text-6xl
+          font-black
+          mt-4
+          leading-none
+        ">
 
-          <div className="
-            mt-8
-            rankd-card
-            p-5
-            text-center
-          ">
+          Create your Top 7
 
-
-            <p className="
-              font-black
-              rankd-accent
-            ">
-
-              Remixing an existing RANKD
-
-            </p>
+        </h1>
 
 
-            <p className="
-              mt-2
-              text-sm
-              rankd-muted
-            ">
-
-              Create your own version and join the conversation.
-
-            </p>
 
 
-          </div>
 
-        )}
+        <p className="
+          mt-5
+          text-xl
+          text-gray-500
+        ">
+
+          Choose your 7. Share your opinion.
+
+        </p>
+
+
 
 
 
@@ -1151,22 +560,11 @@ export default function CreateClient(){
 
 
         <div className="
-          rankd-card
-          mt-8
-          p-8
+          mt-10
+          space-y-8
         ">
 
 
-
-          <label className="
-            block
-            font-black
-            mb-3
-          ">
-
-            What are you ranking?
-
-          </label>
 
 
 
@@ -1184,19 +582,15 @@ export default function CreateClient(){
 
             }
 
-            placeholder="Example: Top 7 burgers in London"
+            placeholder="Your RANKD title"
 
-            className="
-              w-full
-              rounded-xl
-              border
-              border-black/10
-              px-5
-              py-4
-              text-lg
-              font-bold
-              bg-white
-            "
+            className={`
+
+              ${inputClass}
+
+              text-xl
+
+            `}
 
           />
 
@@ -1205,16 +599,121 @@ export default function CreateClient(){
 
 
 
-          <label className="
-            block
-            font-black
-            mt-6
-            mb-3
+
+
+
+          <div className="
+            space-y-3
           ">
 
-            Category
 
-          </label>
+            <p className="
+              font-black
+            ">
+
+              Choose a category
+
+            </p>
+
+
+
+
+
+            <div className="
+              flex
+              flex-wrap
+              gap-3
+            ">
+
+
+              {categories.map(
+
+                option => (
+
+
+                  <button
+
+                    key={option}
+
+                    type="button"
+
+                    onClick={() =>
+
+                      setCategory(
+
+                        option
+
+                      )
+
+                    }
+
+                    className={
+
+                      `
+
+                      px-5
+
+                      py-3
+
+                      rounded-full
+
+                      font-black
+
+                      transition
+
+                      `
+
+                      +
+
+                      (
+
+                        category === option
+
+                        ?
+
+                        `
+
+                        bg-black
+
+                        text-white
+
+                        `
+
+                        :
+
+                        `
+
+                        bg-[#F7F4EE]
+
+                        border
+
+                        border-black/10
+
+                        `
+
+                      )
+
+                    }
+
+                  >
+
+                    {option}
+
+                  </button>
+
+
+                )
+
+              )}
+
+
+            </div>
+
+
+          </div>
+
+
+
 
 
 
@@ -1222,125 +721,20 @@ export default function CreateClient(){
 
 
           <div className="
-            grid
-            grid-cols-2
-            sm:grid-cols-3
-            gap-3
+            space-y-4
           ">
 
 
+            <p className="
+              font-black
+            ">
 
-            {categories.map(
+              Rank your 7
 
-              item => (
-
-
-                <button
-
-                  key={item}
-
-                  type="button"
-
-                  onClick={() =>
-
-                    setCategory(item)
-
-                  }
-
-                  className={
-
-                    `
-                    rounded-xl
-                    border
-                    px-4
-                    py-3
-                    font-black
-                    transition
-                    ${
-                      category === item
-
-                      ?
-
-                      "bg-black text-white border-black"
-
-                      :
-
-                      "bg-white border-black/10 hover:border-black"
-
-                    }
-                    `
-
-                  }
-
-                >
-
-                  {item}
-
-                </button>
-
-
-              )
-
-            )}
-
-
-          </div>
+            </p>
 
 
 
-        </div>
-
-
-
-
-
-        <div className="
-          rankd-card
-          mt-8
-          p-8
-        ">
-
-
-          <h2 className="
-            text-3xl
-            font-black
-            text-center
-          ">
-
-            Your Top 7
-
-          </h2>
-
-
-
-          <p className="
-            mt-2
-            text-center
-            rankd-muted
-          ">
-
-            Drag your choices into the order you believe.
-
-          </p>
-
-
-
-
-          <p className="
-            mt-3
-            text-center
-            text-sm
-            font-black
-            rankd-accent
-          ">
-
-            ☝️ Hold and drag items to reorder your Top 7
-
-          </p>
-
-
-
-          <div className="mt-8">
 
 
             <SortableRankingList
@@ -1355,90 +749,59 @@ export default function CreateClient(){
           </div>
 
 
+
+
+
+
+
+
+
+          <button
+
+            onClick={handlePublish}
+
+            disabled={loading}
+
+            className="
+              w-full
+              bg-black
+              text-white
+              rounded-full
+              py-5
+              text-xl
+              font-black
+              hover:scale-[1.02]
+              transition
+            "
+
+          >
+
+            {loading
+
+              ?
+
+              "Creating..."
+
+              :
+
+              "Publish RANKD →"
+
+            }
+
+          </button>
+
+
+
+
+
         </div>
-
-
-
-
-
-
-
-        {message && (
-
-          <p className="
-            mt-8
-            text-center
-            font-black
-          ">
-
-            {message}
-
-          </p>
-
-        )}
-
-
-
-
-
-
-
-        <button
-
-          onClick={publishRankd}
-
-          disabled={publishing}
-
-          className="
-            mt-10
-            w-full
-            rankd-button
-            text-xl
-            py-6
-            disabled:opacity-50
-          "
-
-        >
-
-          {publishing
-
-          ?
-
-          "Creating your RANKD..."
-
-          :
-
-          "Publish your perspective →"
-
-          }
-
-
-        </button>
-
-
-
-
-
-
-
-        <p className="
-          mt-6
-          text-center
-          rankd-muted
-          text-sm
-        ">
-
-          Your ranking becomes part of the conversation.
-
-        </p>
-
-
 
 
       </div>
 
 
     </main>
+
 
   )
 
