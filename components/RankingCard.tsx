@@ -8,6 +8,8 @@ import {
 
 import RankdExplanation from "@/components/RankdExplanation"
 
+import DiscoveryReason from "@/components/DiscoveryReason"
+
 import RankingDebug from "@/components/RankingDebug"
 
 import {
@@ -251,6 +253,18 @@ export default function RankingCard({
 
 
 
+        <DiscoveryReason
+
+          ranking={ranking}
+
+        />
+
+
+
+
+
+
+
         {SHOW_RANKD_DEBUG && (
 
           <RankingDebug
@@ -269,7 +283,6 @@ export default function RankingCard({
 
 
     </Link>
-
 
   )
 
