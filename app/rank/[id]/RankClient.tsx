@@ -30,9 +30,27 @@ import {
 import ConversationTree from "@/components/ConversationTree"
 
 
+import TasteInsightCard from "@/components/TasteInsightCard"
+
+
 import {
   buildConversationTree
 } from "@/utils/conversationTree"
+
+
+import {
+  generateTasteInsight
+} from "@/utils/tasteInsights"
+
+
+import {
+  generateTasteGraphSignal
+} from "@/utils/tasteGraph"
+
+
+import {
+  generateTasteIdentity
+} from "@/utils/tasteIdentity"
 
 
 import {
@@ -161,7 +179,6 @@ export default function RankClient({
   const [loading,setLoading] =
 
     useState(true)
-
       useEffect(()=>{
 
 
@@ -503,7 +520,15 @@ export default function RankClient({
 
   }
 
-    if(loading){
+
+
+
+
+
+
+
+
+  if(loading){
 
 
     return (
@@ -566,7 +591,42 @@ export default function RankClient({
 
 
 
-  return (
+  const tasteInsight =
+
+    generateTasteInsight(
+
+      ranking
+
+    )
+
+
+
+
+
+
+
+  const tasteSignal =
+
+    generateTasteGraphSignal(
+
+      ranking
+
+    )
+
+
+
+
+
+
+
+  const tasteIdentity =
+
+    generateTasteIdentity(
+
+      tasteSignal
+
+    )
+      return (
 
     <main className="
       min-h-screen
@@ -809,6 +869,30 @@ export default function RankClient({
               Would you rank it differently?
 
             </button>
+
+
+
+
+
+
+
+            <div className="
+              mt-12
+            ">
+
+
+              <TasteInsightCard
+
+                insight={tasteInsight}
+
+                signal={tasteSignal}
+
+                identity={tasteIdentity}
+
+              />
+
+
+            </div>
 
 
 
