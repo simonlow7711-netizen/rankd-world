@@ -69,6 +69,38 @@ export default async function ExplorePage(){
 
 
 
+  const latestRankings =
+
+    [...allRankings]
+
+    .sort(
+
+      (a,b)=>
+
+        new Date(
+
+          b.createdAt || 0
+
+        ).getTime()
+
+        -
+
+        new Date(
+
+          a.createdAt || 0
+
+        ).getTime()
+
+    )
+
+    .slice(0,6)
+
+
+
+
+
+
+
 
 
   const trendingRankings =
@@ -230,14 +262,6 @@ export default async function ExplorePage(){
 
         <DailyRankd />
 
-
-
-
-
-
-
-
-
         <section className="
           mb-20
         ">
@@ -292,23 +316,20 @@ export default async function ExplorePage(){
 
 
 
-            {allRankings
-
-              .slice(0,6)
-
-              .map((ranking:any)=>(
+            {latestRankings.map((ranking:any)=>(
 
 
-                <RankingCard
+              <RankingCard
 
-                  key={ranking.id}
+                key={ranking.id}
 
-                  ranking={ranking}
+                ranking={ranking}
 
-                />
+              />
 
 
-              ))}
+            ))}
+
 
 
           </div>
@@ -510,15 +531,7 @@ export default async function ExplorePage(){
 
 
         </section>
-
-
-
-
-
-
-
-
-        <section className="
+                <section className="
           mb-20
         ">
 

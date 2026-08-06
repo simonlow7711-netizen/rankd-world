@@ -2,6 +2,7 @@
 
 import {
   useEffect,
+  useRef,
   useState
 } from "react"
 
@@ -10,20 +11,26 @@ import {
   useSearchParams
 } from "next/navigation"
 
+
 import {
   Ranking,
   RankingBuilderItem
 } from "@/types/ranking"
 
+
 import {
   createSupabaseRanking
 } from "@/utils/supabaseRankings"
+
 
 import {
   supabase
 } from "@/utils/supabase"
 
+
 import SortableRankingList from "@/components/SortableRankingList"
+
+
 
 
 
@@ -49,6 +56,37 @@ const categories = [
 
 
 
+function createEmptyItems():RankingBuilderItem[]{
+
+
+  return Array.from(
+
+    {
+      length:7
+    },
+
+    ()=>({
+
+      id:
+
+        crypto.randomUUID(),
+
+      name:""
+
+    })
+
+  )
+
+
+}
+
+
+
+
+
+
+
+
 
 export default function CreateClient(){
 
@@ -61,9 +99,15 @@ export default function CreateClient(){
 
 
 
+
+
   const [title,setTitle] =
 
     useState("")
+
+
+
+
 
 
 
@@ -73,46 +117,19 @@ export default function CreateClient(){
 
 
 
+
+
+
+
   const [items,setItems] =
 
-    useState<RankingBuilderItem[]>([
+    useState<RankingBuilderItem[]>(
 
-      {
-        id: crypto.randomUUID(),
-        name:""
-      },
+      createEmptyItems()
 
-      {
-        id: crypto.randomUUID(),
-        name:""
-      },
+    )
 
-      {
-        id: crypto.randomUUID(),
-        name:""
-      },
 
-      {
-        id: crypto.randomUUID(),
-        name:""
-      },
-
-      {
-        id: crypto.randomUUID(),
-        name:""
-      },
-
-      {
-        id: crypto.randomUUID(),
-        name:""
-      },
-
-      {
-        id: crypto.randomUUID(),
-        name:""
-      }
-
-    ])
 
 
 
@@ -129,17 +146,49 @@ export default function CreateClient(){
 
 
 
+  /*
+    Remix lineage
+
+    parentId:
+    the ranking this was directly inspired by
+
+    rootId:
+    the original conversation family root
+  */
+
+
+  const parentIdRef =
+
+    useRef<string | null>(null)
+
+
+
+
+
+  const rootIdRef =
+
+    useRef<string | null>(null)
+
+
+
+
+
+
+
+
 
   useEffect(()=>{
 
 
-    const dailyTitle =
+    const importedTitle =
 
       searchParams.get("title")
 
 
 
-    const dailyCategory =
+
+
+    const importedCategory =
 
       searchParams.get("category")
 
@@ -147,13 +196,60 @@ export default function CreateClient(){
 
 
 
-    if(dailyTitle){
+    const importedItems =
+
+      searchParams.get("items")
+
+
+
+
+
+    /*
+      Support both:
+
+      ?parentId=
+
+      and older links:
+
+      ?originalId=
+    */
+
+
+    const importedParentId =
+
+      searchParams.get("parentId")
+
+      ||
+
+      searchParams.get("originalId")
+
+
+
+
+
+
+
+    const importedRootId =
+
+      searchParams.get("rootId")
+
+
+
+
+
+
+
+
+
+    if(importedTitle){
+
 
       setTitle(
 
-        dailyTitle
+        importedTitle
 
       )
+
 
     }
 
@@ -161,27 +257,179 @@ export default function CreateClient(){
 
 
 
-    if(dailyCategory){
+
+
+
+
+    if(importedCategory){
+
 
       setCategory(
 
-        dailyCategory
+        importedCategory
 
       )
+
+
+    }
+
+
+
+
+
+
+
+
+
+    if(importedParentId){
+
+
+      parentIdRef.current =
+
+        importedParentId
+
+
+    }
+
+
+
+
+
+
+
+
+
+    if(importedRootId){
+
+
+      rootIdRef.current =
+
+        importedRootId
+
+
+    }
+
+
+
+
+
+
+
+
+
+    if(importedItems){
+
+
+
+      const parsedItems =
+
+        importedItems
+
+        .split("|")
+
+        .filter(
+
+          item =>
+
+            item.trim()
+
+        )
+
+        .map(
+
+          item => ({
+
+            id:
+
+              crypto.randomUUID(),
+
+            name:
+
+              item.trim()
+
+          })
+
+        )
+
+
+
+
+
+
+
+
+
+      const sevenItems = [
+
+        ...parsedItems,
+
+        ...Array(
+
+          Math.max(
+
+            0,
+
+            7 - parsedItems.length
+
+          )
+
+        )
+
+        .fill(null)
+
+        .map(()=>({
+
+
+          id:
+
+            crypto.randomUUID(),
+
+          name:""
+
+
+        }))
+
+      ]
+
+
+
+
+
+
+
+
+
+      setItems(
+
+        sevenItems.slice(
+
+          0,
+
+          7
+
+        )
+
+      )
+
 
     }
 
 
 
   },[searchParams])
-    async function handlePublish(){
 
 
-    if(
 
-      !title.trim()
 
-    ){
+
+
+
+
+  async function handlePublish(){
+
+
+    if(!title.trim()){
+
 
       alert(
 
@@ -189,7 +437,9 @@ export default function CreateClient(){
 
       )
 
+
       return
+
 
     }
 
@@ -197,9 +447,20 @@ export default function CreateClient(){
 
 
 
+
     const cleanedItems =
 
-      items.filter(
+      items
+
+      .filter(
+
+        item =>
+
+          item.name.trim()
+
+      )
+
+      .map(
 
         item =>
 
@@ -211,11 +472,11 @@ export default function CreateClient(){
 
 
 
-    if(
 
-      cleanedItems.length !== 7
 
-    ){
+
+    if(cleanedItems.length !== 7){
+
 
       alert(
 
@@ -223,9 +484,14 @@ export default function CreateClient(){
 
       )
 
+
       return
 
+
     }
+
+
+
 
 
 
@@ -240,25 +506,62 @@ export default function CreateClient(){
 
 
 
+    const rankingId =
+
+      crypto.randomUUID()
+
+
+
+
+
+
+
+    const finalParentId =
+
+      parentIdRef.current
+
+
+
+
+
+
+
+    const finalRootId =
+
+      rootIdRef.current
+
+      ||
+
+      finalParentId
+
+      ||
+
+      rankingId
+
+
+
+
+
+
+
+
 
     const ranking:Ranking = {
 
 
       id:
 
-        crypto.randomUUID(),
+        rankingId,
 
 
 
       title:
 
-        title,
+        title.trim(),
 
 
 
-      category:
-
-        category,
+      category,
 
 
 
@@ -280,11 +583,11 @@ export default function CreateClient(){
 
           (
 
-            item,
+            name,
 
             index
 
-          ) => ({
+          )=>({
 
 
             position:
@@ -293,9 +596,7 @@ export default function CreateClient(){
 
 
 
-            name:
-
-              item.name,
+            name,
 
 
 
@@ -324,10 +625,57 @@ export default function CreateClient(){
 
       source:
 
-        "community"
+        "community",
 
+
+
+      parentId:
+
+        finalParentId
+
+        ||
+
+        undefined,
+
+
+
+      rootId:
+
+        finalRootId
 
     }
+
+
+
+
+
+
+
+
+
+    console.log(
+
+      "CREATING RANKD",
+
+      {
+
+        id:
+
+          ranking.id,
+
+
+        parentId:
+
+          ranking.parentId,
+
+
+        rootId:
+
+          ranking.rootId
+
+      }
+
+    )
 
 
 
@@ -340,6 +688,7 @@ export default function CreateClient(){
     try {
 
 
+
       const {
 
         data:{
@@ -347,6 +696,7 @@ export default function CreateClient(){
           user
 
         }
+
 
       } = await supabase.auth.getUser()
 
@@ -359,6 +709,7 @@ export default function CreateClient(){
       if(user){
 
 
+
         await createSupabaseRanking(
 
           ranking,
@@ -368,9 +719,11 @@ export default function CreateClient(){
         )
 
 
+
       }
 
       else {
+
 
 
         const existing =
@@ -393,22 +746,31 @@ export default function CreateClient(){
 
 
 
+
+
+
         localStorage.setItem(
 
           "createdRankings",
 
-          JSON.stringify([
+          JSON.stringify(
 
-            ranking,
+            [
 
-            ...existing
+              ranking,
 
-          ])
+              ...existing
+
+            ]
+
+          )
 
         )
 
 
       }
+
+
 
 
 
@@ -424,16 +786,25 @@ export default function CreateClient(){
 
 
 
+
+
+
+
+
     }
 
     catch(error){
 
 
+
       console.error(
+
+        "CREATE RANKD ERROR",
 
         error
 
       )
+
 
 
       alert(
@@ -443,12 +814,15 @@ export default function CreateClient(){
       )
 
 
+
     }
 
-    finally {
+    finally{
+
 
 
       setLoading(false)
+
 
 
     }
@@ -487,7 +861,14 @@ export default function CreateClient(){
     focus:ring-black
 
   `
-    return (
+
+
+
+
+
+
+
+  return (
 
     <main className="
       min-h-screen
@@ -555,10 +936,6 @@ export default function CreateClient(){
 
 
 
-
-
-
-
         <div className="
           mt-10
           space-y-8
@@ -566,13 +943,11 @@ export default function CreateClient(){
 
 
 
-
-
           <input
 
             value={title}
 
-            onChange={e =>
+            onChange={e=>
 
               setTitle(
 
@@ -584,13 +959,11 @@ export default function CreateClient(){
 
             placeholder="Your RANKD title"
 
-            className={`
+            className={
 
-              ${inputClass}
+              `${inputClass} text-xl`
 
-              text-xl
-
-            `}
+            }
 
           />
 
@@ -637,30 +1010,16 @@ export default function CreateClient(){
 
                     type="button"
 
-                    onClick={() =>
-
-                      setCategory(
-
-                        option
-
-                      )
-
-                    }
+                    onClick={()=>setCategory(option)}
 
                     className={
 
                       `
-
                       px-5
-
                       py-3
-
                       rounded-full
-
                       font-black
-
                       transition
-
                       `
 
                       +
@@ -672,23 +1031,16 @@ export default function CreateClient(){
                         ?
 
                         `
-
                         bg-black
-
                         text-white
-
                         `
 
                         :
 
                         `
-
                         bg-[#F7F4EE]
-
                         border
-
                         border-black/10
-
                         `
 
                       )
@@ -787,6 +1139,7 @@ export default function CreateClient(){
               "Publish RANKD →"
 
             }
+
 
           </button>
 

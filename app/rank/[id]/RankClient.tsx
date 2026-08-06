@@ -179,7 +179,16 @@ export default function RankClient({
   const [loading,setLoading] =
 
     useState(true)
-      useEffect(()=>{
+
+
+
+
+
+
+
+
+
+  useEffect(()=>{
 
 
     if(!id){
@@ -282,7 +291,6 @@ export default function RankClient({
 
 
 
-
       const conversationRoot =
 
         current.rootId
@@ -295,11 +303,11 @@ export default function RankClient({
 
 
 
-
-
       const {
 
-        data:conversationRankings
+        data:conversationRankings,
+
+        error:conversationError
 
       } = await supabase
 
@@ -307,7 +315,19 @@ export default function RankClient({
 
         .select(
 
-          "id,title,parent_id,root_id,created_at"
+          `
+
+          id,
+
+          title,
+
+          parent_id,
+
+          root_id,
+
+          created_at
+
+          `
 
         )
 
@@ -325,11 +345,32 @@ export default function RankClient({
 
           {
 
-            ascending:false
+            ascending:true
 
           }
 
         )
+
+
+
+
+
+
+
+
+      if(conversationError){
+
+
+        console.error(
+
+          "CONVERSATION LOAD ERROR",
+
+          conversationError
+
+        )
+
+
+      }
 
 
 
@@ -345,7 +386,6 @@ export default function RankClient({
         .map((item:any)=>(
 
 
-
           {
 
             id:item.id,
@@ -359,8 +399,8 @@ export default function RankClient({
           }
 
 
-
         ))
+
 
 
 
@@ -383,7 +423,11 @@ export default function RankClient({
 
 
 
-      setConversationTree(tree)
+      setConversationTree(
+
+        tree
+
+      )
 
 
 
@@ -393,7 +437,7 @@ export default function RankClient({
 
 
 
-      const remixItems:RemixRanking[] =
+      const remixFamily:RemixRanking[] =
 
         conversationItems
 
@@ -409,13 +453,18 @@ export default function RankClient({
 
           item => ({
 
+
             id:item.id,
+
 
             title:item.title,
 
+
             parentId:item.parentId,
 
+
             rootId:item.rootId
+
 
           })
 
@@ -430,7 +479,7 @@ export default function RankClient({
 
       setRemixes(
 
-        remixItems
+        remixFamily
 
       )
 
@@ -458,6 +507,7 @@ export default function RankClient({
 
 
   },[id])
+
 
 
 
@@ -509,11 +559,23 @@ export default function RankClient({
 
         ranking.title
 
+      )}&category=${encodeURIComponent(
+
+        ranking.category
+
       )}&items=${encodeURIComponent(
 
         items
 
-      )}&originalId=${ranking.id}&rootId=${ranking.rootId || ranking.id}`
+      )}&originalId=${encodeURIComponent(
+
+        ranking.id
+
+      )}&rootId=${encodeURIComponent(
+
+        ranking.rootId || ranking.id
+
+      )}`
 
     )
 
@@ -626,7 +688,37 @@ export default function RankClient({
       tasteSignal
 
     )
-      return (
+
+
+
+
+
+
+
+
+
+  const sortedItems =
+
+    [...ranking.items]
+
+    .sort(
+
+      (a,b)=>
+
+        a.position -
+
+        b.position
+
+    )
+
+
+
+
+
+
+
+
+  return (
 
     <main className="
       min-h-screen
@@ -799,7 +891,7 @@ export default function RankClient({
             ">
 
 
-              {ranking.items.map(item=>(
+              {sortedItems.map(item=>(
 
 
                 <div
