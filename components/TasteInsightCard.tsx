@@ -1,6 +1,11 @@
 "use client"
 
 import {
+  useRouter
+} from "next/navigation"
+
+
+import {
   TasteInsight
 } from "@/utils/tasteInsights"
 
@@ -43,6 +48,12 @@ export default function TasteInsightCard({
   identity
 
 }:Props){
+
+
+  const router = useRouter()
+
+
+
 
 
   return (
@@ -286,6 +297,12 @@ export default function TasteInsightCard({
 
 
       <button
+
+        onClick={() =>
+          router.push(
+            "/explore?taste=similar"
+          )
+        }
 
         className="
           mt-10
