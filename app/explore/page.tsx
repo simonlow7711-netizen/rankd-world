@@ -34,6 +34,12 @@ import {
 
 
 
+export const dynamic = "force-dynamic"
+
+
+
+
+
 export const metadata = {
 
   title:
@@ -261,6 +267,14 @@ export default async function ExplorePage(){
 
 
         <DailyRankd />
+
+
+
+
+
+
+
+
 
         <section className="
           mb-20
@@ -531,7 +545,16 @@ export default async function ExplorePage(){
 
 
         </section>
-                <section className="
+
+
+
+
+
+
+
+
+
+        <section className="
           mb-20
         ">
 
