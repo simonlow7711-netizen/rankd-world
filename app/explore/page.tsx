@@ -6,6 +6,8 @@ import {
 
 import RankingCard from "@/components/RankingCard"
 
+import TasteRecommendationCard from "@/components/TasteRecommendationCard"
+
 import DailyRankd from "@/components/DailyRankd"
 
 import PerspectiveCard from "@/components/PerspectiveCard"
@@ -29,6 +31,23 @@ import {
 import {
   calculateChallenge
 } from "@/utils/challengeTaste"
+
+
+import {
+  getCurrentUserId
+} from "@/utils/currentUserServer"
+
+
+import {
+  getTasteGraph
+} from "@/utils/tasteGraphRepository"
+
+
+import {
+  getTasteRecommendedRankings
+} from "@/utils/tasteRecommendations"
+
+
 
 
 
@@ -68,6 +87,64 @@ export default async function ExplorePage(){
   const allRankings =
 
     await getAllRankings()
+
+
+
+
+
+
+
+  const currentUserId =
+
+    await getCurrentUserId()
+
+
+
+
+
+
+
+  const tasteGraph =
+
+    currentUserId
+
+    ?
+
+    await getTasteGraph(
+
+      currentUserId
+
+    )
+
+    :
+
+    null
+
+
+
+
+
+
+
+  const recommendedRankings =
+
+    tasteGraph
+
+    ?
+
+    getTasteRecommendedRankings(
+
+      tasteGraph,
+
+      allRankings
+
+    )
+
+    :
+
+    []
+
+
 
 
 
@@ -145,7 +222,7 @@ export default async function ExplorePage(){
 
     await getDiscoverableUsers(
 
-      "",
+      currentUserId ?? "",
 
       allRankings
 
@@ -267,6 +344,130 @@ export default async function ExplorePage(){
 
 
         <DailyRankd />
+
+
+
+
+
+
+
+
+
+        <section className="
+          mb-20
+        ">
+
+
+
+          <div className="
+            mb-10
+          ">
+
+
+            <p className="
+              rankd-accent
+              uppercase
+              tracking-widest
+              text-sm
+              font-black
+            ">
+
+              Personalised
+
+            </p>
+
+
+
+
+
+            <h2 className="
+              text-5xl
+              font-black
+              mt-3
+            ">
+
+              Picked for your taste
+
+            </h2>
+
+
+          </div>
+
+
+
+
+
+
+
+          {recommendedRankings.length > 0 ? (
+
+
+            <div className="
+              grid
+              md:grid-cols-3
+              gap-8
+            ">
+
+
+
+              {recommendedRankings
+
+                .slice(0,3)
+
+                .map((recommendation:any)=>(
+
+
+                  <TasteRecommendationCard
+
+                    key={
+
+                      recommendation.ranking.id
+
+                    }
+
+                    recommendation={
+
+                      recommendation
+
+                    }
+
+                  />
+
+
+                ))}
+
+
+
+            </div>
+
+
+          ) : (
+
+
+            <div className="
+              rankd-card
+              p-8
+            ">
+
+
+              <p className="
+                text-xl
+                font-black
+              ">
+
+                Create more RANKDs to unlock personalised discoveries.
+
+              </p>
+
+
+            </div>
+
+
+          )}
+
+
+
+        </section>
 
 
 
@@ -619,29 +820,24 @@ export default async function ExplorePage(){
             font-black
           ">
 
-            What is your Top 7?
+            Create your own RANKD
 
           </h2>
 
 
 
-
-
           <p className="
-            mt-5
-            text-xl
-            text-gray-300
+            mt-4
+            text-lg
+            opacity-80
           ">
 
-            Create the ranking everyone debates.
+            Add your perspective to the world.
 
           </p>
 
 
-
         </Link>
-
-
 
 
 
@@ -651,7 +847,6 @@ export default async function ExplorePage(){
 
 
     </main>
-
 
   )
 

@@ -1,9 +1,15 @@
 import {
+
   supabase
+
 } from "@/utils/supabase"
 
+
+
 import {
+
   TasteGraph
+
 } from "@/utils/tasteGraph"
 
 
@@ -12,13 +18,21 @@ import {
 
 
 
-async function getOrCreateNode(
 
-  type:string,
+
+async function getOrCreateNode({
+
+  type,
+
+  label
+
+}:{
+
+  type:string
 
   label:string
 
-):Promise<string>{
+}){
 
 
 
@@ -30,7 +44,15 @@ async function getOrCreateNode(
 
       .trim()
 
-      .replace(/\s+/g,"-")
+      .replace(
+
+        /\s+/g,
+
+        "-"
+
+      )
+
+
 
 
 
@@ -39,21 +61,14 @@ async function getOrCreateNode(
 
 
   const {
+
     data:existing
 
   } = await supabase
 
     .from("taste_nodes")
 
-    .select("id")
-
-    .eq(
-
-      "type",
-
-      type
-
-    )
+    .select("*")
 
     .eq(
 
@@ -71,9 +86,9 @@ async function getOrCreateNode(
 
 
 
-  if(existing?.id){
+  if(existing){
 
-    return existing.id
+    return existing
 
   }
 
@@ -84,7 +99,9 @@ async function getOrCreateNode(
 
 
 
+
   const {
+
     data:newNode,
 
     error
@@ -103,7 +120,7 @@ async function getOrCreateNode(
 
     })
 
-    .select("id")
+    .select()
 
     .single()
 
@@ -114,7 +131,10 @@ async function getOrCreateNode(
 
 
 
+
   if(error){
+
+
 
     console.error(
 
@@ -124,7 +144,11 @@ async function getOrCreateNode(
 
     )
 
-    throw error
+
+
+    return null
+
+
 
   }
 
@@ -135,7 +159,8 @@ async function getOrCreateNode(
 
 
 
-  return newNode.id
+
+  return newNode
 
 
 
@@ -157,19 +182,145 @@ export async function saveTasteGraph(
 
 
 
-  for(const signal of graph.signals){
+
+
+  for(
+
+    const signal of graph.signals
+
+  ){
 
 
 
-    const nodeId =
+    const itemNode =
 
-      await getOrCreateNode(
+      await getOrCreateNode({
 
-        "item",
+        type:"item",
 
-        signal.item
+        label:signal.item
+
+      })
+
+
+
+
+
+
+
+
+
+    if(!itemNode){
+
+      continue
+
+    }
+
+
+
+
+
+
+
+
+
+    const {
+
+      data:existingSignal
+
+    } = await supabase
+
+      .from("taste_signals")
+
+      .select(
+
+        "id"
 
       )
+
+      .eq(
+
+        "user_id",
+
+        signal.userId
+
+      )
+
+      .eq(
+
+        "node_id",
+
+        itemNode.id
+
+      )
+
+      .eq(
+
+        "source_rank_id",
+
+        signal.source
+
+      )
+
+      .eq(
+
+        "signal_type",
+
+        signal.type
+
+      )
+
+      .maybeSingle()
+
+
+
+
+
+
+
+
+
+
+    if(existingSignal){
+
+
+
+      await supabase
+
+        .from("taste_signals")
+
+        .update({
+
+          strength:
+
+            signal.strength,
+
+
+          position:
+
+            signal.position
+
+        })
+
+        .eq(
+
+          "id",
+
+          existingSignal.id
+
+        )
+
+
+
+
+
+      continue
+
+
+
+    }
+
+
 
 
 
@@ -189,12 +340,12 @@ export async function saveTasteGraph(
 
         user_id:
 
-          graph.userId,
+          signal.userId,
 
 
         node_id:
 
-          nodeId,
+          itemNode.id,
 
 
         source_rank_id:
@@ -216,7 +367,6 @@ export async function saveTasteGraph(
 
           signal.position
 
-
       })
 
 
@@ -227,6 +377,7 @@ export async function saveTasteGraph(
 
     if(error){
 
+
       console.error(
 
         "SAVE TASTE SIGNAL ERROR",
@@ -235,12 +386,484 @@ export async function saveTasteGraph(
 
       )
 
+
     }
 
 
 
   }
 
+
+
+}
+
+
+
+
+
+
+export async function getTasteGraph(
+
+  userId:string
+
+):Promise<TasteGraph>{
+
+
+
+  const {
+
+    data:signals,
+
+    error
+
+  } = await supabase
+
+    .from("taste_signals")
+
+    .select(
+
+      `
+      id,
+      user_id,
+      signal_type,
+      strength,
+      position,
+      source_rank_id,
+      taste_nodes(
+        id,
+        type,
+        label
+      )
+      `
+
+    )
+
+    .eq(
+
+      "user_id",
+
+      userId
+
+    )
+
+
+
+
+
+
+
+
+
+  if(error || !signals){
+
+
+
+    console.error(
+
+      "LOAD TASTE GRAPH ERROR",
+
+      error
+
+    )
+
+
+
+
+
+    return {
+
+
+      userId,
+
+
+
+      nodes:[],
+
+
+
+      signals:[],
+
+
+
+      behaviour:{
+
+
+
+        totalRankings:0,
+
+
+
+        averagePosition:0,
+
+
+
+        topChoiceRate:0,
+
+
+
+        uniqueness:0
+
+
+
+      }
+
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  const typedSignals:any[] =
+
+    signals as any[]
+
+
+
+
+
+
+
+
+
+
+  const nodes =
+
+    typedSignals
+
+      .map(
+
+        signal =>
+
+          signal.taste_nodes
+
+      )
+
+      .filter(Boolean)
+
+      .map(
+
+        node => ({
+
+
+          id:
+
+            node.id,
+
+
+          type:
+
+            node.type,
+
+
+          label:
+
+            node.label
+
+
+
+        })
+
+
+      )
+
+
+
+
+
+
+
+
+
+  const graphSignals =
+
+    typedSignals.map(
+
+      signal => ({
+
+
+
+        id:
+
+          signal.id,
+
+
+
+        userId:
+
+          signal.user_id,
+
+
+
+        type:
+
+          signal.signal_type,
+
+
+
+        category:
+
+          signal.taste_nodes?.type === "category"
+
+          ?
+
+          signal.taste_nodes.label
+
+          :
+
+          "",
+
+
+
+        item:
+
+          signal.taste_nodes?.label ?? "",
+
+
+
+        strength:
+
+          Number(
+
+            signal.strength
+
+          ),
+
+
+
+        position:
+
+          signal.position,
+
+
+
+        source:
+
+          signal.source_rank_id
+
+
+
+      })
+
+    )
+
+
+
+
+
+
+
+
+
+
+  const positions =
+
+    graphSignals.map(
+
+      signal =>
+
+        signal.position
+
+    )
+
+
+
+
+
+
+
+
+
+  const topChoices =
+
+    positions.filter(
+
+      position =>
+
+        position === 1
+
+    ).length
+
+
+
+
+
+
+
+
+
+
+  const uniqueItems =
+
+    new Set(
+
+      graphSignals.map(
+
+        signal =>
+
+          signal.item
+
+      )
+
+    )
+
+
+
+
+
+
+
+
+
+  return {
+
+
+    userId,
+
+
+
+    nodes,
+
+
+
+    signals:
+
+      graphSignals,
+
+
+
+    behaviour:{
+
+
+
+      totalRankings:
+
+        new Set(
+
+          graphSignals.map(
+
+            signal =>
+
+              signal.source
+
+          )
+
+        )
+
+        .size,
+
+
+
+
+
+      averagePosition:
+
+        positions.length > 0
+
+        ?
+
+        Number(
+
+          (
+
+            positions.reduce(
+
+              (
+
+                total,
+
+                value
+
+              ) =>
+
+                total + value,
+
+              0
+
+            )
+
+            /
+
+            positions.length
+
+          )
+
+          .toFixed(2)
+
+        )
+
+        :
+
+        0,
+
+
+
+
+
+      topChoiceRate:
+
+        positions.length > 0
+
+        ?
+
+        Number(
+
+          (
+
+            topChoices /
+
+            positions.length
+
+          )
+
+          .toFixed(3)
+
+        )
+
+        :
+
+        0,
+
+
+
+
+      uniqueness:
+
+        graphSignals.length > 0
+
+        ?
+
+        Number(
+
+          (
+
+            uniqueItems.size /
+
+            graphSignals.length
+
+          )
+
+          .toFixed(3)
+
+        )
+
+        :
+
+        0
+
+
+
+    }
+
+
+  }
 
 
 }

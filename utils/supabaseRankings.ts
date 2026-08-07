@@ -19,6 +19,16 @@ import {
 } from "@/utils/rankingSignals"
 
 
+import {
+  buildTasteGraph
+} from "@/utils/tasteGraphBuilder"
+
+
+import {
+  saveTasteGraph
+} from "@/utils/tasteGraphRepository"
+
+
 
 
 
@@ -246,7 +256,6 @@ async function getRankingItems(
 
 
 
-
     map
 
       .get(row.ranking_id)!
@@ -280,15 +289,6 @@ async function getRankingItems(
 
 
 }
-
-
-
-
-
-
-
-
-
 export async function getSupabaseRanking(
 
   id:string
@@ -339,7 +339,15 @@ export async function getSupabaseRanking(
 
   }
 
-    const {
+
+
+
+
+
+
+
+
+  const {
     data:items,
 
     error:itemError
@@ -420,6 +428,7 @@ export async function getSupabaseRanking(
     )
 
     .single()
+
 
 
 
@@ -688,7 +697,6 @@ export async function getAllSupabaseRankings():Promise<Ranking[]>{
       )
 
     )
-
       return (
 
     rankings as RankingRow[]
@@ -1124,7 +1132,31 @@ export async function createSupabaseRanking(
 
 
   }
+    const tasteGraph =
 
+    buildTasteGraph(
+
+      userId,
+
+      [
+
+        ranking
+
+      ]
+
+    )
+
+
+
+
+
+
+
+  await saveTasteGraph(
+
+    tasteGraph
+
+  )
 
 
 

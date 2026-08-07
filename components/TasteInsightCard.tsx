@@ -1,16 +1,25 @@
 "use client"
 
 import {
+
   TasteGraphSignal
+
 } from "@/utils/tasteGraphSignal"
 
-import {
-  TasteInsight
-} from "@/utils/tasteInsights"
 
 import {
+
+  TasteInsight
+
+} from "@/utils/tasteInsights"
+
+
+import {
+
   TasteIdentity
+
 } from "@/utils/tasteIdentity"
+
 
 
 
@@ -28,6 +37,7 @@ type Props = {
   identity:TasteIdentity
 
 }
+
 
 
 
@@ -67,7 +77,7 @@ export default function TasteInsightCard({
         font-black
       ">
 
-        Taste Graph
+        Taste Identity
 
       </p>
 
@@ -83,7 +93,7 @@ export default function TasteInsightCard({
         mt-4
       ">
 
-        Your taste signal
+        {identity.title}
 
       </h2>
 
@@ -99,8 +109,7 @@ export default function TasteInsightCard({
         text-lg
       ">
 
-        Every ranking you create teaches RANKD
-        more about individual taste.
+        {identity.description}
 
       </p>
 
@@ -110,43 +119,198 @@ export default function TasteInsightCard({
 
 
 
+      {identity.traits.length > 0 && (
+
+
+        <div className="
+          mt-8
+        ">
+
+
+          <p className="
+            font-black
+            mb-3
+          ">
+
+            Your traits
+
+          </p>
+
+
+
+
+
+
+          <div className="
+            flex
+            flex-wrap
+            gap-3
+          ">
+
+
+
+            {identity.traits.map(
+
+              trait => (
+
+
+                <span
+
+                  key={trait}
+
+                  className="
+                    bg-black
+                    text-white
+                    rounded-full
+                    px-5
+                    py-2
+                    text-sm
+                    font-black
+                  "
+
+                >
+
+                  {trait}
+
+                </span>
+
+
+              )
+
+            )}
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+      )}
+
+
+
+
+
+
+
+
+
+      {identity.categories.length > 0 && (
+
+
+        <div className="
+          mt-8
+        ">
+
+
+          <p className="
+            font-black
+            mb-3
+          ">
+
+            Taste areas
+
+          </p>
+
+
+
+
+
+
+          <div className="
+            flex
+            flex-wrap
+            gap-3
+          ">
+
+
+
+            {identity.categories.map(
+
+              category => (
+
+
+                <span
+
+                  key={category}
+
+                  className="
+                    bg-[#F7F4EE]
+                    rounded-full
+                    px-5
+                    py-2
+                    text-sm
+                    font-bold
+                  "
+
+                >
+
+                  {category}
+
+                </span>
+
+
+              )
+
+            )}
+
+
+
+          </div>
+
+
+
+        </div>
+
+
+      )}
+
+
+
+
+
+
+
+
       <div className="
-        mt-8
+        mt-10
         grid
         md:grid-cols-3
         gap-5
       ">
 
 
+
         <Metric
 
           label="Uniqueness"
 
-          value={`${signal.uniqueness}%`}
+          value={`${identity.stats.uniqueness}%`}
 
         />
 
 
 
 
-
         <Metric
 
-          label="Perspective"
+          label="Decisiveness"
 
-          value={`${signal.perspective}%`}
+          value={`${identity.stats.decisiveness}%`}
 
         />
 
 
 
 
-
         <Metric
 
-          label="Confidence"
+          label="Exploration"
 
-          value={`${signal.confidence}%`}
+          value={`${identity.stats.exploration}%`}
 
         />
 
@@ -155,30 +319,6 @@ export default function TasteInsightCard({
       </div>
 
 
-
-
-
-
-
-      <div className="
-        mt-8
-        bg-[#F7F4EE]
-        rounded-3xl
-        p-6
-      ">
-
-
-        <p className="
-          text-xl
-          font-black
-        ">
-
-          {signal.description}
-
-        </p>
-
-
-      </div>
 
 
 
@@ -194,6 +334,7 @@ export default function TasteInsightCard({
       ">
 
 
+
         <p className="
           rankd-accent
           uppercase
@@ -202,7 +343,7 @@ export default function TasteInsightCard({
           font-black
         ">
 
-          Taste Identity
+          Current ranking insight
 
         </p>
 
@@ -210,28 +351,83 @@ export default function TasteInsightCard({
 
 
 
-        <h3 className="
-          text-3xl
-          font-black
-          mt-3
+
+
+        <div className="
+          mt-6
+          grid
+          md:grid-cols-3
+          gap-5
         ">
 
-          {identity.title}
-
-        </h3>
 
 
+          <Metric
+
+            label="Uniqueness"
+
+            value={`${signal.uniqueness}%`}
+
+          />
 
 
 
-        <p className="
-          mt-4
-          rankd-muted
+
+
+
+          <Metric
+
+            label="Perspective"
+
+            value={`${signal.perspective}%`}
+
+          />
+
+
+
+
+
+
+          <Metric
+
+            label="Confidence"
+
+            value={`${signal.confidence}%`}
+
+          />
+
+
+
+        </div>
+
+
+
+
+
+
+
+        <div className="
+          mt-8
+          bg-[#F7F4EE]
+          rounded-3xl
+          p-6
         ">
 
-          {identity.description}
 
-        </p>
+
+          <p className="
+            text-xl
+            font-black
+          ">
+
+            {signal.description}
+
+          </p>
+
+
+
+        </div>
+
 
 
       </div>
@@ -242,9 +438,12 @@ export default function TasteInsightCard({
 
 
 
+
+
       <div className="
         mt-10
       ">
+
 
 
         <p className="
@@ -258,6 +457,8 @@ export default function TasteInsightCard({
           Insight
 
         </p>
+
+
 
 
 

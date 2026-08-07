@@ -1,13 +1,5 @@
 "use client"
 
-import {
-  calculateTasteDNA
-} from "@/utils/tasteProfile"
-
-import {
-  calculateTasteMatch
-} from "@/utils/tasteMatching"
-
 
 
 
@@ -19,6 +11,23 @@ type Props = {
   rankings:any[]
 
 }
+
+
+
+
+
+
+
+
+
+type Difference = {
+
+  type:string
+
+  value:number
+
+}
+
 
 
 
@@ -39,25 +48,9 @@ export default function TasteMatchCard({
 
 
 
-  const currentTasteDNA =
+  const graphScore =
 
-    calculateTasteDNA(
-
-      rankings ?? []
-
-    )
-
-
-
-
-
-  const personTasteDNA =
-
-    calculateTasteDNA(
-
-      person?.rankings ?? []
-
-    )
+    person?.tasteMatch?.score ?? 0
 
 
 
@@ -65,16 +58,136 @@ export default function TasteMatchCard({
 
 
 
+  const match = {
 
-  const match =
 
-    calculateTasteMatch(
+    score:
 
-      currentTasteDNA,
+      graphScore,
 
-      personTasteDNA
 
-    )
+
+
+
+    label:
+
+      graphScore >= 80
+
+      ?
+
+      "You think very similarly."
+
+      :
+
+      graphScore >= 60
+
+      ?
+
+      "You share strong taste patterns."
+
+      :
+
+      "You have some overlapping preferences.",
+
+
+
+
+
+    explanation:
+
+      graphScore >= 80
+
+      ?
+
+      "Your rankings show very similar choices and judgement patterns."
+
+      :
+
+      graphScore >= 60
+
+      ?
+
+      "Your Taste Graph signals show meaningful overlap."
+
+      :
+
+      "Your opinions connect through shared rankings.",
+
+
+
+
+
+    sharedCategories:
+
+      person?.tasteDNA
+
+      ?
+
+      Object.keys(
+
+        person.tasteDNA.categories ?? {}
+
+      )
+
+      :
+
+      [],
+
+
+
+
+
+    breakdown:{
+
+
+      categoryScore:
+
+        Math.min(
+
+          graphScore,
+
+          100
+
+        ),
+
+
+
+      choiceScore:
+
+        Math.min(
+
+          graphScore,
+
+          100
+
+        ),
+
+
+
+      behaviourScore:
+
+        Math.min(
+
+          graphScore,
+
+          100
+
+        )
+
+
+    },
+
+
+
+
+
+    differences:
+
+      [] as Difference[]
+
+
+
+  }
 
 
 
@@ -225,16 +338,7 @@ export default function TasteMatchCard({
 
 
       </div>
-
-
-
-
-
-
-
-
-
-      {match.sharedCategories.length > 0 && (
+            {match.sharedCategories.length > 0 && (
 
 
         <div className="
@@ -254,6 +358,8 @@ export default function TasteMatchCard({
             Shared taste areas
 
           </p>
+
+
 
 
 

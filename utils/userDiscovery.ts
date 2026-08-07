@@ -9,8 +9,9 @@ import {
 
 
 import {
-  calculateTasteMatch
-} from "@/utils/tasteMatching"
+  findSimilarTasteUsers
+} from "@/utils/tasteGraphQueries"
+
 
 
 
@@ -96,6 +97,23 @@ export async function getDiscoverableUsers(
     calculateTasteDNA(
 
       currentRankings
+
+    )
+
+
+
+
+
+
+
+
+  const graphMatches =
+
+    await findSimilarTasteUsers(
+
+      currentUserId,
+
+      50
 
     )
 
@@ -212,13 +230,14 @@ export async function getDiscoverableUsers(
 
 
 
-          const tasteMatch =
 
-            calculateTasteMatch(
+          const graphMatch =
 
-              currentTasteDNA,
+            graphMatches.find(
 
-              userTasteDNA
+              match =>
+
+                match.userId === profile.id
 
             )
 
@@ -230,7 +249,28 @@ export async function getDiscoverableUsers(
 
 
 
-          return {
+          const tasteMatch = {
+
+
+            score:
+
+              graphMatch
+
+              ?
+
+              Math.round(
+
+                graphMatch.score * 100
+
+              )
+
+              :
+
+              0
+
+
+          }
+                    return {
 
 
             id:
@@ -264,7 +304,6 @@ export async function getDiscoverableUsers(
 
 
             tasteMatch
-
 
 
           }
