@@ -1,5 +1,9 @@
 import Link from "next/link"
 
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
 
 export default function DiscoveryCard({
   ranking
@@ -40,7 +44,11 @@ export default function DiscoveryCard({
 
         >
 
-          {ranking.title}
+          {formatRankingTitle(
+
+            ranking.title
+
+          )}
 
         </h3>
 

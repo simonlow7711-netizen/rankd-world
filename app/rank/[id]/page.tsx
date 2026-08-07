@@ -4,6 +4,10 @@ import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
 import RankClient from "./RankClient"
 
 
@@ -84,7 +88,11 @@ export async function generateMetadata(
 
     title:
 
-      `${ranking.title} | RANKD`,
+      `${formatRankingTitle(
+
+        ranking.title
+
+      )} | RANKD`,
 
 
 
@@ -94,7 +102,11 @@ export async function generateMetadata(
 
       ||
 
-      `Discover ${ranking.title} on RANKD.`
+      `Discover ${formatRankingTitle(
+
+        ranking.title
+
+      )} on RANKD.`
 
 
   }

@@ -1,10 +1,25 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useRouter } from "next/navigation"
+import {
+  useEffect,
+  useState
+} from "react"
+
+import {
+  useRouter
+} from "next/navigation"
+
 import Link from "next/link"
 
-import { supabase } from "@/utils/supabase"
+import {
+  supabase
+} from "@/utils/supabase"
+
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
+
 
 
 
@@ -587,7 +602,11 @@ export default function ProfilePage(){
                   mt-4
                 ">
 
-                  {ranking.title}
+                  {formatRankingTitle(
+
+                    ranking.title
+
+                  )}
 
                 </h3>
 

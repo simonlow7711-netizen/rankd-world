@@ -24,6 +24,11 @@ import {
 
 
 import {
+  stripRankingPrefix
+} from "@/utils/rankingTitle"
+
+
+import {
   supabase
 } from "@/utils/supabase"
 
@@ -69,14 +74,11 @@ function createEmptyItems():RankingBuilderItem[]{
 
     ()=>({
 
-
       id:
 
         crypto.randomUUID(),
 
-
       name:""
-
 
     })
 
@@ -96,13 +98,9 @@ function createEmptyItems():RankingBuilderItem[]{
 export default function CreateClient(){
 
 
-
   const router = useRouter()
 
-
   const searchParams = useSearchParams()
-
-
 
 
 
@@ -116,13 +114,9 @@ export default function CreateClient(){
 
 
 
-
-
   const [category,setCategory] =
 
     useState("General")
-
-
 
 
 
@@ -140,13 +134,9 @@ export default function CreateClient(){
 
 
 
-
-
   const [loading,setLoading] =
 
     useState(false)
-
-
 
 
 
@@ -160,11 +150,11 @@ export default function CreateClient(){
 
 
 
-
-
   const rootIdRef =
 
     useRef<string | null>(null)
+
+
 
 
 
@@ -210,18 +200,22 @@ export default function CreateClient(){
 
 
 
-
     if(importedTitle){
 
 
       setTitle(
 
-        importedTitle
+        stripRankingPrefix(
+
+          importedTitle
+
+        )
 
       )
 
 
     }
+
 
 
 
@@ -247,6 +241,7 @@ export default function CreateClient(){
 
 
 
+
     if(importedParentId){
 
 
@@ -263,6 +258,7 @@ export default function CreateClient(){
 
 
 
+
     if(importedRootId){
 
 
@@ -272,6 +268,7 @@ export default function CreateClient(){
 
 
     }
+
 
 
 
@@ -322,6 +319,7 @@ export default function CreateClient(){
 
 
 
+
       const sevenItems = [
 
         ...parsedItems,
@@ -361,6 +359,7 @@ export default function CreateClient(){
 
 
 
+
       setItems(
 
         sevenItems.slice(
@@ -375,7 +374,6 @@ export default function CreateClient(){
 
 
     }
-
 
 
   },[searchParams])
@@ -412,6 +410,7 @@ export default function CreateClient(){
 
 
 
+
     const cleanedItems =
 
       items
@@ -431,6 +430,7 @@ export default function CreateClient(){
           item.name.trim()
 
       )
+
 
 
 
@@ -459,7 +459,9 @@ export default function CreateClient(){
 
 
 
+
     setLoading(true)
+
 
 
 
@@ -471,7 +473,11 @@ export default function CreateClient(){
 
       crypto.randomUUID()
 
-          const finalParentId =
+
+
+
+
+    const finalParentId =
 
       parentIdRef.current ?? null
 
@@ -491,6 +497,7 @@ export default function CreateClient(){
 
 
 
+
     const ranking:Ranking = {
 
 
@@ -502,7 +509,11 @@ export default function CreateClient(){
 
       title:
 
-        title.trim(),
+        stripRankingPrefix(
+
+          title.trim()
+
+        ),
 
 
 
@@ -540,9 +551,7 @@ export default function CreateClient(){
               index + 1,
 
 
-
             name,
-
 
 
             votes:
@@ -597,7 +606,6 @@ export default function CreateClient(){
     try {
 
 
-
       const {
 
         data:{
@@ -618,7 +626,6 @@ export default function CreateClient(){
       if(user){
 
 
-
         await createSupabaseRanking(
 
           ranking,
@@ -628,11 +635,9 @@ export default function CreateClient(){
         )
 
 
-
       }
 
       else {
-
 
 
         const existing =
@@ -650,7 +655,6 @@ export default function CreateClient(){
             "[]"
 
           )
-
 
 
 
@@ -686,7 +690,6 @@ export default function CreateClient(){
 
 
 
-
       router.push(
 
         `/rank/${ranking.id}`
@@ -703,7 +706,6 @@ export default function CreateClient(){
     }
 
     catch(error){
-
 
 
       console.error(
@@ -723,15 +725,12 @@ export default function CreateClient(){
       )
 
 
-
     }
 
     finally{
 
 
-
       setLoading(false)
-
 
 
     }
@@ -770,6 +769,8 @@ export default function CreateClient(){
     focus:ring-black
 
   `
+
+
 
 
 
@@ -869,7 +870,7 @@ export default function CreateClient(){
 
             }
 
-            placeholder="Your RANKD title"
+            placeholder="UK garden birds"
 
             className={
 
@@ -879,23 +880,15 @@ export default function CreateClient(){
 
           />
 
-
-
           <div className="
             space-y-3
           ">
 
-
-            <p className="
-              font-black
-            ">
+            <p className="font-black">
 
               Choose a category
 
             </p>
-
-
-
 
 
             <div className="
@@ -905,78 +898,73 @@ export default function CreateClient(){
             ">
 
 
-              {categories.map(
-
-                option => (
+              {categories.map(option=>(
 
 
-                  <button
+                <button
 
-                    key={option}
+                  key={option}
 
-                    type="button"
+                  type="button"
 
-                    onClick={()=>setCategory(option)}
+                  onClick={()=>setCategory(option)}
 
-                    className={
+                  className={
 
-                      `
-                      px-5
-                      py-3
-                      rounded-full
-                      font-black
-                      transition
-                      `
+                    `
+                    px-5
+                    py-3
+                    rounded-full
+                    font-black
+                    transition
+                    `
 
-                      +
+                    +
 
-                      (
+                    (
 
-                        category === option
+                      category === option
 
-                        ?
+                      ?
 
-                        `
-                        bg-black
-                        text-white
-                        `
+                      " bg-black text-white "
 
-                        :
+                      :
 
-                        `
-                        bg-[#F7F4EE]
-                        border
-                        border-black/10
-                        `
+                      " bg-[#F7F4EE] border border-black/10 "
 
-                      )
+                    )
 
-                    }
+                  }
 
-                  >
+                >
 
-                    {option}
+                  {option}
 
-                  </button>
+                </button>
 
 
-                )
-
-              )}
+              ))}
 
 
             </div>
 
 
           </div>
-                    <div className="
+
+
+
+
+
+
+
+
+          <div className="
             space-y-4
           ">
 
 
-            <p className="
-              font-black
-            ">
+            <p className="font-black">
 
               Rank your 7
 
@@ -996,7 +984,6 @@ export default function CreateClient(){
 
 
           </div>
-
 
 
 
@@ -1052,8 +1039,6 @@ export default function CreateClient(){
 
     </main>
 
-
   )
-
 
 }

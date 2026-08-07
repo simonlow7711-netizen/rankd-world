@@ -54,6 +54,11 @@ import {
 
 
 import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
+
+import {
   Ranking
 } from "@/types/ranking"
 
@@ -428,16 +433,7 @@ export default function RankClient({
         tree
 
       )
-
-
-
-
-
-
-
-
-
-      const remixFamily:RemixRanking[] =
+            const remixFamily:RemixRanking[] =
 
         conversationItems
 
@@ -557,7 +553,11 @@ export default function RankClient({
 
       `/create?title=${encodeURIComponent(
 
-        ranking.title
+        formatRankingTitle(
+
+          ranking.title
+
+        )
 
       )}&category=${encodeURIComponent(
 
@@ -711,13 +711,6 @@ export default function RankClient({
 
     )
 
-
-
-
-
-
-
-
   return (
 
     <main className="
@@ -779,7 +772,11 @@ export default function RankClient({
 
             >
 
-              {parentRanking.title} →
+              {formatRankingTitle(
+
+                parentRanking.title
+
+              )} →
 
             </button>
 
@@ -861,7 +858,11 @@ export default function RankClient({
               mt-6
             ">
 
-              {ranking.title}
+              {formatRankingTitle(
+
+                ranking.title
+
+              )}
 
             </h1>
 
@@ -1076,7 +1077,11 @@ export default function RankClient({
 
                   >
 
-                    {remix.title}
+                    {formatRankingTitle(
+
+                      remix.title
+
+                    )}
 
                   </button>
 

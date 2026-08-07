@@ -27,6 +27,10 @@ import {
   calculateAchievements
 } from "@/utils/achievements"
 
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
 
 
 
@@ -327,11 +331,6 @@ export default function ProfileClient({
     )
 
 
-
-
-
-
-
   return (
 
     <main className="
@@ -563,7 +562,11 @@ export default function ProfileClient({
                   mt-3
                 ">
 
-                  {ranking.title}
+                  {formatRankingTitle(
+
+                    ranking.title
+
+                  )}
 
                 </h3>
 

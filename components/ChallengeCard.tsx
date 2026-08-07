@@ -2,6 +2,10 @@
 
 import Link from "next/link"
 
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
 
 
 
@@ -67,7 +71,11 @@ export default function ChallengeCard({
           mt-4
         ">
 
-          {ranking.title}
+          {formatRankingTitle(
+
+            ranking.title
+
+          )}
 
         </h3>
 

@@ -2,6 +2,10 @@
 
 import Link from "next/link"
 
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
 
 
 
@@ -72,7 +76,15 @@ export default function PerspectiveCard({
 
     ranking.title
 
-    ||
+    ?
+
+    formatRankingTitle(
+
+      ranking.title
+
+    )
+
+    :
 
     "Different Perspectives"
 
