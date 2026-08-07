@@ -5,15 +5,12 @@ export type TasteNodeType =
 
 
 
-
 export type TasteSignalType =
   | "created"
   | "ranked"
   | "preferred"
   | "avoided"
   | "challenged"
-
-
 
 
 
@@ -28,9 +25,6 @@ export type TasteNode = {
   label:string
 
 }
-
-
-
 
 
 
@@ -60,9 +54,6 @@ export type TasteSignal = {
 
 
 
-
-
-
 export type TasteBehaviour = {
 
   totalRankings:number
@@ -74,9 +65,6 @@ export type TasteBehaviour = {
   uniqueness:number
 
 }
-
-
-
 
 
 

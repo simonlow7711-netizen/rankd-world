@@ -45,17 +45,12 @@ import {
 
 import {
   generateTasteGraphSignal
-} from "@/utils/tasteGraph"
+} from "@/utils/tasteGraphSignal"
 
 
 import {
   generateTasteIdentity
 } from "@/utils/tasteIdentity"
-
-
-import {
-  formatRankingTitle
-} from "@/utils/rankingTitle"
 
 
 import {
@@ -406,14 +401,7 @@ export default function RankClient({
 
         ))
 
-
-
-
-
-
-
-
-      const tree =
+              const tree =
 
         buildConversationTree(
 
@@ -433,7 +421,16 @@ export default function RankClient({
         tree
 
       )
-            const remixFamily:RemixRanking[] =
+
+
+
+
+
+
+
+
+
+      const remixFamily:RemixRanking[] =
 
         conversationItems
 
@@ -553,11 +550,7 @@ export default function RankClient({
 
       `/create?title=${encodeURIComponent(
 
-        formatRankingTitle(
-
-          ranking.title
-
-        )
+        ranking.title
 
       )}&category=${encodeURIComponent(
 
@@ -711,6 +704,13 @@ export default function RankClient({
 
     )
 
+
+
+
+
+
+
+
   return (
 
     <main className="
@@ -772,11 +772,7 @@ export default function RankClient({
 
             >
 
-              {formatRankingTitle(
-
-                parentRanking.title
-
-              )} →
+              {parentRanking.title} →
 
             </button>
 
@@ -858,11 +854,7 @@ export default function RankClient({
               mt-6
             ">
 
-              {formatRankingTitle(
-
-                ranking.title
-
-              )}
+              {ranking.title}
 
             </h1>
 
@@ -879,14 +871,7 @@ export default function RankClient({
               Created by {ranking.creator || "RANKD user"}
 
             </p>
-
-
-
-
-
-
-
-            <div className="
+                        <div className="
               mt-10
               space-y-4
             ">
@@ -1077,11 +1062,7 @@ export default function RankClient({
 
                   >
 
-                    {formatRankingTitle(
-
-                      remix.title
-
-                    )}
+                    {remix.title}
 
                   </button>
 

@@ -2,25 +2,24 @@ import {
   Ranking
 } from "@/types/ranking"
 
+import {
+  generateTasteGraphSignal,
+  TasteGraphSignal
+} from "@/utils/tasteGraphSignal"
 
 
 
 
-export interface TasteInsight {
+
+
+
+export type TasteInsight = {
 
   title:string
 
   description:string
 
-  type:
-    |
-    "unique"
-    |
-    "consensus"
-    |
-    "strong-choice"
-    |
-    "standard"
+  signal:TasteGraphSignal
 
 }
 
@@ -40,17 +39,30 @@ export function generateTasteInsight(
 
 
 
-  const items =
+  const signal =
 
-    ranking.items || []
+    generateTasteGraphSignal(
+
+      ranking
+
+    )
 
 
 
 
 
-  const topItem =
 
-    items[0]
+
+  let title =
+
+    "Your taste signal"
+
+
+
+
+  let description =
+
+    "This RANKD adds another perspective to the global Taste Graph."
 
 
 
@@ -62,31 +74,20 @@ export function generateTasteInsight(
 
   if(
 
-    topItem
+    signal.uniqueness >= 70
 
   ){
 
-    return {
 
+    title =
 
-      title:
-
-        "Strong point of view 🔥",
-
-
-
-      description:
-
-        `Your #1 choice is ${topItem.name}. This ranking shows a clear personal preference.`,
+      "Distinctive taste"
 
 
 
-      type:
+    description =
 
-        "strong-choice"
-
-
-    }
+      "Your choices reveal a perspective that stands apart from the crowd."
 
   }
 
@@ -98,33 +99,49 @@ export function generateTasteInsight(
 
 
 
-  if(
+  else if(
 
-    items.length === 7
+    signal.perspective >= 70
 
   ){
 
-    return {
 
+    title =
 
-      title:
-
-        "Your taste has a shape",
-
-
-
-      description:
-
-        "Your Top 7 creates a unique pattern of choices that can be compared with the community.",
+      "Strong point of view"
 
 
 
-      type:
+    description =
 
-        "unique"
+      "Your ranking shows a clear opinion that may challenge other people's rankings."
+
+  }
 
 
-    }
+
+
+
+
+
+
+
+  else if(
+
+    signal.confidence >= 80
+
+  ){
+
+
+    title =
+
+      "Recognised preference"
+
+
+
+    description =
+
+      "Your ranking aligns with patterns emerging across the RANKD community."
 
   }
 
@@ -139,22 +156,210 @@ export function generateTasteInsight(
   return {
 
 
+    title,
+
+
+    description,
+
+
+    signal
+
+
+  }
+
+
+}
+
+
+
+
+
+
+
+
+
+export function mergeTasteInsights(
+
+  insights:TasteInsight[] = []
+
+){
+
+
+
+  if(
+
+    insights.length === 0
+
+  ){
+
+
+    return {
+
+      title:
+
+        "Growing taste profile",
+
+
+      description:
+
+        "Create more RANKDs to build your Taste Graph."
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+  const average = (
+
+    values:number[]
+
+  ) =>
+
+
+    values.reduce(
+
+      (
+
+        sum,
+
+        value
+
+      )=>
+
+        sum + value,
+
+      0
+
+    )
+
+    /
+
+    values.length
+
+
+
+
+
+
+
+  const uniqueness =
+
+    average(
+
+      insights.map(
+
+        insight =>
+
+          insight.signal.uniqueness
+
+      )
+
+    )
+
+
+
+
+
+
+
+  const perspective =
+
+    average(
+
+      insights.map(
+
+        insight =>
+
+          insight.signal.perspective
+
+      )
+
+    )
+
+
+
+
+
+
+
+  if(
+
+    uniqueness >= 70
+
+  ){
+
+
+    return {
+
+      title:
+
+        "Independent taste",
+
+
+      description:
+
+        "Your overall Taste Graph shows a strong tendency toward original choices."
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  if(
+
+    perspective >= 70
+
+  ){
+
+
+    return {
+
+      title:
+
+        "Opinion leader",
+
+
+      description:
+
+        "Your rankings consistently create points of discussion."
+
+    }
+
+
+  }
+
+
+
+
+
+
+
+
+
+  return {
+
     title:
 
-      "Your ranking is live",
-
+      "Developing taste profile",
 
 
     description:
 
-      "Your choices have been added to the RANKD community.",
-
-
-
-    type:
-
-      "standard"
-
+      "Your rankings are helping build your individual taste intelligence."
 
   }
 

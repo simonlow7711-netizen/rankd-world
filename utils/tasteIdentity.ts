@@ -1,6 +1,9 @@
 import {
   TasteGraphSignal
-} from "@/utils/tasteGraph"
+} from "@/utils/tasteGraphSignal"
+
+
+
 
 
 
@@ -9,8 +12,6 @@ import {
 export type TasteIdentity = {
 
   title:string
-
-  emoji:string
 
   description:string
 
@@ -32,35 +33,17 @@ export function generateTasteIdentity(
 
 
 
-  if(
+  let title =
 
-    signal.perspective >= 80
-
-  ){
-
-    return {
-
-
-      title:
-
-        "The Contrarian",
+    "Curious Explorer"
 
 
 
-      emoji:
 
-        "🔥",
+  let description =
 
+    "Your rankings are building a unique taste profile through the choices you make."
 
-
-      description:
-
-        "You often choose differently from the crowd. Your rankings show a strong personal point of view."
-
-
-    }
-
-  }
 
 
 
@@ -75,27 +58,16 @@ export function generateTasteIdentity(
 
   ){
 
-    return {
 
+    title =
 
-      title:
-
-        "The Explorer",
-
-
-
-      emoji:
-
-        "🌎",
+      "Independent Tastemaker"
 
 
 
-      description:
+    description =
 
-        "Your choices reveal curiosity and a willingness to discover beyond obvious favourites."
-
-
-    }
+      "Your choices frequently stand apart from the crowd, revealing a distinctive perspective."
 
   }
 
@@ -106,35 +78,53 @@ export function generateTasteIdentity(
 
 
 
-  if(
 
-    signal.confidence >= 70
+  else if(
+
+    signal.perspective >= 70
 
   ){
 
-    return {
 
+    title =
 
-      title:
-
-        "The Decider",
-
-
-
-      emoji:
-
-        "⚡",
+      "Opinion Shaper"
 
 
 
-      description:
+    description =
 
-        "Your rankings show confident choices that create clear signals for the community."
-
-
-    }
+      "Your rankings show strong personal judgement and create interesting points of comparison."
 
   }
+
+
+
+
+
+
+
+
+
+  else if(
+
+    signal.confidence >= 80
+
+  ){
+
+
+    title =
+
+      "Community Influencer"
+
+
+
+    description =
+
+      "Your preferences are becoming recognised patterns within the wider RANKD community."
+
+  }
+
 
 
 
@@ -146,21 +136,10 @@ export function generateTasteIdentity(
   return {
 
 
-    title:
-
-      "The Curator",
+    title,
 
 
-
-    emoji:
-
-      "✨",
-
-
-
-    description:
-
-      "Your rankings reveal a considered collection of favourites."
+    description
 
 
   }
