@@ -1,1044 +1,855 @@
 "use client"
 
 import {
-  useEffect,
-  useRef,
-  useState
+useEffect,
+useRef,
+useState
 } from "react"
 
 import {
-  useRouter,
-  useSearchParams
+useRouter,
+useSearchParams
 } from "next/navigation"
 
-
 import {
-  Ranking,
-  RankingBuilderItem
+Ranking,
+RankingBuilderItem
 } from "@/types/ranking"
 
-
 import {
-  createSupabaseRanking
+createSupabaseRanking,
+getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
-
 import {
-  stripRankingPrefix
+stripRankingPrefix
 } from "@/utils/rankingTitle"
 
-
 import {
-  supabase
+supabase
 } from "@/utils/supabase"
-
 
 import SortableRankingList from "@/components/SortableRankingList"
 
+import {
+getTasteGraph,
+saveTasteGraph
+} from "@/utils/tasteGraphRepository"
 
+import {
+compareTasteFeedback
+} from "@/utils/tasteFeedbackComparison"
 
+import {
+buildTasteFeedbackSignals
+} from "@/utils/tasteFeedbackSignals"
 
-
-
+import {
+TasteGraph
+} from "@/utils/tasteGraph"
 
 const categories = [
 
-  "Food & Drink",
-  "Film & TV",
-  "Music",
-  "Sport",
-  "Travel",
-  "Technology",
-  "Lifestyle",
-  "General"
+"Food & Drink",
+"Film & TV",
+"Music",
+"Sport",
+"Travel",
+"Technology",
+"Lifestyle",
+"General"
 
 ]
 
+function createEmptyItems(): RankingBuilderItem[] {
+
+return Array.from(
+
+{
+  length: 7
+},
+
+() => ({
+
+  id:
+    crypto.randomUUID(),
+
+  name: ""
+
+})
+
+)
+
+}
+
+export default function CreateClient() {
+
+const router =
+useRouter()
+
+const searchParams =
+useSearchParams()
+
+const recommendationId =
+searchParams.get(
+"recommendationId"
+)
+
+const recommendationScore =
+Number(
+searchParams.get(
+"recommendationScore"
+) ?? 0
+)
+
+const [title, setTitle] =
+useState("")
+
+const [category, setCategory] =
+useState("General")
+
+const [items, setItems] =
+useState<RankingBuilderItem[]>(
+
+  createEmptyItems()
+
+)
+
+const [loading, setLoading] =
+useState(false)
+
+const parentIdRef =
+useRef<string | null>(null)
+
+const rootIdRef =
+useRef<string | null>(null)
+
+useEffect(() => {
+
+const importedTitle =
+  searchParams.get("title")
 
 
+const importedCategory =
+  searchParams.get("category")
 
 
+const importedItems =
+  searchParams.get("items")
 
 
+const importedParentId =
+  searchParams.get("parentId")
 
-function createEmptyItems():RankingBuilderItem[]{
+
+const importedRootId =
+  searchParams.get("rootId")
 
 
-  return Array.from(
+if (importedTitle) {
 
-    {
+  setTitle(
 
-      length:7
-
-    },
-
-    ()=>({
-
-      id:
-
-        crypto.randomUUID(),
-
-      name:""
-
-    })
+    stripRankingPrefix(
+      importedTitle
+    )
 
   )
-
 
 }
 
 
+if (importedCategory) {
 
+  setCategory(
+    importedCategory
+  )
 
+}
 
 
+if (importedParentId) {
 
+  parentIdRef.current =
+    importedParentId
 
+}
 
-export default function CreateClient(){
 
+if (importedRootId) {
 
-  const router = useRouter()
+  rootIdRef.current =
+    importedRootId
 
-  const searchParams = useSearchParams()
+}
 
 
+if (importedItems) {
 
 
+  const parsedItems =
 
-  const [title,setTitle] =
+    importedItems
 
-    useState("")
-
-
-
-
-
-  const [category,setCategory] =
-
-    useState("General")
-
-
-
-
-
-  const [items,setItems] =
-
-    useState<RankingBuilderItem[]>(
-
-      createEmptyItems()
-
-    )
-
-
-
-
-
-  const [loading,setLoading] =
-
-    useState(false)
-
-
-
-
-
-  const parentIdRef =
-
-    useRef<string | null>(null)
-
-
-
-
-
-  const rootIdRef =
-
-    useRef<string | null>(null)
-
-
-
-
-
-
-
-
-
-  useEffect(()=>{
-
-
-    const importedTitle =
-
-      searchParams.get("title")
-
-
-
-    const importedCategory =
-
-      searchParams.get("category")
-
-
-
-    const importedItems =
-
-      searchParams.get("items")
-
-
-
-    const importedParentId =
-
-      searchParams.get("parentId")
-
-
-
-    const importedRootId =
-
-      searchParams.get("rootId")
-
-
-
-
-
-
-
-
-    if(importedTitle){
-
-
-      setTitle(
-
-        stripRankingPrefix(
-
-          importedTitle
-
-        )
-
-      )
-
-
-    }
-
-
-
-
-
-
-
-
-    if(importedCategory){
-
-
-      setCategory(
-
-        importedCategory
-
-      )
-
-
-    }
-
-
-
-
-
-
-
-
-    if(importedParentId){
-
-
-      parentIdRef.current =
-
-        importedParentId
-
-
-    }
-
-
-
-
-
-
-
-
-    if(importedRootId){
-
-
-      rootIdRef.current =
-
-        importedRootId
-
-
-    }
-
-
-
-
-
-
-
-
-    if(importedItems){
-
-
-
-      const parsedItems =
-
-        importedItems
-
-        .split("|")
-
-        .filter(
-
-          item =>
-
-            item.trim()
-
-        )
-
-        .map(
-
-          item => ({
-
-
-            id:
-
-              crypto.randomUUID(),
-
-
-            name:
-
-              item.trim()
-
-
-          })
-
-        )
-
-
-
-
-
-
-
-
-      const sevenItems = [
-
-        ...parsedItems,
-
-        ...Array(
-
-          Math.max(
-
-            0,
-
-            7 - parsedItems.length
-
-          )
-
-        )
-
-        .fill(null)
-
-        .map(()=>({
-
-
-          id:
-
-            crypto.randomUUID(),
-
-
-          name:""
-
-
-        }))
-
-      ]
-
-
-
-
-
-
-
-
-      setItems(
-
-        sevenItems.slice(
-
-          0,
-
-          7
-
-        )
-
-      )
-
-
-    }
-
-
-  },[searchParams])
-
-
-
-
-
-
-
-
-
-  async function handlePublish(){
-
-
-    if(!title.trim()){
-
-
-      alert(
-
-        "Add a title"
-
-      )
-
-
-      return
-
-
-    }
-
-
-
-
-
-
-
-
-    const cleanedItems =
-
-      items
+      .split("|")
 
       .filter(
 
         item =>
-
-          item.name.trim()
+          item.trim()
 
       )
 
       .map(
 
-        item =>
+        item => ({
 
-          item.name.trim()
+          id:
+            crypto.randomUUID(),
 
-      )
+          name:
+            item.trim()
 
-
-
-
-
-
-
-
-    if(cleanedItems.length !== 7){
-
-
-      alert(
-
-        "Your RANKD needs exactly 7 items"
+        })
 
       )
 
 
-      return
+  const sevenItems = [
 
+    ...parsedItems,
 
-    }
+    ...Array(
 
-
-
-
-
-
-
-
-    setLoading(true)
-
-
-
-
-
-
-
-
-    const rankingId =
-
-      crypto.randomUUID()
-
-
-
-
-
-    const finalParentId =
-
-      parentIdRef.current ?? null
-
-
-
-
-
-    const finalRootId =
-
-      rootIdRef.current ??
-
-      rankingId
-
-
-
-
-
-
-
-
-    const ranking:Ranking = {
-
-
-      id:
-
-        rankingId,
-
-
-
-      title:
-
-        stripRankingPrefix(
-
-          title.trim()
-
-        ),
-
-
-
-      category,
-
-
-
-      creator:
-
-        "You",
-
-
-
-      description:
-
-        "",
-
-
-
-      items:
-
-        cleanedItems.map(
-
-          (
-
-            name,
-
-            index
-
-          )=>({
-
-
-            position:
-
-              index + 1,
-
-
-            name,
-
-
-            votes:
-
-              0
-
-
-          })
-
-        ),
-
-
-
-      createdAt:
-
-        new Date().toISOString(),
-
-
-
-      views:
+      Math.max(
 
         0,
 
+        7 - parsedItems.length
+
+      )
+
+    )
+
+      .fill(null)
+
+      .map(
+
+        () => ({
+
+          id:
+            crypto.randomUUID(),
+
+          name:
+            ""
+
+        })
+
+      )
+
+  ]
 
 
-      source:
+  setItems(
 
-        "community",
+    sevenItems.slice(
+
+      0,
+
+      7
+
+    )
+
+  )
+
+}
+
+}, [searchParams])
+
+async function handlePublish() {
+
+if (!title.trim()) {
+
+  alert(
+    "Add a title"
+  )
+
+  return
+
+}
 
 
+const cleanedItems =
 
-      parentId:
+  items
 
-        finalParentId,
+    .filter(
+
+      item =>
+        item.name.trim()
+
+    )
+
+    .map(
+
+      item =>
+        item.name.trim()
+
+    )
 
 
+if (cleanedItems.length !== 7) {
 
-      rootId:
+  alert(
+    "Your RANKD needs exactly 7 items"
+  )
 
-        finalRootId
+  return
+
+}
 
 
+setLoading(true)
+
+
+const rankingId =
+  crypto.randomUUID()
+
+
+const finalParentId =
+  parentIdRef.current ?? null
+
+
+const finalRootId =
+  rootIdRef.current ??
+  rankingId
+
+
+const ranking: Ranking = {
+
+  id:
+    rankingId,
+
+  title:
+
+    stripRankingPrefix(
+      title.trim()
+    ),
+
+  category,
+
+  creator:
+    "You",
+
+  description:
+    "",
+
+  items:
+
+    cleanedItems.map(
+
+      (
+        name,
+        index
+      ) => ({
+
+        position:
+          index + 1,
+
+        name,
+
+        votes:
+          0
+
+      })
+
+    ),
+
+  createdAt:
+    new Date().toISOString(),
+
+  views:
+    0,
+
+  source:
+    "community",
+
+  parentId:
+    finalParentId,
+
+  rootId:
+    finalRootId
+
+}
+
+
+try {
+
+
+  const {
+
+    data: {
+      user
     }
 
+  } = await supabase.auth.getUser()
 
 
+  if (user) {
 
 
+    await createSupabaseRanking(
+
+      ranking,
+
+      user.id
+
+    )
 
 
+    /*
+     *
+     * Taste Graph Feedback Loop
+     *
+     * If this RANKD was created from
+     * a Taste Recommendation, compare
+     * the user's new ranking against
+     * the original recommendation.
+     *
+     */
 
-    try {
+
+    if (recommendationId) {
 
 
-      const {
+      try {
 
-        data:{
 
-          user
+        const recommendation =
+
+          await getSupabaseRanking(
+
+            recommendationId
+
+          )
+
+
+        if (recommendation) {
+
+
+          const existingGraph =
+
+            await getTasteGraph(
+
+              user.id
+
+            )
+
+
+          const comparison =
+
+            compareTasteFeedback(
+
+              recommendation,
+
+              ranking,
+
+              recommendationScore
+
+            )
+
+
+          const feedbackSignals =
+
+            buildTasteFeedbackSignals(
+
+              user.id,
+
+              recommendation,
+
+              ranking,
+
+              comparison
+
+            )
+
+
+          const feedbackGraph: TasteGraph = {
+
+            ...existingGraph,
+
+            signals: [
+
+              ...existingGraph.signals,
+
+              ...feedbackSignals
+
+            ]
+
+          }
+
+
+          await saveTasteGraph(
+
+            feedbackGraph
+
+          )
 
         }
 
 
-      } = await supabase.auth.getUser()
+      }
+      catch (feedbackError) {
 
 
+        console.error(
 
+          "TASTE FEEDBACK ERROR",
 
-
-
-
-      if(user){
-
-
-        await createSupabaseRanking(
-
-          ranking,
-
-          user.id
+          feedbackError
 
         )
 
-
       }
-
-      else {
-
-
-        const existing =
-
-          JSON.parse(
-
-            localStorage.getItem(
-
-              "createdRankings"
-
-            )
-
-            ||
-
-            "[]"
-
-          )
-
-
-
-
-
-
-
-        localStorage.setItem(
-
-          "createdRankings",
-
-          JSON.stringify(
-
-            [
-
-              ranking,
-
-              ...existing
-
-            ]
-
-          )
-
-        )
-
-
-      }
-
-
-
-
-
-
-
-
-      router.push(
-
-        `/rank/${ranking.id}`
-
-      )
-
-
-
-
-
-
-
-
-    }
-
-    catch(error){
-
-
-      console.error(
-
-        "CREATE RANKD ERROR",
-
-        error
-
-      )
-
-
-
-      alert(
-
-        "Something went wrong creating your RANKD"
-
-      )
-
-
-    }
-
-    finally{
-
-
-      setLoading(false)
-
 
     }
 
 
   }
 
+  else {
 
 
+    const existing =
+
+      JSON.parse(
+
+        localStorage.getItem(
+          "createdRankings"
+        )
+
+        ||
+
+        "[]"
+
+      )
 
 
+    localStorage.setItem(
+
+      "createdRankings",
+
+      JSON.stringify(
+
+        [
+
+          ranking,
+
+          ...existing
+
+        ]
+
+      )
+
+    )
+
+  }
 
 
+  router.push(
+
+    `/rank/${ranking.id}`
+
+  )
 
 
-  const inputClass = `
-
-    w-full
-
-    rounded-2xl
-
-    p-5
-
-    font-bold
-
-    bg-[#F7F4EE]
-
-    border
-
-    border-black/10
-
-    focus:outline-none
-
-    focus:ring-2
-
-    focus:ring-black
-
-  `
+}
+catch (error) {
 
 
+  console.error(
+
+    "CREATE RANKD ERROR",
+
+    error
+
+  )
 
 
+  alert(
+
+    "Something went wrong creating your RANKD"
+
+  )
 
 
+}
+finally {
 
 
+  setLoading(false)
 
-  return (
+}
 
-    <main className="
-      min-h-screen
-      bg-[#F7F4EE]
-      px-6
-      py-16
-      text-black
+}
+
+const inputClass = `
+
+w-full
+
+rounded-2xl
+
+p-5
+
+font-bold
+
+bg-[#F7F4EE]
+
+border
+
+border-black/10
+
+focus:outline-none
+
+focus:ring-2
+
+focus:ring-black
+
+`
+
+return (
+
+<main className="
+  min-h-screen
+  bg-[#F7F4EE]
+  px-6
+  py-16
+  text-black
+">
+
+
+  <div className="
+    max-w-3xl
+    mx-auto
+    bg-white
+    rounded-[40px]
+    p-8
+    md:p-12
+    shadow-sm
+  ">
+
+
+    <p className="
+      rankd-accent
+      uppercase
+      tracking-[0.3em]
+      text-sm
+      font-black
+    ">
+
+      Create
+
+    </p>
+
+
+    <h1 className="
+      text-5xl
+      md:text-6xl
+      font-black
+      mt-4
+      leading-none
+    ">
+
+      Create your Top 7
+
+    </h1>
+
+
+    <p className="
+      mt-5
+      text-xl
+      text-gray-500
+    ">
+
+      Choose your 7. Share your opinion.
+
+    </p>
+
+
+    <div className="
+      mt-10
+      space-y-8
     ">
 
 
+      <input
+
+        value={title}
+
+        onChange={e =>
+
+          setTitle(
+
+            e.target.value
+
+          )
+
+        }
+
+        placeholder="UK garden birds"
+
+        className={
+
+          `${inputClass} text-xl`
+
+        }
+
+      />
+
+
       <div className="
-        max-w-3xl
-        mx-auto
-        bg-white
-        rounded-[40px]
-        p-8
-        md:p-12
-        shadow-sm
+        space-y-3
       ">
 
+        <p className="font-black">
 
-        <p className="
-          rankd-accent
-          uppercase
-          tracking-[0.3em]
-          text-sm
-          font-black
-        ">
-
-          Create
+          Choose a category
 
         </p>
-
-
-
-
-
-        <h1 className="
-          text-5xl
-          md:text-6xl
-          font-black
-          mt-4
-          leading-none
-        ">
-
-          Create your Top 7
-
-        </h1>
-
-
-
-
-
-        <p className="
-          mt-5
-          text-xl
-          text-gray-500
-        ">
-
-          Choose your 7. Share your opinion.
-
-        </p>
-
-
-
-
-
-
 
 
         <div className="
-          mt-10
-          space-y-8
+          flex
+          flex-wrap
+          gap-3
         ">
 
 
+          {categories.map(
 
-          <input
+            option => (
 
-            value={title}
+              <button
 
-            onChange={e=>
+                key={option}
 
-              setTitle(
+                type="button"
 
-                e.target.value
+                onClick={() =>
+                  setCategory(
+                    option
+                  )
+                }
 
-              )
+                className={
 
-            }
+                  `
+                  px-5
+                  py-3
+                  rounded-full
+                  font-black
+                  transition
+                  `
 
-            placeholder="UK garden birds"
+                  +
 
-            className={
+                  (
 
-              `${inputClass} text-xl`
+                    category === option
 
-            }
+                    ?
 
-          />
+                    " bg-black text-white "
 
-          <div className="
-            space-y-3
-          ">
+                    :
 
-            <p className="font-black">
+                    " bg-[#F7F4EE] border border-black/10 "
 
-              Choose a category
+                  )
 
-            </p>
+                }
 
+              >
 
-            <div className="
-              flex
-              flex-wrap
-              gap-3
-            ">
+                {option}
 
+              </button>
 
-              {categories.map(option=>(
+            )
 
-
-                <button
-
-                  key={option}
-
-                  type="button"
-
-                  onClick={()=>setCategory(option)}
-
-                  className={
-
-                    `
-                    px-5
-                    py-3
-                    rounded-full
-                    font-black
-                    transition
-                    `
-
-                    +
-
-                    (
-
-                      category === option
-
-                      ?
-
-                      " bg-black text-white "
-
-                      :
-
-                      " bg-[#F7F4EE] border border-black/10 "
-
-                    )
-
-                  }
-
-                >
-
-                  {option}
-
-                </button>
-
-
-              ))}
-
-
-            </div>
-
-
-          </div>
-
-
-
-
-
-
-
-
-          <div className="
-            space-y-4
-          ">
-
-
-            <p className="font-black">
-
-              Rank your 7
-
-            </p>
-
-
-
-
-
-            <SortableRankingList
-
-              items={items}
-
-              setItems={setItems}
-
-            />
-
-
-          </div>
-
-
-
-
-
-
-
-
-          <button
-
-            onClick={handlePublish}
-
-            disabled={loading}
-
-            className="
-              w-full
-              bg-black
-              text-white
-              rounded-full
-              py-5
-              text-xl
-              font-black
-              hover:scale-[1.02]
-              transition
-            "
-
-          >
-
-            {loading
-
-              ?
-
-              "Creating..."
-
-              :
-
-              "Publish RANKD →"
-
-            }
-
-
-          </button>
-
-
-
+          )}
 
 
         </div>
 
+      </div>
+
+
+      <div className="
+        space-y-4
+      ">
+
+        <p className="font-black">
+
+          Rank your 7
+
+        </p>
+
+
+        <SortableRankingList
+
+          items={items}
+
+          setItems={setItems}
+
+        />
 
       </div>
 
 
-    </main>
+      <button
 
-  )
+        onClick={handlePublish}
+
+        disabled={loading}
+
+        className="
+          w-full
+          bg-black
+          text-white
+          rounded-full
+          py-5
+          text-xl
+          font-black
+          hover:scale-[1.02]
+          transition
+        "
+
+      >
+
+        {loading
+
+          ?
+
+          "Creating..."
+
+          :
+
+          "Publish RANKD →"
+
+        }
+
+      </button>
+
+
+    </div>
+
+
+  </div>
+
+
+</main>
+
+)
 
 }

@@ -26,7 +26,35 @@ export const ANALYTICS_EVENTS = {
 
 
   PROFILE_VIEW:
-    "profile_view"
+    "profile_view",
+
+
+
+
+
+  // --------------------------------
+  // Taste Graph feedback
+  // --------------------------------
+
+
+  RECOMMENDATION_VIEWED:
+    "recommendation_viewed",
+
+
+  RECOMMENDATION_CLICKED:
+    "recommendation_clicked",
+
+
+  RECOMMENDATION_RANKED:
+    "recommendation_ranked",
+
+
+  RECOMMENDATION_SKIPPED:
+    "recommendation_skipped",
+
+
+  RECOMMENDATION_DISAGREED:
+    "recommendation_disagreed"
 
 
 }

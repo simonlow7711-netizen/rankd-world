@@ -10,55 +10,67 @@ import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
-
-
-
-
+import {
+  recordTasteFeedback
+} from "@/utils/tasteFeedback"
 
 
 type Props = {
-
-  recommendation:TasteRecommendation
-
+  recommendation: TasteRecommendation
 }
 
 
-
-
-
-
-
-
-
 export default function TasteRecommendationCard({
-
   recommendation
-
-}:Props){
-
-
+}: Props){
 
   const ranking =
-
     recommendation.ranking
 
 
+  function handleClick(){
+
+    void recordTasteFeedback({
+
+      type: "clicked",
+
+      rankingId:
+        ranking.id,
+
+      recommendationScore:
+        recommendation.score
+
+    })
+
+  }
 
 
-
+  const createHref =
+    "/create" +
+    "?recommendationId=" +
+    encodeURIComponent(
+      ranking.id
+    ) +
+    "&recommendationScore=" +
+    encodeURIComponent(
+      String(
+        recommendation.score
+      )
+    )
 
 
   return (
 
     <Link
-
-      href={`/rank/${ranking.id}`}
-
+      href={createHref}
+      onClick={handleClick}
+      className="
+        block
+        h-full
+      "
     >
 
-
       <article
-
         className="
           rankd-card
           p-8
@@ -67,12 +79,7 @@ export default function TasteRecommendationCard({
           transition
           cursor-pointer
         "
-
       >
-
-
-
-
 
         <p className="
           rankd-accent
@@ -81,15 +88,8 @@ export default function TasteRecommendationCard({
           text-xs
           font-black
         ">
-
           Recommended through your taste
-
         </p>
-
-
-
-
-
 
 
         <h3 className="
@@ -98,19 +98,10 @@ export default function TasteRecommendationCard({
           mt-5
           leading-tight
         ">
-
           {formatRankingTitle(
-
             ranking.title
-
           )}
-
         </h3>
-
-
-
-
-
 
 
         <div className="
@@ -120,8 +111,6 @@ export default function TasteRecommendationCard({
           justify-between
         ">
 
-
-
           <span className="
             bg-black
             text-white
@@ -130,38 +119,21 @@ export default function TasteRecommendationCard({
             py-3
             font-black
           ">
-
             {recommendation.score}%
-
           </span>
-
-
-
 
 
           <span className="
             rankd-muted
             font-bold
           ">
-
             taste alignment
-
           </span>
-
-
 
         </div>
 
 
-
-
-
-
-
-
-
         {recommendation.reasons.length > 0 && (
-
 
           <div className="
             mt-8
@@ -170,68 +142,39 @@ export default function TasteRecommendationCard({
             border-black/10
           ">
 
-
-
             <p className="
               font-black
               mb-4
             ">
-
               Why RANKD picked this
-
             </p>
-
-
-
 
 
             <div className="
               space-y-2
             ">
 
-
-
               {recommendation.reasons
-
-                .slice(0,3)
-
-                .map(reason=>(
-
+                .slice(0, 3)
+                .map(reason => (
 
                   <p
-
                     key={reason}
-
                     className="
                       text-sm
                       font-bold
                     "
-
                   >
-
                     ✓ {reason}
-
                   </p>
-
 
                 ))}
 
-
-
             </div>
-
-
 
           </div>
 
-
         )}
-
-
-
-
-
-
 
 
         <div className="
@@ -241,18 +184,11 @@ export default function TasteRecommendationCard({
           border-black/10
         ">
 
-
-
           <p className="
             font-black
           ">
-
             Would you rank it differently?
-
           </p>
-
-
-
 
 
           <p className="
@@ -260,22 +196,12 @@ export default function TasteRecommendationCard({
             rankd-accent
             font-black
           ">
-
-            Explore ranking →
-
+            Rank it yourself →
           </p>
-
-
 
         </div>
 
-
-
-
-
-
       </article>
-
 
     </Link>
 
