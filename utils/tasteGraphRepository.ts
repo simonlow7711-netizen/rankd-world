@@ -75,11 +75,23 @@ async function getOrCreateNode({
 
 }):Promise<TasteNodeRow | null>{
 
-  const slug =
+  const cleanLabel =
 
     label
       .toLowerCase()
       .trim()
+
+
+  if(!cleanLabel){
+
+    return null
+
+  }
+
+
+  const slug =
+
+    cleanLabel
       .replace(
         /\s+/g,
         "-"
@@ -87,7 +99,8 @@ async function getOrCreateNode({
 
 
   const {
-    data:existing
+    data:existing,
+    error:lookupError
   } = await supabase
 
     .from("taste_nodes")
@@ -101,7 +114,25 @@ async function getOrCreateNode({
       slug
     )
 
-    .single()
+    .eq(
+      "type",
+      type
+    )
+
+    .maybeSingle()
+
+
+  if(lookupError){
+
+    console.error(
+
+      "LOOKUP TASTE NODE ERROR",
+
+      lookupError
+
+    )
+
+  }
 
 
   if(existing){
@@ -136,8 +167,11 @@ async function getOrCreateNode({
   if(error){
 
     console.error(
+
       "CREATE TASTE NODE ERROR",
+
       error
+
     )
 
     return null
@@ -200,6 +234,29 @@ function mergeStrength(
 }
 
 
+function getSignalNodeType(
+
+  signalType:TasteSignalType
+
+):TasteNodeType{
+
+  if(
+
+    signalType ===
+      "created"
+
+  ){
+
+    return "category"
+
+  }
+
+
+  return "item"
+
+}
+
+
 export async function saveTasteGraph(
 
   graph:TasteGraph
@@ -212,18 +269,47 @@ export async function saveTasteGraph(
 
   ){
 
-    const itemNode =
+    const signalType =
+
+      signal.type as TasteSignalType
+
+
+    const nodeType =
+
+      getSignalNodeType(
+
+        signalType
+
+      )
+
+
+    const nodeLabel =
+
+      signalType === "created"
+
+        ?
+
+        signal.category
+
+        :
+
+        signal.item
+
+
+    const node =
 
       await getOrCreateNode({
 
-        type:"item",
+        type:
+          nodeType,
 
-        label:signal.item
+        label:
+          nodeLabel
 
       })
 
 
-    if(!itemNode){
+    if(!node){
 
       continue
 
@@ -251,7 +337,7 @@ export async function saveTasteGraph(
 
       .eq(
         "node_id",
-        itemNode.id
+        node.id
       )
 
       .eq(
@@ -261,7 +347,7 @@ export async function saveTasteGraph(
 
       .eq(
         "signal_type",
-        signal.type
+        signalType
       )
 
       .maybeSingle()
@@ -349,13 +435,13 @@ export async function saveTasteGraph(
           signal.userId,
 
         node_id:
-          itemNode.id,
+          node.id,
 
         source_rank_id:
           signal.source,
 
         signal_type:
-          signal.type,
+          signalType,
 
         strength:
           signal.strength,
@@ -431,10 +517,14 @@ function normaliseTasteSignalRows(
           row.signal_type,
 
         strength:
-          Number(row.strength),
+          Number(
+            row.strength
+          ),
 
         position:
-          Number(row.position),
+          Number(
+            row.position
+          ),
 
         source_rank_id:
           row.source_rank_id,
@@ -530,7 +620,9 @@ export async function getTasteGraph(
   const typedSignals =
 
     normaliseTasteSignalRows(
+
       signals
+
     )
 
 
@@ -613,7 +705,15 @@ export async function getTasteGraph(
 
           item:
 
-            node?.label ?? "",
+            node?.type === "item"
+
+            ?
+
+            node.label
+
+            :
+
+            "",
 
           strength:
 
@@ -638,14 +738,63 @@ export async function getTasteGraph(
     )
 
 
-  const positions =
+  /*
+   *
+   * BEHAVIOUR METRICS
+   *
+   * Only actual ranked item signals
+   * should influence ranking behaviour.
+   *
+   * "created" category signals have
+   * position 0 and therefore must be
+   * excluded.
+   *
+   */
 
-    graphSignals.map(
+
+  const rankingSignals =
+
+    graphSignals.filter(
 
       signal =>
-        signal.position
+
+        signal.type === "ranked"
+
+        ||
+
+        signal.type === "preferred"
+
+        ||
+
+        signal.type === "avoided"
+
+        ||
+
+        signal.type === "challenged"
 
     )
+
+
+  const positions =
+
+    rankingSignals
+
+      .map(
+
+        signal =>
+          Number(
+            signal.position
+          )
+
+      )
+
+      .filter(
+
+        position =>
+
+          position >= 1
+
+      )
 
 
   const topChoices =
@@ -662,14 +811,121 @@ export async function getTasteGraph(
 
     new Set(
 
-      graphSignals.map(
+      rankingSignals
+
+        .map(
+
+          signal =>
+
+            signal.item
+              .toLowerCase()
+              .trim()
+
+        )
+
+        .filter(
+
+          Boolean
+
+        )
+
+    )
+
+
+  const totalRankings =
+
+    new Set(
+
+      rankingSignals.map(
 
         signal =>
-          signal.item
+          signal.source
 
       )
 
+    ).size
+
+
+  const averagePosition =
+
+    positions.length > 0
+
+    ?
+
+    Number(
+
+      (
+
+        positions.reduce(
+
+          (
+            total,
+
+            value
+
+          ) =>
+
+            total + value,
+
+          0
+
+        )
+
+        /
+
+        positions.length
+
+      ).toFixed(2)
+
     )
+
+    :
+
+    0
+
+
+  const topChoiceRate =
+
+    positions.length > 0
+
+    ?
+
+    Number(
+
+      (
+
+        topChoices /
+        positions.length
+
+      ).toFixed(3)
+
+    )
+
+    :
+
+    0
+
+
+  const uniqueness =
+
+    positions.length > 0
+
+    ?
+
+    Number(
+
+      (
+
+        uniqueItems.size /
+        positions.length
+
+      ).toFixed(3)
+
+    )
+
+    :
+
+    0
 
 
   return {
@@ -683,100 +939,13 @@ export async function getTasteGraph(
 
     behaviour:{
 
-      totalRankings:
+      totalRankings,
 
-        new Set(
+      averagePosition,
 
-          graphSignals.map(
+      topChoiceRate,
 
-            signal =>
-              signal.source
-
-          )
-
-        ).size,
-
-
-      averagePosition:
-
-        positions.length > 0
-
-        ?
-
-        Number(
-
-          (
-
-            positions.reduce(
-
-              (
-                total,
-
-                value
-
-              ) =>
-
-                total + value,
-
-              0
-
-            )
-
-            /
-
-            positions.length
-
-          ).toFixed(2)
-
-        )
-
-        :
-
-        0,
-
-
-      topChoiceRate:
-
-        positions.length > 0
-
-        ?
-
-        Number(
-
-          (
-
-            topChoices /
-            positions.length
-
-          ).toFixed(3)
-
-        )
-
-        :
-
-        0,
-
-
-      uniqueness:
-
-        graphSignals.length > 0
-
-        ?
-
-        Number(
-
-          (
-
-            uniqueItems.size /
-            graphSignals.length
-
-          ).toFixed(3)
-
-        )
-
-        :
-
-        0
+      uniqueness
 
     }
 

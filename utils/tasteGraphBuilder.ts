@@ -14,51 +14,6 @@ import {
 
 
 
-function positionStrength(
-
-  position:number
-
-){
-
-  const strength =
-
-    1 -
-
-    (
-
-      (position - 1)
-
-      *
-
-      0.1
-
-    )
-
-
-
-  return Number(
-
-    Math.max(
-
-      strength,
-
-      0.4
-
-    )
-
-    .toFixed(3)
-
-  )
-
-}
-
-
-
-
-
-
-
-
 function createNodeId(
 
   type:string,
@@ -73,7 +28,6 @@ function createNodeId(
   }`
 
 }
-
 
 
 
@@ -242,6 +196,16 @@ export function buildTasteGraph(
 
 
 
+      /*
+       *
+       * Ranking creation signal
+       *
+       * A RANKD being created is itself
+       * a taste signal.
+       *
+       */
+
+
       signals.push({
 
         id:
@@ -278,7 +242,6 @@ export function buildTasteGraph(
         source:
 
           ranking.id
-
 
       })
 
@@ -368,22 +331,9 @@ export function buildTasteGraph(
 
 
 
-          const strength =
+          totalPosition +=
 
-            positionStrength(
-
-              position
-
-            )
-
-
-
-
-
-
-
-
-          totalPosition += position
+            position
 
           totalItems++
 
@@ -408,62 +358,15 @@ export function buildTasteGraph(
 
 
 
-          if(position === 1){
+          if(
+
+            position === 1
+
+          ){
 
             topChoices++
 
           }
-
-
-
-
-
-
-
-
-          signals.push({
-
-            id:
-
-              crypto.randomUUID(),
-
-
-            userId,
-
-
-            type:
-
-              position === 1
-
-              ?
-
-              "preferred"
-
-              :
-
-              "ranked",
-
-
-            category,
-
-
-            item:
-
-              itemName,
-
-
-            strength,
-
-
-            position,
-
-
-            source:
-
-              ranking.id
-
-
-          })
 
 
         }
@@ -517,13 +420,13 @@ export function buildTasteGraph(
 
           (
 
-            totalPosition /
+            totalPosition
+
+            /
 
             totalItems
 
-          )
-
-          .toFixed(2)
+          ).toFixed(2)
 
         )
 
@@ -545,13 +448,13 @@ export function buildTasteGraph(
 
           (
 
-            topChoices /
+            topChoices
+
+            /
 
             totalItems
 
-          )
-
-          .toFixed(3)
+          ).toFixed(3)
 
         )
 
@@ -573,13 +476,13 @@ export function buildTasteGraph(
 
           (
 
-            uniqueChoices.size /
+            uniqueChoices.size
+
+            /
 
             totalItems
 
-          )
-
-          .toFixed(3)
+          ).toFixed(3)
 
         )
 
@@ -587,11 +490,8 @@ export function buildTasteGraph(
 
         0
 
-
     }
 
-
   }
-
 
 }

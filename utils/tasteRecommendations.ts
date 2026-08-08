@@ -10,20 +10,20 @@ import {
 
 export type TasteRecommendation = {
 
-  ranking:Ranking
+  ranking: Ranking
 
-  score:number
+  score: number
 
-  reasons:string[]
+  reasons: string[]
 
 }
 
 
 function normalise(
 
-  value:number
+  value: number
 
-){
+) {
 
   return Math.max(
 
@@ -42,89 +42,603 @@ function normalise(
 }
 
 
-function alreadyRanked(
+function normaliseItem(
 
-  graph:TasteGraph,
+  value: string
 
-  ranking:Ranking
+) {
 
-){
+  return value
 
-  return ranking.items.some(
+    .toLowerCase()
 
-    item =>
+    .trim()
 
-      graph.signals.some(
+}
 
-        signal =>
 
-          signal.item
+function getItemSignals(
 
-            .toLowerCase()
+  graph: TasteGraph,
 
-          ===
+  itemName: string
 
-          item.name
+) {
 
-            .toLowerCase()
+  const normalisedItem =
 
-      )
+    normaliseItem(
+
+      itemName
+
+    )
+
+
+  return graph.signals.filter(
+
+    signal =>
+
+      normaliseItem(
+
+        signal.item
+
+      ) ===
+
+      normalisedItem
 
   )
 
 }
 
 
-function calculateCuriosityBonus(
+function getCategorySignals(
 
-  graph:TasteGraph,
+  graph: TasteGraph,
 
-  ranking:Ranking
+  category: string
 
-){
+) {
 
-  const knownCategories =
+  return graph.signals.filter(
+
+    signal =>
+
+      signal.category ===
+
+      category
+
+  )
+
+}
+
+
+function hasAlreadyRankedItem(
+
+  graph: TasteGraph,
+
+  itemName: string
+
+) {
+
+  return getItemSignals(
+
+    graph,
+
+    itemName
+
+  ).length > 0
+
+}
+
+
+function calculateDirectTasteMatch(
+
+  graph: TasteGraph,
+
+  itemName: string
+
+) {
+
+  const signals =
+
+    getItemSignals(
+
+      graph,
+
+      itemName
+
+    )
+
+
+  if (
+
+    signals.length === 0
+
+  ) {
+
+    return {
+
+      score: 0,
+
+      strongestPosition: null
+
+    }
+
+  }
+
+
+  const tasteSignals =
+
+    signals.filter(
+
+      signal =>
+
+        signal.type !==
+
+          "feedback_clicked"
+
+        &&
+
+        signal.type !==
+
+          "feedback_ranked"
+
+        &&
+
+        signal.type !==
+
+          "feedback_skipped"
+
+        &&
+
+        signal.type !==
+
+          "feedback_disagreed"
+
+    )
+
+
+  if (
+
+    tasteSignals.length === 0
+
+  ) {
+
+    return {
+
+      score: 0,
+
+      strongestPosition: null
+
+    }
+
+  }
+
+
+  const strongestSignal =
+
+    tasteSignals.reduce(
+
+      (
+
+        strongest,
+
+        signal
+
+      ) =>
+
+        signal.strength >
+
+        strongest.strength
+
+          ? signal
+
+          : strongest,
+
+      tasteSignals[0]
+
+    )
+
+
+  let score =
+
+    strongestSignal.strength * 50
+
+
+  if (
+
+    strongestSignal.position === 1
+
+  ) {
+
+    score += 20
+
+  }
+
+  else if (
+
+    strongestSignal.position === 2
+
+  ) {
+
+    score += 15
+
+  }
+
+  else if (
+
+    strongestSignal.position === 3
+
+  ) {
+
+    score += 10
+
+  }
+
+
+  return {
+
+    score,
+
+    strongestPosition:
+
+      strongestSignal.position
+
+  }
+
+}
+
+
+function calculateCategoryAffinity(
+
+  graph: TasteGraph,
+
+  category: string
+
+) {
+
+  const categorySignals =
+
+    getCategorySignals(
+
+      graph,
+
+      category
+
+    )
+
+
+  if (
+
+    categorySignals.length === 0
+
+  ) {
+
+    return {
+
+      score: 0,
+
+      signalCount: 0
+
+    }
+
+  }
+
+
+  const uniqueRankings =
 
     new Set(
 
-      graph.signals.map(
+      categorySignals.map(
 
         signal =>
 
-          signal.category
+          signal.source
 
       )
 
     )
 
 
-  if(
+  const categoryStrength =
 
-    knownCategories.has(
+    categorySignals.reduce(
+
+      (
+
+        total,
+
+        signal
+
+      ) =>
+
+        total +
+
+        signal.strength,
+
+      0
+
+    )
+
+
+  const averageStrength =
+
+    categorySignals.length > 0
+
+      ?
+
+      categoryStrength /
+
+      categorySignals.length
+
+      :
+
+      0
+
+
+  let score =
+
+    Math.min(
+
+      uniqueRankings.size * 8,
+
+      24
+
+    )
+
+
+  score +=
+
+    Math.min(
+
+      averageStrength * 20,
+
+      20
+
+    )
+
+
+  return {
+
+    score,
+
+    signalCount:
+
+      categorySignals.length
+
+  }
+
+}
+
+
+function calculateNovelty(
+
+  graph: TasteGraph,
+
+  ranking: Ranking
+
+) {
+
+  const rankedItems =
+
+    ranking.items.filter(
+
+      item =>
+
+        hasAlreadyRankedItem(
+
+          graph,
+
+          item.name
+
+        )
+
+    )
+
+
+  if (
+
+    ranking.items.length === 0
+
+  ) {
+
+    return {
+
+      score: 0,
+
+      newItems: 0,
+
+      knownItems: 0
+
+    }
+
+  }
+
+
+  const newItems =
+
+    ranking.items.length -
+
+    rankedItems.length
+
+
+  const knownItems =
+
+    rankedItems.length
+
+
+  if (
+
+    knownItems ===
+
+    ranking.items.length
+
+  ) {
+
+    return {
+
+      score: -25,
+
+      newItems,
+
+      knownItems
+
+    }
+
+  }
+
+
+  const noveltyRatio =
+
+    newItems /
+
+    ranking.items.length
+
+
+  const score =
+
+    noveltyRatio * 15
+
+
+  return {
+
+    score,
+
+    newItems,
+
+    knownItems
+
+  }
+
+}
+
+
+function calculateTasteNeighbourBonus(
+
+  graph: TasteGraph,
+
+  ranking: Ranking
+
+) {
+
+  const categorySignals =
+
+    getCategorySignals(
+
+      graph,
 
       ranking.category
 
     )
 
-  ){
 
-    return 0
+  if (
+
+    categorySignals.length === 0
+
+  ) {
+
+    return {
+
+      score: 0,
+
+      active: false
+
+    }
 
   }
 
 
-  return 10
+  const categoryRankings =
+
+    new Set(
+
+      categorySignals.map(
+
+        signal =>
+
+          signal.source
+
+      )
+
+    )
+
+
+  const averagePosition =
+
+    categorySignals.reduce(
+
+      (
+
+        total,
+
+        signal
+
+      ) =>
+
+        total +
+
+        signal.position,
+
+      0
+
+    )
+
+    /
+
+    categorySignals.length
+
+
+  let score =
+
+    Math.min(
+
+      categoryRankings.size * 5,
+
+      15
+
+    )
+
+
+  if (
+
+    averagePosition <= 3
+
+  ) {
+
+    score += 10
+
+  }
+
+  else if (
+
+    averagePosition <= 4
+
+  ) {
+
+    score += 5
+
+  }
+
+
+  return {
+
+    score,
+
+    active: true
+
+  }
 
 }
 
 
 function calculateFeedbackAdjustment(
 
-  graph:TasteGraph,
+  graph: TasteGraph,
 
-  itemName:string
+  itemName: string
 
-){
+) {
 
   const feedbackSignals =
 
@@ -132,15 +646,17 @@ function calculateFeedbackAdjustment(
 
       signal =>
 
-        signal.item
+        normaliseItem(
 
-          .toLowerCase()
+          signal.item
 
-        ===
+        ) ===
 
-        itemName
+        normaliseItem(
 
-          .toLowerCase()
+          itemName
+
+        )
 
         &&
 
@@ -184,68 +700,68 @@ function calculateFeedbackAdjustment(
 
     signal => {
 
-      if(
+      if (
 
         signal.type ===
 
           "feedback_clicked"
 
-      ){
+      ) {
 
         adjustment +=
 
-          signal.strength * 20
+          signal.strength * 10
 
         positiveFeedback += 1
 
       }
 
 
-      if(
+      if (
 
         signal.type ===
 
           "feedback_ranked"
 
-      ){
+      ) {
 
         adjustment +=
 
-          signal.strength * 40
+          signal.strength * 30
 
         positiveFeedback += 1
 
       }
 
 
-      if(
+      if (
 
         signal.type ===
 
           "feedback_skipped"
 
-      ){
+      ) {
 
         adjustment -=
 
-          signal.strength * 20
+          signal.strength * 15
 
         negativeFeedback += 1
 
       }
 
 
-      if(
+      if (
 
         signal.type ===
 
           "feedback_disagreed"
 
-      ){
+      ) {
 
         adjustment -=
 
-          signal.strength * 40
+          signal.strength * 30
 
         negativeFeedback += 1
 
@@ -269,167 +785,34 @@ function calculateFeedbackAdjustment(
 }
 
 
-function calculateDeclaredTasteStrength(
+function calculateRecommendationScore(
 
-  graph:TasteGraph,
+  graph: TasteGraph,
 
-  itemName:string
+  ranking: Ranking
 
-){
-
-  const tasteSignals =
-
-    graph.signals.filter(
-
-      signal =>
-
-        signal.item
-
-          .toLowerCase()
-
-        ===
-
-        itemName
-
-          .toLowerCase()
-
-        &&
-
-        signal.type !==
-
-          "feedback_clicked"
-
-        &&
-
-        signal.type !==
-
-          "feedback_ranked"
-
-        &&
-
-        signal.type !==
-
-          "feedback_skipped"
-
-        &&
-
-        signal.type !==
-
-          "feedback_disagreed"
-
-    )
-
-
-  if(
-
-    tasteSignals.length === 0
-
-  ){
-
-    return 0
-
-  }
-
-
-  return tasteSignals.reduce(
-
-    (
-
-      total,
-
-      signal
-
-    ) =>
-
-      total +
-
-      signal.strength,
-
-    0
-
-  )
-
-}
-
-
-export function calculateTasteRecommendationScore(
-
-  graph:TasteGraph,
-
-  ranking:Ranking
-
-):TasteRecommendation {
+): TasteRecommendation {
 
 
   let score = 0
 
-
-  const reasons:string[] = []
-
-
-  if(
-
-    alreadyRanked(
-
-      graph,
-
-      ranking
-
-    )
-
-  ){
-
-    score -= 50
+  const reasons: string[] = []
 
 
-    reasons.push(
-
-      "You have already explored similar choices"
-
-    )
-
-  }
+  /*
+   *
+   * 1. DIRECT TASTE MATCH
+   *
+   */
 
 
-  const categorySignals =
-
-    graph.signals.filter(
-
-      signal =>
-
-        signal.category ===
-
-        ranking.category
-
-    )
-
-
-  if(
-
-    categorySignals.length
-
-  ){
-
-    score += 35
-
-
-    reasons.push(
-
-      "Matches categories you enjoy"
-
-    )
-
-  }
-
-
-  ranking.items?.forEach(
+  ranking.items.forEach(
 
     item => {
 
+      const directMatch =
 
-      const declaredStrength =
-
-        calculateDeclaredTasteStrength(
+        calculateDirectTasteMatch(
 
           graph,
 
@@ -438,22 +821,58 @@ export function calculateTasteRecommendationScore(
         )
 
 
-      if(
+      if (
 
-        declaredStrength > 0
+        directMatch.score > 0
 
-      ){
+      ) {
 
         score +=
 
-          declaredStrength * 50
+          directMatch.score
 
 
-        reasons.push(
+        if (
 
-          `Because you ranked ${item.name}`
+          directMatch.strongestPosition === 1
 
-        )
+        ) {
+
+          reasons.push(
+
+            `Matches your #1 choice: ${item.name}`
+
+          )
+
+        }
+
+        else if (
+
+          directMatch.strongestPosition !== null
+
+          &&
+
+          directMatch.strongestPosition <= 3
+
+        ) {
+
+          reasons.push(
+
+            `You ranked ${item.name} highly`
+
+          )
+
+        }
+
+        else {
+
+          reasons.push(
+
+            `You have ranked ${item.name}`
+
+          )
+
+        }
 
       }
 
@@ -469,24 +888,24 @@ export function calculateTasteRecommendationScore(
         )
 
 
-      if(
+      if (
 
         feedback.adjustment !== 0
 
-      ){
+      ) {
 
         score +=
 
           feedback.adjustment
 
 
-        if(
+        if (
 
           feedback.positiveFeedback >
 
           feedback.negativeFeedback
 
-        ){
+        ) {
 
           reasons.push(
 
@@ -497,13 +916,13 @@ export function calculateTasteRecommendationScore(
         }
 
 
-        if(
+        if (
 
           feedback.negativeFeedback >
 
           feedback.positiveFeedback
 
-        ){
+        ) {
 
           reasons.push(
 
@@ -520,14 +939,138 @@ export function calculateTasteRecommendationScore(
   )
 
 
-  if(
+  /*
+   *
+   * 2. CATEGORY AFFINITY
+   *
+   */
+
+
+  const categoryAffinity =
+
+    calculateCategoryAffinity(
+
+      graph,
+
+      ranking.category
+
+    )
+
+
+  if (
+
+    categoryAffinity.score > 0
+
+  ) {
+
+    score +=
+
+      categoryAffinity.score
+
+
+    reasons.push(
+
+      `Matches your interest in ${ranking.category}`
+
+    )
+
+  }
+
+
+  /*
+   *
+   * 3. TASTE-NEIGHBOUR DISCOVERY
+   *
+   */
+
+
+  const neighbourBonus =
+
+    calculateTasteNeighbourBonus(
+
+      graph,
+
+      ranking
+
+    )
+
+
+  if (
+
+    neighbourBonus.active
+
+  ) {
+
+    score +=
+
+      neighbourBonus.score
+
+
+    reasons.push(
+
+      "Explores a direction close to your taste"
+
+    )
+
+  }
+
+
+  /*
+   *
+   * 4. NOVELTY
+   *
+   */
+
+
+  const novelty =
+
+    calculateNovelty(
+
+      graph,
+
+      ranking
+
+    )
+
+
+  score +=
+
+    novelty.score
+
+
+  if (
+
+    novelty.newItems > 0
+
+  ) {
+
+    reasons.push(
+
+      "Introduces new choices for you to discover"
+
+    )
+
+  }
+
+
+  /*
+   *
+   * 5. DECISIVENESS
+   *
+   */
+
+
+  if (
+
+    graph.behaviour.averagePosition > 0
+
+    &&
 
     graph.behaviour.averagePosition <= 3
 
-  ){
+  ) {
 
-    score += 15
-
+    score += 5
 
     reasons.push(
 
@@ -538,27 +1081,31 @@ export function calculateTasteRecommendationScore(
   }
 
 
-  const curiosityBonus =
+  /*
+   *
+   * 6. NEW CATEGORY CURIOSITY
+   *
+   */
 
-    calculateCuriosityBonus(
+
+  const categorySignals =
+
+    getCategorySignals(
 
       graph,
 
-      ranking
+      ranking.category
 
     )
 
 
-  if(
+  if (
 
-    curiosityBonus
+    categorySignals.length === 0
 
-  ){
+  ) {
 
-    score +=
-
-      curiosityBonus
-
+    score += 8
 
     reasons.push(
 
@@ -569,10 +1116,16 @@ export function calculateTasteRecommendationScore(
   }
 
 
+  /*
+   *
+   * FINAL SCORE
+   *
+   */
+
+
   return {
 
     ranking,
-
 
     score:
 
@@ -581,7 +1134,6 @@ export function calculateTasteRecommendationScore(
         score
 
       ),
-
 
     reasons:
 
@@ -600,13 +1152,32 @@ export function calculateTasteRecommendationScore(
 }
 
 
+export function calculateTasteRecommendationScore(
+
+  graph: TasteGraph,
+
+  ranking: Ranking
+
+): TasteRecommendation {
+
+  return calculateRecommendationScore(
+
+    graph,
+
+    ranking
+
+  )
+
+}
+
+
 export function getTasteRecommendedRankings(
 
-  graph:TasteGraph,
+  graph: TasteGraph,
 
-  rankings:Ranking[]
+  rankings: Ranking[]
 
-):TasteRecommendation[]{
+): TasteRecommendation[] {
 
 
   return (
@@ -627,7 +1198,6 @@ export function getTasteRecommendedRankings(
 
       )
 
-
       .filter(
 
         recommendation =>
@@ -635,7 +1205,6 @@ export function getTasteRecommendedRankings(
           recommendation.score > 0
 
       )
-
 
       .sort(
 

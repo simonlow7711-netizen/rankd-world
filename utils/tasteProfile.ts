@@ -20,8 +20,6 @@ export type TasteDNA = {
 
 
 
-
-
 export function calculateTasteDNA(
 
   rankings: any[] = []
@@ -34,181 +32,117 @@ export function calculateTasteDNA(
   const choices: Record<string, number> = {}
 
 
-
   let totalPosition = 0
 
   let totalItems = 0
 
 
+  rankings.forEach(
 
+    ranking => {
 
+      if (!ranking) {
 
-
-
-  rankings.forEach((ranking)=>{
-
-
-
-    if(!ranking){
-
-      return
-
-    }
-
-
-
-
-
-
-
-    const category =
-
-      ranking.category ||
-
-      "General"
-
-
-
-
-
-
-
-    categories[category] =
-
-      (
-
-        categories[category] ||
-
-        0
-
-      )
-
-      +
-
-      1
-
-
-
-
-
-
-
-    ranking.items?.forEach(
-
-      (item:any)=>{
-
-
-
-        if(!item){
-
-          return
-
-        }
-
-
-
-
-
-
-
-        const name =
-
-          item.name
-
-          ?.trim()
-
-          ?.toLowerCase()
-
-
-
-
-
-
-
-        if(!name){
-
-          return
-
-        }
-
-
-
-
-
-
-
-        choices[name] =
-
-          (
-
-            choices[name] ||
-
-            0
-
-          )
-
-          +
-
-          1
-
-
-
-
-
-
-
-        totalPosition +=
-
-          Number(
-
-            item.position
-
-          )
-
-          ||
-
-          7
-
-
-
-
-
-
-
-        totalItems++
-
-
+        return
 
       }
 
-    )
+
+      const category =
+
+        ranking.category ||
+
+        "General"
 
 
+      categories[category] =
 
-  })
+        (
+
+          categories[category] ||
+
+          0
+
+        )
+
+        +
+
+        1
 
 
+      ranking.items?.forEach(
+
+        (item: any) => {
+
+          if (!item) {
+
+            return
+
+          }
 
 
+          const name =
+
+            item.name
+
+              ?.trim()
+
+              ?.toLowerCase()
 
 
+          if (!name) {
 
+            return
+
+          }
+
+
+          choices[name] =
+
+            (
+
+              choices[name] ||
+
+              0
+
+            )
+
+            +
+
+            1
+
+
+          totalPosition +=
+
+            Number(
+
+              item.position
+
+            )
+
+            ||
+
+            7
+
+
+          totalItems++
+
+        }
+
+      )
+
+    }
+
+  )
 
 
   return {
 
-
     categories,
-
-
 
     choices,
 
-
-
-    behaviour:{
-
-
+    behaviour: {
 
       averagePosition:
 
@@ -235,19 +169,13 @@ export function calculateTasteDNA(
         0,
 
 
-
-
-
       totalRankings:
 
         rankings.length
 
-
     }
 
-
   }
-
 
 }
 
@@ -257,155 +185,160 @@ export function calculateTasteDNA(
 
 
 
-
-
 export function mergeTasteDNA(
 
-  dnaList:TasteDNA[] = []
+  dnaList: TasteDNA[] = []
 
-):TasteDNA {
+): TasteDNA {
 
 
-  const categories:Record<string,number> = {}
+  const categories: Record<string, number> = {}
 
-  const choices:Record<string,number> = {}
-
+  const choices: Record<string, number> = {}
 
 
   let totalPosition = 0
 
+  let totalItems = 0
+
   let totalRankings = 0
 
 
+  dnaList.forEach(
 
+    dna => {
 
+      if (!dna) {
 
-
-
-  dnaList.forEach((dna)=>{
-
-
-
-    Object.entries(
-
-      dna.categories
-
-    )
-
-    .forEach(
-
-      ([key,value])=>{
-
-
-        categories[key] =
-
-          (
-
-            categories[key] ||
-
-            0
-
-          )
-
-          +
-
-          value
-
+        return
 
       }
 
-    )
+
+      Object.entries(
+
+        dna.categories
+
+      )
+
+      .forEach(
+
+        ([key, value]) => {
+
+          categories[key] =
+
+            (
+
+              categories[key] ||
+
+              0
+
+            )
+
+            +
+
+            value
+
+        }
+
+      )
 
 
+      Object.entries(
+
+        dna.choices
+
+      )
+
+      .forEach(
+
+        ([key, value]) => {
+
+          choices[key] =
+
+            (
+
+              choices[key] ||
+
+              0
+
+            )
+
+            +
+
+            value
+
+        }
+
+      )
 
 
+      totalRankings +=
+
+        dna.behaviour
+
+          ?.totalRankings
+
+        ||
+
+        0
 
 
+      const averagePosition =
+
+        dna.behaviour
+
+          ?.averagePosition
+
+        ||
+
+        0
 
 
-    Object.entries(
+      if (
 
-      dna.choices
+        averagePosition > 0 &&
 
-    )
+        dna.behaviour
 
-    .forEach(
+          ?.totalRankings > 0
 
-      ([key,value])=>{
+      ) {
 
+        totalPosition +=
 
-        choices[key] =
+          averagePosition *
 
-          (
-
-            choices[key] ||
-
-            0
-
-          )
-
-          +
-
-          value
-
+          dna.behaviour.totalRankings
 
       }
 
-    )
+      totalItems +=
 
+        dna.behaviour
 
+          ?.totalRankings
 
+        ||
 
+        0
 
+    }
 
-
-
-    totalPosition +=
-
-      dna.behaviour.averagePosition *
-
-      dna.behaviour.totalRankings
-
-
-
-
-
-
-
-    totalRankings +=
-
-      dna.behaviour.totalRankings
-
-
-
-  })
-
-
-
-
-
-
-
+  )
 
 
   return {
 
-
     categories,
-
-
 
     choices,
 
-
-
-    behaviour:{
-
-
+    behaviour: {
 
       averagePosition:
 
-        totalRankings > 0
+        totalItems > 0
 
         ?
 
@@ -415,7 +348,7 @@ export function mergeTasteDNA(
 
             totalPosition /
 
-            totalRankings
+            totalItems
 
           )
 
@@ -428,17 +361,11 @@ export function mergeTasteDNA(
         0,
 
 
-
-
-
       totalRankings
-
 
     }
 
-
   }
-
 
 }
 
@@ -448,143 +375,177 @@ export function mergeTasteDNA(
 
 
 
-
-
 export function normaliseTasteDNA(
 
-  dna:TasteDNA
+  dna: TasteDNA
 
-):TasteDNA {
-
-
-
-  const normalise = (
-
-    values:Record<string,number>
-
-  )=>{
+): TasteDNA {
 
 
-    const total =
+  const categoryTotal =
 
-      Object.values(
+    Object.values(
 
-        values
+      dna.categories
 
-      )
+    )
 
-      .reduce(
+    .reduce(
 
-        (
+      (
 
-          sum,
+        total,
 
-          value
+        value
 
-        )=>
+      ) =>
 
-          sum + value,
+        total + value,
 
-        0
-
-      )
-
-
-
-
-
-    if(total === 0){
-
-      return {}
-
-    }
-
-
-
-
-
-
-
-    return Object.fromEntries(
-
-      Object.entries(
-
-        values
-
-      )
-
-      .map(
-
-        ([key,value])=>
-
-          [
-
-            key,
-
-            Number(
-
-              (
-
-                value /
-
-                total
-
-              )
-
-              .toFixed(3)
-
-            )
-
-          ]
-
-      )
+      0
 
     )
 
 
-  }
+  const choiceTotal =
+
+    Object.values(
+
+      dna.choices
+
+    )
+
+    .reduce(
+
+      (
+
+        total,
+
+        value
+
+      ) =>
+
+        total + value,
+
+      0
+
+    )
 
 
+  const categories: Record<string, number> = {}
+
+  const choices: Record<string, number> = {}
 
 
+  Object.entries(
+
+    dna.categories
+
+  )
+
+  .forEach(
+
+    ([key, value]) => {
+
+      categories[key] =
+
+        categoryTotal > 0
+
+        ?
+
+        Number(
+
+          (
+
+            value /
+
+            categoryTotal
+
+          )
+
+          .toFixed(3)
+
+        )
+
+        :
+
+        0
+
+    }
+
+  )
 
 
+  Object.entries(
 
+    dna.choices
+
+  )
+
+  .forEach(
+
+    ([key, value]) => {
+
+      choices[key] =
+
+        choiceTotal > 0
+
+        ?
+
+        Number(
+
+          (
+
+            value /
+
+            choiceTotal
+
+          )
+
+          .toFixed(3)
+
+        )
+
+        :
+
+        0
+
+    }
+
+  )
 
 
   return {
 
+    categories,
 
-    categories:
+    choices,
 
-      normalise(
+    behaviour: {
 
-        dna.categories
+      averagePosition:
 
-      ),
+        dna.behaviour
 
+          ?.averagePosition
 
+        ||
 
-
-
-    choices:
-
-      normalise(
-
-        dna.choices
-
-      ),
+        0,
 
 
+      totalRankings:
 
+        dna.behaviour
 
+          ?.totalRankings
 
-    behaviour:
+        ||
 
-      dna.behaviour
+        0
 
+    }
 
   }
-
 
 }
