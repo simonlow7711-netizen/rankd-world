@@ -1,441 +1,514 @@
 "use client"
 
 import {
-useEffect,
-useRef,
-useState
+  useEffect,
+  useRef,
+  useState
 } from "react"
 
 import {
-useRouter,
-useSearchParams
+  useRouter,
+  useSearchParams
 } from "next/navigation"
 
 import {
-Ranking,
-RankingBuilderItem
+  Ranking,
+  RankingBuilderItem
 } from "@/types/ranking"
 
 import {
-createSupabaseRanking,
-getSupabaseRanking
+  createSupabaseRanking,
+  getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
 import {
-stripRankingPrefix
+  stripRankingPrefix
 } from "@/utils/rankingTitle"
 
 import {
-supabase
+  supabase
 } from "@/utils/supabase"
 
 import SortableRankingList from "@/components/SortableRankingList"
 
 import {
-getTasteGraph,
-saveTasteGraph
+  getTasteGraph,
+  saveTasteGraph
 } from "@/utils/tasteGraphRepository"
 
 import {
-compareTasteFeedback
+  compareTasteFeedback
 } from "@/utils/tasteFeedbackComparison"
 
 import {
-buildTasteFeedbackSignals
+  buildTasteFeedbackSignals
 } from "@/utils/tasteFeedbackSignals"
 
 import {
-TasteGraph
+  buildTasteBaselineSignals
+} from "@/utils/tasteBaselineSignals"
+
+import {
+  TasteGraph
 } from "@/utils/tasteGraph"
+
 
 const categories = [
 
-"Food & Drink",
-"Film & TV",
-"Music",
-"Sport",
-"Travel",
-"Technology",
-"Lifestyle",
-"General"
+  "Food & Drink",
+  "Film & TV",
+  "Music",
+  "Sport",
+  "Travel",
+  "Technology",
+  "Lifestyle",
+  "General"
 
 ]
 
+
 function createEmptyItems(): RankingBuilderItem[] {
 
-return Array.from(
+  return Array.from(
 
-{
-  length: 7
-},
+    {
+      length: 7
+    },
 
-() => ({
+    () => ({
 
-  id:
-    crypto.randomUUID(),
+      id:
+        crypto.randomUUID(),
 
-  name: ""
+      name:
+        ""
 
-})
+    })
 
-)
+  )
 
 }
+
 
 export default function CreateClient() {
 
-const router =
-useRouter()
+  const router =
+    useRouter()
 
-const searchParams =
-useSearchParams()
-
-const recommendationId =
-searchParams.get(
-"recommendationId"
-)
-
-const recommendationScore =
-Number(
-searchParams.get(
-"recommendationScore"
-) ?? 0
-)
-
-const [title, setTitle] =
-useState("")
-
-const [category, setCategory] =
-useState("General")
-
-const [items, setItems] =
-useState<RankingBuilderItem[]>(
-
-  createEmptyItems()
-
-)
-
-const [loading, setLoading] =
-useState(false)
-
-const parentIdRef =
-useRef<string | null>(null)
-
-const rootIdRef =
-useRef<string | null>(null)
-
-useEffect(() => {
-
-const importedTitle =
-  searchParams.get("title")
+  const searchParams =
+    useSearchParams()
 
 
-const importedCategory =
-  searchParams.get("category")
+  const [title, setTitle] =
+    useState("")
 
+  const [category, setCategory] =
+    useState("General")
 
-const importedItems =
-  searchParams.get("items")
+  const [items, setItems] =
+    useState<RankingBuilderItem[]>(
 
-
-const importedParentId =
-  searchParams.get("parentId")
-
-
-const importedRootId =
-  searchParams.get("rootId")
-
-
-if (importedTitle) {
-
-  setTitle(
-
-    stripRankingPrefix(
-      importedTitle
-    )
-
-  )
-
-}
-
-
-if (importedCategory) {
-
-  setCategory(
-    importedCategory
-  )
-
-}
-
-
-if (importedParentId) {
-
-  parentIdRef.current =
-    importedParentId
-
-}
-
-
-if (importedRootId) {
-
-  rootIdRef.current =
-    importedRootId
-
-}
-
-
-if (importedItems) {
-
-
-  const parsedItems =
-
-    importedItems
-
-      .split("|")
-
-      .filter(
-
-        item =>
-          item.trim()
-
-      )
-
-      .map(
-
-        item => ({
-
-          id:
-            crypto.randomUUID(),
-
-          name:
-            item.trim()
-
-        })
-
-      )
-
-
-  const sevenItems = [
-
-    ...parsedItems,
-
-    ...Array(
-
-      Math.max(
-
-        0,
-
-        7 - parsedItems.length
-
-      )
+      createEmptyItems()
 
     )
 
-      .fill(null)
+  const [description, setDescription] =
+    useState("")
 
-      .map(
+  const [saving, setSaving] =
+    useState(false)
 
-        () => ({
+  const [error, setError] =
+    useState("")
 
+
+  const hydratedRef =
+    useRef(false)
+
+
+  const recommendationId =
+    searchParams.get(
+      "recommendation"
+    )
+
+
+  const recommendationScoreParam =
+    searchParams.get(
+      "score"
+    )
+
+
+  const recommendationScore =
+    recommendationScoreParam
+      ? Number(
+          recommendationScoreParam
+        )
+      : 0
+
+
+  useEffect(() => {
+
+    if (
+      hydratedRef.current
+    ) {
+
+      return
+
+    }
+
+
+    hydratedRef.current =
+      true
+
+
+    const initialTitle =
+      searchParams.get(
+        "title"
+      )
+
+
+    const initialCategory =
+      searchParams.get(
+        "category"
+      )
+
+
+    const initialDescription =
+      searchParams.get(
+        "description"
+      )
+
+
+    if (initialTitle) {
+
+      setTitle(
+
+        stripRankingPrefix(
+          initialTitle
+        )
+
+      )
+
+    }
+
+
+    if (initialCategory) {
+
+      setCategory(
+        initialCategory
+      )
+
+    }
+
+
+    if (initialDescription) {
+
+      setDescription(
+        initialDescription
+      )
+
+    }
+
+  }, [searchParams])
+
+
+  function updateItem(
+    id: string,
+    value: string
+  ) {
+
+    setItems(
+
+      current =>
+
+        current.map(
+
+          item =>
+
+            item.id === id
+
+              ? {
+                  ...item,
+                  name: value
+                }
+
+              : item
+
+        )
+
+    )
+
+  }
+
+
+  function addItem() {
+
+    if (
+      items.length >= 7
+    ) {
+
+      return
+
+    }
+
+
+    setItems(
+
+      current => [
+
+        ...current,
+
+        {
           id:
             crypto.randomUUID(),
 
           name:
             ""
+        }
 
-        })
-
-      )
-
-  ]
-
-
-  setItems(
-
-    sevenItems.slice(
-
-      0,
-
-      7
+      ]
 
     )
 
-  )
-
-}
-
-}, [searchParams])
-
-async function handlePublish() {
-
-if (!title.trim()) {
-
-  alert(
-    "Add a title"
-  )
-
-  return
-
-}
+  }
 
 
-const cleanedItems =
+  function removeItem(
+    id: string
+  ) {
 
-  items
+    if (
+      items.length <= 1
+    ) {
 
-    .filter(
+      return
 
-      item =>
-        item.name.trim()
-
-    )
-
-    .map(
-
-      item =>
-        item.name.trim()
-
-    )
-
-
-if (cleanedItems.length !== 7) {
-
-  alert(
-    "Your RANKD needs exactly 7 items"
-  )
-
-  return
-
-}
-
-
-setLoading(true)
-
-
-const rankingId =
-  crypto.randomUUID()
-
-
-const finalParentId =
-  parentIdRef.current ?? null
-
-
-const finalRootId =
-  rootIdRef.current ??
-  rankingId
-
-
-const ranking: Ranking = {
-
-  id:
-    rankingId,
-
-  title:
-
-    stripRankingPrefix(
-      title.trim()
-    ),
-
-  category,
-
-  creator:
-    "You",
-
-  description:
-    "",
-
-  items:
-
-    cleanedItems.map(
-
-      (
-        name,
-        index
-      ) => ({
-
-        position:
-          index + 1,
-
-        name,
-
-        votes:
-          0
-
-      })
-
-    ),
-
-  createdAt:
-    new Date().toISOString(),
-
-  views:
-    0,
-
-  source:
-    "community",
-
-  parentId:
-    finalParentId,
-
-  rootId:
-    finalRootId
-
-}
-
-
-try {
-
-
-  const {
-
-    data: {
-      user
     }
 
-  } = await supabase.auth.getUser()
 
+    setItems(
 
-  if (user) {
+      current =>
 
+        current.filter(
 
-    await createSupabaseRanking(
+          item =>
+            item.id !== id
 
-      ranking,
-
-      user.id
+        )
 
     )
 
-
-    /*
-     *
-     * Taste Graph Feedback Loop
-     *
-     * If this RANKD was created from
-     * a Taste Recommendation, compare
-     * the user's new ranking against
-     * the original recommendation.
-     *
-     */
+  }
 
 
-    if (recommendationId) {
+  function moveItem(
+    oldIndex: number,
+    newIndex: number
+  ) {
+
+    setItems(
+
+      current => {
+
+        const next =
+          [
+            ...current
+          ]
 
 
-      try {
+        const moved =
+          next.splice(
+            oldIndex,
+            1
+          )[0]
 
 
-        const recommendation =
-
-          await getSupabaseRanking(
-
-            recommendationId
-
-          )
+        next.splice(
+          newIndex,
+          0,
+          moved
+        )
 
 
-        if (recommendation) {
+        return next
 
+      }
+
+    )
+
+  }
+
+
+  async function handleSubmit(
+    event: React.FormEvent
+  ) {
+
+    event.preventDefault()
+
+
+    if (saving) {
+
+      return
+
+    }
+
+
+    setError("")
+
+
+    const cleanTitle =
+      title.trim()
+
+
+    const cleanItems =
+
+      items
+
+        .map(
+          item =>
+            item.name.trim()
+        )
+
+        .filter(Boolean)
+
+
+    if (!cleanTitle) {
+
+      setError(
+        "Please add a title."
+      )
+
+      return
+
+    }
+
+
+    if (
+      cleanItems.length !== 7
+    ) {
+
+      setError(
+        "Please add exactly 7 items."
+      )
+
+      return
+
+    }
+
+
+    setSaving(true)
+
+
+    const finalParentId =
+      searchParams.get(
+        "parentId"
+      )
+
+
+    const finalRootId =
+      searchParams.get(
+        "rootId"
+      )
+
+
+    const ranking: Ranking = {
+
+      id:
+        crypto.randomUUID(),
+
+      title:
+        cleanTitle,
+
+      category:
+        category || "General",
+
+      creator:
+        "Anonymous",
+
+      creatorId:
+        "",
+
+      creatorUsername:
+        undefined,
+
+      creatorDisplayName:
+        undefined,
+
+      description:
+        description.trim(),
+
+      items:
+
+        cleanItems.map(
+
+          (
+            name,
+            index
+          ) => ({
+
+            position:
+              index + 1,
+
+            name,
+
+            votes:
+              0
+
+          })
+
+        ),
+
+      createdAt:
+        new Date().toISOString(),
+
+      views:
+        0,
+
+      source:
+        "community",
+
+      parentId:
+        finalParentId,
+
+      rootId:
+        finalRootId
+
+    }
+
+
+    try {
+
+      const {
+        data: {
+          user
+        }
+      } = await supabase.auth.getUser()
+
+
+      if (user) {
+
+        await createSupabaseRanking(
+
+          ranking,
+
+          user.id
+
+        )
+
+
+        /*
+         *
+         * Taste Graph Baseline
+         *
+         * Every RANKD created by an
+         * authenticated user contributes
+         * initial taste signals.
+         *
+         */
+
+
+        try {
 
           const existingGraph =
 
@@ -446,35 +519,18 @@ try {
             )
 
 
-          const comparison =
+          const baselineSignals =
 
-            compareTasteFeedback(
-
-              recommendation,
-
-              ranking,
-
-              recommendationScore
-
-            )
-
-
-          const feedbackSignals =
-
-            buildTasteFeedbackSignals(
+            buildTasteBaselineSignals(
 
               user.id,
 
-              recommendation,
-
-              ranking,
-
-              comparison
+              ranking
 
             )
 
 
-          const feedbackGraph: TasteGraph = {
+          const baselineGraph: TasteGraph = {
 
             ...existingGraph,
 
@@ -482,7 +538,7 @@ try {
 
               ...existingGraph.signals,
 
-              ...feedbackSignals
+              ...baselineSignals
 
             ]
 
@@ -491,365 +547,583 @@ try {
 
           await saveTasteGraph(
 
-            feedbackGraph
+            baselineGraph
+
+          )
+
+        }
+
+        catch (
+          tasteGraphError
+        ) {
+
+          console.error(
+
+            "TASTE GRAPH BASELINE ERROR",
+
+            tasteGraphError
 
           )
 
         }
 
 
-      }
-      catch (feedbackError) {
+        /*
+         *
+         * Taste Graph Feedback Loop
+         *
+         * If this RANKD was created from
+         * a Taste Recommendation, compare
+         * the user's new ranking against
+         * the original recommendation.
+         *
+         */
 
 
-        console.error(
+        if (recommendationId) {
 
-          "TASTE FEEDBACK ERROR",
+          try {
 
-          feedbackError
+            const recommendation =
 
-        )
+              await getSupabaseRanking(
 
-      }
+                recommendationId
 
-    }
+              )
 
 
-  }
+            if (recommendation) {
 
-  else {
+              const existingGraph =
 
+                await getTasteGraph(
 
-    const existing =
+                  user.id
 
-      JSON.parse(
+                )
 
-        localStorage.getItem(
-          "createdRankings"
-        )
 
-        ||
+              const comparison =
 
-        "[]"
+                compareTasteFeedback(
 
-      )
+                  recommendation,
 
+                  ranking,
 
-    localStorage.setItem(
+                  recommendationScore
 
-      "createdRankings",
+                )
 
-      JSON.stringify(
 
-        [
+              const feedbackSignals =
 
-          ranking,
+                buildTasteFeedbackSignals(
 
-          ...existing
+                  user.id,
 
-        ]
+                  recommendation,
 
-      )
+                  ranking,
 
-    )
+                  comparison
 
-  }
+                )
 
 
-  router.push(
+              const feedbackGraph: TasteGraph = {
 
-    `/rank/${ranking.id}`
+                ...existingGraph,
 
-  )
+                signals: [
 
+                  ...existingGraph.signals,
 
-}
-catch (error) {
+                  ...feedbackSignals
 
+                ]
 
-  console.error(
+              }
 
-    "CREATE RANKD ERROR",
 
-    error
+              await saveTasteGraph(
 
-  )
+                feedbackGraph
 
+              )
 
-  alert(
+            }
 
-    "Something went wrong creating your RANKD"
+          }
 
-  )
+          catch (
+            feedbackError
+          ) {
 
+            console.error(
 
-}
-finally {
+              "TASTE FEEDBACK ERROR",
 
-
-  setLoading(false)
-
-}
-
-}
-
-const inputClass = `
-
-w-full
-
-rounded-2xl
-
-p-5
-
-font-bold
-
-bg-[#F7F4EE]
-
-border
-
-border-black/10
-
-focus:outline-none
-
-focus:ring-2
-
-focus:ring-black
-
-`
-
-return (
-
-<main className="
-  min-h-screen
-  bg-[#F7F4EE]
-  px-6
-  py-16
-  text-black
-">
-
-
-  <div className="
-    max-w-3xl
-    mx-auto
-    bg-white
-    rounded-[40px]
-    p-8
-    md:p-12
-    shadow-sm
-  ">
-
-
-    <p className="
-      rankd-accent
-      uppercase
-      tracking-[0.3em]
-      text-sm
-      font-black
-    ">
-
-      Create
-
-    </p>
-
-
-    <h1 className="
-      text-5xl
-      md:text-6xl
-      font-black
-      mt-4
-      leading-none
-    ">
-
-      Create your Top 7
-
-    </h1>
-
-
-    <p className="
-      mt-5
-      text-xl
-      text-gray-500
-    ">
-
-      Choose your 7. Share your opinion.
-
-    </p>
-
-
-    <div className="
-      mt-10
-      space-y-8
-    ">
-
-
-      <input
-
-        value={title}
-
-        onChange={e =>
-
-          setTitle(
-
-            e.target.value
-
-          )
-
-        }
-
-        placeholder="UK garden birds"
-
-        className={
-
-          `${inputClass} text-xl`
-
-        }
-
-      />
-
-
-      <div className="
-        space-y-3
-      ">
-
-        <p className="font-black">
-
-          Choose a category
-
-        </p>
-
-
-        <div className="
-          flex
-          flex-wrap
-          gap-3
-        ">
-
-
-          {categories.map(
-
-            option => (
-
-              <button
-
-                key={option}
-
-                type="button"
-
-                onClick={() =>
-                  setCategory(
-                    option
-                  )
-                }
-
-                className={
-
-                  `
-                  px-5
-                  py-3
-                  rounded-full
-                  font-black
-                  transition
-                  `
-
-                  +
-
-                  (
-
-                    category === option
-
-                    ?
-
-                    " bg-black text-white "
-
-                    :
-
-                    " bg-[#F7F4EE] border border-black/10 "
-
-                  )
-
-                }
-
-              >
-
-                {option}
-
-              </button>
+              feedbackError
 
             )
 
-          )}
-
-
-        </div>
-
-      </div>
-
-
-      <div className="
-        space-y-4
-      ">
-
-        <p className="font-black">
-
-          Rank your 7
-
-        </p>
-
-
-        <SortableRankingList
-
-          items={items}
-
-          setItems={setItems}
-
-        />
-
-      </div>
-
-
-      <button
-
-        onClick={handlePublish}
-
-        disabled={loading}
-
-        className="
-          w-full
-          bg-black
-          text-white
-          rounded-full
-          py-5
-          text-xl
-          font-black
-          hover:scale-[1.02]
-          transition
-        "
-
-      >
-
-        {loading
-
-          ?
-
-          "Creating..."
-
-          :
-
-          "Publish RANKD →"
+          }
 
         }
 
-      </button>
+
+        router.push(
+          `/rank/${ranking.id}`
+        )
+
+        return
+
+      }
 
 
-    </div>
+      const existing =
+
+        JSON.parse(
+
+          localStorage.getItem(
+            "createdRankings"
+          )
+          ||
+          "[]"
+
+        )
 
 
-  </div>
+      const localRanking = {
+
+        ...ranking,
+
+        creator:
+          "You"
+
+      }
 
 
-</main>
+      localStorage.setItem(
 
-)
+        "createdRankings",
+
+        JSON.stringify(
+
+          [
+            ...existing,
+            localRanking
+          ]
+
+        )
+
+      )
+
+
+      router.push(
+        `/rank/${ranking.id}`
+      )
+
+    }
+
+    catch (submitError) {
+
+      console.error(
+
+        "CREATE RANKING ERROR",
+
+        submitError
+
+      )
+
+
+      setError(
+
+        "Unable to create your RANKD. Please try again."
+
+      )
+
+    }
+
+    finally {
+
+      setSaving(false)
+
+    }
+
+  }
+
+
+  return (
+
+    <main className="min-h-screen">
+
+      <div
+        className="
+          mx-auto
+          max-w-6xl
+          px-6
+          py-16
+        "
+      >
+
+        <div
+          className="
+            mb-12
+          "
+        >
+
+          <p
+            className="
+              rankd-accent
+              uppercase
+              tracking-widest
+              text-sm
+              font-black
+            "
+          >
+
+            Create
+
+          </p>
+
+
+          <h1
+            className="
+              text-5xl
+              md:text-6xl
+              font-black
+              mt-3
+            "
+          >
+
+            Make your Top 7.
+
+          </h1>
+
+
+          <p
+            className="
+              mt-4
+              text-lg
+              opacity-70
+              max-w-2xl
+            "
+          >
+
+            Your choices help build your personal taste graph.
+
+          </p>
+
+        </div>
+
+
+        <form
+          onSubmit={handleSubmit}
+          className="
+            space-y-10
+          "
+        >
+
+          <div
+            className="
+              rankd-card
+              p-8
+            "
+          >
+
+            <label
+              className="
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
+              "
+            >
+
+              Title
+
+            </label>
+
+
+            <input
+
+              value={title}
+
+              onChange={
+                event =>
+                  setTitle(
+                    event.target.value
+                  )
+              }
+
+              placeholder="Top 7..."
+
+              className="
+                mt-3
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-4
+                text-lg
+                font-bold
+              "
+
+            />
+
+          </div>
+
+
+          <div
+            className="
+              rankd-card
+              p-8
+            "
+          >
+
+            <label
+              className="
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
+              "
+            >
+
+              Category
+
+            </label>
+
+
+            <select
+
+              value={category}
+
+              onChange={
+                event =>
+                  setCategory(
+                    event.target.value
+                  )
+              }
+
+              className="
+                mt-3
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-4
+                font-bold
+              "
+
+            >
+
+              {
+                categories.map(
+
+                  option => (
+
+                    <option
+                      key={option}
+                      value={option}
+                    >
+
+                      {option}
+
+                    </option>
+
+                  )
+
+                )
+              }
+
+            </select>
+
+          </div>
+
+
+          <div
+            className="
+              rankd-card
+              p-8
+            "
+          >
+
+            <label
+              className="
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
+              "
+            >
+
+              Your Top 7
+
+            </label>
+
+
+            <div
+              className="
+                mt-6
+              "
+            >
+
+              <SortableRankingList
+
+                items={items}
+
+                setItems={setItems}
+
+              />
+
+            </div>
+
+
+            {
+              items.length < 7 && (
+
+                <button
+
+                  type="button"
+
+                  onClick={addItem}
+
+                  className="
+                    mt-6
+                    rounded-xl
+                    border
+                    px-5
+                    py-3
+                    font-black
+                  "
+
+                >
+
+                  Add item
+
+                </button>
+
+              )
+            }
+
+          </div>
+
+
+          <div
+            className="
+              rankd-card
+              p-8
+            "
+          >
+
+            <label
+              className="
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
+              "
+            >
+
+              Description
+
+            </label>
+
+
+            <textarea
+
+              value={description}
+
+              onChange={
+                event =>
+                  setDescription(
+                    event.target.value
+                  )
+              }
+
+              rows={4}
+
+              placeholder="Why this Top 7?"
+
+              className="
+                mt-3
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-4
+              "
+
+            />
+
+          </div>
+
+
+          {
+            error && (
+
+              <div
+                className="
+                  rounded-xl
+                  border
+                  border-red-300
+                  bg-red-50
+                  px-5
+                  py-4
+                  text-red-700
+                  font-bold
+                "
+              >
+
+                {error}
+
+              </div>
+
+            )
+          }
+
+
+          <button
+
+            type="submit"
+
+            disabled={saving}
+
+            className="
+              w-full
+              rounded-2xl
+              px-6
+              py-5
+              font-black
+              text-lg
+              rankd-primary
+              disabled:opacity-50
+            "
+
+          >
+
+            {
+              saving
+                ? "Creating..."
+                : "Create RANKD"
+            }
+
+          </button>
+
+        </form>
+
+      </div>
+
+    </main>
+
+  )
 
 }
