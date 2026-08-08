@@ -4,19 +4,16 @@ export type TasteNodeType =
   | "item"
 
 
-
-
 export type TasteSignalType =
   | "created"
   | "ranked"
   | "preferred"
   | "avoided"
   | "challenged"
-
-
-
-
-
+  | "feedback_clicked"
+  | "feedback_ranked"
+  | "feedback_skipped"
+  | "feedback_disagreed"
 
 
 export type TasteNode = {
@@ -28,12 +25,6 @@ export type TasteNode = {
   label:string
 
 }
-
-
-
-
-
-
 
 
 export type TasteSignal = {
@@ -57,12 +48,6 @@ export type TasteSignal = {
 }
 
 
-
-
-
-
-
-
 export type TasteBehaviour = {
 
   totalRankings:number
@@ -74,12 +59,6 @@ export type TasteBehaviour = {
   uniqueness:number
 
 }
-
-
-
-
-
-
 
 
 export type TasteGraph = {

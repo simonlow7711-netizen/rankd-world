@@ -1,10 +1,65 @@
 import {
-supabase
+  supabase
 } from "@/utils/supabase"
 
 import {
-TasteGraph
+  TasteGraph,
+  TasteNodeType,
+  TasteSignalType
 } from "@/utils/tasteGraph"
+
+
+type TasteNodeRow = {
+
+  id:string
+
+  type:string
+
+  label:string
+
+}
+
+
+type TasteSignalRow = {
+
+  id:string
+
+  user_id:string
+
+  signal_type:string
+
+  strength:number
+
+  position:number
+
+  source_rank_id:string
+
+  taste_nodes:
+    | TasteNodeRow
+    | TasteNodeRow[]
+    | null
+
+}
+
+
+type NormalisedTasteSignalRow = {
+
+  id:string
+
+  user_id:string
+
+  signal_type:string
+
+  strength:number
+
+  position:number
+
+  source_rank_id:string
+
+  taste_nodes:TasteNodeRow | null
+
+}
+
 
 async function getOrCreateNode({
 
@@ -18,84 +73,82 @@ async function getOrCreateNode({
 
   label:string
 
-})
+}):Promise<TasteNodeRow | null>{
 
-{
+  const slug =
 
-const slug =
+    label
+      .toLowerCase()
+      .trim()
+      .replace(
+        /\s+/g,
+        "-"
+      )
 
-label
-  .toLowerCase()
-  .trim()
-  .replace(
-    /\s+/g,
-    "-"
-  )
 
-const {
+  const {
+    data:existing
+  } = await supabase
 
-data:existing
+    .from("taste_nodes")
 
-} = await supabase
+    .select(
+      "*"
+    )
 
-.from("taste_nodes")
+    .eq(
+      "slug",
+      slug
+    )
 
-.select("*")
+    .single()
 
-.eq(
-  "slug",
-  slug
-)
 
-.single()
+  if(existing){
 
-if(existing){
+    return existing as TasteNodeRow
 
-return existing
+  }
 
-}
 
-const {
+  const {
+    data:newNode,
+    error
+  } = await supabase
 
-data:newNode,
+    .from("taste_nodes")
 
-error
+    .insert({
 
-} = await supabase
+      type,
 
-.from("taste_nodes")
+      label,
 
-.insert({
+      slug
 
-  type,
+    })
 
-  label,
+    .select()
 
-  slug
+    .single()
 
-})
 
-.select()
+  if(error){
 
-.single()
+    console.error(
+      "CREATE TASTE NODE ERROR",
+      error
+    )
 
-if(error){
+    return null
 
-console.error(
+  }
 
-  "CREATE TASTE NODE ERROR",
 
-  error
-
-)
-
-return null
-
-}
-
-return newNode
+  return newNode as TasteNodeRow
 
 }
+
 
 function mergeStrength(
 
@@ -105,43 +158,47 @@ function mergeStrength(
 
 ):number{
 
-const existingValue =
+  const existingValue =
 
-Number(existing) || 0
+    Number(existing) || 0
 
-const incomingValue =
 
-Number(incoming) || 0
+  const incomingValue =
 
-const merged =
+    Number(incoming) || 0
 
-(
-  existingValue * 0.65
-)
-+
-(
-  incomingValue * 0.35
-)
 
-return Number(
+  const merged =
 
-Math.max(
+    (
+      existingValue * 0.65
+    )
+    +
+    (
+      incomingValue * 0.35
+    )
 
-  0,
 
-  Math.min(
+  return Number(
 
-    merged,
+    Math.max(
 
-    1
+      0,
+
+      Math.min(
+
+        merged,
+
+        1
+
+      )
+
+    ).toFixed(3)
 
   )
 
-).toFixed(3)
-
-)
-
 }
+
 
 export async function saveTasteGraph(
 
@@ -149,213 +206,250 @@ export async function saveTasteGraph(
 
 ){
 
-for(
+  for(
 
-const signal of graph.signals
+    const signal of graph.signals
 
-){
+  ){
 
-const itemNode =
+    const itemNode =
 
-  await getOrCreateNode({
+      await getOrCreateNode({
 
-    type:"item",
+        type:"item",
 
-    label:signal.item
+        label:signal.item
 
-  })
+      })
 
 
-if(!itemNode){
+    if(!itemNode){
 
-  continue
+      continue
+
+    }
+
+
+    const {
+
+      data:existingSignal,
+
+      error:lookupError
+
+    } = await supabase
+
+      .from("taste_signals")
+
+      .select(
+        "id, strength, position"
+      )
+
+      .eq(
+        "user_id",
+        signal.userId
+      )
+
+      .eq(
+        "node_id",
+        itemNode.id
+      )
+
+      .eq(
+        "source_rank_id",
+        signal.source
+      )
+
+      .eq(
+        "signal_type",
+        signal.type
+      )
+
+      .maybeSingle()
+
+
+    if(lookupError){
+
+      console.error(
+
+        "LOOKUP TASTE SIGNAL ERROR",
+
+        lookupError
+
+      )
+
+      continue
+
+    }
+
+
+    if(existingSignal){
+
+      const mergedStrength =
+
+        mergeStrength(
+
+          Number(
+            existingSignal.strength
+          ),
+
+          signal.strength
+
+        )
+
+
+      const {
+        error:updateError
+      } = await supabase
+
+        .from("taste_signals")
+
+        .update({
+
+          strength:
+            mergedStrength,
+
+          position:
+            signal.position
+
+        })
+
+        .eq(
+          "id",
+          existingSignal.id
+        )
+
+
+      if(updateError){
+
+        console.error(
+
+          "UPDATE TASTE SIGNAL ERROR",
+
+          updateError
+
+        )
+
+      }
+
+
+      continue
+
+    }
+
+
+    const {
+      error
+    } = await supabase
+
+      .from("taste_signals")
+
+      .insert({
+
+        user_id:
+          signal.userId,
+
+        node_id:
+          itemNode.id,
+
+        source_rank_id:
+          signal.source,
+
+        signal_type:
+          signal.type,
+
+        strength:
+          signal.strength,
+
+        position:
+          signal.position
+
+      })
+
+
+    if(error){
+
+      console.error(
+
+        "SAVE TASTE SIGNAL ERROR",
+
+        error
+
+      )
+
+    }
+
+  }
 
 }
 
 
-const {
+function normaliseTasteSignalRows(
 
-  data:existingSignal,
+  rows:unknown
 
-  error:lookupError
+):NormalisedTasteSignalRow[]{
 
-} = await supabase
+  if(!Array.isArray(rows)){
 
-  .from("taste_signals")
-
-  .select(
-
-    "id, strength, position"
-
-  )
-
-  .eq(
-
-    "user_id",
-
-    signal.userId
-
-  )
-
-  .eq(
-
-    "node_id",
-
-    itemNode.id
-
-  )
-
-  .eq(
-
-    "source_rank_id",
-
-    signal.source
-
-  )
-
-  .eq(
-
-    "signal_type",
-
-    signal.type
-
-  )
-
-  .maybeSingle()
-
-
-if(lookupError){
-
-  console.error(
-
-    "LOOKUP TASTE SIGNAL ERROR",
-
-    lookupError
-
-  )
-
-  continue
-
-}
-
-
-if(existingSignal){
-
-
-  const mergedStrength =
-
-    mergeStrength(
-
-      Number(
-
-        existingSignal.strength
-
-      ),
-
-      signal.strength
-
-    )
-
-
-  const {
-
-    error:updateError
-
-  } = await supabase
-
-    .from("taste_signals")
-
-    .update({
-
-      strength:
-
-        mergedStrength,
-
-      position:
-
-        signal.position
-
-    })
-
-    .eq(
-
-      "id",
-
-      existingSignal.id
-
-    )
-
-
-  if(updateError){
-
-    console.error(
-
-      "UPDATE TASTE SIGNAL ERROR",
-
-      updateError
-
-    )
+    return []
 
   }
 
 
-  continue
+  return (
 
-}
+    rows as TasteSignalRow[]
 
+  ).map(
 
-const {
+    row => {
 
-  error
+      const node =
 
-} = await supabase
+        Array.isArray(
+          row.taste_nodes
+        )
 
-  .from("taste_signals")
+        ?
 
-  .insert({
+        row.taste_nodes[0]
 
-    user_id:
+        :
 
-      signal.userId,
-
-    node_id:
-
-      itemNode.id,
-
-    source_rank_id:
-
-      signal.source,
-
-    signal_type:
-
-      signal.type,
-
-    strength:
-
-      signal.strength,
-
-    position:
-
-      signal.position
-
-  })
+        row.taste_nodes
 
 
-if(error){
+      return {
 
-  console.error(
+        id:
+          row.id,
 
-    "SAVE TASTE SIGNAL ERROR",
+        user_id:
+          row.user_id,
 
-    error
+        signal_type:
+          row.signal_type,
+
+        strength:
+          Number(row.strength),
+
+        position:
+          Number(row.position),
+
+        source_rank_id:
+          row.source_rank_id,
+
+        taste_nodes:
+          node ?? null
+
+      }
+
+    }
 
   )
 
 }
 
-}
-
-}
 
 export async function getTasteGraph(
 
@@ -363,292 +457,329 @@ export async function getTasteGraph(
 
 ):Promise<TasteGraph>{
 
-const {
+  const {
 
-data:signals,
+    data:signals,
 
-error
+    error
 
-} = await supabase
+  } = await supabase
 
-.from("taste_signals")
+    .from("taste_signals")
 
-.select(
+    .select(
 
-  `
-  id,
-  user_id,
-  signal_type,
-  strength,
-  position,
-  source_rank_id,
-  taste_nodes(
-    id,
-    type,
-    label
-  )
-  `
+      `
+      id,
+      user_id,
+      signal_type,
+      strength,
+      position,
+      source_rank_id,
+      taste_nodes(
+        id,
+        type,
+        label
+      )
+      `
 
-)
+    )
 
-.eq(
-
-  "user_id",
-
-  userId
-
-)
-
-if(error || !signals){
-
-console.error(
-
-  "LOAD TASTE GRAPH ERROR",
-
-  error
-
-)
+    .eq(
+      "user_id",
+      userId
+    )
 
 
-return {
+  if(error || !signals){
 
-  userId,
+    console.error(
 
-  nodes:[],
+      "LOAD TASTE GRAPH ERROR",
 
-  signals:[],
+      error
 
-  behaviour:{
+    )
 
-    totalRankings:0,
 
-    averagePosition:0,
+    return {
 
-    topChoiceRate:0,
+      userId,
 
-    uniqueness:0
+      nodes:[],
+
+      signals:[],
+
+      behaviour:{
+
+        totalRankings:0,
+
+        averagePosition:0,
+
+        topChoiceRate:0,
+
+        uniqueness:0
+
+      }
+
+    }
 
   }
 
-}
 
-}
+  const typedSignals =
 
-const typedSignals =
+    normaliseTasteSignalRows(
+      signals
+    )
 
-signals as any[]
 
-const nodes =
+  const nodes =
 
-typedSignals
+    typedSignals
 
-  .map(
+      .map(
 
-    signal =>
+        signal =>
+          signal.taste_nodes
 
-      signal.taste_nodes
+      )
 
-  )
+      .filter(
 
-  .filter(Boolean)
+        (
+          node
+        ):node is TasteNodeRow =>
 
-  .map(
+          Boolean(node)
 
-    node => ({
+      )
 
-      id:
-        node.id,
+      .map(
 
-      type:
-        node.type,
+        node => ({
 
-      label:
-        node.label
+          id:
+            node.id,
 
-    })
+          type:
+            node.type as TasteNodeType,
 
-  )
+          label:
+            node.label
 
-const graphSignals =
+        })
 
-typedSignals.map(
+      )
 
-  signal => ({
 
-    id:
-      signal.id,
+  const graphSignals =
 
-    userId:
-      signal.user_id,
+    typedSignals.map(
 
-    type:
-      signal.signal_type,
+      signal => {
 
-    category:
+        const node =
+          signal.taste_nodes
 
-      signal.taste_nodes?.type === "category"
 
-      ?
+        const signalType =
 
-      signal.taste_nodes.label
+          signal.signal_type as TasteSignalType
 
-      :
 
-      "",
+        return {
 
-    item:
-      signal.taste_nodes?.label ?? "",
+          id:
+            signal.id,
 
-    strength:
-      Number(signal.strength),
+          userId:
+            signal.user_id,
 
-    position:
-      signal.position,
+          type:
+            signalType,
 
-    source:
-      signal.source_rank_id
+          category:
 
-  })
+            node?.type === "category"
 
-)
+            ?
 
-const positions =
+            node.label
 
-graphSignals.map(
+            :
 
-  signal =>
-    signal.position
+            "",
 
-)
+          item:
 
-const topChoices =
+            node?.label ?? "",
 
-positions.filter(
+          strength:
 
-  position =>
-    position === 1
+            Number(
+              signal.strength
+            ),
 
-).length
+          position:
 
-const uniqueItems =
+            Number(
+              signal.position
+            ),
 
-new Set(
+          source:
 
-  graphSignals.map(
+            signal.source_rank_id
 
-    signal =>
-      signal.item
+        }
 
-  )
+      }
 
-)
+    )
 
-return {
 
-userId,
+  const positions =
 
-nodes,
+    graphSignals.map(
 
-signals:
-  graphSignals,
+      signal =>
+        signal.position
 
-behaviour:{
+    )
 
-  totalRankings:
+
+  const topChoices =
+
+    positions.filter(
+
+      position =>
+        position === 1
+
+    ).length
+
+
+  const uniqueItems =
 
     new Set(
 
       graphSignals.map(
 
         signal =>
-          signal.source
+          signal.item
 
       )
 
-    ).size,
+    )
 
 
-  averagePosition:
+  return {
 
-    positions.length > 0
+    userId,
 
-    ?
+    nodes,
 
-    Number(
+    signals:
+      graphSignals,
 
-      (
+    behaviour:{
 
-        positions.reduce(
+      totalRankings:
+
+        new Set(
+
+          graphSignals.map(
+
+            signal =>
+              signal.source
+
+          )
+
+        ).size,
+
+
+      averagePosition:
+
+        positions.length > 0
+
+        ?
+
+        Number(
 
           (
-            total,
-            value
-          ) =>
 
-            total + value,
+            positions.reduce(
 
-          0
+              (
+                total,
+
+                value
+
+              ) =>
+
+                total + value,
+
+              0
+
+            )
+
+            /
+
+            positions.length
+
+          ).toFixed(2)
 
         )
 
-        /
+        :
 
-        positions.length
-
-      ).toFixed(2)
-
-    )
-
-    :
-
-    0,
+        0,
 
 
-  topChoiceRate:
+      topChoiceRate:
 
-    positions.length > 0
+        positions.length > 0
 
-    ?
+        ?
 
-    Number(
+        Number(
 
-      (
+          (
 
-        topChoices /
-        positions.length
+            topChoices /
+            positions.length
 
-      ).toFixed(3)
+          ).toFixed(3)
 
-    )
+        )
 
-    :
+        :
 
-    0,
+        0,
 
 
-  uniqueness:
+      uniqueness:
 
-    graphSignals.length > 0
+        graphSignals.length > 0
 
-    ?
+        ?
 
-    Number(
+        Number(
 
-      (
+          (
 
-        uniqueItems.size /
-        graphSignals.length
+            uniqueItems.size /
+            graphSignals.length
 
-      ).toFixed(3)
+          ).toFixed(3)
 
-    )
+        )
 
-    :
+        :
 
-    0
+        0
 
-}
+    }
 
-}
+  }
 
 }
