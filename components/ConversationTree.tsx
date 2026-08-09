@@ -1,10 +1,16 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
+import {
+  useState
+} from "react"
 
-import type { ConversationNode } from "@/utils/conversationTree"
+import {
+  useRouter
+} from "next/navigation"
 
+import type {
+  ConversationNode
+} from "@/utils/conversationTree"
 
 
 interface ConversationTreeProps {
@@ -16,25 +22,17 @@ interface ConversationTreeProps {
 }
 
 
-
-
-
-
-
 export default function ConversationTree({
 
   nodes,
 
   currentId
 
-}:ConversationTreeProps){
+}: ConversationTreeProps) {
 
 
-  const router = useRouter()
-
-
-
-
+  const router =
+    useRouter()
 
 
   function TreeNode({
@@ -43,49 +41,37 @@ export default function ConversationTree({
 
     depth = 0
 
-  }:{
+  }: {
 
-    node:ConversationNode
+    node: ConversationNode
 
-    depth?:number
+    depth?: number
 
-  }){
+  }) {
 
 
-    const [expanded,setExpanded] =
+    const [
+      expanded,
+      setExpanded
+    ] =
       useState(true)
-
-
-
 
 
     const isCurrent =
       node.id === currentId
 
 
-
-
-
     const hasChildren =
       node.children.length > 0
-
-
-
-
-
-
 
 
     return (
 
       <div
-
         className="
           mt-3
         "
-
       >
-
 
         <div
 
@@ -100,10 +86,19 @@ export default function ConversationTree({
             ${
               isCurrent
 
-              ? "bg-white text-black"
+                ? `
+                  bg-white
+                  text-black
+                  shadow-sm
+                `
 
-              : "bg-zinc-800 text-white"
-
+                : `
+                  bg-zinc-800
+                  text-white
+                  border
+                  border-white/10
+                  hover:bg-zinc-700
+                `
             }
 
           `}
@@ -117,30 +112,29 @@ export default function ConversationTree({
 
         >
 
-
-          <div className="
-
-            flex
-
-            justify-between
-
-            items-center
-
-            gap-3
-
-          ">
-
+          <div
+            className="
+              flex
+              justify-between
+              items-center
+              gap-3
+            "
+          >
 
             <button
 
-              onClick={()=>router.push(
-                `/rank/${node.id}`
-              )}
+              onClick={() =>
+                router.push(
+                  `/rank/${node.id}`
+                )
+              }
 
               className="
                 text-left
                 font-black
                 flex-1
+                hover:opacity-80
+                transition
               "
 
             >
@@ -149,39 +143,35 @@ export default function ConversationTree({
 
               {node.title}
 
-
             </button>
-
-
-
-
-
 
 
             {hasChildren && (
 
               <button
 
-                onClick={()=>setExpanded(!expanded)}
+                onClick={() =>
+                  setExpanded(
+                    !expanded
+                  )
+                }
 
-                className="
-
+                className={`
                   text-sm
-
-                  opacity-70
-
-                  hover:opacity-100
-
-                "
+                  font-bold
+                  transition
+                  ${
+                    isCurrent
+                      ? "text-black/60 hover:text-black"
+                      : "text-white/70 hover:text-white"
+                  }
+                `}
 
               >
 
                 {expanded
-
                   ? "▼"
-
                   : "▶"
-
                 }
 
                 {" "}
@@ -192,32 +182,27 @@ export default function ConversationTree({
 
                 perspective
 
-                {node.children.length !== 1 && "s"}
+                {node.children.length !== 1 &&
+                  "s"
+                }
 
               </button>
 
             )}
 
-
           </div>
-
-
-
 
 
           {isCurrent && (
 
-            <p className="
-
-              text-xs
-
-              mt-2
-
-              font-bold
-
-              opacity-60
-
-            ">
+            <p
+              className="
+                text-xs
+                mt-2
+                font-bold
+                text-black/60
+              "
+            >
 
               You are here
 
@@ -225,41 +210,40 @@ export default function ConversationTree({
 
           )}
 
-
-
         </div>
-
-
-
-
-
 
 
         {expanded && hasChildren && (
 
           <div>
 
+            {node.children.map(
 
-            {node.children.map(child=>(
+              child => (
 
-              <TreeNode
+                <TreeNode
 
-                key={child.id}
+                  key={
+                    child.id
+                  }
 
-                node={child}
+                  node={
+                    child
+                  }
 
-                depth={depth + 1}
+                  depth={
+                    depth + 1
+                  }
 
-              />
+                />
 
-            ))}
+              )
 
+            )}
 
           </div>
 
         )}
-
-
 
       </div>
 
@@ -268,60 +252,55 @@ export default function ConversationTree({
   }
 
 
-
-
-
-
-
-
   return (
 
-    <div className="
+    <div
+      className="
+        bg-zinc-900
+        text-white
+        rounded-3xl
+        p-6
+        border
+        border-black/10
+      "
+    >
 
-      bg-zinc-900
-
-      rounded-3xl
-
-      p-6
-
-    ">
-
-
-      <h2 className="
-
-        text-2xl
-
-        font-black
-
-        mb-5
-
-      ">
+      <h2
+        className="
+          text-2xl
+          font-black
+          mb-5
+          text-white
+        "
+      >
 
         🌎 Conversation
 
       </h2>
 
 
+      {nodes.map(
 
+        node => (
 
+          <TreeNode
 
-      {nodes.map(node=>(
+            key={
+              node.id
+            }
 
-        <TreeNode
+            node={
+              node
+            }
 
-          key={node.id}
+          />
 
-          node={node}
+        )
 
-        />
-
-      ))}
-
-
+      )}
 
     </div>
 
   )
-
 
 }
