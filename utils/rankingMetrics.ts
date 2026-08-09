@@ -19,9 +19,9 @@ export function getRemixCount(
 
   rankings: Ranking[] = [],
 
-  id:string
+  id: string
 
-){
+) {
 
 
   return rankings.filter(
@@ -47,9 +47,9 @@ export function getConversationCount(
 
   rankings: Ranking[] = [],
 
-  id:string
+  id: string
 
-){
+) {
 
 
   return rankings.filter(
@@ -75,9 +75,9 @@ export function getRootRanking(
 
   rankings: Ranking[] = [],
 
-  id:string
+  id: string
 
-):Ranking | null {
+): Ranking | null {
 
 
   const ranking =
@@ -94,7 +94,7 @@ export function getRootRanking(
 
 
 
-  if(!ranking){
+  if (!ranking) {
 
     return null
 
@@ -145,48 +145,305 @@ export function getRootRanking(
 
 
 
+/**
+ * Calculate a ranking's recent activity momentum.
+ *
+ * Trending is intentionally different from Latest.
+ *
+ * Latest:
+ *   newest createdAt first.
+ *
+ * Trending:
+ *   recent activity + engagement + debate,
+ *   weighted by how recently the ranking appeared.
+ *
+ * This prevents Trending from simply becoming
+ * another chronological list.
+ */
+export function calculateRankingMomentum(
+
+  ranking: Ranking
+
+) {
+
+
+  const views =
+
+    Number(
+
+      ranking.views ??
+
+      0
+
+    )
+
+
+  const remixCount =
+
+    Number(
+
+      ranking.remixes ??
+
+      0
+
+    )
+
+
+  const debateHeat =
+
+    Number(
+
+      ranking.signals
+        ?.debateHeat ??
+
+      0
+
+    )
+
+
+  const createdAt =
+
+    ranking.createdAt
+
+      ? new Date(
+          ranking.createdAt
+        ).getTime()
+
+      : 0
+
+
+  const now =
+
+    Date.now()
+
+
+  const ageHours =
+
+    createdAt > 0
+
+      ? Math.max(
+
+          1,
+
+          (
+            now -
+            createdAt
+          ) /
+          (
+            1000 *
+            60 *
+            60
+          )
+
+        )
+
+      : 168
+
+
+  /**
+   * Recent rankings receive more weight.
+   *
+   * The decay is deliberately gentle so that
+   * a genuinely active ranking can remain
+   * trending beyond its first few hours.
+   */
+  const recencyMultiplier =
+
+    Math.max(
+
+      0.2,
+
+      1 /
+      Math.sqrt(
+        ageHours
+      )
+
+    )
+
+
+  /**
+   * Views provide the basic attention signal.
+   *
+   * Remixes are weighted more heavily because
+   * they represent an active decision rather
+   * than passive viewing.
+   *
+   * Debate heat represents disagreement /
+   * perspective activity.
+   */
+  const activityScore =
+
+    (
+      views * 0.4
+    )
+
+    +
+
+    (
+      remixCount * 20 * 0.3
+    )
+
+    +
+
+    (
+      debateHeat * 0.3
+    )
+
+
+  return (
+
+    activityScore *
+
+    recencyMultiplier
+
+  )
+
+}
+
+
+
+
+
+
+
+
+
 export function getTrendingRankings(
 
   rankings: Ranking[] = []
 
-){
+) {
 
 
   return (
 
     [...rankings]
 
-    .sort(
+      .map(
 
-      (a,b)=>{
+        ranking => ({
+
+          ranking,
+
+          momentum:
+
+            calculateRankingMomentum(
+
+              ranking
+
+            ),
+
+          perspectiveScore:
+
+            calculateLivePerspectiveScore(
+
+              ranking
+
+            )
+
+        })
+
+      )
+
+      .sort(
+
+        (
+          a,
+          b
+        ) => {
+
+          /**
+           * Primary ordering:
+           *
+           * Recent activity momentum.
+           */
+          if (
+            b.momentum !==
+            a.momentum
+          ) {
+
+            return (
+
+              b.momentum -
+              a.momentum
+
+            )
+
+          }
 
 
-        const scoreA =
+          /**
+           * Secondary ordering:
+           *
+           * Live perspective score.
+           *
+           * This helps break ties where
+           * momentum is identical.
+           */
+          if (
+            b.perspectiveScore !==
+            a.perspectiveScore
+          ) {
 
-          calculateLivePerspectiveScore(
+            return (
 
-            a
+              b.perspectiveScore -
+              a.perspectiveScore
+
+            )
+
+          }
+
+
+          /**
+           * Final fallback:
+           *
+           * Newer rankings first.
+           *
+           * This prevents completely
+           * inactive rankings from producing
+           * unstable ordering.
+           */
+          const dateA =
+
+            new Date(
+
+              a.ranking.createdAt ??
+
+              0
+
+            ).getTime()
+
+
+          const dateB =
+
+            new Date(
+
+              b.ranking.createdAt ??
+
+              0
+
+            ).getTime()
+
+
+          return (
+
+            dateB -
+            dateA
 
           )
 
+        }
 
+      )
 
-        const scoreB =
+      .map(
 
-          calculateLivePerspectiveScore(
+        entry =>
 
-            b
+          entry.ranking
 
-          )
-
-
-
-        return scoreB - scoreA
-
-
-      }
-
-    )
+      )
 
   )
 
@@ -205,48 +462,49 @@ export function getLatestRankings(
 
   rankings: Ranking[] = []
 
-){
+) {
 
 
   return (
 
     [...rankings]
 
-    .sort(
+      .sort(
 
-      (a,b)=>{
+        (a, b) => {
+
+          const dateA =
+
+            new Date(
+
+              a.createdAt ??
+
+              0
+
+            ).getTime()
 
 
-        const dateA =
+          const dateB =
 
-          new Date(
+            new Date(
 
-            a.createdAt ?? 0
+              b.createdAt ??
+
+              0
+
+            ).getTime()
+
+
+          return (
+
+            dateB -
+            dateA
 
           )
 
-          .getTime()
+        }
 
-
-
-        const dateB =
-
-          new Date(
-
-            b.createdAt ?? 0
-
-          )
-
-          .getTime()
-
-
-
-        return dateB - dateA
-
-
-      }
-
-    )
+      )
 
   )
 
@@ -265,97 +523,97 @@ export function getBiggestDebates(
 
   rankings: Ranking[] = []
 
-){
+) {
 
 
   return (
 
     [...rankings]
 
-    .sort(
+      .sort(
 
-      (a,b)=>{
+        (a, b) => {
 
+          const debateA =
 
-        const debateA =
+            a.signals
+              ?.debateHeat ??
 
-          a.signals
-
-          ?.debateHeat
-
-          ??
-
-          0
+            0
 
 
+          const debateB =
+
+            b.signals
+              ?.debateHeat ??
+
+            0
 
 
+          return (
 
-        const debateB =
+            debateB -
+            debateA
 
-          b.signals
+          )
 
-          ?.debateHeat
+        }
 
-          ??
-
-          0
-
-
-
-
-
-        return debateB - debateA
-
-
-      }
-
-    )
+      )
 
   )
 
 
 }
 
+
+
+
+
+
+
+
+
 export function getMostRemixedRankings(
 
   rankings: Ranking[] = []
 
-){
+) {
 
 
   return (
 
     [...rankings]
 
-    .map(ranking => ({
+      .map(
 
+        ranking => ({
 
-      ...ranking,
+          ...ranking,
 
+          remixCount:
 
-      remixCount:
+            getRemixCount(
 
-        getRemixCount(
+              rankings,
 
-          rankings,
+              ranking.id
 
-          ranking.id
+            )
 
-        )
+        })
 
+      )
 
-    }))
+      .sort(
 
-    .sort(
+        (a, b) =>
 
-      (a,b)=>
+          b.remixCount -
 
-        b.remixCount -
+          a.remixCount
 
-        a.remixCount
-
-    )
+      )
 
   )
 
@@ -374,146 +632,66 @@ export function getPerspectiveGaps(
 
   rankings: Ranking[] = []
 
-){
+) {
 
 
   return (
 
     [...rankings]
 
-    .filter(
+      .filter(
 
-      ranking =>
+        ranking =>
 
-        getRemixCount(
+          getRemixCount(
 
-          rankings,
+            rankings,
 
-          ranking.id
+            ranking.id
 
-        ) > 0
+          ) > 0
 
-    )
+      )
 
-    .map(ranking => ({
+      .map(
 
+        ranking => ({
 
-      ranking,
+          ranking,
 
+          remixCount:
 
-      remixCount:
+            getRemixCount(
 
-        getRemixCount(
+              rankings,
 
-          rankings,
+              ranking.id
 
-          ranking.id
+            ),
 
-        ),
+          conversationSize:
 
+            getConversationCount(
 
-      conversationSize:
+              rankings,
 
-        getConversationCount(
+              ranking.id
 
-          rankings,
+            )
 
-          ranking.id
+        })
 
-        )
+      )
 
+      .sort(
 
-    }))
+        (a, b) =>
 
-    .sort(
+          b.conversationSize -
 
-      (a,b)=>
+          a.conversationSize
 
-        b.conversationSize -
-
-        a.conversationSize
-
-    )
-
-  )
-
-
-}
-
-
-
-
-
-
-
-
-
-export function calculateRankingMomentum(
-
-  ranking:Ranking
-
-){
-
-
-  const views =
-
-    ranking.views ??
-
-    0
-
-
-
-
-
-  const remixCount =
-
-    ranking.remixes ??
-
-    0
-
-
-
-
-
-  const debateHeat =
-
-    ranking.signals
-
-    ?.debateHeat
-
-    ??
-
-    0
-
-
-
-
-
-
-
-  return Math.round(
-
-    (
-
-      views * 0.4
-
-    )
-
-    +
-
-    (
-
-      remixCount * 20 * 0.3
-
-    )
-
-    +
-
-    (
-
-      debateHeat * 0.3
-
-    )
+      )
 
   )
 
@@ -530,11 +708,11 @@ export function calculateRankingMomentum(
 
 export function getRankingsByCategory(
 
-  rankings:Ranking[] = [],
+  rankings: Ranking[] = [],
 
-  category:string
+  category: string
 
-){
+) {
 
 
   return rankings.filter(
@@ -544,7 +722,6 @@ export function getRankingsByCategory(
       ranking.category === category
 
   )
-
 
 }
 
@@ -558,14 +735,17 @@ export function getRankingsByCategory(
 
 export function getTopCreators(
 
-  rankings:Ranking[] = []
+  rankings: Ranking[] = []
 
-){
+) {
 
 
   const creators:
 
-    Record<string,number> = {}
+    Record<
+      string,
+      number
+    > = {}
 
 
 
@@ -573,8 +753,7 @@ export function getTopCreators(
 
   rankings.forEach(
 
-    ranking =>{
-
+    ranking => {
 
       const creator =
 
@@ -585,23 +764,17 @@ export function getTopCreators(
         "anonymous"
 
 
-
-
-
       creators[creator] =
 
         (
-
           creators[creator] ??
 
           0
-
         )
 
         +
 
         1
-
 
     }
 
@@ -621,31 +794,27 @@ export function getTopCreators(
 
   )
 
-  .map(
+    .map(
 
-    ([creator,count])=>({
+      ([creator, count]) => ({
 
+        creator,
 
-      creator,
+        count
 
+      })
 
-      count
+    )
 
+    .sort(
 
-    })
+      (a, b) =>
 
-  )
+        b.count -
 
-  .sort(
+        a.count
 
-    (a,b)=>
-
-      b.count -
-
-      a.count
-
-  )
+    )
 
 
 }
-

@@ -61,6 +61,7 @@ const categories = [
   "Sport",
   "Travel",
   "Technology",
+  "Gaming",
   "Lifestyle",
   "General"
 
@@ -192,7 +193,12 @@ export default function CreateClient() {
     }
 
 
-    if (initialCategory) {
+    if (
+      initialCategory &&
+      categories.includes(
+        initialCategory
+      )
+    ) {
 
       setCategory(
         initialCategory
@@ -210,35 +216,6 @@ export default function CreateClient() {
     }
 
   }, [searchParams])
-
-
-  function updateItem(
-    id: string,
-    value: string
-  ) {
-
-    setItems(
-
-      current =>
-
-        current.map(
-
-          item =>
-
-            item.id === id
-
-              ? {
-                  ...item,
-                  name: value
-                }
-
-              : item
-
-        )
-
-    )
-
-  }
 
 
   function addItem() {
@@ -264,76 +241,10 @@ export default function CreateClient() {
 
           name:
             ""
+
         }
 
       ]
-
-    )
-
-  }
-
-
-  function removeItem(
-    id: string
-  ) {
-
-    if (
-      items.length <= 1
-    ) {
-
-      return
-
-    }
-
-
-    setItems(
-
-      current =>
-
-        current.filter(
-
-          item =>
-            item.id !== id
-
-        )
-
-    )
-
-  }
-
-
-  function moveItem(
-    oldIndex: number,
-    newIndex: number
-  ) {
-
-    setItems(
-
-      current => {
-
-        const next =
-          [
-            ...current
-          ]
-
-
-        const moved =
-          next.splice(
-            oldIndex,
-            1
-          )[0]
-
-
-        next.splice(
-          newIndex,
-          0,
-          moved
-        )
-
-
-        return next
-
-      }
 
     )
 
@@ -501,12 +412,7 @@ export default function CreateClient() {
          *
          * Taste Graph Baseline
          *
-         * Every RANKD created by an
-         * authenticated user contributes
-         * initial taste signals.
-         *
          */
-
 
         try {
 
@@ -572,13 +478,7 @@ export default function CreateClient() {
          *
          * Taste Graph Feedback Loop
          *
-         * If this RANKD was created from
-         * a Taste Recommendation, compare
-         * the user's new ranking against
-         * the original recommendation.
-         *
          */
-
 
         if (recommendationId) {
 
@@ -763,25 +663,32 @@ export default function CreateClient() {
       <div
         className="
           mx-auto
-          max-w-6xl
-          px-6
-          py-16
+          w-full
+          max-w-5xl
+          px-5
+          py-10
+          sm:px-6
+          sm:py-12
+          lg:px-8
+          lg:py-16
         "
       >
 
-        <div
+        <header
           className="
-            mb-12
+            mb-10
+            max-w-3xl
+            sm:mb-12
           "
         >
 
           <p
             className="
               rankd-accent
-              uppercase
-              tracking-widest
-              text-sm
+              text-xs
               font-black
+              uppercase
+              tracking-[0.2em]
             "
           >
 
@@ -792,10 +699,13 @@ export default function CreateClient() {
 
           <h1
             className="
-              text-5xl
-              md:text-6xl
-              font-black
               mt-3
+              text-4xl
+              font-black
+              leading-[0.95]
+              tracking-tight
+              sm:text-5xl
+              lg:text-6xl
             "
           >
 
@@ -806,10 +716,12 @@ export default function CreateClient() {
 
           <p
             className="
-              mt-4
-              text-lg
-              opacity-70
+              mt-5
               max-w-2xl
+              text-base
+              leading-7
+              opacity-60
+              sm:text-lg
             "
           >
 
@@ -817,161 +729,298 @@ export default function CreateClient() {
 
           </p>
 
-        </div>
+        </header>
 
 
         <form
           onSubmit={handleSubmit}
           className="
-            space-y-10
+            space-y-6
           "
         >
 
-          <div
+          <section
             className="
               rankd-card
-              p-8
+              overflow-hidden
             "
           >
 
-            <label
+            <div
               className="
-                block
-                text-sm
-                font-black
-                uppercase
-                tracking-widest
+                border-b
+                px-6
+                py-5
+                sm:px-8
               "
             >
 
-              Title
+              <label
+                className="
+                  block
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.18em]
+                "
+              >
 
-            </label>
+                Title
+
+              </label>
 
 
-            <input
+              <p
+                className="
+                  mt-1.5
+                  text-sm
+                  opacity-50
+                "
+              >
 
-              value={title}
+                Give your RANKD a clear name.
 
-              onChange={
-                event =>
-                  setTitle(
-                    event.target.value
-                  )
-              }
+              </p>
 
-              placeholder="Top 7..."
+            </div>
 
+
+            <div
               className="
-                mt-3
-                w-full
-                rounded-xl
-                border
-                px-4
-                py-4
-                text-lg
-                font-bold
+                px-6
+                py-6
+                sm:px-8
               "
+            >
 
-            />
+              <input
 
-          </div>
+                value={title}
+
+                onChange={
+                  event =>
+                    setTitle(
+                      event.target.value
+                    )
+                }
+
+                placeholder="Top 7..."
+
+                className="
+                  w-full
+                  rounded-xl
+                  border
+                  bg-transparent
+                  px-4
+                  py-3.5
+                  text-base
+                  font-bold
+                  outline-none
+                  transition
+                  placeholder:opacity-35
+                  focus:ring-2
+                  focus:ring-black/10
+                "
+
+              />
+
+            </div>
+
+          </section>
 
 
-          <div
+          <section
             className="
               rankd-card
-              p-8
+              overflow-hidden
             "
           >
 
-            <label
+            <div
               className="
-                block
-                text-sm
-                font-black
-                uppercase
-                tracking-widest
+                border-b
+                px-6
+                py-5
+                sm:px-8
               "
             >
 
-              Category
+              <label
+                className="
+                  block
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.18em]
+                "
+              >
 
-            </label>
+                Category
+
+              </label>
 
 
-            <select
+              <p
+                className="
+                  mt-1.5
+                  text-sm
+                  opacity-50
+                "
+              >
 
-              value={category}
+                Choose the category that best fits your RANKD.
 
-              onChange={
-                event =>
-                  setCategory(
-                    event.target.value
-                  )
-              }
+              </p>
 
+            </div>
+
+
+            <div
               className="
-                mt-3
-                w-full
-                rounded-xl
-                border
-                px-4
-                py-4
-                font-bold
+                grid
+                grid-cols-2
+                gap-2
+                p-4
+                sm:grid-cols-3
+                sm:p-6
+                lg:grid-cols-5
               "
-
             >
 
               {
                 categories.map(
 
-                  option => (
+                  option => {
 
-                    <option
-                      key={option}
-                      value={option}
-                    >
+                    const selected =
+                      category === option
 
-                      {option}
 
-                    </option>
+                    return (
 
-                  )
+                      <button
+
+                        key={option}
+
+                        type="button"
+
+                        onClick={
+                          () =>
+                            setCategory(
+                              option
+                            )
+                        }
+
+                        aria-pressed={
+                          selected
+                        }
+
+                        className={`
+                          rounded-xl
+                          border
+                          px-3
+                          py-3
+                          text-sm
+                          font-black
+                          transition
+                          ${
+                            selected
+                              ? "rankd-primary border-transparent"
+                              : "bg-transparent opacity-60 hover:opacity-100"
+                          }
+                        `}
+
+                      >
+
+                        {option}
+
+                      </button>
+
+                    )
+
+                  }
 
                 )
               }
 
-            </select>
+            </div>
 
-          </div>
+          </section>
 
 
-          <div
+          <section
             className="
               rankd-card
-              p-8
+              overflow-hidden
             "
           >
 
-            <label
+            <div
               className="
-                block
-                text-sm
-                font-black
-                uppercase
-                tracking-widest
+                flex
+                items-end
+                justify-between
+                gap-4
+                border-b
+                px-6
+                py-5
+                sm:px-8
               "
             >
 
-              Your Top 7
+              <div>
 
-            </label>
+                <label
+                  className="
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.18em]
+                  "
+                >
+
+                  Your Top 7
+
+                </label>
+
+
+                <p
+                  className="
+                    mt-1.5
+                    text-sm
+                    opacity-50
+                  "
+                >
+
+                  Put your choices in order.
+
+                </p>
+
+              </div>
+
+
+              <div
+                className="
+                  shrink-0
+                  text-xs
+                  font-black
+                  opacity-50
+                "
+              >
+
+                {items.length} / 7
+
+              </div>
+
+            </div>
 
 
             <div
               className="
-                mt-6
+                px-6
+                py-6
+                sm:px-8
               "
             >
 
@@ -983,88 +1032,133 @@ export default function CreateClient() {
 
               />
 
+
+              {
+                items.length < 7 && (
+
+                  <button
+
+                    type="button"
+
+                    onClick={addItem}
+
+                    className="
+                      mt-5
+                      rounded-xl
+                      border
+                      px-4
+                      py-2.5
+                      text-sm
+                      font-black
+                      opacity-70
+                      transition
+                      hover:opacity-100
+                    "
+
+                  >
+
+                    Add item
+
+                  </button>
+
+                )
+              }
+
             </div>
 
-
-            {
-              items.length < 7 && (
-
-                <button
-
-                  type="button"
-
-                  onClick={addItem}
-
-                  className="
-                    mt-6
-                    rounded-xl
-                    border
-                    px-5
-                    py-3
-                    font-black
-                  "
-
-                >
-
-                  Add item
-
-                </button>
-
-              )
-            }
-
-          </div>
+          </section>
 
 
-          <div
+          <section
             className="
               rankd-card
-              p-8
+              overflow-hidden
             "
           >
 
-            <label
+            <div
               className="
-                block
-                text-sm
-                font-black
-                uppercase
-                tracking-widest
+                border-b
+                px-6
+                py-5
+                sm:px-8
               "
             >
 
-              Description
+              <label
+                className="
+                  block
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.18em]
+                "
+              >
 
-            </label>
+                Description
+
+              </label>
 
 
-            <textarea
+              <p
+                className="
+                  mt-1.5
+                  text-sm
+                  opacity-50
+                "
+              >
 
-              value={description}
+                Add a little context if you want to.
 
-              onChange={
-                event =>
-                  setDescription(
-                    event.target.value
-                  )
-              }
+              </p>
 
-              rows={4}
+            </div>
 
-              placeholder="Why this Top 7?"
 
+            <div
               className="
-                mt-3
-                w-full
-                rounded-xl
-                border
-                px-4
-                py-4
+                px-6
+                py-6
+                sm:px-8
               "
+            >
 
-            />
+              <textarea
 
-          </div>
+                value={description}
+
+                onChange={
+                  event =>
+                    setDescription(
+                      event.target.value
+                    )
+                }
+
+                rows={4}
+
+                placeholder="Why this Top 7?"
+
+                className="
+                  w-full
+                  resize-none
+                  rounded-xl
+                  border
+                  bg-transparent
+                  px-4
+                  py-3.5
+                  text-base
+                  outline-none
+                  transition
+                  placeholder:opacity-35
+                  focus:ring-2
+                  focus:ring-black/10
+                "
+
+              />
+
+            </div>
+
+          </section>
 
 
           {
@@ -1078,8 +1172,9 @@ export default function CreateClient() {
                   bg-red-50
                   px-5
                   py-4
-                  text-red-700
+                  text-sm
                   font-bold
+                  text-red-700
                 "
               >
 
@@ -1091,32 +1186,44 @@ export default function CreateClient() {
           }
 
 
-          <button
-
-            type="submit"
-
-            disabled={saving}
-
+          <div
             className="
-              w-full
-              rounded-2xl
-              px-6
-              py-5
-              font-black
-              text-lg
-              rankd-primary
-              disabled:opacity-50
+              pt-2
             "
-
           >
 
-            {
-              saving
-                ? "Creating..."
-                : "Create RANKD"
-            }
+            <button
 
-          </button>
+              type="submit"
+
+              disabled={saving}
+
+              className="
+                rankd-primary
+                w-full
+                rounded-xl
+                px-6
+                py-4
+                text-base
+                font-black
+                transition
+                hover:opacity-90
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+                sm:py-4.5
+              "
+
+            >
+
+              {
+                saving
+                  ? "Creating..."
+                  : "Create RANKD"
+              }
+
+            </button>
+
+          </div>
 
         </form>
 

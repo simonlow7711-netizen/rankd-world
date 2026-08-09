@@ -48,9 +48,6 @@ export type TasteDNADiagnostic = {
 }
 
 
-/**
- * Keep values inside a predictable 0–1 range.
- */
 function clamp(
   value: number,
   minimum: number = 0,
@@ -68,9 +65,6 @@ function clamp(
 }
 
 
-/**
- * Round diagnostic values for stable output.
- */
 function round(
   value: number,
   decimals: number = 3
@@ -85,10 +79,6 @@ function round(
 }
 
 
-/**
- * Normalise labels for comparison while preserving
- * the original display label where possible.
- */
 function normaliseText(
   value: string
 ): string {
@@ -101,51 +91,14 @@ function normaliseText(
 
 
 /**
- * Position weight.
- *
- * #1 receives the strongest weight.
- * #7 receives the weakest weight.
- *
- * This is intentionally linear so that the difference
- * between adjacent ranking positions remains meaningful.
- *
- * 1 -> 1.00
- * 2 -> 0.86
- * 3 -> 0.71
- * 4 -> 0.57
- * 5 -> 0.43
- * 6 -> 0.29
- * 7 -> 0.14
- */
-function getPositionWeight(
-  position: number
-): number {
-
-  if (
-    position < 1 ||
-    position > 7
-  ) {
-    return 0
-  }
-
-
-  return round(
-    (
-      8 - position
-    ) / 7,
-    3
-  )
-
-}
-
-
-/**
  * Item-level ranking signals.
  *
  * These represent actual ranked choices.
+ *
  * Positions run from 1 to 7.
  *
- * Category signals at position 0 are deliberately excluded.
+ * Category marker signals at position 0
+ * are deliberately excluded.
  */
 function getRankingSignals(
   graph: TasteGraph
@@ -154,7 +107,6 @@ function getRankingSignals(
   return graph.signals.filter(
     signal =>
       signal.position > 0 &&
-      signal.position <= 7 &&
       signal.item.trim() !== ""
   )
 
@@ -162,12 +114,13 @@ function getRankingSignals(
 
 
 /**
- * Category-level signals.
+ * Category marker signals.
  *
- * These are the category anchors created when
+ * These are position 0 signals created when
  * a ranking is created.
  *
- * They are NOT used to calculate category strength.
+ * They identify the category but are NOT
+ * themselves behavioural preference strength.
  */
 function getCategorySignals(
   graph: TasteGraph
@@ -184,6 +137,8 @@ function getCategorySignals(
 
 /**
  * Preferred item signals.
+ *
+ * These represent actual preferred choices.
  */
 function getPreferredSignals(
   graph: TasteGraph
@@ -200,35 +155,26 @@ function getPreferredSignals(
 
 
 /**
- * Calculate position-weighted category strength.
+ * Calculate category strength from actual
+ * ranked item behaviour.
  *
  * IMPORTANT:
  *
- * Category strength must come from the ranked items,
- * not from the category anchor signal.
+ * We deliberately do NOT use the strength of
+ * the category marker signal.
  *
- * Every item inherits its category from the repository
- * before reaching this diagnostic.
+ * A category marker tells us:
  *
- * Example:
+ * "This ranking belongs to Sport."
  *
- * Sport:
+ * It does not tell us:
  *
- * #1 = 1.00
- * #2 = 0.86
- * #3 = 0.71
+ * "The user has X amount of taste strength
+ * for Sport."
  *
- * General:
- *
- * #1 = 1.00
- * #4 = 0.57
- * #7 = 0.14
- *
- * The resulting category strengths therefore reflect
- * both:
- *
- * 1. How many choices the user ranked
- * 2. How highly those choices were ranked
+ * Category strength is therefore derived by
+ * summing the strength of the ranked items
+ * belonging to that category.
  */
 function calculateCategoryStrength(
   signals: TasteSignal[]
@@ -241,57 +187,46 @@ function calculateCategoryStrength(
   signals.forEach(
     signal => {
 
-      const category =
-        signal.category.trim()
+      if(
+        signal.position <= 0
+      ){
 
-
-      if (!category) {
         return
+
       }
 
 
-      const positionWeight =
-        getPositionWeight(
-          signal.position
+      const category =
+        normaliseText(
+          signal.category
         )
 
 
-      if (
-        positionWeight <= 0
-      ) {
+      if(!category){
+
         return
+
       }
 
 
-      const signalStrength =
+      const strength =
         clamp(
           Number(
             signal.strength
-          )
-        )
-
-
-      const weightedStrength =
-        signalStrength *
-        positionWeight
-
-
-      const normalisedCategory =
-        normaliseText(
-          category
+          ) || 0
         )
 
 
       const existing =
         categoryStrength.get(
-          normalisedCategory
+          category
         ) || 0
 
 
       categoryStrength.set(
-        normalisedCategory,
+        category,
         existing +
-        weightedStrength
+        strength
       )
 
     }
@@ -304,10 +239,8 @@ function calculateCategoryStrength(
 
 
 /**
- * Calculate position-weighted strength for each item.
- *
- * Item strength is combined with ranking position so
- * higher-ranked choices contribute more heavily.
+ * Calculate total strength for each
+ * individual ranked choice.
  */
 function calculateChoiceStrength(
   signals: TasteSignal[]
@@ -326,35 +259,19 @@ function calculateChoiceStrength(
         )
 
 
-      if (!item) {
+      if(!item){
+
         return
+
       }
 
 
-      const positionWeight =
-        getPositionWeight(
-          signal.position
-        )
-
-
-      if (
-        positionWeight <= 0
-      ) {
-        return
-      }
-
-
-      const signalStrength =
+      const strength =
         clamp(
           Number(
             signal.strength
-          )
+          ) || 0
         )
-
-
-      const weightedStrength =
-        signalStrength *
-        positionWeight
 
 
       const existing =
@@ -366,7 +283,7 @@ function calculateChoiceStrength(
       choiceStrength.set(
         item,
         existing +
-        weightedStrength
+        strength
       )
 
     }
@@ -379,8 +296,14 @@ function calculateChoiceStrength(
 
 
 /**
- * Convert a strength map into the strongest
- * diagnostic insights.
+ * Convert a strength map into the
+ * strongest diagnostic insights.
+ *
+ * Value is normalised against the
+ * strongest entry.
+ *
+ * Description contains the actual
+ * calculated strength.
  */
 function getStrongestInsights(
   values: Map<string, number>,
@@ -393,10 +316,12 @@ function getStrongestInsights(
     )
 
 
-  if (
+  if(
     entries.length === 0
-  ) {
+  ){
+
     return []
+
   }
 
 
@@ -410,6 +335,7 @@ function getStrongestInsights(
 
 
   return entries
+
     .sort(
       (
         [, a],
@@ -417,10 +343,12 @@ function getStrongestInsights(
       ) =>
         b - a
     )
+
     .slice(
       0,
       limit
     )
+
     .map(
       ([label, value]) => ({
 
@@ -443,16 +371,18 @@ function getStrongestInsights(
 
 
 /**
- * Calculate average item position.
+ * Calculate average ranked position.
  */
 function calculateAveragePosition(
   signals: TasteSignal[]
 ): number {
 
-  if (
+  if(
     signals.length === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -478,17 +408,19 @@ function calculateAveragePosition(
 
 
 /**
- * Calculate the proportion of ranked
- * choices that were placed #1.
+ * Calculate proportion of ranked choices
+ * placed at #1.
  */
 function calculateTopChoiceRate(
   signals: TasteSignal[]
 ): number {
 
-  if (
+  if(
     signals.length === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -508,17 +440,20 @@ function calculateTopChoiceRate(
 
 
 /**
- * Calculate average preference strength
- * from item-level preferred signals.
+ * Calculate average preference strength.
+ *
+ * Preferred signals are used where available.
  */
 function calculatePreferenceStrength(
   signals: TasteSignal[]
 ): number {
 
-  if (
+  if(
     signals.length === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -547,18 +482,22 @@ function calculatePreferenceStrength(
 
 
 /**
- * Measures how many distinct choices exist
- * relative to the total number of item signals.
+ * Measures the proportion of unique
+ * choices within the ranked choices.
+ *
+ * 1 = every ranked choice is unique.
  */
 function calculateTasteVariety(
   uniqueItems: number,
   totalItems: number
 ): number {
 
-  if (
+  if(
     totalItems === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -573,17 +512,25 @@ function calculateTasteVariety(
 
 
 /**
- * Measures how concentrated the taste graph
- * is around its strongest individual choice.
+ * Measures concentration around the
+ * strongest individual choice.
+ *
+ * Lower values indicate a distributed
+ * taste graph.
+ *
+ * Higher values indicate that one or
+ * a small number of choices dominate.
  */
 function calculateTasteConcentration(
   signals: TasteSignal[]
 ): number {
 
-  if (
+  if(
     signals.length === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -599,10 +546,12 @@ function calculateTasteConcentration(
     )
 
 
-  if (
+  if(
     strengths.length === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -618,10 +567,12 @@ function calculateTasteConcentration(
     )
 
 
-  if (
+  if(
     totalStrength === 0
-  ) {
+  ){
+
     return 0
+
   }
 
 
@@ -642,16 +593,17 @@ function calculateTasteConcentration(
 
 
 /**
- * Confidence should represent how much
+ * Confidence measures how much actual
  * behavioural evidence exists.
  *
- * This intentionally uses:
+ * This deliberately uses:
  *
- * rankings
- * signals
- * unique choices
+ * - number of rankings
+ * - number of signals
+ * - number of unique choices
  *
- * rather than category count.
+ * Category count is NOT used as a proxy
+ * for confidence.
  */
 function calculateConfidence(
   totalRankings: number,
@@ -740,9 +692,9 @@ function buildInsights({
   const insights: string[] = []
 
 
-  if (
+  if(
     totalRankings === 0
-  ) {
+  ){
 
     insights.push(
       "Your Taste Graph does not have enough ranking activity yet."
@@ -753,19 +705,19 @@ function buildInsights({
   }
 
 
-  if (
+  if(
     averagePosition > 0 &&
     averagePosition <= 3
-  ) {
+  ){
 
     insights.push(
       "You tend to rank choices decisively."
     )
 
   }
-  else if (
+  else if(
     averagePosition >= 5
-  ) {
+  ){
 
     insights.push(
       "Your rankings tend to spread preference across the list."
@@ -774,9 +726,9 @@ function buildInsights({
   }
 
 
-  if (
+  if(
     topChoiceRate >= 0.2
-  ) {
+  ){
 
     insights.push(
       "You have a strong tendency to identify clear #1 choices."
@@ -785,9 +737,9 @@ function buildInsights({
   }
 
 
-  if (
+  if(
     preferenceStrength >= 0.9
-  ) {
+  ){
 
     insights.push(
       "Your current Taste Graph contains strong preference signals."
@@ -796,18 +748,18 @@ function buildInsights({
   }
 
 
-  if (
+  if(
     tasteVariety >= 0.8
-  ) {
+  ){
 
     insights.push(
       "Your taste currently covers a broad range of distinct choices."
     )
 
   }
-  else if (
+  else if(
     tasteVariety <= 0.4
-  ) {
+  ){
 
     insights.push(
       "Your taste currently appears concentrated around a smaller set of choices."
@@ -816,9 +768,9 @@ function buildInsights({
   }
 
 
-  if (
+  if(
     tasteConcentration >= 0.3
-  ) {
+  ){
 
     insights.push(
       "A small number of choices currently carry a significant share of your taste signal."
@@ -827,25 +779,25 @@ function buildInsights({
   }
 
 
-  if (
+  if(
     confidence >= 0.7
-  ) {
+  ){
 
     insights.push(
       "There is enough behavioural data for the Taste Graph to begin making meaningful personal recommendations."
     )
 
   }
-  else if (
+  else if(
     confidence >= 0.35
-  ) {
+  ){
 
     insights.push(
       "Your Taste Graph is developing, but more rankings will improve recommendation confidence."
     )
 
   }
-  else {
+  else{
 
     insights.push(
       "More rankings are needed before your Taste Graph can confidently model your preferences."
@@ -867,7 +819,7 @@ export function calculateTasteDNADiagnostic(
 ): TasteDNADiagnostic {
 
   /**
-   * Item-level signals.
+   * Actual ranked item signals.
    */
   const rankingSignals =
     getRankingSignals(
@@ -876,13 +828,10 @@ export function calculateTasteDNADiagnostic(
 
 
   /**
-   * Category-level signals.
+   * Category marker signals.
    *
-   * These are retained for determining the number
-   * of categories represented in the graph.
-   *
-   * They are deliberately NOT used to calculate
-   * category strength.
+   * These are retained for determining
+   * which categories exist.
    */
   const categorySignals =
     getCategorySignals(
@@ -912,52 +861,71 @@ export function calculateTasteDNADiagnostic(
    */
   const uniqueItemsSet =
     new Set(
-      rankingSignals
-        .map(
-          signal =>
-            normaliseText(
-              signal.item
-            )
-        )
-        .filter(
-          item =>
-            item !== ""
-        )
+      rankingSignals.map(
+        signal =>
+          normaliseText(
+            signal.item
+          )
+      )
     )
 
 
   /**
-   * Unique categories should be based on the
-   * actual category context represented by the
-   * graph.
+   * Unique categories are determined from
+   * category context attached to the graph.
    *
-   * We first use category anchor signals.
+   * We use BOTH:
    *
-   * If those are unavailable, fall back to the
-   * inherited category on item-level signals.
+   * 1. category marker signals
+   * 2. categories inherited by item signals
+   *
+   * This makes the diagnostic resilient if
+   * category marker behaviour changes later.
    */
   const uniqueCategoriesSet =
-    new Set(
-      [
-        ...categorySignals.map(
-          signal =>
-            normaliseText(
-              signal.category
-            )
-        ),
+    new Set<string>()
 
-        ...rankingSignals.map(
-          signal =>
-            normaliseText(
-              signal.category
-            )
+
+  categorySignals.forEach(
+    signal => {
+
+      const category =
+        normaliseText(
+          signal.category
         )
-      ]
-      .filter(
-        category =>
-          category !== ""
-      )
-    )
+
+
+      if(category){
+
+        uniqueCategoriesSet.add(
+          category
+        )
+
+      }
+
+    }
+  )
+
+
+  rankingSignals.forEach(
+    signal => {
+
+      const category =
+        normaliseText(
+          signal.category
+        )
+
+
+      if(category){
+
+        uniqueCategoriesSet.add(
+          category
+        )
+
+      }
+
+    }
+  )
 
 
   const totalItems =
@@ -1016,14 +984,21 @@ export function calculateTasteDNADiagnostic(
   /**
    * IMPORTANT:
    *
-   * Category strength is now calculated from
-   * item-level ranked signals.
+   * Category strength comes from the actual
+   * ranked items and their strengths.
    *
-   * Each item carries its inherited category.
-   * Its ranking position determines its weight.
+   * We do NOT use the category marker signal
+   * strength.
    *
-   * This prevents every category anchor from
-   * receiving the same strength of 1.0.
+   * This means:
+   *
+   * Sport strength =
+   * sum of ranked Sport item strengths
+   *
+   * General strength =
+   * sum of ranked General item strengths
+   *
+   * This is the correct behavioural model.
    */
   const categoryStrength =
     calculateCategoryStrength(
@@ -1032,8 +1007,8 @@ export function calculateTasteDNADiagnostic(
 
 
   /**
-   * Choices continue to use item-level ranking
-   * signals, also position-weighted.
+   * Individual choices continue to use
+   * item-level ranking signals.
    */
   const choiceStrength =
     calculateChoiceStrength(
