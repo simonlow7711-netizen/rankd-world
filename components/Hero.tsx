@@ -2,126 +2,157 @@ import Link from "next/link"
 
 
 
-export default function Hero(){
+export default function Hero() {
 
 
   return (
 
-    <section className="
-      min-h-screen
-      bg-[#F7F4EE]
-      text-black
-      flex
-      flex-col
-      justify-center
-      items-center
-      text-center
-      px-6
-      relative
-      overflow-hidden
-    ">
+    <section
+      className="
+        min-h-screen
+        bg-[#F7F4EE]
+        text-black
+        flex
+        flex-col
+        justify-center
+        items-center
+        text-center
+        px-6
+        relative
+        overflow-hidden
+      "
+    >
 
-
-
-      <div className="
-        absolute
-        -top-10
-        -right-10
-        text-[220px]
-        opacity-5
-        font-black
-        leading-none
-      ">
+      <div
+        className="
+          absolute
+          -top-10
+          -right-10
+          text-[220px]
+          opacity-5
+          font-black
+          leading-none
+        "
+      >
 
         7
 
       </div>
 
 
-
-
-
-
-
-      <p className="
-        rankd-accent
-        uppercase
-        tracking-[0.35em]
-        text-sm
-        font-black
-      ">
+      <p
+        className="
+          rankd-accent
+          uppercase
+          tracking-[0.35em]
+          text-sm
+          font-black
+        "
+      >
 
         The world's opinions, ranked
 
       </p>
 
 
-
-
-
-
-
-      <h1 className="
-        text-7xl
-        md:text-[130px]
-        font-black
-        tracking-tight
-        mt-6
-        leading-none
-      ">
+      <h1
+        className="
+          text-7xl
+          md:text-[130px]
+          font-black
+          tracking-tight
+          mt-6
+          leading-none
+        "
+      >
 
         RANKD
 
       </h1>
 
 
+      <div
+        className="
+          mt-10
+          max-w-5xl
+        "
+      >
+
+        <p
+          className="
+            text-xl
+            md:text-3xl
+            font-medium
+            tracking-tight
+            opacity-70
+          "
+        >
+
+          Everyone has an opinion.
+
+        </p>
 
 
+        <h2
+          className="
+            text-6xl
+            md:text-[110px]
+            font-black
+            tracking-tight
+            leading-[0.85]
+            mt-5
+            uppercase
+          "
+        >
+
+          NOW
+
+          <br />
+
+          RANK IT.
+
+        </h2>
 
 
+        <p
+          className="
+            mt-8
+            text-2xl
+            md:text-4xl
+            font-black
+            tracking-tight
+          "
+        >
 
-      <h2 className="
-        text-4xl
-        md:text-7xl
-        font-black
-        mt-8
-        max-w-5xl
-        leading-[0.95]
-      ">
+          The world's Top 7 everything.
 
-        Everyone has an opinion.
+        </p>
 
-        <br />
-
-        Now rank it.
-
-      </h2>
+      </div>
 
 
+      <p
+        className="
+          max-w-2xl
+          mt-8
+          text-lg
+          md:text-xl
+          rankd-muted
+          leading-relaxed
+        "
+      >
 
-
-
-
-
-      <p className="
-        max-w-2xl
-        mt-8
-        text-lg
-        md:text-xl
-        rankd-muted
-        leading-relaxed
-      ">
-
-        Create your Top 7.
         Discover how the world thinks.
         Find the rankings that make you say:
 
         <br />
 
-        <span className="
-          font-black
-          text-black
-        ">
+        <span
+          className="
+            font-black
+            text-black
+          "
+        >
 
           "I'd rank it differently."
 
@@ -130,29 +161,24 @@ export default function Hero(){
       </p>
 
 
-
-
-
-
-
-      <div className="
-        flex
-        gap-4
-        mt-10
-        flex-col
-        md:flex-row
-      ">
-
-
-
-
+      <div
+        className="
+          flex
+          gap-4
+          mt-10
+          flex-col
+          md:flex-row
+        "
+      >
 
         <Link href="/create">
 
-          <button className="
-            rankd-button
-            text-lg
-          ">
+          <button
+            className="
+              rankd-button
+              text-lg
+            "
+          >
 
             Create Your Top 7
 
@@ -161,26 +187,23 @@ export default function Hero(){
         </Link>
 
 
-
-
-
-
-
         <Link href="/explore">
 
-          <button className="
-            bg-white
-            border
-            border-black/10
-            text-black
-            px-8
-            py-4
-            rounded-full
-            font-black
-            text-lg
-            hover:-translate-y-1
-            transition
-          ">
+          <button
+            className="
+              bg-white
+              border
+              border-black/10
+              text-black
+              px-8
+              py-4
+              rounded-full
+              font-black
+              text-lg
+              hover:-translate-y-1
+              transition
+            "
+          >
 
             Explore Perspectives
 
@@ -188,15 +211,7 @@ export default function Hero(){
 
         </Link>
 
-
-
-
-
       </div>
-
-
-
-
 
     </section>
 
