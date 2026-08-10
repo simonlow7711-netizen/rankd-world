@@ -65,17 +65,55 @@ export default function ConversationTree({
       node.children.length > 0
 
 
+    const isRoot =
+      node.parentId === null
+
+
     return (
 
       <div
         className="
-          mt-3
+          relative
         "
       >
+
+        {depth > 0 && (
+
+          <div
+            className="
+              absolute
+              left-[-18px]
+              top-[-12px]
+              bottom-0
+              w-px
+              bg-white/20
+            "
+          />
+
+        )}
+
+
+        {depth > 0 && (
+
+          <div
+            className="
+              absolute
+              left-[-18px]
+              top-7
+              w-4
+              h-px
+              bg-white/20
+            "
+          />
+
+        )}
+
 
         <div
 
           className={`
+
+            relative
 
             rounded-2xl
 
@@ -106,7 +144,7 @@ export default function ConversationTree({
           style={{
 
             marginLeft:
-              depth * 18
+              depth * 24
 
           }}
 
@@ -115,13 +153,15 @@ export default function ConversationTree({
           <div
             className="
               flex
-              justify-between
               items-center
-              gap-3
+              justify-between
+              gap-4
             "
           >
 
             <button
+
+              type="button"
 
               onClick={() =>
                 router.push(
@@ -130,18 +170,47 @@ export default function ConversationTree({
               }
 
               className="
+                min-w-0
+                flex-1
                 text-left
                 font-black
-                flex-1
                 hover:opacity-80
                 transition
               "
 
             >
 
-              {depth > 0 && "↳ "}
+              <span
+                className="
+                  block
+                  text-xs
+                  uppercase
+                  tracking-widest
+                  opacity-60
+                  mb-1
+                "
+              >
 
-              {node.title}
+                {
+                  isRoot
+
+                    ? "Original RANKD"
+
+                    : "Different perspective"
+                }
+
+              </span>
+
+
+              <span
+                className="
+                  block
+                "
+              >
+
+                {node.title}
+
+              </span>
 
             </button>
 
@@ -150,20 +219,39 @@ export default function ConversationTree({
 
               <button
 
+                type="button"
+
                 onClick={() =>
                   setExpanded(
-                    !expanded
+                    current =>
+                      !current
                   )
                 }
 
                 className={`
+                  shrink-0
+                  rounded-xl
+                  px-3
+                  py-2
                   text-sm
                   font-bold
                   transition
                   ${
                     isCurrent
-                      ? "text-black/60 hover:text-black"
-                      : "text-white/70 hover:text-white"
+
+                      ? `
+                        bg-black/5
+                        text-black/60
+                        hover:bg-black/10
+                        hover:text-black
+                      `
+
+                      : `
+                        bg-white/5
+                        text-white/70
+                        hover:bg-white/10
+                        hover:text-white
+                      `
                   }
                 `}
 
@@ -180,10 +268,10 @@ export default function ConversationTree({
 
                 {" "}
 
-                perspective
-
-                {node.children.length !== 1 &&
-                  "s"
+                {
+                  node.children.length === 1
+                    ? "perspective"
+                    : "perspectives"
                 }
 
               </button>
@@ -197,8 +285,8 @@ export default function ConversationTree({
 
             <p
               className="
-                text-xs
                 mt-2
+                text-xs
                 font-bold
                 text-black/60
               "
@@ -215,7 +303,12 @@ export default function ConversationTree({
 
         {expanded && hasChildren && (
 
-          <div>
+          <div
+            className="
+              relative
+              mt-2
+            "
+          >
 
             {node.children.map(
 
@@ -252,6 +345,15 @@ export default function ConversationTree({
   }
 
 
+  if (
+    nodes.length === 0
+  ) {
+
+    return null
+
+  }
+
+
   return (
 
     <div
@@ -265,39 +367,84 @@ export default function ConversationTree({
       "
     >
 
-      <h2
+      <div
         className="
-          text-2xl
-          font-black
           mb-5
-          text-white
         "
       >
 
-        🌎 Conversation
+        <p
+          className="
+            text-xs
+            uppercase
+            tracking-widest
+            font-black
+            text-white/50
+          "
+        >
 
-      </h2>
+          RANKD debate
+
+        </p>
 
 
-      {nodes.map(
+        <h2
+          className="
+            text-2xl
+            font-black
+            mt-1
+          "
+        >
 
-        node => (
+          🌎 Conversation
 
-          <TreeNode
+        </h2>
 
-            key={
-              node.id
-            }
 
-            node={
-              node
-            }
+        <p
+          className="
+            mt-2
+            text-sm
+            text-white/60
+          "
+        >
 
-          />
+          Every remix adds another
+          perspective to the original.
 
-        )
+        </p>
 
-      )}
+      </div>
+
+
+      <div
+        className="
+          space-y-2
+          pl-1
+        "
+      >
+
+        {nodes.map(
+
+          node => (
+
+            <TreeNode
+
+              key={
+                node.id
+              }
+
+              node={
+                node
+              }
+
+            />
+
+          )
+
+        )}
+
+      </div>
 
     </div>
 
