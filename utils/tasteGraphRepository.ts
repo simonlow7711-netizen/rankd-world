@@ -717,33 +717,34 @@ async function getOrCreateNode({
 
     error: lookupError
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("taste_nodes")
+      .from("taste_nodes")
 
-    .select(
+      .select(
 
-      "id, type, label"
+        "id, type, label"
 
-    )
+      )
 
-    .eq(
+      .eq(
 
-      "slug",
+        "slug",
 
-      slug
+        slug
 
-    )
+      )
 
-    .eq(
+      .eq(
 
-      "type",
+        "type",
 
-      type
+        type
 
-    )
+      )
 
-    .maybeSingle()
+      .maybeSingle()
 
 
   if (lookupError) {
@@ -752,7 +753,28 @@ async function getOrCreateNode({
 
       "LOOKUP TASTE NODE ERROR",
 
-      lookupError
+      {
+
+        message:
+          lookupError.message,
+
+        details:
+          lookupError.details,
+
+        hint:
+          lookupError.hint,
+
+        code:
+          lookupError.code,
+
+        type,
+
+        label:
+          cleanLabel,
+
+        slug
+
+      }
 
     )
 
@@ -772,28 +794,29 @@ async function getOrCreateNode({
 
     error
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("taste_nodes")
+      .from("taste_nodes")
 
-    .insert({
+      .insert({
 
-      type,
+        type,
 
-      label:
-        cleanLabel,
+        label:
+          cleanLabel,
 
-      slug
+        slug
 
-    })
+      })
 
-    .select(
+      .select(
 
-      "id, type, label"
+        "id, type, label"
 
-    )
+      )
 
-    .single()
+      .single()
 
 
   if (error) {
@@ -802,7 +825,28 @@ async function getOrCreateNode({
 
       "CREATE TASTE NODE ERROR",
 
-      error
+      {
+
+        message:
+          error.message,
+
+        details:
+          error.details,
+
+        hint:
+          error.hint,
+
+        code:
+          error.code,
+
+        type,
+
+        label:
+          cleanLabel,
+
+        slug
+
+      }
 
     )
 
@@ -990,49 +1034,50 @@ export async function saveTasteGraph(
 
       error: lookupError
 
-    } = await supabase
+    } =
+      await supabase
 
-      .from("taste_signals")
+        .from("taste_signals")
 
-      .select(
+        .select(
 
-        "id, strength, position"
+          "id, strength, position"
 
-      )
+        )
 
-      .eq(
+        .eq(
 
-        "user_id",
+          "user_id",
 
-        signal.userId
+          signal.userId
 
-      )
+        )
 
-      .eq(
+        .eq(
 
-        "node_id",
+          "node_id",
 
-        node.id
+          node.id
 
-      )
+        )
 
-      .eq(
+        .eq(
 
-        "source_rank_id",
+          "source_rank_id",
 
-        sourceRankId
+          sourceRankId
 
-      )
+        )
 
-      .eq(
+        .eq(
 
-        "signal_type",
+          "signal_type",
 
-        signalType
+          signalType
 
-      )
+        )
 
-      .maybeSingle()
+        .maybeSingle()
 
 
     if (lookupError) {
@@ -1075,30 +1120,31 @@ export async function saveTasteGraph(
 
         error: updateError
 
-      } = await supabase
+      } =
+        await supabase
 
-        .from("taste_signals")
+          .from("taste_signals")
 
-        .update({
+          .update({
 
-          strength:
-            mergedStrength,
+            strength:
+              mergedStrength,
 
-          position:
-            signal.position,
+            position:
+              signal.position,
 
-          node_id:
-            node.id
+            node_id:
+              node.id
 
-        })
+          })
 
-        .eq(
+          .eq(
 
-          "id",
+            "id",
 
-          existingSignal.id
+            existingSignal.id
 
-        )
+          )
 
 
       if (updateError) {
@@ -1123,33 +1169,34 @@ export async function saveTasteGraph(
 
       error: insertError
 
-    } = await supabase
+    } =
+      await supabase
 
-      .from("taste_signals")
+        .from("taste_signals")
 
-      .insert({
+        .insert({
 
-        user_id:
-          signal.userId,
+          user_id:
+            signal.userId,
 
-        node_id:
-          node.id,
+          node_id:
+            node.id,
 
-        source_rank_id:
-          sourceRankId,
+          source_rank_id:
+            sourceRankId,
 
-        signal_type:
-          signalType,
+          signal_type:
+            signalType,
 
-        strength:
-          Number(
-            signal.strength
-          ),
+          strength:
+            Number(
+              signal.strength
+            ),
 
-        position:
-          signal.position
+          position:
+            signal.position
 
-      })
+        })
 
 
     if (insertError) {
@@ -1191,36 +1238,37 @@ export async function getTasteGraph(
 
     error
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("taste_signals")
+      .from("taste_signals")
 
-    .select(
+      .select(
 
-      `
-      id,
-      user_id,
-      signal_type,
-      strength,
-      position,
-      source_rank_id,
-      node_id,
-      taste_nodes(
-        id,
-        type,
-        label
+        `
+          id,
+          user_id,
+          signal_type,
+          strength,
+          position,
+          source_rank_id,
+          node_id,
+          taste_nodes(
+            id,
+            type,
+            label
+          )
+        `
+
       )
-      `
 
-    )
+      .eq(
 
-    .eq(
+        "user_id",
 
-      "user_id",
+        userId
 
-      userId
-
-    )
+      )
 
 
   if (

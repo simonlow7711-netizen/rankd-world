@@ -289,6 +289,15 @@ async function getRankingItems(
 
 
 }
+
+
+
+
+
+
+
+
+
 export async function getSupabaseRanking(
 
   id:string
@@ -296,7 +305,21 @@ export async function getSupabaseRanking(
 ):Promise<Ranking | null>{
 
 
+  console.log(
+
+    "GET RANKING DEBUG START",
+
+    {
+
+      id
+
+    }
+
+  )
+
+
   const {
+
     data:rankingRow,
 
     error:rankingError
@@ -315,11 +338,24 @@ export async function getSupabaseRanking(
 
     )
 
-    .single()
+    .maybeSingle()
 
 
+  console.log(
 
+    "GET RANKING DEBUG RESULT",
 
+    {
+
+      id,
+
+      rankingRow,
+
+      rankingError
+
+    }
+
+  )
 
 
   if(rankingError || !rankingRow){
@@ -329,7 +365,15 @@ export async function getSupabaseRanking(
 
       "GET RANKING ERROR",
 
-      rankingError
+      {
+
+        id,
+
+        rankingRow,
+
+        rankingError
+
+      }
 
     )
 
@@ -348,6 +392,7 @@ export async function getSupabaseRanking(
 
 
   const {
+
     data:items,
 
     error:itemError
@@ -392,7 +437,13 @@ export async function getSupabaseRanking(
 
       "GET ITEMS ERROR",
 
-      itemError
+      {
+
+        id,
+
+        itemError
+
+      }
 
     )
 
@@ -407,7 +458,10 @@ export async function getSupabaseRanking(
 
 
   const {
-    data:profile
+
+    data:profile,
+
+    error:profileError
 
   } = await supabase
 
@@ -427,7 +481,31 @@ export async function getSupabaseRanking(
 
     )
 
-    .single()
+    .maybeSingle()
+
+
+  if(profileError){
+
+
+    console.error(
+
+      "GET PROFILE ERROR",
+
+      {
+
+        id,
+
+        userId:
+          rankingRow.user_id,
+
+        profileError
+
+      }
+
+    )
+
+
+  }
 
 
 
@@ -589,6 +667,7 @@ export async function getAllSupabaseRankings():Promise<Ranking[]>{
 
 
   const {
+
     data:rankings,
 
     error
@@ -697,7 +776,15 @@ export async function getAllSupabaseRankings():Promise<Ranking[]>{
       )
 
     )
-      return (
+
+
+
+
+
+
+
+
+  return (
 
     rankings as RankingRow[]
 
@@ -906,7 +993,6 @@ export async function getAllRankings():Promise<Ranking[]>{
 
           )
 
-
       })
 
     )
@@ -968,6 +1054,7 @@ export async function createSupabaseRanking(
 
 
   const {
+
     data,
 
     error
@@ -1016,7 +1103,6 @@ export async function createSupabaseRanking(
       root_id:
 
         ranking.rootId ?? ranking.id
-
 
     })
 
@@ -1084,7 +1170,6 @@ export async function createSupabaseRanking(
 
             item.votes ?? 0
 
-
         }
 
 
@@ -1101,6 +1186,7 @@ export async function createSupabaseRanking(
 
 
   const {
+
     error:itemsError
 
   } = await supabase
@@ -1132,7 +1218,16 @@ export async function createSupabaseRanking(
 
 
   }
-    const tasteGraph =
+
+
+
+
+
+
+
+
+
+  const tasteGraph =
 
     buildTasteGraph(
 
