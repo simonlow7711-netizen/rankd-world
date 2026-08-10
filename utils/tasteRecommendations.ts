@@ -131,37 +131,18 @@ function hasAlreadyRankedItem(
 }
 
 
-function hasAlreadyInteractedWithRanking(
-
-  graph: TasteGraph,
-
-  rankingId: string
-
-) {
-
-  if (!rankingId) {
-
-    return false
-
-  }
+/*
+ *
+ * Return the conversation root for a ranking.
+ *
+ * A root ranking points to itself.
+ * A remix/perspective points back to the
+ * original ranking through rootId.
+ *
+ */
 
 
-  return graph.signals.some(
-
-    signal =>
-
-      signal.source ===
-
-      rankingId
-
-  )
-
-}
-
-
-function isOwnRanking(
-
-  graph: TasteGraph,
+function getConversationRootId(
 
   ranking: Ranking
 
@@ -169,58 +150,107 @@ function isOwnRanking(
 
   return (
 
-    ranking.creatorId ===
+    ranking.rootId ??
 
-    graph.userId
+    ranking.id
 
   )
 
 }
 
 
-function isNewRecommendation(
+/*
+ *
+ * Find every conversation the user has already
+ * participated in through their Taste Graph.
+ *
+ * The Taste Graph signal.source contains the
+ * ranking ID which generated the signal.
+ *
+ * Once we find that ranking, we resolve its
+ * rootId and exclude the entire conversation.
+ *
+ */
+
+
+function getExcludedConversationRoots(
 
   graph: TasteGraph,
 
-  ranking: Ranking
+  rankings: Ranking[]
 
 ) {
 
-  if (
+  const rankingMap =
 
-    isOwnRanking(
-
-      graph,
-
-      ranking
-
-    )
-
-  ) {
-
-    return false
-
-  }
+    new Map<string, Ranking>()
 
 
-  if (
+  rankings.forEach(
 
-    hasAlreadyInteractedWithRanking(
+    ranking => {
 
-      graph,
+      rankingMap.set(
 
-      ranking.id
+        ranking.id,
 
-    )
+        ranking
 
-  ) {
+      )
 
-    return false
+    }
 
-  }
+  )
 
 
-  return true
+  const excludedRoots =
+
+    new Set<string>()
+
+
+  graph.signals.forEach(
+
+    signal => {
+
+      if (!signal.source) {
+
+        return
+
+      }
+
+
+      const sourceRanking =
+
+        rankingMap.get(
+
+          signal.source
+
+        )
+
+
+      if (!sourceRanking) {
+
+        return
+
+      }
+
+
+      excludedRoots.add(
+
+        getConversationRootId(
+
+          sourceRanking
+
+        )
+
+      )
+
+    }
+
+  )
+
+
+  return excludedRoots
 
 }
 
@@ -1274,23 +1304,61 @@ export function getTasteRecommendedRankings(
 ): TasteRecommendation[] {
 
 
-  return (
+  /*
+   *
+   * Exclude every conversation the user has
+   * already participated in.
+   *
+   * This means that if the user remixes one
+   * ranking, the original ranking and all
+   * perspectives belonging to that same
+   * root conversation are excluded.
+   *
+   */
 
-    rankings
 
-      .filter(
+  const excludedConversationRoots =
 
-        ranking =>
+    getExcludedConversationRoots(
 
-          isNewRecommendation(
+      graph,
 
-            graph,
+      rankings
+
+    )
+
+
+  const eligibleRankings =
+
+    rankings.filter(
+
+      ranking => {
+
+        const conversationRootId =
+
+          getConversationRootId(
 
             ranking
 
           )
 
-      )
+
+        return !
+
+          excludedConversationRoots.has(
+
+            conversationRootId
+
+          )
+
+      }
+
+    )
+
+
+  return (
+
+    eligibleRankings
 
       .map(
 
