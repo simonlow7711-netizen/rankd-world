@@ -1,4 +1,6 @@
-import type { Metadata } from "next"
+import type {
+  Metadata
+} from "next"
 
 import {
   getSupabaseRanking
@@ -11,21 +13,13 @@ import {
 import RankClient from "./RankClient"
 
 
-
-
-
 type Props = {
 
   params: Promise<{
-    id:string
+    id: string
   }>
 
 }
-
-
-
-
-
 
 
 export async function generateMetadata(
@@ -33,58 +27,36 @@ export async function generateMetadata(
   {
     params
 
-  }:Props
+  }: Props
 
-):Promise<Metadata>{
-
+): Promise<Metadata> {
 
 
   const {
-
     id
-
-  } = await params
-
-
-
-
-
+  } =
+    await params
 
 
   const ranking =
-
-    await getSupabaseRanking(id)
-
-
-
+    await getSupabaseRanking(
+      id
+    )
 
 
-
-
-
-  if(!ranking){
-
+  if (!ranking) {
 
     return {
 
       title:
-
         "RANKD | Top 7 everything"
 
     }
 
-
   }
 
 
-
-
-
-
-
-
   return {
-
 
     title:
 
@@ -93,8 +65,6 @@ export async function generateMetadata(
         ranking.title
 
       )} | RANKD`,
-
-
 
     description:
 
@@ -108,18 +78,9 @@ export async function generateMetadata(
 
       )} on RANKD.`
 
-
   }
 
-
 }
-
-
-
-
-
-
-
 
 
 export default async function RankPage(
@@ -128,27 +89,21 @@ export default async function RankPage(
 
     params
 
-  }:Props
+  }: Props
 
-){
+) {
 
 
   const {
-
     id
-
-  } = await params
-
-
-
+  } =
+    await params
 
 
   return (
 
     <RankClient
-
       id={id}
-
     />
 
   )

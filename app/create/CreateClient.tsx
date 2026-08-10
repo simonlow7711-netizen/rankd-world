@@ -59,9 +59,9 @@ const categories = [
   "Film & TV",
   "Music",
   "Sport",
+  "Gaming",
   "Travel",
   "Technology",
-  "Gaming",
   "Lifestyle",
   "General"
 
@@ -83,6 +83,31 @@ function createEmptyItems(): RankingBuilderItem[] {
 
       name:
         ""
+
+    })
+
+  )
+
+}
+
+
+function createItemsFromValues(
+  values: string[]
+): RankingBuilderItem[] {
+
+  return Array.from(
+
+    {
+      length: 7
+    },
+
+    (_, index) => ({
+
+      id:
+        crypto.randomUUID(),
+
+      name:
+        values[index] ?? ""
 
     })
 
@@ -180,6 +205,12 @@ export default function CreateClient() {
       )
 
 
+    const initialItems =
+      searchParams.get(
+        "items"
+      )
+
+
     if (initialTitle) {
 
       setTitle(
@@ -193,12 +224,7 @@ export default function CreateClient() {
     }
 
 
-    if (
-      initialCategory &&
-      categories.includes(
-        initialCategory
-      )
-    ) {
+    if (initialCategory) {
 
       setCategory(
         initialCategory
@@ -215,7 +241,69 @@ export default function CreateClient() {
 
     }
 
+
+    if (initialItems) {
+
+      const itemValues =
+
+        initialItems
+
+          .split("|")
+
+          .map(
+            item =>
+              item.trim()
+          )
+
+          .filter(Boolean)
+
+
+      if (
+        itemValues.length > 0
+      ) {
+
+        setItems(
+
+          createItemsFromValues(
+            itemValues
+          )
+
+        )
+
+      }
+
+    }
+
   }, [searchParams])
+
+
+  function updateItem(
+    id: string,
+    value: string
+  ) {
+
+    setItems(
+
+      current =>
+
+        current.map(
+
+          item =>
+
+            item.id === id
+
+              ? {
+                  ...item,
+                  name: value
+                }
+
+              : item
+
+        )
+
+    )
+
+  }
 
 
   function addItem() {
@@ -241,10 +329,76 @@ export default function CreateClient() {
 
           name:
             ""
-
         }
 
       ]
+
+    )
+
+  }
+
+
+  function removeItem(
+    id: string
+  ) {
+
+    if (
+      items.length <= 1
+    ) {
+
+      return
+
+    }
+
+
+    setItems(
+
+      current =>
+
+        current.filter(
+
+          item =>
+            item.id !== id
+
+        )
+
+    )
+
+  }
+
+
+  function moveItem(
+    oldIndex: number,
+    newIndex: number
+  ) {
+
+    setItems(
+
+      current => {
+
+        const next =
+          [
+            ...current
+          ]
+
+
+        const moved =
+          next.splice(
+            oldIndex,
+            1
+          )[0]
+
+
+        next.splice(
+          newIndex,
+          0,
+          moved
+        )
+
+
+        return next
+
+      }
 
     )
 
@@ -412,7 +566,12 @@ export default function CreateClient() {
          *
          * Taste Graph Baseline
          *
+         * Every RANKD created by an
+         * authenticated user contributes
+         * initial taste signals.
+         *
          */
+
 
         try {
 
@@ -478,7 +637,13 @@ export default function CreateClient() {
          *
          * Taste Graph Feedback Loop
          *
+         * If this RANKD was created from
+         * a Taste Recommendation, compare
+         * the user's new ranking against
+         * the original recommendation.
+         *
          */
+
 
         if (recommendationId) {
 
@@ -663,32 +828,25 @@ export default function CreateClient() {
       <div
         className="
           mx-auto
-          w-full
-          max-w-5xl
-          px-5
-          py-10
-          sm:px-6
-          sm:py-12
-          lg:px-8
-          lg:py-16
+          max-w-6xl
+          px-6
+          py-16
         "
       >
 
-        <header
+        <div
           className="
-            mb-10
-            max-w-3xl
-            sm:mb-12
+            mb-12
           "
         >
 
           <p
             className="
               rankd-accent
-              text-xs
-              font-black
               uppercase
-              tracking-[0.2em]
+              tracking-widest
+              text-sm
+              font-black
             "
           >
 
@@ -699,13 +857,10 @@ export default function CreateClient() {
 
           <h1
             className="
-              mt-3
-              text-4xl
+              text-5xl
+              md:text-6xl
               font-black
-              leading-[0.95]
-              tracking-tight
-              sm:text-5xl
-              lg:text-6xl
+              mt-3
             "
           >
 
@@ -716,12 +871,10 @@ export default function CreateClient() {
 
           <p
             className="
-              mt-5
+              mt-4
+              text-lg
+              opacity-70
               max-w-2xl
-              text-base
-              leading-7
-              opacity-60
-              sm:text-lg
             "
           >
 
@@ -729,298 +882,161 @@ export default function CreateClient() {
 
           </p>
 
-        </header>
+        </div>
 
 
         <form
           onSubmit={handleSubmit}
           className="
-            space-y-6
+            space-y-10
           "
         >
 
-          <section
+          <div
             className="
               rankd-card
-              overflow-hidden
+              p-8
             "
           >
 
-            <div
+            <label
               className="
-                border-b
-                px-6
-                py-5
-                sm:px-8
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
               "
             >
 
-              <label
-                className="
-                  block
-                  text-xs
-                  font-black
-                  uppercase
-                  tracking-[0.18em]
-                "
-              >
+              Title
 
-                Title
-
-              </label>
+            </label>
 
 
-              <p
-                className="
-                  mt-1.5
-                  text-sm
-                  opacity-50
-                "
-              >
+            <input
 
-                Give your RANKD a clear name.
+              value={title}
 
-              </p>
+              onChange={
+                event =>
+                  setTitle(
+                    event.target.value
+                  )
+              }
 
-            </div>
+              placeholder="Top 7..."
 
-
-            <div
               className="
-                px-6
-                py-6
-                sm:px-8
+                mt-3
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-4
+                text-lg
+                font-bold
               "
-            >
 
-              <input
+            />
 
-                value={title}
-
-                onChange={
-                  event =>
-                    setTitle(
-                      event.target.value
-                    )
-                }
-
-                placeholder="Top 7..."
-
-                className="
-                  w-full
-                  rounded-xl
-                  border
-                  bg-transparent
-                  px-4
-                  py-3.5
-                  text-base
-                  font-bold
-                  outline-none
-                  transition
-                  placeholder:opacity-35
-                  focus:ring-2
-                  focus:ring-black/10
-                "
-
-              />
-
-            </div>
-
-          </section>
+          </div>
 
 
-          <section
+          <div
             className="
               rankd-card
-              overflow-hidden
+              p-8
             "
           >
 
-            <div
+            <label
               className="
-                border-b
-                px-6
-                py-5
-                sm:px-8
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
               "
             >
 
-              <label
-                className="
-                  block
-                  text-xs
-                  font-black
-                  uppercase
-                  tracking-[0.18em]
-                "
-              >
+              Category
 
-                Category
-
-              </label>
+            </label>
 
 
-              <p
-                className="
-                  mt-1.5
-                  text-sm
-                  opacity-50
-                "
-              >
+            <select
 
-                Choose the category that best fits your RANKD.
+              value={category}
 
-              </p>
+              onChange={
+                event =>
+                  setCategory(
+                    event.target.value
+                  )
+              }
 
-            </div>
-
-
-            <div
               className="
-                grid
-                grid-cols-2
-                gap-2
-                p-4
-                sm:grid-cols-3
-                sm:p-6
-                lg:grid-cols-5
+                mt-3
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-4
+                font-bold
               "
+
             >
 
               {
                 categories.map(
 
-                  option => {
+                  option => (
 
-                    const selected =
-                      category === option
+                    <option
+                      key={option}
+                      value={option}
+                    >
 
+                      {option}
 
-                    return (
+                    </option>
 
-                      <button
-
-                        key={option}
-
-                        type="button"
-
-                        onClick={
-                          () =>
-                            setCategory(
-                              option
-                            )
-                        }
-
-                        aria-pressed={
-                          selected
-                        }
-
-                        className={`
-                          rounded-xl
-                          border
-                          px-3
-                          py-3
-                          text-sm
-                          font-black
-                          transition
-                          ${
-                            selected
-                              ? "rankd-primary border-transparent"
-                              : "bg-transparent opacity-60 hover:opacity-100"
-                          }
-                        `}
-
-                      >
-
-                        {option}
-
-                      </button>
-
-                    )
-
-                  }
+                  )
 
                 )
               }
 
-            </div>
+            </select>
 
-          </section>
+          </div>
 
 
-          <section
+          <div
             className="
               rankd-card
-              overflow-hidden
+              p-8
             "
           >
 
-            <div
+            <label
               className="
-                flex
-                items-end
-                justify-between
-                gap-4
-                border-b
-                px-6
-                py-5
-                sm:px-8
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
               "
             >
 
-              <div>
+              Your Top 7
 
-                <label
-                  className="
-                    block
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.18em]
-                  "
-                >
-
-                  Your Top 7
-
-                </label>
-
-
-                <p
-                  className="
-                    mt-1.5
-                    text-sm
-                    opacity-50
-                  "
-                >
-
-                  Put your choices in order.
-
-                </p>
-
-              </div>
-
-
-              <div
-                className="
-                  shrink-0
-                  text-xs
-                  font-black
-                  opacity-50
-                "
-              >
-
-                {items.length} / 7
-
-              </div>
-
-            </div>
+            </label>
 
 
             <div
               className="
-                px-6
-                py-6
-                sm:px-8
+                mt-6
               "
             >
 
@@ -1032,133 +1048,88 @@ export default function CreateClient() {
 
               />
 
-
-              {
-                items.length < 7 && (
-
-                  <button
-
-                    type="button"
-
-                    onClick={addItem}
-
-                    className="
-                      mt-5
-                      rounded-xl
-                      border
-                      px-4
-                      py-2.5
-                      text-sm
-                      font-black
-                      opacity-70
-                      transition
-                      hover:opacity-100
-                    "
-
-                  >
-
-                    Add item
-
-                  </button>
-
-                )
-              }
-
             </div>
 
-          </section>
+
+            {
+              items.length < 7 && (
+
+                <button
+
+                  type="button"
+
+                  onClick={addItem}
+
+                  className="
+                    mt-6
+                    rounded-xl
+                    border
+                    px-5
+                    py-3
+                    font-black
+                  "
+
+                >
+
+                  Add item
+
+                </button>
+
+              )
+            }
+
+          </div>
 
 
-          <section
+          <div
             className="
               rankd-card
-              overflow-hidden
+              p-8
             "
           >
 
-            <div
+            <label
               className="
-                border-b
-                px-6
-                py-5
-                sm:px-8
+                block
+                text-sm
+                font-black
+                uppercase
+                tracking-widest
               "
             >
 
-              <label
-                className="
-                  block
-                  text-xs
-                  font-black
-                  uppercase
-                  tracking-[0.18em]
-                "
-              >
+              Description
 
-                Description
-
-              </label>
+            </label>
 
 
-              <p
-                className="
-                  mt-1.5
-                  text-sm
-                  opacity-50
-                "
-              >
+            <textarea
 
-                Add a little context if you want to.
+              value={description}
 
-              </p>
+              onChange={
+                event =>
+                  setDescription(
+                    event.target.value
+                  )
+              }
 
-            </div>
+              rows={4}
 
+              placeholder="Why this Top 7?"
 
-            <div
               className="
-                px-6
-                py-6
-                sm:px-8
+                mt-3
+                w-full
+                rounded-xl
+                border
+                px-4
+                py-4
               "
-            >
 
-              <textarea
+            />
 
-                value={description}
-
-                onChange={
-                  event =>
-                    setDescription(
-                      event.target.value
-                    )
-                }
-
-                rows={4}
-
-                placeholder="Why this Top 7?"
-
-                className="
-                  w-full
-                  resize-none
-                  rounded-xl
-                  border
-                  bg-transparent
-                  px-4
-                  py-3.5
-                  text-base
-                  outline-none
-                  transition
-                  placeholder:opacity-35
-                  focus:ring-2
-                  focus:ring-black/10
-                "
-
-              />
-
-            </div>
-
-          </section>
+          </div>
 
 
           {
@@ -1172,9 +1143,8 @@ export default function CreateClient() {
                   bg-red-50
                   px-5
                   py-4
-                  text-sm
-                  font-bold
                   text-red-700
+                  font-bold
                 "
               >
 
@@ -1186,44 +1156,32 @@ export default function CreateClient() {
           }
 
 
-          <div
+          <button
+
+            type="submit"
+
+            disabled={saving}
+
             className="
-              pt-2
+              w-full
+              rounded-2xl
+              px-6
+              py-5
+              font-black
+              text-lg
+              rankd-primary
+              disabled:opacity-50
             "
+
           >
 
-            <button
+            {
+              saving
+                ? "Creating..."
+                : "Create RANKD"
+            }
 
-              type="submit"
-
-              disabled={saving}
-
-              className="
-                rankd-primary
-                w-full
-                rounded-xl
-                px-6
-                py-4
-                text-base
-                font-black
-                transition
-                hover:opacity-90
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-                sm:py-4.5
-              "
-
-            >
-
-              {
-                saving
-                  ? "Creating..."
-                  : "Create RANKD"
-              }
-
-            </button>
-
-          </div>
+          </button>
 
         </form>
 

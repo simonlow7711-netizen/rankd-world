@@ -11,200 +11,134 @@ import {
 
 import Link from "next/link"
 
-
 import {
   trackEvent
 } from "@/utils/analytics"
-
 
 import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
-
 import {
   supabase
 } from "@/utils/supabase"
 
-
 import ConversationTree from "@/components/ConversationTree"
-
 
 import TasteInsightCard from "@/components/TasteInsightCard"
 
-
 import {
-  buildConversationTree
+  buildConversationTree,
+  ConversationNode
 } from "@/utils/conversationTree"
-
 
 import {
   generateTasteInsight
 } from "@/utils/tasteInsights"
 
-
 import {
   generateTasteGraphSignal
 } from "@/utils/tasteGraphSignal"
 
-
 import {
   generateTasteIdentity
 } from "@/utils/tasteIdentity"
-
 
 import {
   Ranking
 } from "@/types/ranking"
 
 
-
-
-
-
-
-
-
 type RankClientProps = {
 
-  id:string
+  id: string
 
 }
 
 
+type PerspectiveRanking = {
 
+  id: string
 
+  title: string
 
+  parentId: string | null
 
+  rootId: string | null
 
-
-
-type RemixRanking = {
-
-  id:string
-
-  title:string
-
-  parentId:string | null
-
-  rootId:string | null
+  createdAt: string | null
 
 }
-
-
-
-
-
-
-
-
-
-type ConversationNode = {
-
-  id:string
-
-  title:string
-
-  parentId:string | null
-
-  rootId:string | null
-
-}
-
-
-
-
-
-
-
 
 
 export default function RankClient({
 
   id
 
-}:RankClientProps){
+}: RankClientProps) {
 
 
-
-  const router = useRouter()
-
-
+  const router =
+    useRouter()
 
 
+  const [
+    ranking,
+    setRanking
+  ] =
+    useState<Ranking | null>(
+      null
+    )
 
 
+  const [
+    originalRanking,
+    setOriginalRanking
+  ] =
+    useState<Ranking | null>(
+      null
+    )
 
 
-  const [ranking,setRanking] =
-
-    useState<Ranking | null>(null)
-
-
-
-
-
-
-
-  const [parentRanking,setParentRanking] =
-
-    useState<Ranking | null>(null)
+  const [
+    perspectives,
+    setPerspectives
+  ] =
+    useState<PerspectiveRanking[]>(
+      []
+    )
 
 
+  const [
+    conversationTree,
+    setConversationTree
+  ] =
+    useState<ConversationNode[]>(
+      []
+    )
 
 
-
-
-
-  const [remixes,setRemixes] =
-
-    useState<RemixRanking[]>([])
-
-
-
-
-
-
-
-  const [conversationTree,setConversationTree] =
-
-    useState<any[]>([])
-
-
-
-
-
-
-
-  const [loading,setLoading] =
-
+  const [
+    loading,
+    setLoading
+  ] =
     useState(true)
 
 
+  useEffect(() => {
 
 
-
-
-
-
-
-  useEffect(()=>{
-
-
-    if(!id){
+    if (!id) {
 
       return
 
     }
 
 
+    async function load() {
 
 
-
-
-
-    async function load(){
-
+      setLoading(true)
 
 
       trackEvent(
@@ -213,153 +147,112 @@ export default function RankClient({
 
         {
 
-          rankingId:id
+          rankingId:
+            id
 
         }
 
       )
 
 
+      const currentRanking =
+        await getSupabaseRanking(
+          id
+        )
 
 
+      if (!currentRanking) {
 
-
-
-
-
-      const current =
-
-        await getSupabaseRanking(id)
-
-
-
-
-
-
-
-
-      if(!current){
-
-
+        setRanking(null)
 
         setLoading(false)
 
         return
 
-
       }
 
 
+      setRanking(
+        currentRanking
+      )
 
 
+      const rootId =
+        currentRanking.rootId ??
+        currentRanking.id
 
 
+      let rootRanking =
+        currentRanking
 
 
-      setRanking(current)
+      if (
+        rootId !==
+        currentRanking.id
+      ) {
 
-
-
-
-
-
-
-
-      if(current.parentId){
-
-
-
-        const parent =
-
+        const fetchedRoot =
           await getSupabaseRanking(
-
-            current.parentId
-
+            rootId
           )
 
 
+        if (fetchedRoot) {
 
-        setParentRanking(parent)
+          rootRanking =
+            fetchedRoot
 
+        }
 
       }
 
 
-
-
-
-
-
-
-      const conversationRoot =
-
-        current.rootId
-
-        ||
-
-        current.id
-
-
-
+      setOriginalRanking(
+        rootRanking
+      )
 
 
       const {
 
-        data:conversationRankings,
+        data: conversationRankings,
 
-        error:conversationError
+        error: conversationError
 
-      } = await supabase
+      } =
+        await supabase
 
-        .from("rankings")
+          .from("rankings")
 
-        .select(
+          .select(
 
-          `
+            `
+              id,
+              title,
+              parent_id,
+              root_id,
+              created_at
+            `
 
-          id,
+          )
 
-          title,
+          .eq(
+            "root_id",
+            rootId
+          )
 
-          parent_id,
+          .order(
+            "created_at",
+            {
 
-          root_id,
+              ascending:
+                true
 
-          created_at
+            }
 
-          `
-
-        )
-
-        .eq(
-
-          "root_id",
-
-          conversationRoot
-
-        )
-
-        .order(
-
-          "created_at",
-
-          {
-
-            ascending:true
-
-          }
-
-        )
+          )
 
 
-
-
-
-
-
-
-      if(conversationError){
-
+      if (conversationError) {
 
         console.error(
 
@@ -369,235 +262,259 @@ export default function RankClient({
 
         )
 
-
       }
 
 
+      const conversationItems =
+
+        (
+          conversationRankings ??
+          []
+        )
+
+          .map(
+
+            (item: any) => ({
+
+              id:
+                item.id,
+
+              title:
+                item.title,
+
+              parentId:
+                item.parent_id,
+
+              rootId:
+                item.root_id
+
+            })
+
+          )
 
 
+      const hasOriginal =
+        conversationItems.some(
+
+          item =>
+            item.id ===
+            rootRanking.id
+
+        )
 
 
+      const completeConversationItems =
+
+        hasOriginal
+
+          ? conversationItems
+
+          : [
+
+              {
+
+                id:
+                  rootRanking.id,
+
+                title:
+                  rootRanking.title,
+
+                parentId:
+                  rootRanking.parentId ??
+                  null,
+
+                rootId:
+                  rootId
+
+              },
+
+              ...conversationItems
+
+            ]
 
 
-      const conversationItems:ConversationNode[] =
-
-        (conversationRankings ?? [])
-
-        .map((item:any)=>(
-
-
-          {
-
-            id:item.id,
-
-            title:item.title,
-
-            parentId:item.parent_id,
-
-            rootId:item.root_id
-
-          }
-
-
-        ))
-
-              const tree =
+      const tree =
 
         buildConversationTree(
 
-          conversationItems
+          completeConversationItems
 
         )
-
-
-
-
-
-
 
 
       setConversationTree(
-
         tree
-
       )
 
 
+      const perspectiveItems:
+        PerspectiveRanking[] =
 
-
-
-
-
-
-
-      const remixFamily:RemixRanking[] =
-
-        conversationItems
-
-        .filter(
-
-          item =>
-
-            item.id !== current.id
-
+        (
+          conversationRankings ??
+          []
         )
 
-        .map(
+          .filter(
 
-          item => ({
+            (item: any) =>
+              item.id !==
+              rootRanking.id
+
+          )
+
+          .map(
+
+            (item: any) => ({
+
+              id:
+                item.id,
+
+              title:
+                item.title,
+
+              parentId:
+                item.parent_id,
+
+              rootId:
+                item.root_id,
+
+              createdAt:
+                item.created_at
+
+            })
+
+          )
 
 
-            id:item.id,
-
-
-            title:item.title,
-
-
-            parentId:item.parentId,
-
-
-            rootId:item.rootId
-
-
-          })
-
-        )
-
-
-
-
-
-
-
-
-      setRemixes(
-
-        remixFamily
-
+      setPerspectives(
+        perspectiveItems
       )
-
-
-
-
-
-
 
 
       setLoading(false)
 
-
-
     }
-
-
-
-
-
 
 
     load()
 
 
-
-  },[id])
-
+  }, [id])
 
 
+  function rankIt() {
 
 
-
-
-
-
-  function rankIt(){
-
-
-
-    if(!ranking){
+    if (!ranking) {
 
       return
 
     }
 
 
-
-
-
-
-
     const items =
 
       ranking.items
 
-      .map(
+        .map(
 
-        item =>
+          item =>
+            item.name
 
-          item.name
+        )
 
-      )
-
-      .join("|")
-
-
-
+        .join(
+          "|"
+        )
 
 
+    const rootId =
 
+      ranking.rootId ??
+      ranking.id
 
 
     router.push(
 
       `/create?title=${encodeURIComponent(
 
+        originalRanking?.title ??
         ranking.title
 
       )}&category=${encodeURIComponent(
 
+        originalRanking?.category ??
         ranking.category
 
       )}&items=${encodeURIComponent(
 
         items
 
-      )}&originalId=${encodeURIComponent(
+      )}&parentId=${encodeURIComponent(
 
         ranking.id
 
       )}&rootId=${encodeURIComponent(
 
-        ranking.rootId || ranking.id
+        rootId
 
       )}`
 
     )
 
+  }
+
+
+  function viewPerspective(
+    perspectiveId: string
+  ) {
+
+
+    router.push(
+
+      `/rank/${perspectiveId}`
+
+    )
 
   }
 
 
+  function viewOriginal() {
 
 
+    if (!originalRanking) {
+
+      return
+
+    }
 
 
+    router.push(
+
+      `/rank/${originalRanking.id}`
+
+    )
+
+  }
 
 
-
-  if(loading){
-
+  if (loading) {
 
     return (
 
-      <main className="
-        min-h-screen
-        bg-[#F7F4EE]
-        flex
-        items-center
-        justify-center
-        text-black
-        font-black
-        text-2xl
-      ">
+      <main
+        className="
+          min-h-screen
+          bg-[#F7F4EE]
+          flex
+          items-center
+          justify-center
+          text-black
+          font-black
+          text-2xl
+        "
+      >
 
         Loading RANKD...
 
@@ -605,29 +522,23 @@ export default function RankClient({
 
     )
 
-
   }
 
 
-
-
-
-
-
-
-  if(!ranking){
-
+  if (!ranking) {
 
     return (
 
-      <main className="
-        min-h-screen
-        bg-[#F7F4EE]
-        flex
-        items-center
-        justify-center
-        font-black
-      ">
+      <main
+        className="
+          min-h-screen
+          bg-[#F7F4EE]
+          flex
+          items-center
+          justify-center
+          font-black
+        "
+      >
 
         Ranking not found
 
@@ -635,305 +546,465 @@ export default function RankClient({
 
     )
 
-
   }
 
 
+  const isPerspective =
 
+    originalRanking !== null &&
 
-
-
-
+    originalRanking.id !==
+    ranking.id
 
 
   const tasteInsight =
-
     generateTasteInsight(
-
       ranking
-
     )
-
-
-
-
-
 
 
   const tasteSignal =
-
     generateTasteGraphSignal(
-
       ranking
-
     )
-
-
-
-
-
 
 
   const tasteIdentity =
-
     generateTasteIdentity(
-
       tasteSignal
-
     )
 
 
+  const sortedOriginalItems =
+
+    originalRanking
+
+      ? [...originalRanking.items]
+
+          .sort(
+
+            (a, b) =>
+              a.position -
+              b.position
+
+          )
+
+      : []
 
 
-
-
-
-
-
-  const sortedItems =
+  const sortedPerspectiveItems =
 
     [...ranking.items]
 
-    .sort(
+      .sort(
 
-      (a,b)=>
+        (a, b) =>
+          a.position -
+          b.position
 
-        a.position -
-
-        b.position
-
-    )
-
-
-
-
-
-
+      )
 
 
   return (
 
-    <main className="
-      min-h-screen
-      bg-[#F7F4EE]
-      text-black
-      px-6
-      py-12
-    ">
+    <main
+      className="
+        min-h-screen
+        bg-[#F7F4EE]
+        text-black
+        px-6
+        py-12
+      "
+    >
 
+      <div
+        className="
+          max-w-6xl
+          mx-auto
+        "
+      >
 
-      <div className="
-        max-w-6xl
-        mx-auto
-      ">
+        {isPerspective && (
 
+          <div
+            className="
+              mb-10
+            "
+          >
 
-
-
-
-        {parentRanking && (
-
-
-          <div className="
-            rankd-card
-            p-6
-            mb-8
-          ">
-
-
-            <p className="
-              rankd-accent
-              uppercase
-              tracking-widest
-              text-sm
-              font-black
-            ">
-
-              Inspired by
-
-            </p>
-
-
-
-
-            <button
-
-              onClick={()=>router.push(
-
-                `/rank/${parentRanking.id}`
-
-              )}
-
+            <div
               className="
-                mt-3
-                text-2xl
-                font-black
+                flex
+                flex-col
+                md:flex-row
+                md:items-end
+                md:justify-between
+                gap-4
               "
-
             >
 
-              {parentRanking.title} →
+              <div>
 
-            </button>
+                <p
+                  className="
+                    rankd-accent
+                    uppercase
+                    tracking-widest
+                    text-sm
+                    font-black
+                  "
+                >
 
+                  Different perspective
+
+                </p>
+
+
+                <h1
+                  className="
+                    text-4xl
+                    md:text-5xl
+                    font-black
+                    leading-tight
+                    mt-2
+                  "
+                >
+
+                  {ranking.creator ||
+                    "RANKD user"}{" "}
+
+                  ranked this differently.
+
+                </h1>
+
+              </div>
+
+
+              <button
+
+                onClick={
+                  viewOriginal
+                }
+
+                className="
+                  rankd-button
+                  whitespace-nowrap
+                "
+              >
+
+                View original RANKD →
+
+              </button>
+
+            </div>
 
           </div>
 
-
         )}
-
-
-
-
-
 
 
         {conversationTree.length > 0 && (
 
-
-          <div className="mb-10">
-
+          <div
+            className="
+              mb-10
+            "
+          >
 
             <ConversationTree
 
-              nodes={conversationTree}
+              nodes={
+                conversationTree
+              }
 
-              currentId={ranking.id}
+              currentId={
+                ranking.id
+              }
 
             />
 
-
           </div>
-
 
         )}
 
 
+        <div
+          className="
+            grid
+            lg:grid-cols-3
+            gap-10
+          "
+        >
 
+          <section
+            className="
+              lg:col-span-2
+            "
+          >
 
+            <p
+              className="
+                rankd-accent
+                uppercase
+                tracking-widest
+                text-sm
+                font-black
+              "
+            >
 
-
-
-        <div className="
-          grid
-          lg:grid-cols-3
-          gap-10
-        ">
-
-
-
-
-
-          <section className="
-            lg:col-span-2
-          ">
-
-
-
-            <p className="
-              rankd-accent
-              uppercase
-              tracking-widest
-              text-sm
-              font-black
-            ">
-
-              {ranking.category || "General"}
+              {originalRanking?.category ||
+                ranking.category ||
+                "General"}
 
             </p>
 
 
+            <h2
+              className="
+                text-6xl
+                md:text-8xl
+                font-black
+                leading-none
+                mt-6
+              "
+            >
+
+              {originalRanking?.title ||
+                ranking.title}
+
+            </h2>
 
 
+            <p
+              className="
+                mt-6
+                rankd-muted
+                text-lg
+              "
+            >
 
-            <h1 className="
-              text-6xl
-              md:text-8xl
-              font-black
-              leading-none
-              mt-6
-            ">
-
-              {ranking.title}
-
-            </h1>
-
-
-
-
-
-            <p className="
-              mt-6
-              rankd-muted
-              text-lg
-            ">
-
-              Created by {ranking.creator || "RANKD user"}
+              The original ranking
 
             </p>
-                        <div className="
-              mt-10
-              space-y-4
-            ">
 
 
-              {sortedItems.map(item=>(
+            <div
+              className="
+                mt-10
+                space-y-4
+              "
+            >
+
+              {sortedOriginalItems.map(
+
+                item => (
+
+                  <div
+
+                    key={
+                      `original-${item.position}`
+                    }
+
+                    className="
+                      rankd-card
+                      p-6
+                      flex
+                      items-center
+                      gap-6
+                    "
+                  >
+
+                    <div
+                      className="
+                        text-4xl
+                        font-black
+                        rankd-accent
+                      "
+                    >
+
+                      #{item.position}
+
+                    </div>
 
 
-                <div
+                    <div
+                      className="
+                        text-2xl
+                        font-black
+                      "
+                    >
 
-                  key={item.position}
+                      {item.name}
 
-                  className="
-                    rankd-card
-                    p-6
-                    flex
-                    items-center
-                    gap-6
-                  "
-
-                >
-
-                  <div className="
-                    text-4xl
-                    font-black
-                    rankd-accent
-                  ">
-
-                    #{item.position}
+                    </div>
 
                   </div>
 
+                )
 
-
-
-                  <div className="
-                    text-2xl
-                    font-black
-                  ">
-
-                    {item.name}
-
-                  </div>
-
-
-                </div>
-
-
-              ))}
-
+              )}
 
             </div>
 
 
+            {isPerspective && (
+
+              <div
+                className="
+                  mt-14
+                  pt-12
+                  border-t
+                  border-black/10
+                "
+              >
+
+                <p
+                  className="
+                    rankd-accent
+                    uppercase
+                    tracking-widest
+                    text-sm
+                    font-black
+                  "
+                >
+
+                  This perspective
+
+                </p>
 
 
+                <h3
+                  className="
+                    text-3xl
+                    md:text-4xl
+                    font-black
+                    mt-3
+                  "
+                >
 
+                  {ranking.creator ||
+                    "RANKD user"}{" "}
+
+                  would rank it differently.
+
+                </h3>
+
+
+                <div
+                  className="
+                    mt-8
+                    space-y-4
+                  "
+                >
+
+                  {sortedPerspectiveItems.map(
+
+                    item => (
+
+                      <div
+
+                        key={
+                          `perspective-${item.position}`
+                        }
+
+                        className="
+                          rounded-3xl
+                          border
+                          border-black/10
+                          bg-white
+                          p-6
+                          flex
+                          items-center
+                          gap-6
+                        "
+                      >
+
+                        <div
+                          className="
+                            text-4xl
+                            font-black
+                            rankd-accent
+                          "
+                        >
+
+                          #{item.position}
+
+                        </div>
+
+
+                        <div
+                          className="
+                            text-2xl
+                            font-black
+                          "
+                        >
+
+                          {item.name}
+
+                        </div>
+
+                      </div>
+
+                    )
+
+                  )}
+
+                </div>
+
+              </div>
+
+            )}
+
+
+            {!isPerspective && (
+
+              <div
+                className="
+                  mt-14
+                  pt-12
+                  border-t
+                  border-black/10
+                "
+              >
+
+                <p
+                  className="
+                    rankd-accent
+                    uppercase
+                    tracking-widest
+                    text-sm
+                    font-black
+                  "
+                >
+
+                  The conversation starts here
+
+                </p>
+
+
+                <h3
+                  className="
+                    text-3xl
+                    md:text-4xl
+                    font-black
+                    mt-3
+                  "
+                >
+
+                  Would you rank it differently?
+
+                </h3>
+
+              </div>
+
+            )}
 
 
             <button
 
-              onClick={rankIt}
+              onClick={
+                rankIt
+              }
 
               className="
                 mt-10
@@ -941,144 +1012,256 @@ export default function RankClient({
                 rankd-button
                 text-xl
               "
-
             >
 
-              Would you rank it differently?
+              Rank it differently
 
             </button>
 
 
+            <p
+              className="
+                mt-4
+                text-center
+                text-sm
+                rankd-muted
+              "
+            >
+
+              Your perspective will join
+              the conversation around this
+              RANKD.
+
+            </p>
 
 
-
-
-
-            <div className="
-              mt-12
-            ">
-
+            <div
+              className="
+                mt-12
+              "
+            >
 
               <TasteInsightCard
 
-                insight={tasteInsight}
+                insight={
+                  tasteInsight
+                }
 
-                signal={tasteSignal}
+                signal={
+                  tasteSignal
+                }
 
-                identity={tasteIdentity}
+                identity={
+                  tasteIdentity
+                }
 
               />
 
-
             </div>
-
-
 
           </section>
 
 
+          <aside
+            className="
+              space-y-6
+            "
+          >
 
+            <div
+              className="
+                rankd-card
+                p-8
+              "
+            >
 
+              <p
+                className="
+                  rankd-accent
+                  uppercase
+                  tracking-widest
+                  text-sm
+                  font-black
+                "
+              >
 
-
-
-          <aside className="
-            space-y-6
-          ">
-
-
-
-            <div className="
-              rankd-card
-              p-8
-            ">
-
-
-              <h2 className="
-                text-3xl
-                font-black
-              ">
-
-                Different Perspectives
-
-              </h2>
-
-
-
-
-              <p className="
-                mt-4
-                rankd-muted
-              ">
-
-
-                {remixes.length === 0
-
-                ?
-
-                "No alternative rankings yet."
-
-                :
-
-                `${remixes.length} people ranked this differently.`
-
-                }
-
+                {perspectives.length}
 
               </p>
 
 
+              <h2
+                className="
+                  text-3xl
+                  font-black
+                  mt-1
+                "
+              >
+
+                Perspectives
+
+              </h2>
 
 
+              <p
+                className="
+                  mt-4
+                  rankd-muted
+                "
+              >
+
+                {perspectives.length === 0
+
+                  ? `
+                    Be the first person
+                    to rank this differently.
+                  `
+
+                  : `
+                    ${
+                      perspectives.length
+                    }
+                    ${
+                      perspectives.length === 1
+                        ? "person has"
+                        : "people have"
+                    }
+                    added a different perspective.
+                  `
+
+                }
+
+              </p>
 
 
-              <div className="
-                mt-6
-                space-y-3
-              ">
+              <div
+                className="
+                  mt-6
+                  space-y-3
+                "
+              >
+
+                {perspectives
+
+                  .slice(
+                    0,
+                    7
+                  )
+
+                  .map(
+
+                    perspective => (
+
+                      <button
+
+                        key={
+                          perspective.id
+                        }
+
+                        onClick={() =>
+                          viewPerspective(
+                            perspective.id
+                          )
+                        }
+
+                        className={`
+                          w-full
+                          rounded-2xl
+                          p-4
+                          text-left
+                          border
+                          transition
+                          ${
+                            perspective.id ===
+                            ranking.id
+
+                              ? `
+                                bg-black
+                                text-white
+                                border-black
+                              `
+
+                              : `
+                                bg-black/[0.04]
+                                border-black/5
+                                hover:bg-black/[0.07]
+                              `
+                          }
+                        `}
+                      >
+
+                        <p
+                          className="
+                            font-black
+                          "
+                        >
+
+                          {perspective.id ===
+                          ranking.id
+
+                            ? "Current perspective"
+
+                            : "Different perspective"
+
+                          }
+
+                        </p>
 
 
-                {remixes.map(remix=>(
+                        <p
+                          className={`
+                            mt-1
+                            text-sm
+                            ${
+                              perspective.id ===
+                              ranking.id
 
+                                ? "text-white/60"
 
-                  <button
+                                : "rankd-muted"
+                            }
+                          `}
+                        >
 
-                    key={remix.id}
+                          View this perspective →
 
-                    onClick={()=>router.push(
+                        </p>
 
-                      `/rank/${remix.id}`
+                      </button>
 
-                    )}
+                    )
 
-                    className="
-                      w-full
-                      bg-[#F7F4EE]
-                      rounded-2xl
-                      p-4
-                      text-left
-                      font-black
-                    "
+                  )
 
-                  >
-
-                    {remix.title}
-
-                  </button>
-
-
-                ))}
-
+                }
 
               </div>
 
 
+              {perspectives.length > 7 && (
+
+                <p
+                  className="
+                    mt-5
+                    text-sm
+                    font-bold
+                    rankd-muted
+                  "
+                >
+
+                  +{" "}
+
+                  {perspectives.length - 7}
+
+                  {" "}
+
+                  more perspectives
+
+                </p>
+
+              )}
+
             </div>
-
-
-
-
-
 
 
             <Link
@@ -1092,49 +1275,39 @@ export default function RankClient({
                 hover:-translate-y-1
                 transition
               "
-
             >
 
-              <h2 className="
-                text-2xl
-                font-black
-              ">
+              <h2
+                className="
+                  text-2xl
+                  font-black
+                "
+              >
 
                 Find another debate →
 
               </h2>
 
 
+              <p
+                className="
+                  mt-3
+                  rankd-muted
+                "
+              >
 
-
-              <p className="
-                mt-3
-                rankd-muted
-              ">
-
-                Discover more opinions.
+                Discover more opinions
+                worth ranking differently.
 
               </p>
 
-
             </Link>
-
-
 
           </aside>
 
-
-
-
-
         </div>
 
-
-
-
-
       </div>
-
 
     </main>
 
