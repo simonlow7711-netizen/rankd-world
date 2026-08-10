@@ -131,6 +131,100 @@ function hasAlreadyRankedItem(
 }
 
 
+function hasAlreadyInteractedWithRanking(
+
+  graph: TasteGraph,
+
+  rankingId: string
+
+) {
+
+  if (!rankingId) {
+
+    return false
+
+  }
+
+
+  return graph.signals.some(
+
+    signal =>
+
+      signal.source ===
+
+      rankingId
+
+  )
+
+}
+
+
+function isOwnRanking(
+
+  graph: TasteGraph,
+
+  ranking: Ranking
+
+) {
+
+  return (
+
+    ranking.creatorId ===
+
+    graph.userId
+
+  )
+
+}
+
+
+function isNewRecommendation(
+
+  graph: TasteGraph,
+
+  ranking: Ranking
+
+) {
+
+  if (
+
+    isOwnRanking(
+
+      graph,
+
+      ranking
+
+    )
+
+  ) {
+
+    return false
+
+  }
+
+
+  if (
+
+    hasAlreadyInteractedWithRanking(
+
+      graph,
+
+      ranking.id
+
+    )
+
+  ) {
+
+    return false
+
+  }
+
+
+  return true
+
+}
+
+
 function calculateDirectTasteMatch(
 
   graph: TasteGraph,
@@ -1183,6 +1277,20 @@ export function getTasteRecommendedRankings(
   return (
 
     rankings
+
+      .filter(
+
+        ranking =>
+
+          isNewRecommendation(
+
+            graph,
+
+            ranking
+
+          )
+
+      )
 
       .map(
 
