@@ -118,8 +118,10 @@ function createItemsFromValues(
 
 export default function CreateClient() {
 
+
   const router =
     useRouter()
+
 
   const searchParams =
     useSearchParams()
@@ -128,47 +130,54 @@ export default function CreateClient() {
   const [
     title,
     setTitle
-  ] = useState("")
+  ] =
+    useState("")
 
 
   const [
     category,
     setCategory
-  ] = useState("General")
+  ] =
+    useState("General")
 
 
   const [
     items,
     setItems
-  ] = useState<RankingBuilderItem[]>(
+  ] =
+    useState<RankingBuilderItem[]>(
 
-    createEmptyItems()
+      createEmptyItems()
 
-  )
+    )
 
 
   const [
     description,
     setDescription
-  ] = useState("")
+  ] =
+    useState("")
 
 
   const [
     saving,
     setSaving
-  ] = useState(false)
+  ] =
+    useState(false)
 
 
   const [
     loadingRecommendation,
     setLoadingRecommendation
-  ] = useState(false)
+  ] =
+    useState(false)
 
 
   const [
     error,
     setError
-  ] = useState("")
+  ] =
+    useState("")
 
 
   const hydratedRef =
@@ -195,7 +204,34 @@ export default function CreateClient() {
       : 0
 
 
+  /*
+   *
+   * Remix conversation context
+   *
+   */
+
+
+  const parentId =
+    searchParams.get(
+      "parentId"
+    )
+
+
+  const rootId =
+    searchParams.get(
+      "rootId"
+    )
+
+
+  /*
+   *
+   * Hydrate the Create form.
+   *
+   */
+
+
   useEffect(() => {
+
 
     if (
       hydratedRef.current
@@ -207,6 +243,7 @@ export default function CreateClient() {
 
 
     async function hydrateCreateForm() {
+
 
       hydratedRef.current =
         true
@@ -239,13 +276,22 @@ export default function CreateClient() {
         )
 
 
+      /*
+       *
+       * Recommendation-driven creation
+       *
+       */
+
+
       if (
         recommendationId
         &&
         !initialItems
       ) {
 
+
         try {
+
 
           setLoadingRecommendation(
             true
@@ -264,11 +310,13 @@ export default function CreateClient() {
             !recommendation
           ) {
 
+
             setError(
 
               "Unable to load the recommended RANKD."
 
             )
+
 
             return
 
@@ -288,7 +336,7 @@ export default function CreateClient() {
 
           const recommendationCategory =
             recommendation.category
-              ||
+            ||
             "General"
 
 
@@ -310,7 +358,7 @@ export default function CreateClient() {
           setDescription(
 
             recommendation.description
-              ??
+            ??
             ""
 
           )
@@ -355,11 +403,13 @@ export default function CreateClient() {
 
           return
 
+
         }
 
         catch (
           recommendationError
         ) {
+
 
           console.error(
 
@@ -376,22 +426,34 @@ export default function CreateClient() {
 
           )
 
+
         }
 
         finally {
+
 
           setLoadingRecommendation(
             false
           )
 
+
         }
 
+
       }
+
+
+      /*
+       *
+       * Direct query-parameter hydration
+       *
+       */
 
 
       if (
         initialTitle
       ) {
+
 
         setTitle(
 
@@ -402,6 +464,7 @@ export default function CreateClient() {
           )
 
         )
+
 
       }
 
@@ -414,9 +477,11 @@ export default function CreateClient() {
         )
       ) {
 
+
         setCategory(
           initialCategory
         )
+
 
       }
 
@@ -425,9 +490,11 @@ export default function CreateClient() {
         initialDescription
       ) {
 
+
         setDescription(
           initialDescription
         )
+
 
       }
 
@@ -436,6 +503,7 @@ export default function CreateClient() {
         initialItems
       ) {
 
+
         const itemValues =
 
           initialItems
@@ -443,8 +511,10 @@ export default function CreateClient() {
             .split("|")
 
             .map(
+
               item =>
                 item.trim()
+
             )
 
             .filter(Boolean)
@@ -453,6 +523,7 @@ export default function CreateClient() {
         if (
           itemValues.length > 0
         ) {
+
 
           setItems(
 
@@ -464,9 +535,12 @@ export default function CreateClient() {
 
           )
 
+
         }
 
+
       }
+
 
     }
 
@@ -482,7 +556,43 @@ export default function CreateClient() {
   ])
 
 
+  function updateItem(
+    id: string,
+    value: string
+  ) {
+
+
+    setItems(
+
+      current =>
+
+        current.map(
+
+          item =>
+
+            item.id === id
+
+              ? {
+
+                  ...item,
+
+                  name:
+                    value
+
+                }
+
+              : item
+
+        )
+
+    )
+
+
+  }
+
+
   function addItem() {
+
 
     if (
       items.length >= 7
@@ -513,12 +623,98 @@ export default function CreateClient() {
 
     )
 
+
+  }
+
+
+  function removeItem(
+    id: string
+  ) {
+
+
+    if (
+      items.length <= 1
+    ) {
+
+      return
+
+    }
+
+
+    setItems(
+
+      current =>
+
+        current.filter(
+
+          item =>
+            item.id !== id
+
+        )
+
+    )
+
+
+  }
+
+
+  function moveItem(
+    oldIndex: number,
+    newIndex: number
+  ) {
+
+
+    setItems(
+
+      current => {
+
+
+        const next =
+          [
+            ...current
+          ]
+
+
+        const moved =
+          next.splice(
+
+            oldIndex,
+            1
+
+          )[0]
+
+
+        if (
+          !moved
+        ) {
+
+          return current
+
+        }
+
+
+        next.splice(
+
+          newIndex,
+          0,
+          moved
+
+        )
+
+
+        return next
+
+      }
+
+    )
+
   }
 
 
   async function handleSubmit(
     event: React.FormEvent
   ) {
+
 
     event.preventDefault()
 
@@ -546,8 +742,10 @@ export default function CreateClient() {
       items
 
         .map(
+
           item =>
             item.name.trim()
+
         )
 
         .filter(Boolean)
@@ -557,9 +755,13 @@ export default function CreateClient() {
       !cleanTitle
     ) {
 
+
       setError(
+
         "Please add a title."
+
       )
+
 
       return
 
@@ -570,66 +772,77 @@ export default function CreateClient() {
       cleanItems.length !== 7
     ) {
 
+
       setError(
+
         "Please add exactly 7 items."
+
       )
+
 
       return
 
     }
 
 
-    const parentIdParam =
-      searchParams.get(
-        "parentId"
-      )
+    setSaving(true)
 
 
-    const rootIdParam =
-      searchParams.get(
-        "rootId"
-      )
+    /*
+     *
+     * Preserve the remix relationship.
+     *
+     */
 
 
-    const parentId =
-      parentIdParam?.trim()
-        ||
+    const finalParentId =
+      parentId
+      ??
       null
 
 
-    const rootId =
-      rootIdParam?.trim()
-        ||
-      parentId
-        ||
+    const finalRootId =
+      rootId
+      ??
+      finalParentId
+      ??
       null
 
 
     const ranking: Ranking = {
 
+
       id:
         crypto.randomUUID(),
+
 
       title:
         cleanTitle,
 
+
       category:
         category || "General",
+
 
       creator:
         "Anonymous",
 
+
       creatorId:
         "",
+
 
       creatorUsername:
         undefined,
 
+
       creatorDisplayName:
         undefined,
 
+
       description:
         description.trim(),
+
 
       items:
 
@@ -652,59 +865,52 @@ export default function CreateClient() {
 
         ),
 
+
       createdAt:
         new Date().toISOString(),
+
 
       views:
         0,
 
+
       source:
         "community",
 
-      parentId,
 
-      rootId
+      parentId:
+        finalParentId,
+
+
+      rootId:
+        finalRootId
+
 
     }
 
 
-    console.log(
-
-      "CREATE RANKD RELATIONSHIP",
-
-      {
-
-        rankingId:
-          ranking.id,
-
-        parentId:
-          ranking.parentId,
-
-        rootId:
-          ranking.rootId,
-
-        recommendationId
-
-      }
-
-    )
-
-
-    setSaving(true)
-
-
     try {
+
 
       const {
         data: {
           user
         }
-      } = await supabase.auth.getUser()
+      } =
+        await supabase.auth.getUser()
+
+
+      /*
+       *
+       * Authenticated user
+       *
+       */
 
 
       if (
         user
       ) {
+
 
         await createSupabaseRanking(
 
@@ -715,7 +921,15 @@ export default function CreateClient() {
         )
 
 
+        /*
+         *
+         * Taste Graph baseline
+         *
+         */
+
+
         try {
+
 
           const existingGraph =
             await getTasteGraph(
@@ -729,7 +943,6 @@ export default function CreateClient() {
             buildTasteBaselineSignals(
 
               user.id,
-
               ranking
 
             )
@@ -739,13 +952,16 @@ export default function CreateClient() {
             baselineSignals.length > 0
           ) {
 
+
             const baselineGraph: TasteGraph = {
+
 
               ...existingGraph,
 
               signals: [
 
                 ...existingGraph.signals,
+
                 ...baselineSignals
 
               ]
@@ -759,13 +975,16 @@ export default function CreateClient() {
 
             )
 
+
           }
+
 
         }
 
         catch (
           tasteGraphError
         ) {
+
 
           console.error(
 
@@ -775,14 +994,24 @@ export default function CreateClient() {
 
           )
 
+
         }
+
+
+        /*
+         *
+         * Recommendation feedback
+         *
+         */
 
 
         if (
           recommendationId
         ) {
 
+
           try {
+
 
             const recommendation =
               await getSupabaseRanking(
@@ -795,6 +1024,7 @@ export default function CreateClient() {
             if (
               recommendation
             ) {
+
 
               const existingGraph =
                 await getTasteGraph(
@@ -834,13 +1064,16 @@ export default function CreateClient() {
                 feedbackSignals.length > 0
               ) {
 
+
                 const feedbackGraph: TasteGraph = {
+
 
                   ...existingGraph,
 
                   signals: [
 
                     ...existingGraph.signals,
+
                     ...feedbackSignals
 
                   ]
@@ -854,15 +1087,19 @@ export default function CreateClient() {
 
                 )
 
+
               }
 
+
             }
+
 
           }
 
           catch (
             feedbackError
           ) {
+
 
             console.error(
 
@@ -872,7 +1109,9 @@ export default function CreateClient() {
 
             )
 
+
           }
+
 
         }
 
@@ -889,11 +1128,20 @@ export default function CreateClient() {
       }
 
 
+      /*
+       *
+       * Anonymous fallback
+       *
+       */
+
+
       const existing =
         JSON.parse(
 
           localStorage.getItem(
+
             "createdRankings"
+
           )
           ||
           "[]"
@@ -903,10 +1151,12 @@ export default function CreateClient() {
 
       const localRanking = {
 
+
         ...ranking,
 
         creator:
           "You"
+
 
       }
 
@@ -920,6 +1170,7 @@ export default function CreateClient() {
           [
 
             ...existing,
+
             localRanking
 
           ]
@@ -935,11 +1186,13 @@ export default function CreateClient() {
 
       )
 
+
     }
 
     catch (
       submitError
     ) {
+
 
       console.error(
 
@@ -956,13 +1209,16 @@ export default function CreateClient() {
 
       )
 
+
     }
 
     finally {
 
+
       setSaving(false)
 
     }
+
 
   }
 
@@ -970,6 +1226,7 @@ export default function CreateClient() {
   if (
     loadingRecommendation
   ) {
+
 
     return (
 
