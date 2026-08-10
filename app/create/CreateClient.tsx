@@ -125,27 +125,50 @@ export default function CreateClient() {
     useSearchParams()
 
 
-  const [title, setTitle] =
-    useState("")
+  const [
+    title,
+    setTitle
+  ] = useState("")
 
-  const [category, setCategory] =
-    useState("General")
 
-  const [items, setItems] =
-    useState<RankingBuilderItem[]>(
+  const [
+    category,
+    setCategory
+  ] = useState("General")
 
-      createEmptyItems()
 
-    )
+  const [
+    items,
+    setItems
+  ] = useState<RankingBuilderItem[]>(
 
-  const [description, setDescription] =
-    useState("")
+    createEmptyItems()
 
-  const [saving, setSaving] =
-    useState(false)
+  )
 
-  const [error, setError] =
-    useState("")
+
+  const [
+    description,
+    setDescription
+  ] = useState("")
+
+
+  const [
+    saving,
+    setSaving
+  ] = useState(false)
+
+
+  const [
+    loadingRecommendation,
+    setLoadingRecommendation
+  ] = useState(false)
+
+
+  const [
+    error,
+    setError
+  ] = useState("")
 
 
   const hydratedRef =
@@ -154,13 +177,13 @@ export default function CreateClient() {
 
   const recommendationId =
     searchParams.get(
-      "recommendation"
+      "recommendationId"
     )
 
 
   const recommendationScoreParam =
     searchParams.get(
-      "score"
+      "recommendationScore"
     )
 
 
@@ -183,127 +206,280 @@ export default function CreateClient() {
     }
 
 
-    hydratedRef.current =
-      true
+    async function hydrateCreateForm() {
+
+      hydratedRef.current =
+        true
 
 
-    const initialTitle =
-      searchParams.get(
-        "title"
-      )
+      setError("")
 
 
-    const initialCategory =
-      searchParams.get(
-        "category"
-      )
-
-
-    const initialDescription =
-      searchParams.get(
-        "description"
-      )
-
-
-    const initialItems =
-      searchParams.get(
-        "items"
-      )
-
-
-    if (initialTitle) {
-
-      setTitle(
-
-        stripRankingPrefix(
-          initialTitle
+      const initialTitle =
+        searchParams.get(
+          "title"
         )
 
-      )
 
-    }
-
-
-    if (initialCategory) {
-
-      setCategory(
-        initialCategory
-      )
-
-    }
+      const initialCategory =
+        searchParams.get(
+          "category"
+        )
 
 
-    if (initialDescription) {
-
-      setDescription(
-        initialDescription
-      )
-
-    }
+      const initialDescription =
+        searchParams.get(
+          "description"
+        )
 
 
-    if (initialItems) {
-
-      const itemValues =
-
-        initialItems
-
-          .split("|")
-
-          .map(
-            item =>
-              item.trim()
-          )
-
-          .filter(Boolean)
+      const initialItems =
+        searchParams.get(
+          "items"
+        )
 
 
       if (
-        itemValues.length > 0
+        recommendationId
+        &&
+        !initialItems
       ) {
 
-        setItems(
+        try {
 
-          createItemsFromValues(
-            itemValues
+          setLoadingRecommendation(
+            true
+          )
+
+
+          const recommendation =
+            await getSupabaseRanking(
+
+              recommendationId
+
+            )
+
+
+          if (
+            !recommendation
+          ) {
+
+            setError(
+
+              "Unable to load the recommended RANKD."
+
+            )
+
+            return
+
+          }
+
+
+          setTitle(
+
+            stripRankingPrefix(
+
+              recommendation.title
+
+            )
+
+          )
+
+
+          const recommendationCategory =
+            recommendation.category
+              ||
+            "General"
+
+
+          setCategory(
+
+            categories.includes(
+
+              recommendationCategory
+
+            )
+
+              ? recommendationCategory
+
+              : "General"
+
+          )
+
+
+          setDescription(
+
+            recommendation.description
+              ??
+            ""
+
+          )
+
+
+          const recommendationItems =
+
+            [...recommendation.items]
+
+              .sort(
+
+                (
+                  a,
+                  b
+                ) =>
+
+                  a.position -
+                  b.position
+
+              )
+
+              .map(
+
+                item =>
+                  item.name
+
+              )
+
+              .filter(Boolean)
+
+
+          setItems(
+
+            createItemsFromValues(
+
+              recommendationItems
+
+            )
+
+          )
+
+
+          return
+
+        }
+
+        catch (
+          recommendationError
+        ) {
+
+          console.error(
+
+            "LOAD TASTE RECOMMENDATION ERROR",
+
+            recommendationError
+
+          )
+
+
+          setError(
+
+            "Unable to load the recommended RANKD."
+
+          )
+
+        }
+
+        finally {
+
+          setLoadingRecommendation(
+            false
+          )
+
+        }
+
+      }
+
+
+      if (
+        initialTitle
+      ) {
+
+        setTitle(
+
+          stripRankingPrefix(
+
+            initialTitle
+
           )
 
         )
 
       }
 
-    }
 
-  }, [searchParams])
+      if (
+        initialCategory
+        &&
+        categories.includes(
+          initialCategory
+        )
+      ) {
 
-
-  function updateItem(
-    id: string,
-    value: string
-  ) {
-
-    setItems(
-
-      current =>
-
-        current.map(
-
-          item =>
-
-            item.id === id
-
-              ? {
-                  ...item,
-                  name: value
-                }
-
-              : item
-
+        setCategory(
+          initialCategory
         )
 
-    )
+      }
 
-  }
+
+      if (
+        initialDescription
+      ) {
+
+        setDescription(
+          initialDescription
+        )
+
+      }
+
+
+      if (
+        initialItems
+      ) {
+
+        const itemValues =
+
+          initialItems
+
+            .split("|")
+
+            .map(
+              item =>
+                item.trim()
+            )
+
+            .filter(Boolean)
+
+
+        if (
+          itemValues.length > 0
+        ) {
+
+          setItems(
+
+            createItemsFromValues(
+
+              itemValues
+
+            )
+
+          )
+
+        }
+
+      }
+
+    }
+
+
+    hydrateCreateForm()
+
+
+  }, [
+
+    searchParams,
+    recommendationId
+
+  ])
 
 
   function addItem() {
@@ -324,81 +500,16 @@ export default function CreateClient() {
         ...current,
 
         {
+
           id:
             crypto.randomUUID(),
 
           name:
             ""
+
         }
 
       ]
-
-    )
-
-  }
-
-
-  function removeItem(
-    id: string
-  ) {
-
-    if (
-      items.length <= 1
-    ) {
-
-      return
-
-    }
-
-
-    setItems(
-
-      current =>
-
-        current.filter(
-
-          item =>
-            item.id !== id
-
-        )
-
-    )
-
-  }
-
-
-  function moveItem(
-    oldIndex: number,
-    newIndex: number
-  ) {
-
-    setItems(
-
-      current => {
-
-        const next =
-          [
-            ...current
-          ]
-
-
-        const moved =
-          next.splice(
-            oldIndex,
-            1
-          )[0]
-
-
-        next.splice(
-          newIndex,
-          0,
-          moved
-        )
-
-
-        return next
-
-      }
 
     )
 
@@ -412,7 +523,11 @@ export default function CreateClient() {
     event.preventDefault()
 
 
-    if (saving) {
+    if (
+      saving
+      ||
+      loadingRecommendation
+    ) {
 
       return
 
@@ -438,7 +553,9 @@ export default function CreateClient() {
         .filter(Boolean)
 
 
-    if (!cleanTitle) {
+    if (
+      !cleanTitle
+    ) {
 
       setError(
         "Please add a title."
@@ -462,19 +579,30 @@ export default function CreateClient() {
     }
 
 
-    setSaving(true)
-
-
-    const finalParentId =
+    const parentIdParam =
       searchParams.get(
         "parentId"
       )
 
 
-    const finalRootId =
+    const rootIdParam =
       searchParams.get(
         "rootId"
       )
+
+
+    const parentId =
+      parentIdParam?.trim()
+        ||
+      null
+
+
+    const rootId =
+      rootIdParam?.trim()
+        ||
+      parentId
+        ||
+      null
 
 
     const ranking: Ranking = {
@@ -533,13 +661,36 @@ export default function CreateClient() {
       source:
         "community",
 
-      parentId:
-        finalParentId,
+      parentId,
 
-      rootId:
-        finalRootId
+      rootId
 
     }
+
+
+    console.log(
+
+      "CREATE RANKD RELATIONSHIP",
+
+      {
+
+        rankingId:
+          ranking.id,
+
+        parentId:
+          ranking.parentId,
+
+        rootId:
+          ranking.rootId,
+
+        recommendationId
+
+      }
+
+    )
+
+
+    setSaving(true)
 
 
     try {
@@ -551,7 +702,9 @@ export default function CreateClient() {
       } = await supabase.auth.getUser()
 
 
-      if (user) {
+      if (
+        user
+      ) {
 
         await createSupabaseRanking(
 
@@ -562,21 +715,9 @@ export default function CreateClient() {
         )
 
 
-        /*
-         *
-         * Taste Graph Baseline
-         *
-         * Every RANKD created by an
-         * authenticated user contributes
-         * initial taste signals.
-         *
-         */
-
-
         try {
 
           const existingGraph =
-
             await getTasteGraph(
 
               user.id
@@ -585,7 +726,6 @@ export default function CreateClient() {
 
 
           const baselineSignals =
-
             buildTasteBaselineSignals(
 
               user.id,
@@ -595,26 +735,31 @@ export default function CreateClient() {
             )
 
 
-          const baselineGraph: TasteGraph = {
+          if (
+            baselineSignals.length > 0
+          ) {
 
-            ...existingGraph,
+            const baselineGraph: TasteGraph = {
 
-            signals: [
+              ...existingGraph,
 
-              ...existingGraph.signals,
+              signals: [
 
-              ...baselineSignals
+                ...existingGraph.signals,
+                ...baselineSignals
 
-            ]
+              ]
+
+            }
+
+
+            await saveTasteGraph(
+
+              baselineGraph
+
+            )
 
           }
-
-
-          await saveTasteGraph(
-
-            baselineGraph
-
-          )
 
         }
 
@@ -633,24 +778,13 @@ export default function CreateClient() {
         }
 
 
-        /*
-         *
-         * Taste Graph Feedback Loop
-         *
-         * If this RANKD was created from
-         * a Taste Recommendation, compare
-         * the user's new ranking against
-         * the original recommendation.
-         *
-         */
-
-
-        if (recommendationId) {
+        if (
+          recommendationId
+        ) {
 
           try {
 
             const recommendation =
-
               await getSupabaseRanking(
 
                 recommendationId
@@ -658,10 +792,11 @@ export default function CreateClient() {
               )
 
 
-            if (recommendation) {
+            if (
+              recommendation
+            ) {
 
               const existingGraph =
-
                 await getTasteGraph(
 
                   user.id
@@ -670,7 +805,6 @@ export default function CreateClient() {
 
 
               const comparison =
-
                 compareTasteFeedback(
 
                   recommendation,
@@ -683,7 +817,6 @@ export default function CreateClient() {
 
 
               const feedbackSignals =
-
                 buildTasteFeedbackSignals(
 
                   user.id,
@@ -697,26 +830,31 @@ export default function CreateClient() {
                 )
 
 
-              const feedbackGraph: TasteGraph = {
+              if (
+                feedbackSignals.length > 0
+              ) {
 
-                ...existingGraph,
+                const feedbackGraph: TasteGraph = {
 
-                signals: [
+                  ...existingGraph,
 
-                  ...existingGraph.signals,
+                  signals: [
 
-                  ...feedbackSignals
+                    ...existingGraph.signals,
+                    ...feedbackSignals
 
-                ]
+                  ]
+
+                }
+
+
+                await saveTasteGraph(
+
+                  feedbackGraph
+
+                )
 
               }
-
-
-              await saveTasteGraph(
-
-                feedbackGraph
-
-              )
 
             }
 
@@ -740,8 +878,11 @@ export default function CreateClient() {
 
 
         router.push(
+
           `/rank/${ranking.id}`
+
         )
+
 
         return
 
@@ -749,7 +890,6 @@ export default function CreateClient() {
 
 
       const existing =
-
         JSON.parse(
 
           localStorage.getItem(
@@ -778,8 +918,10 @@ export default function CreateClient() {
         JSON.stringify(
 
           [
+
             ...existing,
             localRanking
+
           ]
 
         )
@@ -788,12 +930,16 @@ export default function CreateClient() {
 
 
       router.push(
+
         `/rank/${ranking.id}`
+
       )
 
     }
 
-    catch (submitError) {
+    catch (
+      submitError
+    ) {
 
       console.error(
 
@@ -821,9 +967,91 @@ export default function CreateClient() {
   }
 
 
+  if (
+    loadingRecommendation
+  ) {
+
+    return (
+
+      <main
+        className="
+          min-h-screen
+        "
+      >
+
+        <div
+          className="
+            mx-auto
+            max-w-6xl
+            px-6
+            py-16
+          "
+        >
+
+          <div
+            className="
+              rankd-card
+              p-8
+            "
+          >
+
+            <p
+              className="
+                rankd-accent
+                uppercase
+                tracking-widest
+                text-sm
+                font-black
+              "
+            >
+
+              Taste recommendation
+
+            </p>
+
+
+            <h1
+              className="
+                text-4xl
+                font-black
+                mt-3
+              "
+            >
+
+              Loading your recommendation...
+
+            </h1>
+
+
+            <p
+              className="
+                mt-4
+                opacity-70
+              "
+            >
+
+              Preparing the Top 7 for you to rank.
+
+            </p>
+
+          </div>
+
+        </div>
+
+      </main>
+
+    )
+
+  }
+
+
   return (
 
-    <main className="min-h-screen">
+    <main
+      className="
+        min-h-screen
+      "
+    >
 
       <div
         className="
@@ -882,11 +1110,60 @@ export default function CreateClient() {
 
           </p>
 
+
+          {
+            recommendationId && (
+
+              <div
+                className="
+                  mt-6
+                  rounded-2xl
+                  border
+                  p-5
+                  rankd-card
+                "
+              >
+
+                <p
+                  className="
+                    text-sm
+                    font-black
+                    uppercase
+                    tracking-widest
+                    rankd-accent
+                  "
+                >
+
+                  Taste recommendation
+
+                </p>
+
+
+                <p
+                  className="
+                    mt-2
+                    font-bold
+                  "
+                >
+
+                  Adjust the ranking to challenge
+                  the recommendation and improve
+                  your Taste Graph.
+
+                </p>
+
+              </div>
+
+            )
+          }
+
         </div>
 
 
         <form
-          onSubmit={handleSubmit}
+          onSubmit={
+            handleSubmit
+          }
           className="
             space-y-10
           "
@@ -915,18 +1192,16 @@ export default function CreateClient() {
 
 
             <input
-
-              value={title}
-
+              value={
+                title
+              }
               onChange={
                 event =>
                   setTitle(
                     event.target.value
                   )
               }
-
               placeholder="Top 7..."
-
               className="
                 mt-3
                 w-full
@@ -937,7 +1212,6 @@ export default function CreateClient() {
                 text-lg
                 font-bold
               "
-
             />
 
           </div>
@@ -966,16 +1240,15 @@ export default function CreateClient() {
 
 
             <select
-
-              value={category}
-
+              value={
+                category
+              }
               onChange={
                 event =>
                   setCategory(
                     event.target.value
                   )
               }
-
               className="
                 mt-3
                 w-full
@@ -985,7 +1258,6 @@ export default function CreateClient() {
                 py-4
                 font-bold
               "
-
             >
 
               {
@@ -994,8 +1266,12 @@ export default function CreateClient() {
                   option => (
 
                     <option
-                      key={option}
-                      value={option}
+                      key={
+                        option
+                      }
+                      value={
+                        option
+                      }
                     >
 
                       {option}
@@ -1042,9 +1318,13 @@ export default function CreateClient() {
 
               <SortableRankingList
 
-                items={items}
+                items={
+                  items
+                }
 
-                setItems={setItems}
+                setItems={
+                  setItems
+                }
 
               />
 
@@ -1055,11 +1335,10 @@ export default function CreateClient() {
               items.length < 7 && (
 
                 <button
-
                   type="button"
-
-                  onClick={addItem}
-
+                  onClick={
+                    addItem
+                  }
                   className="
                     mt-6
                     rounded-xl
@@ -1068,7 +1347,6 @@ export default function CreateClient() {
                     py-3
                     font-black
                   "
-
                 >
 
                   Add item
@@ -1104,20 +1382,17 @@ export default function CreateClient() {
 
 
             <textarea
-
-              value={description}
-
+              value={
+                description
+              }
               onChange={
                 event =>
                   setDescription(
                     event.target.value
                   )
               }
-
               rows={4}
-
               placeholder="Why this Top 7?"
-
               className="
                 mt-3
                 w-full
@@ -1126,7 +1401,6 @@ export default function CreateClient() {
                 px-4
                 py-4
               "
-
             />
 
           </div>
@@ -1157,11 +1431,12 @@ export default function CreateClient() {
 
 
           <button
-
             type="submit"
-
-            disabled={saving}
-
+            disabled={
+              saving
+              ||
+              loadingRecommendation
+            }
             className="
               w-full
               rounded-2xl
@@ -1172,13 +1447,18 @@ export default function CreateClient() {
               rankd-primary
               disabled:opacity-50
             "
-
           >
 
             {
               saving
+
                 ? "Creating..."
-                : "Create RANKD"
+
+                : recommendationId
+
+                  ? "Create RANKD & Improve My Taste Graph"
+
+                  : "Create RANKD"
             }
 
           </button>

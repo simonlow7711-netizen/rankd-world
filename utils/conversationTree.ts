@@ -17,133 +17,151 @@ export interface ConversationNode {
 }
 
 
-
-
+type ConversationNodeInput = Omit<
+  ConversationNode,
+  "children"
+>
 
 
 export function buildConversationTree(
 
-  rankings:Omit<
-    ConversationNode,
-    "children"
-  >[]
+  rankings:ConversationNodeInput[]
 
 ):ConversationNode[] {
 
 
-  const nodeMap = new Map<
-    string,
-    ConversationNode
-  >()
+  const nodeMap =
+    new Map<
+      string,
+      ConversationNode
+    >()
 
 
+  rankings.forEach(
 
-  rankings.forEach(ranking=>{
+    ranking => {
+
+      nodeMap.set(
+
+        ranking.id,
+
+        {
+
+          ...ranking,
+
+          children:[]
+
+        }
+
+      )
+
+    }
+
+  )
 
 
-    nodeMap.set(
+  const roots:
+    ConversationNode[] = []
 
-      ranking.id,
 
-      {
+  nodeMap.forEach(
 
-        ...ranking,
+    node => {
 
-        children:[]
+      if (
+        node.parentId === null
+      ) {
+
+        roots.push(
+          node
+        )
+
+        return
 
       }
 
-    )
+
+      const parent =
+        nodeMap.get(
+          node.parentId
+        )
 
 
-  })
+      if (
+        parent
+      ) {
 
+        parent.children.push(
+          node
+        )
 
-
-
-  const roots:ConversationNode[] = []
-
-
-
-
-  nodeMap.forEach(node=>{
-
-
-    if(
-
-      node.parentId &&
-
-      nodeMap.has(node.parentId)
-
-    ){
-
-
-      nodeMap
-
-        .get(node.parentId)!
-
-        .children
-
-        .push(node)
-
+      }
 
     }
 
-    else{
-
-
-      roots.push(node)
-
-
-    }
-
-
-  })
-
-
-
+  )
 
 
   function sortTree(
 
     nodes:ConversationNode[]
 
-  ){
+  ) {
 
 
     nodes.sort(
 
-      (a,b)=>
+      (
+        a,
+        b
+      ) => {
 
-        b.children.length -
+        const aTime =
+          a.createdAt
+            ? new Date(
+                a.createdAt
+              ).getTime()
+            : 0
 
-        a.children.length
+
+        const bTime =
+          b.createdAt
+            ? new Date(
+                b.createdAt
+              ).getTime()
+            : 0
+
+
+        return (
+          aTime -
+          bTime
+        )
+
+      }
 
     )
 
 
+    nodes.forEach(
 
-    nodes.forEach(node=>
+      node => {
 
-      sortTree(
+        sortTree(
+          node.children
+        )
 
-        node.children
-
-      )
+      }
 
     )
-
 
   }
 
 
-
-
-  sortTree(roots)
-
+  sortTree(
+    roots
+  )
 
 
   return roots
-
 
 }

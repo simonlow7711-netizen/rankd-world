@@ -10,16 +10,16 @@ import {
 } from "@/utils/supabase"
 
 import {
-  getTasteGraph
-} from "@/utils/tasteGraphRepository"
-
-import {
   calculateTasteDNADiagnostic,
   TasteDNADiagnostic
 } from "@/utils/tasteDNADiagnostic"
 
+import {
+  TasteGraph
+} from "@/utils/tasteGraphTypes"
 
-export default function TasteDiagnosticPage(){
+
+export default function TasteDiagnosticPage() {
 
   const [
     diagnostic,
@@ -43,9 +43,9 @@ export default function TasteDiagnosticPage(){
   )
 
 
-  useEffect(()=>{
+  useEffect(() => {
 
-    async function loadDiagnostic(){
+    async function loadDiagnostic() {
 
       try {
 
@@ -55,13 +55,13 @@ export default function TasteDiagnosticPage(){
 
 
         const {
-          data:{
+          data: {
             user
           }
         } = await supabase.auth.getUser()
 
 
-        if(!user){
+        if (!user) {
 
           setError(
             "No authenticated user found."
@@ -72,13 +72,39 @@ export default function TasteDiagnosticPage(){
         }
 
 
-        const graph =
+        const response =
 
-          await getTasteGraph(
+          await fetch(
 
-            user.id
+            "/api/taste-graph",
+
+            {
+
+              method:
+                "GET",
+
+              cache:
+                "no-store"
+
+            }
 
           )
+
+
+        if (!response.ok) {
+
+          throw new Error(
+
+            "Unable to load Taste Graph."
+
+          )
+
+        }
+
+
+        const graph =
+
+          await response.json() as TasteGraph
 
 
         const result =
@@ -98,9 +124,9 @@ export default function TasteDiagnosticPage(){
 
       }
 
-      catch(
+      catch (
         diagnosticError
-      ){
+      ) {
 
         console.error(
 
@@ -130,10 +156,10 @@ export default function TasteDiagnosticPage(){
 
     loadDiagnostic()
 
-  },[])
+  }, [])
 
 
-  if(loading){
+  if (loading) {
 
     return (
 
@@ -159,7 +185,7 @@ export default function TasteDiagnosticPage(){
   }
 
 
-  if(error){
+  if (error) {
 
     return (
 
@@ -185,7 +211,7 @@ export default function TasteDiagnosticPage(){
   }
 
 
-  if(!diagnostic){
+  if (!diagnostic) {
 
     return (
 
@@ -231,10 +257,23 @@ export default function TasteDiagnosticPage(){
         </p>
 
 
-        <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <section
+          className="
+            mt-8
+            grid
+            gap-4
+            sm:grid-cols-2
+            lg:grid-cols-4
+          "
+        >
 
-
-          <div className="rounded-xl border p-5">
+          <div
+            className="
+              rounded-xl
+              border
+              p-5
+            "
+          >
 
             <p className="text-sm text-gray-500">
 
@@ -242,7 +281,14 @@ export default function TasteDiagnosticPage(){
 
             </p>
 
-            <p className="mt-2 text-3xl font-bold">
+
+            <p
+              className="
+                mt-2
+                text-3xl
+                font-bold
+              "
+            >
 
               {diagnostic.totalRankings}
 
@@ -251,7 +297,13 @@ export default function TasteDiagnosticPage(){
           </div>
 
 
-          <div className="rounded-xl border p-5">
+          <div
+            className="
+              rounded-xl
+              border
+              p-5
+            "
+          >
 
             <p className="text-sm text-gray-500">
 
@@ -259,7 +311,14 @@ export default function TasteDiagnosticPage(){
 
             </p>
 
-            <p className="mt-2 text-3xl font-bold">
+
+            <p
+              className="
+                mt-2
+                text-3xl
+                font-bold
+              "
+            >
 
               {diagnostic.totalSignals}
 
@@ -268,7 +327,13 @@ export default function TasteDiagnosticPage(){
           </div>
 
 
-          <div className="rounded-xl border p-5">
+          <div
+            className="
+              rounded-xl
+              border
+              p-5
+            "
+          >
 
             <p className="text-sm text-gray-500">
 
@@ -276,7 +341,14 @@ export default function TasteDiagnosticPage(){
 
             </p>
 
-            <p className="mt-2 text-3xl font-bold">
+
+            <p
+              className="
+                mt-2
+                text-3xl
+                font-bold
+              "
+            >
 
               {diagnostic.uniqueItems}
 
@@ -285,7 +357,13 @@ export default function TasteDiagnosticPage(){
           </div>
 
 
-          <div className="rounded-xl border p-5">
+          <div
+            className="
+              rounded-xl
+              border
+              p-5
+            "
+          >
 
             <p className="text-sm text-gray-500">
 
@@ -293,14 +371,20 @@ export default function TasteDiagnosticPage(){
 
             </p>
 
-            <p className="mt-2 text-3xl font-bold">
+
+            <p
+              className="
+                mt-2
+                text-3xl
+                font-bold
+              "
+            >
 
               {diagnostic.uniqueCategories}
 
             </p>
 
           </div>
-
 
         </section>
 
@@ -314,10 +398,23 @@ export default function TasteDiagnosticPage(){
           </h2>
 
 
-          <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div
+            className="
+              mt-4
+              grid
+              gap-4
+              sm:grid-cols-2
+              lg:grid-cols-3
+            "
+          >
 
-
-            <div className="rounded-xl border p-5">
+            <div
+              className="
+                rounded-xl
+                border
+                p-5
+              "
+            >
 
               <p className="text-sm text-gray-500">
 
@@ -325,7 +422,14 @@ export default function TasteDiagnosticPage(){
 
               </p>
 
-              <p className="mt-2 text-2xl font-bold">
+
+              <p
+                className="
+                  mt-2
+                  text-2xl
+                  font-bold
+                "
+              >
 
                 {diagnostic.averagePosition}
 
@@ -334,7 +438,13 @@ export default function TasteDiagnosticPage(){
             </div>
 
 
-            <div className="rounded-xl border p-5">
+            <div
+              className="
+                rounded-xl
+                border
+                p-5
+              "
+            >
 
               <p className="text-sm text-gray-500">
 
@@ -342,7 +452,14 @@ export default function TasteDiagnosticPage(){
 
               </p>
 
-              <p className="mt-2 text-2xl font-bold">
+
+              <p
+                className="
+                  mt-2
+                  text-2xl
+                  font-bold
+                "
+              >
 
                 {diagnostic.topChoiceRate}
 
@@ -351,7 +468,13 @@ export default function TasteDiagnosticPage(){
             </div>
 
 
-            <div className="rounded-xl border p-5">
+            <div
+              className="
+                rounded-xl
+                border
+                p-5
+              "
+            >
 
               <p className="text-sm text-gray-500">
 
@@ -359,7 +482,14 @@ export default function TasteDiagnosticPage(){
 
               </p>
 
-              <p className="mt-2 text-2xl font-bold">
+
+              <p
+                className="
+                  mt-2
+                  text-2xl
+                  font-bold
+                "
+              >
 
                 {diagnostic.preferenceStrength}
 
@@ -368,7 +498,13 @@ export default function TasteDiagnosticPage(){
             </div>
 
 
-            <div className="rounded-xl border p-5">
+            <div
+              className="
+                rounded-xl
+                border
+                p-5
+              "
+            >
 
               <p className="text-sm text-gray-500">
 
@@ -376,7 +512,14 @@ export default function TasteDiagnosticPage(){
 
               </p>
 
-              <p className="mt-2 text-2xl font-bold">
+
+              <p
+                className="
+                  mt-2
+                  text-2xl
+                  font-bold
+                "
+              >
 
                 {diagnostic.tasteVariety}
 
@@ -385,7 +528,13 @@ export default function TasteDiagnosticPage(){
             </div>
 
 
-            <div className="rounded-xl border p-5">
+            <div
+              className="
+                rounded-xl
+                border
+                p-5
+              "
+            >
 
               <p className="text-sm text-gray-500">
 
@@ -393,7 +542,14 @@ export default function TasteDiagnosticPage(){
 
               </p>
 
-              <p className="mt-2 text-2xl font-bold">
+
+              <p
+                className="
+                  mt-2
+                  text-2xl
+                  font-bold
+                "
+              >
 
                 {diagnostic.tasteConcentration}
 
@@ -402,7 +558,13 @@ export default function TasteDiagnosticPage(){
             </div>
 
 
-            <div className="rounded-xl border p-5">
+            <div
+              className="
+                rounded-xl
+                border
+                p-5
+              "
+            >
 
               <p className="text-sm text-gray-500">
 
@@ -410,7 +572,14 @@ export default function TasteDiagnosticPage(){
 
               </p>
 
-              <p className="mt-2 text-2xl font-bold">
+
+              <p
+                className="
+                  mt-2
+                  text-2xl
+                  font-bold
+                "
+              >
 
                 {diagnostic.confidence}
 
@@ -418,14 +587,19 @@ export default function TasteDiagnosticPage(){
 
             </div>
 
-
           </div>
 
         </section>
 
 
-        <section className="mt-8 grid gap-8 lg:grid-cols-2">
-
+        <section
+          className="
+            mt-8
+            grid
+            gap-8
+            lg:grid-cols-2
+          "
+        >
 
           <div>
 
@@ -438,49 +612,69 @@ export default function TasteDiagnosticPage(){
 
             <div className="mt-4 space-y-3">
 
-              {diagnostic.strongestCategories.map(
+              {
+                diagnostic.strongestCategories.map(
 
-                (
-                  category,
-                  index
-                ) => (
+                  (
+                    category,
+                    index
+                  ) => (
 
-                  <div
-                    key={
-                      `${category.label}-${index}`
-                    }
-                    className="rounded-xl border p-4"
-                  >
+                    <div
+                      key={
+                        `${category.label}-${index}`
+                      }
+                      className="
+                        rounded-xl
+                        border
+                        p-4
+                      "
+                    >
 
-                    <div className="flex items-center justify-between">
+                      <div
+                        className="
+                          flex
+                          items-center
+                          justify-between
+                        "
+                      >
 
-                      <span className="font-medium">
+                        <span className="font-medium">
 
-                        {index + 1}. {category.label}
+                          {index + 1}.
+                          {" "}
+                          {category.label}
 
-                      </span>
+                        </span>
 
 
-                      <span className="font-bold">
+                        <span className="font-bold">
 
-                        {category.value}
+                          {category.value}
 
-                      </span>
+                        </span>
+
+                      </div>
+
+
+                      <p
+                        className="
+                          mt-1
+                          text-sm
+                          text-gray-500
+                        "
+                      >
+
+                        {category.description}
+
+                      </p>
 
                     </div>
 
-
-                    <p className="mt-1 text-sm text-gray-500">
-
-                      {category.description}
-
-                    </p>
-
-                  </div>
+                  )
 
                 )
-
-              )}
+              }
 
             </div>
 
@@ -498,54 +692,73 @@ export default function TasteDiagnosticPage(){
 
             <div className="mt-4 space-y-3">
 
-              {diagnostic.strongestChoices.map(
+              {
+                diagnostic.strongestChoices.map(
 
-                (
-                  choice,
-                  index
-                ) => (
+                  (
+                    choice,
+                    index
+                  ) => (
 
-                  <div
-                    key={
-                      `${choice.label}-${index}`
-                    }
-                    className="rounded-xl border p-4"
-                  >
+                    <div
+                      key={
+                        `${choice.label}-${index}`
+                      }
+                      className="
+                        rounded-xl
+                        border
+                        p-4
+                      "
+                    >
 
-                    <div className="flex items-center justify-between">
+                      <div
+                        className="
+                          flex
+                          items-center
+                          justify-between
+                        "
+                      >
 
-                      <span className="font-medium">
+                        <span className="font-medium">
 
-                        {index + 1}. {choice.label}
+                          {index + 1}.
+                          {" "}
+                          {choice.label}
 
-                      </span>
+                        </span>
 
 
-                      <span className="font-bold">
+                        <span className="font-bold">
 
-                        {choice.value}
+                          {choice.value}
 
-                      </span>
+                        </span>
+
+                      </div>
+
+
+                      <p
+                        className="
+                          mt-1
+                          text-sm
+                          text-gray-500
+                        "
+                      >
+
+                        {choice.description}
+
+                      </p>
 
                     </div>
 
-
-                    <p className="mt-1 text-sm text-gray-500">
-
-                      {choice.description}
-
-                    </p>
-
-                  </div>
+                  )
 
                 )
-
-              )}
+              }
 
             </div>
 
           </div>
-
 
         </section>
 
@@ -561,32 +774,46 @@ export default function TasteDiagnosticPage(){
 
           <div className="mt-4 space-y-3">
 
-            {diagnostic.insights.map(
+            {
+              diagnostic.insights.map(
 
-              (
-                insight,
-                index
-              ) => (
+                (
+                  insight,
+                  index
+                ) => (
 
-                <div
-                  key={index}
-                  className="rounded-xl border p-4"
-                >
+                  <div
+                    key={index}
+                    className="
+                      rounded-xl
+                      border
+                      p-4
+                    "
+                  >
 
-                  {insight}
+                    {insight}
 
-                </div>
+                  </div>
+
+                )
 
               )
-
-            )}
+            }
 
           </div>
 
         </section>
 
 
-        <section className="mt-8 rounded-xl border bg-gray-50 p-5">
+        <section
+          className="
+            mt-8
+            rounded-xl
+            border
+            bg-gray-50
+            p-5
+          "
+        >
 
           <h2 className="font-bold">
 
@@ -595,7 +822,13 @@ export default function TasteDiagnosticPage(){
           </h2>
 
 
-          <pre className="mt-4 overflow-x-auto text-xs">
+          <pre
+            className="
+              mt-4
+              overflow-x-auto
+              text-xs
+            "
+          >
 
             {JSON.stringify(
 
@@ -610,7 +843,6 @@ export default function TasteDiagnosticPage(){
           </pre>
 
         </section>
-
 
       </div>
 

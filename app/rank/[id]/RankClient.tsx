@@ -127,7 +127,6 @@ export default function RankClient({
 
   useEffect(() => {
 
-
     if (!id) {
 
       return
@@ -136,7 +135,6 @@ export default function RankClient({
 
 
     async function load() {
-
 
       setLoading(true)
 
@@ -177,9 +175,26 @@ export default function RankClient({
       )
 
 
+      /*
+       *
+       * Determine the conversation root.
+       *
+       * Every remix should carry the original
+       * ranking ID in root_id.
+       *
+       */
+
+
       const rootId =
         currentRanking.rootId ??
         currentRanking.id
+
+
+      /*
+       *
+       * Load the original ranking.
+       *
+       */
 
 
       let rootRanking =
@@ -212,6 +227,14 @@ export default function RankClient({
       )
 
 
+      /*
+       *
+       * Load every ranking belonging to this
+       * conversation tree.
+       *
+       */
+
+
       const {
 
         data: conversationRankings,
@@ -230,18 +253,24 @@ export default function RankClient({
               title,
               parent_id,
               root_id,
+              user_id,
               created_at
             `
 
           )
 
           .eq(
+
             "root_id",
+
             rootId
+
           )
 
           .order(
+
             "created_at",
+
             {
 
               ascending:
@@ -265,7 +294,19 @@ export default function RankClient({
       }
 
 
-      const conversationItems =
+      /*
+       *
+       * Convert Supabase rows into the shape
+       * expected by buildConversationTree.
+       *
+       */
+
+
+      const conversationItems:
+        Omit<
+          ConversationNode,
+          "children"
+        >[] =
 
         (
           conversationRankings ??
@@ -283,14 +324,31 @@ export default function RankClient({
                 item.title,
 
               parentId:
-                item.parent_id,
+                item.parent_id ??
+                null,
 
               rootId:
-                item.root_id
+                item.root_id ??
+                rootId,
+
+              createdAt:
+                item.created_at ??
+                undefined
 
             })
 
           )
+
+
+      /*
+       *
+       * Make sure the original ranking is
+       * always represented in the tree.
+       *
+       * This protects against cases where the
+       * Supabase root query returns no row.
+       *
+       */
 
 
       const hasOriginal =
@@ -303,43 +361,192 @@ export default function RankClient({
         )
 
 
-      const completeConversationItems =
+      if (
+        !hasOriginal
+      ) {
 
-        hasOriginal
+        conversationItems.unshift(
 
-          ? conversationItems
+          {
 
-          : [
+            id:
+              rootRanking.id,
 
-              {
+            title:
+              rootRanking.title,
 
-                id:
-                  rootRanking.id,
+            parentId:
+              null,
 
-                title:
-                  rootRanking.title,
+            rootId:
+              rootId,
 
-                parentId:
-                  rootRanking.parentId ??
-                  null,
+            createdAt:
+              rootRanking.createdAt
 
-                rootId:
-                  rootId
+          }
 
-              },
+        )
 
-              ...conversationItems
+      }
 
-            ]
+
+      /*
+       *
+       * Make sure the current ranking is
+       * represented in the tree.
+       *
+       * This is particularly important for a
+       * newly-created remix.
+       *
+       */
+
+
+      const hasCurrent =
+        conversationItems.some(
+
+          item =>
+            item.id ===
+            currentRanking.id
+
+        )
+
+
+      if (
+        !hasCurrent
+      ) {
+
+        conversationItems.push(
+
+          {
+
+            id:
+              currentRanking.id,
+
+            title:
+              currentRanking.title,
+
+            parentId:
+              currentRanking.parentId ??
+              rootRanking.id,
+
+            rootId:
+              rootId,
+
+            createdAt:
+              currentRanking.createdAt
+
+          }
+
+        )
+
+      }
+
+
+      /*
+       *
+       * If the current ranking has a parent
+       * which is not the root, make sure that
+       * parent is also available.
+       *
+       */
+
+
+      const parentId =
+        currentRanking.parentId
+
+
+      if (
+        parentId
+        &&
+        !conversationItems.some(
+          item =>
+            item.id ===
+            parentId
+        )
+      ) {
+
+        const fetchedParent =
+          await getSupabaseRanking(
+            parentId
+          )
+
+
+        if (fetchedParent) {
+
+          conversationItems.push(
+
+            {
+
+              id:
+                fetchedParent.id,
+
+              title:
+                fetchedParent.title,
+
+              parentId:
+                fetchedParent.parentId ??
+                null,
+
+              rootId:
+                fetchedParent.rootId ??
+                rootId,
+
+              createdAt:
+                fetchedParent.createdAt
+
+            }
+
+          )
+
+        }
+
+      }
+
+
+      /*
+       *
+       * Build the actual conversation tree.
+       *
+       */
 
 
       const tree =
-
         buildConversationTree(
 
-          completeConversationItems
+          conversationItems
 
         )
+
+
+      console.log(
+
+        "CONVERSATION TREE DEBUG",
+
+        {
+
+          currentId:
+            currentRanking.id,
+
+          currentParentId:
+            currentRanking.parentId,
+
+          currentRootId:
+            rootId,
+
+          originalId:
+            rootRanking.id,
+
+          conversationCount:
+            conversationItems.length,
+
+          conversationItems,
+
+          tree
+
+        }
+
+      )
 
 
       setConversationTree(
@@ -347,17 +554,21 @@ export default function RankClient({
       )
 
 
+      /*
+       *
+       * Build perspective list.
+       *
+       */
+
+
       const perspectiveItems:
         PerspectiveRanking[] =
 
-        (
-          conversationRankings ??
-          []
-        )
+        conversationItems
 
           .filter(
 
-            (item: any) =>
+            item =>
               item.id !==
               rootRanking.id
 
@@ -365,7 +576,7 @@ export default function RankClient({
 
           .map(
 
-            (item: any) => ({
+            item => ({
 
               id:
                 item.id,
@@ -374,13 +585,14 @@ export default function RankClient({
                 item.title,
 
               parentId:
-                item.parent_id,
+                item.parentId,
 
               rootId:
-                item.root_id,
+                item.rootId,
 
               createdAt:
-                item.created_at
+                item.createdAt ??
+                null
 
             })
 
@@ -405,7 +617,6 @@ export default function RankClient({
 
   function rankIt() {
 
-
     if (!ranking) {
 
       return
@@ -416,6 +627,14 @@ export default function RankClient({
     const items =
 
       ranking.items
+
+        .sort(
+
+          (a, b) =>
+            a.position -
+            b.position
+
+        )
 
         .map(
 
@@ -470,7 +689,6 @@ export default function RankClient({
     perspectiveId: string
   ) {
 
-
     router.push(
 
       `/rank/${perspectiveId}`
@@ -481,7 +699,6 @@ export default function RankClient({
 
 
   function viewOriginal() {
-
 
     if (!originalRanking) {
 
@@ -624,108 +841,112 @@ export default function RankClient({
         "
       >
 
-        {isPerspective && (
-
-          <div
-            className="
-              mb-10
-            "
-          >
+        {
+          isPerspective && (
 
             <div
               className="
-                flex
-                flex-col
-                md:flex-row
-                md:items-end
-                md:justify-between
-                gap-4
+                mb-10
               "
             >
 
-              <div>
-
-                <p
-                  className="
-                    rankd-accent
-                    uppercase
-                    tracking-widest
-                    text-sm
-                    font-black
-                  "
-                >
-
-                  Different perspective
-
-                </p>
-
-
-                <h1
-                  className="
-                    text-4xl
-                    md:text-5xl
-                    font-black
-                    leading-tight
-                    mt-2
-                  "
-                >
-
-                  {ranking.creator ||
-                    "RANKD user"}{" "}
-
-                  ranked this differently.
-
-                </h1>
-
-              </div>
-
-
-              <button
-
-                onClick={
-                  viewOriginal
-                }
-
+              <div
                 className="
-                  rankd-button
-                  whitespace-nowrap
+                  flex
+                  flex-col
+                  md:flex-row
+                  md:items-end
+                  md:justify-between
+                  gap-4
                 "
               >
 
-                View original RANKD →
+                <div>
 
-              </button>
+                  <p
+                    className="
+                      rankd-accent
+                      uppercase
+                      tracking-widest
+                      text-sm
+                      font-black
+                    "
+                  >
+
+                    Different perspective
+
+                  </p>
+
+
+                  <h1
+                    className="
+                      text-4xl
+                      md:text-5xl
+                      font-black
+                      leading-tight
+                      mt-2
+                    "
+                  >
+
+                    {ranking.creator ||
+                      "RANKD user"}{" "}
+
+                    ranked this differently.
+
+                  </h1>
+
+                </div>
+
+
+                <button
+
+                  onClick={
+                    viewOriginal
+                  }
+
+                  className="
+                    rankd-button
+                    whitespace-nowrap
+                  "
+                >
+
+                  View original RANKD →
+
+                </button>
+
+              </div>
 
             </div>
 
-          </div>
+          )
+        }
 
-        )}
 
+        {
+          conversationTree.length > 0 && (
 
-        {conversationTree.length > 0 && (
+            <div
+              className="
+                mb-10
+              "
+            >
 
-          <div
-            className="
-              mb-10
-            "
-          >
+              <ConversationTree
 
-            <ConversationTree
+                nodes={
+                  conversationTree
+                }
 
-              nodes={
-                conversationTree
-              }
+                currentId={
+                  ranking.id
+                }
 
-              currentId={
-                ranking.id
-              }
+              />
 
-            />
+            </div>
 
-          </div>
-
-        )}
+          )
+        }
 
 
         <div
@@ -752,9 +973,11 @@ export default function RankClient({
               "
             >
 
-              {originalRanking?.category ||
+              {
+                originalRanking?.category ||
                 ranking.category ||
-                "General"}
+                "General"
+              }
 
             </p>
 
@@ -769,8 +992,10 @@ export default function RankClient({
               "
             >
 
-              {originalRanking?.title ||
-                ranking.title}
+              {
+                originalRanking?.title ||
+                ranking.title
+              }
 
             </h2>
 
@@ -795,209 +1020,219 @@ export default function RankClient({
               "
             >
 
-              {sortedOriginalItems.map(
+              {
+                sortedOriginalItems.map(
 
-                item => (
-
-                  <div
-
-                    key={
-                      `original-${item.position}`
-                    }
-
-                    className="
-                      rankd-card
-                      p-6
-                      flex
-                      items-center
-                      gap-6
-                    "
-                  >
+                  item => (
 
                     <div
+
+                      key={
+                        `original-${item.position}`
+                      }
+
                       className="
-                        text-4xl
-                        font-black
-                        rankd-accent
+                        rankd-card
+                        p-6
+                        flex
+                        items-center
+                        gap-6
                       "
                     >
 
-                      #{item.position}
+                      <div
+                        className="
+                          text-4xl
+                          font-black
+                          rankd-accent
+                        "
+                      >
+
+                        #{item.position}
+
+                      </div>
+
+
+                      <div
+                        className="
+                          text-2xl
+                          font-black
+                        "
+                      >
+
+                        {item.name}
+
+                      </div>
 
                     </div>
 
-
-                    <div
-                      className="
-                        text-2xl
-                        font-black
-                      "
-                    >
-
-                      {item.name}
-
-                    </div>
-
-                  </div>
+                  )
 
                 )
-
-              )}
+              }
 
             </div>
 
 
-            {isPerspective && (
-
-              <div
-                className="
-                  mt-14
-                  pt-12
-                  border-t
-                  border-black/10
-                "
-              >
-
-                <p
-                  className="
-                    rankd-accent
-                    uppercase
-                    tracking-widest
-                    text-sm
-                    font-black
-                  "
-                >
-
-                  This perspective
-
-                </p>
-
-
-                <h3
-                  className="
-                    text-3xl
-                    md:text-4xl
-                    font-black
-                    mt-3
-                  "
-                >
-
-                  {ranking.creator ||
-                    "RANKD user"}{" "}
-
-                  would rank it differently.
-
-                </h3>
-
+            {
+              isPerspective && (
 
                 <div
                   className="
-                    mt-8
-                    space-y-4
+                    mt-14
+                    pt-12
+                    border-t
+                    border-black/10
                   "
                 >
 
-                  {sortedPerspectiveItems.map(
+                  <p
+                    className="
+                      rankd-accent
+                      uppercase
+                      tracking-widest
+                      text-sm
+                      font-black
+                    "
+                  >
 
-                    item => (
+                    This perspective
 
-                      <div
-
-                        key={
-                          `perspective-${item.position}`
-                        }
-
-                        className="
-                          rounded-3xl
-                          border
-                          border-black/10
-                          bg-white
-                          p-6
-                          flex
-                          items-center
-                          gap-6
-                        "
-                      >
-
-                        <div
-                          className="
-                            text-4xl
-                            font-black
-                            rankd-accent
-                          "
-                        >
-
-                          #{item.position}
-
-                        </div>
+                  </p>
 
 
-                        <div
-                          className="
-                            text-2xl
-                            font-black
-                          "
-                        >
+                  <h3
+                    className="
+                      text-3xl
+                      md:text-4xl
+                      font-black
+                      mt-3
+                    "
+                  >
 
-                          {item.name}
+                    {
+                      ranking.creator ||
+                      "RANKD user"
+                    }{" "}
 
-                        </div>
+                    would rank it differently.
 
-                      </div>
+                  </h3>
 
-                    )
 
-                  )}
+                  <div
+                    className="
+                      mt-8
+                      space-y-4
+                    "
+                  >
+
+                    {
+                      sortedPerspectiveItems.map(
+
+                        item => (
+
+                          <div
+
+                            key={
+                              `perspective-${item.position}`
+                            }
+
+                            className="
+                              rounded-3xl
+                              border
+                              border-black/10
+                              bg-white
+                              p-6
+                              flex
+                              items-center
+                              gap-6
+                            "
+                          >
+
+                            <div
+                              className="
+                                text-4xl
+                                font-black
+                                rankd-accent
+                              "
+                            >
+
+                              #{item.position}
+
+                            </div>
+
+
+                            <div
+                              className="
+                                text-2xl
+                                font-black
+                              "
+                            >
+
+                              {item.name}
+
+                            </div>
+
+                          </div>
+
+                        )
+
+                      )
+                    }
+
+                  </div>
 
                 </div>
 
-              </div>
+              )
+            }
 
-            )}
 
+            {
+              !isPerspective && (
 
-            {!isPerspective && (
-
-              <div
-                className="
-                  mt-14
-                  pt-12
-                  border-t
-                  border-black/10
-                "
-              >
-
-                <p
+                <div
                   className="
-                    rankd-accent
-                    uppercase
-                    tracking-widest
-                    text-sm
-                    font-black
+                    mt-14
+                    pt-12
+                    border-t
+                    border-black/10
                   "
                 >
 
-                  The conversation starts here
+                  <p
+                    className="
+                      rankd-accent
+                      uppercase
+                      tracking-widest
+                      text-sm
+                      font-black
+                    "
+                  >
 
-                </p>
+                    The conversation starts here
+
+                  </p>
 
 
-                <h3
-                  className="
-                    text-3xl
-                    md:text-4xl
-                    font-black
-                    mt-3
-                  "
-                >
+                  <h3
+                    className="
+                      text-3xl
+                      md:text-4xl
+                      font-black
+                      mt-3
+                    "
+                  >
 
-                  Would you rank it differently?
+                    Would you rank it differently?
 
-                </h3>
+                  </h3>
 
-              </div>
+                </div>
 
-            )}
+              )
+            }
 
 
             <button
@@ -1110,25 +1345,25 @@ export default function RankClient({
                 "
               >
 
-                {perspectives.length === 0
+                {
+                  perspectives.length === 0
 
-                  ? `
-                    Be the first person
-                    to rank this differently.
-                  `
+                    ? `
+                      Be the first person
+                      to rank this differently.
+                    `
 
-                  : `
-                    ${
-                      perspectives.length
-                    }
-                    ${
-                      perspectives.length === 1
-                        ? "person has"
-                        : "people have"
-                    }
-                    added a different perspective.
-                  `
-
+                    : `
+                      ${
+                        perspectives.length
+                      }
+                      ${
+                        perspectives.length === 1
+                          ? "person has"
+                          : "people have"
+                      }
+                      added a different perspective.
+                    `
                 }
 
               </p>
@@ -1141,125 +1376,111 @@ export default function RankClient({
                 "
               >
 
-                {perspectives
+                {
+                  perspectives
 
-                  .slice(
-                    0,
-                    7
-                  )
+                    .slice(
+                      0,
+                      7
+                    )
 
-                  .map(
+                    .map(
 
-                    perspective => (
+                      perspective => (
 
-                      <button
+                        <button
 
-                        key={
-                          perspective.id
-                        }
-
-                        onClick={() =>
-                          viewPerspective(
+                          key={
                             perspective.id
-                          )
-                        }
-
-                        className={`
-                          w-full
-                          rounded-2xl
-                          p-4
-                          text-left
-                          border
-                          transition
-                          ${
-                            perspective.id ===
-                            ranking.id
-
-                              ? `
-                                bg-black
-                                text-white
-                                border-black
-                              `
-
-                              : `
-                                bg-black/[0.04]
-                                border-black/5
-                                hover:bg-black/[0.07]
-                              `
                           }
-                        `}
-                      >
 
-                        <p
+                          onClick={() =>
+                            viewPerspective(
+                              perspective.id
+                            )
+                          }
+
                           className="
-                            font-black
+                            w-full
+                            rounded-2xl
+                            p-4
+                            text-left
+                            border
+                            transition
+                            bg-black/[0.04]
+                            border-black/5
+                            hover:bg-black/[0.07]
                           "
                         >
 
-                          {perspective.id ===
-                          ranking.id
+                          <p
+                            className="
+                              font-black
+                            "
+                          >
 
-                            ? "Current perspective"
-
-                            : "Different perspective"
-
-                          }
-
-                        </p>
-
-
-                        <p
-                          className={`
-                            mt-1
-                            text-sm
-                            ${
+                            {
                               perspective.id ===
                               ranking.id
 
-                                ? "text-white/60"
+                                ? "Current perspective"
 
-                                : "rankd-muted"
+                                : "Different perspective"
                             }
-                          `}
-                        >
 
-                          View this perspective →
+                          </p>
 
-                        </p>
 
-                      </button>
+                          <p
+                            className="
+                              mt-1
+                              text-sm
+                              rankd-muted
+                            "
+                          >
+
+                            View this perspective →
+
+                          </p>
+
+                        </button>
+
+                      )
 
                     )
-
-                  )
-
                 }
 
               </div>
 
 
-              {perspectives.length > 7 && (
+              {
+                perspectives.length > 7 && (
 
-                <p
-                  className="
-                    mt-5
-                    text-sm
-                    font-bold
-                    rankd-muted
-                  "
-                >
+                  <p
+                    className="
+                      mt-5
+                      text-sm
+                      font-bold
+                      rankd-muted
+                    "
+                  >
 
-                  +{" "}
+                    +
 
-                  {perspectives.length - 7}
+                    {" "}
 
-                  {" "}
+                    {
+                      perspectives.length - 7
+                    }
 
-                  more perspectives
+                    {" "}
 
-                </p>
+                    more perspectives
 
-              )}
+                  </p>
+
+                )
+              }
 
             </div>
 

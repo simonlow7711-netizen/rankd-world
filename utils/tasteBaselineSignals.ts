@@ -37,7 +37,6 @@ function clamp(
   return Math.max(
 
     0,
-
     Math.min(
       value,
       1

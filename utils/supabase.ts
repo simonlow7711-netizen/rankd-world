@@ -1,4 +1,6 @@
-import { createClient } from "@supabase/supabase-js"
+import {
+  createBrowserClient
+} from "@supabase/ssr"
 
 
 const supabaseUrl =
@@ -12,7 +14,7 @@ const supabaseAnonKey =
 
 export const supabase =
 
-  createClient(
+  createBrowserClient(
 
     supabaseUrl,
 

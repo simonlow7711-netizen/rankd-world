@@ -1,35 +1,3 @@
-import {
-  trackEvent
-} from "@/utils/analytics"
-
-
-import {
-  ANALYTICS_EVENTS
-} from "@/utils/analyticsEvents"
-
-
-import {
-  supabase
-} from "@/utils/supabase"
-
-
-import {
-  getSupabaseRanking
-} from "@/utils/supabaseRankings"
-
-
-import {
-  getTasteGraph,
-
-  saveTasteGraph
-} from "@/utils/tasteGraphRepository"
-
-
-import {
-  TasteSignalType
-} from "@/utils/tasteGraph"
-
-
 export type TasteFeedbackType =
 
   | "viewed"
@@ -45,224 +13,13 @@ export type TasteFeedbackType =
 
 type RecordTasteFeedbackOptions = {
 
-  type:TasteFeedbackType
+  type: TasteFeedbackType
 
-  rankingId:string
+  rankingId: string
 
-  recommendationScore?:number
+  recommendationScore?: number
 
-  source?:string
-
-}
-
-
-const eventMap:Record<
-
-  TasteFeedbackType,
-
-  string
-
-> = {
-
-
-  viewed:
-
-    ANALYTICS_EVENTS.RECOMMENDATION_VIEWED,
-
-
-  clicked:
-
-    ANALYTICS_EVENTS.RECOMMENDATION_CLICKED,
-
-
-  ranked:
-
-    ANALYTICS_EVENTS.RECOMMENDATION_RANKED,
-
-
-  skipped:
-
-    ANALYTICS_EVENTS.RECOMMENDATION_SKIPPED,
-
-
-  disagreed:
-
-    ANALYTICS_EVENTS.RECOMMENDATION_DISAGREED
-
-}
-
-
-const feedbackSignalMap:Record<
-
-  Exclude<
-
-    TasteFeedbackType,
-
-    "viewed"
-
-  >,
-
-  {
-
-    type:TasteSignalType
-
-    strength:number
-
-  }
-
-> = {
-
-
-  clicked:{
-
-    type:
-
-      "feedback_clicked",
-
-    strength:
-
-      0.15
-
-  },
-
-
-  ranked:{
-
-    type:
-
-      "feedback_ranked",
-
-    strength:
-
-      0.40
-
-  },
-
-
-  skipped:{
-
-    type:
-
-      "feedback_skipped",
-
-    strength:
-
-      0.15
-
-  },
-
-
-  disagreed:{
-
-    type:
-
-      "feedback_disagreed",
-
-    strength:
-
-      0.40
-
-  }
-
-}
-
-
-function createFeedbackSignals(
-
-  type:TasteFeedbackType,
-
-  rankingId:string,
-
-  userId:string,
-
-  ranking:Awaited<
-
-    ReturnType<
-
-      typeof getSupabaseRanking
-
-    >
-
-  >
-
-){
-
-
-  if(
-
-    type === "viewed"
-
-  ){
-
-    return []
-
-  }
-
-
-  if(!ranking){
-
-    return []
-
-  }
-
-
-  const feedback =
-
-    feedbackSignalMap[type]
-
-
-  if(!feedback){
-
-    return []
-
-  }
-
-
-  return ranking.items.map(
-
-    item => ({
-
-
-      id:
-
-        crypto.randomUUID(),
-
-
-      userId,
-
-
-      type:
-
-        feedback.type,
-
-
-      category:
-
-        ranking.category ?? "General",
-
-
-      item:
-
-        item.name,
-
-
-      strength:
-
-        feedback.strength,
-
-
-      position:
-
-        item.position,
-
-
-      source:
-
-        rankingId
-
-    })
-
-  )
+  source?: string
 
 }
 
@@ -277,150 +34,72 @@ export async function recordTasteFeedback({
 
   source
 
-}:RecordTasteFeedbackOptions){
+}: RecordTasteFeedbackOptions) {
 
-
-  if(!rankingId){
-
-    return
-
-  }
-
-
-  await trackEvent(
-
-    eventMap[type],
-
-    {
-
-      rankingId,
-
-      recommendationScore:
-
-        recommendationScore ?? null,
-
-      source:
-
-        source ??
-
-        "taste_recommendation"
-
-    }
-
-  )
-
-
-  if(
-
-    type === "viewed"
-
-  ){
+  if (!rankingId) {
 
     return
 
   }
 
 
-  try{
+  try {
 
+    const response =
 
-    const {
+      await fetch(
 
-      data:{
+        "/api/taste-feedback",
 
-        user
+        {
 
-      }
+          method:
+            "POST",
 
-    } = await supabase.auth.getUser()
+          headers: {
 
+            "Content-Type":
+              "application/json"
 
-    if(!user){
+          },
 
-      return
+          body:
 
-    }
+            JSON.stringify({
 
+              type,
 
-    const ranking =
+              rankingId,
 
-      await getSupabaseRanking(
+              recommendationScore:
+                recommendationScore ?? null,
 
-        rankingId
+              source:
+                source ??
+                "taste_recommendation"
 
-      )
+            })
 
-
-    if(!ranking){
-
-      return
-
-    }
-
-
-    const existingGraph =
-
-      await getTasteGraph(
-
-        user.id
+        }
 
       )
 
 
-    const feedbackSignals =
+    if (!response.ok) {
 
-      createFeedbackSignals(
+      console.error(
 
-        type,
+        "TASTE FEEDBACK API ERROR",
 
-        rankingId,
-
-        user.id,
-
-        ranking
+        await response.text()
 
       )
 
-
-    if(
-
-      feedbackSignals.length === 0
-
-    ){
-
-      return
-
     }
-
-
-    const updatedGraph = {
-
-
-      ...existingGraph,
-
-
-      signals:[
-
-        ...existingGraph.signals,
-
-        ...feedbackSignals
-
-      ]
-
-    }
-
-
-    await saveTasteGraph(
-
-      updatedGraph
-
-    )
-
 
   }
 
-  catch(error){
-
+  catch (error) {
 
     console.error(
 
