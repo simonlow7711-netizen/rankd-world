@@ -1008,7 +1008,12 @@ export default function RankClient({
               "
             >
 
-              The original ranking
+              Ranked by{" "}
+
+              {
+                originalRanking?.creator ||
+                "RANKD user"
+              }
 
             </p>
 
