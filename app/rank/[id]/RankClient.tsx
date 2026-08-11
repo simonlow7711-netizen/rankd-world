@@ -519,34 +519,7 @@ export default function RankClient({
         )
 
 
-      console.log(
 
-        "CONVERSATION TREE DEBUG",
-
-        {
-
-          currentId:
-            currentRanking.id,
-
-          currentParentId:
-            currentRanking.parentId,
-
-          currentRootId:
-            rootId,
-
-          originalId:
-            rootRanking.id,
-
-          conversationCount:
-            conversationItems.length,
-
-          conversationItems,
-
-          tree
-
-        }
-
-      )
 
 
       setConversationTree(

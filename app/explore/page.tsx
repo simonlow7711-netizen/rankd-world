@@ -86,43 +86,7 @@ export default async function ExplorePage() {
       : []
 
 
-  console.log(
-    "EXPLORE TASTE DEBUG",
-    {
-      currentUserId,
 
-      tasteGraphExists:
-        Boolean(
-          tasteGraph
-        ),
-
-      tasteSignalCount:
-        tasteGraph?.signals.length ?? 0,
-
-      tasteRankingCount:
-        tasteGraph?.behaviour.totalRankings ?? 0,
-
-      recommendedCount:
-        recommendedRankings.length,
-
-      recommended:
-        recommendedRankings.map(
-          recommendation => ({
-
-            id:
-              recommendation.ranking.id,
-
-            title:
-              recommendation.ranking.title,
-
-            score:
-              recommendation.score
-
-          })
-        )
-
-    }
-  )
 
 
   const latestRankings =

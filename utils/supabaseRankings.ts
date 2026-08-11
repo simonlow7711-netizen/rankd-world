@@ -277,19 +277,6 @@ export async function getSupabaseRanking(
 ): Promise<Ranking | null> {
 
 
-  console.log(
-
-    "GET RANKING DEBUG START",
-
-    {
-
-      id
-
-    }
-
-  )
-
-
   const {
     data: rankingRow,
 
@@ -310,23 +297,6 @@ export async function getSupabaseRanking(
     )
 
     .single()
-
-
-  console.log(
-
-    "GET RANKING DEBUG RESULT",
-
-    {
-
-      id,
-
-      rankingRow,
-
-      rankingError
-
-    }
-
-  )
 
 
   if (
@@ -861,31 +831,6 @@ export async function createSupabaseRanking(
   userId: string
 
 ) {
-
-
-  console.log(
-
-    "CREATE RANKING USER DEBUG",
-
-    {
-
-      userId,
-
-      rankingId:
-
-        ranking.id,
-
-      parentId:
-
-        ranking.parentId,
-
-      rootId:
-
-        ranking.rootId
-
-    }
-
-  )
 
 
   const {

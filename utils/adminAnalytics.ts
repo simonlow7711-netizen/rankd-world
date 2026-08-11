@@ -1,7 +1,6 @@
-import { supabase } from "@/utils/supabase"
-
-
-
+import {
+  supabase
+} from "@/utils/supabase"
 
 
 export async function getAnalyticsOverview(){
@@ -22,35 +21,6 @@ export async function getAnalyticsOverview(){
       "event_name"
 
     )
-
-
-
-
-
-
-
-  console.log(
-
-    "ANALYTICS DATA",
-
-    data
-
-  )
-
-
-
-  console.log(
-
-    "ANALYTICS ERROR",
-
-    error
-
-  )
-
-
-
-
-
 
 
   if(error){
@@ -76,16 +46,9 @@ export async function getAnalyticsOverview(){
   }
 
 
+  const events =
 
-
-
-
-
-  const events = data ?? []
-
-
-
-
+    data ?? []
 
 
   const rankingViews =
@@ -99,10 +62,6 @@ export async function getAnalyticsOverview(){
     ).length
 
 
-
-
-
-
   const created =
 
     events.filter(
@@ -112,10 +71,6 @@ export async function getAnalyticsOverview(){
         event.event_name === "rank_started"
 
     ).length
-
-
-
-
 
 
   const published =
@@ -129,11 +84,6 @@ export async function getAnalyticsOverview(){
     ).length
 
 
-
-
-
-
-
   return {
 
 
@@ -142,17 +92,13 @@ export async function getAnalyticsOverview(){
       rankingViews,
 
 
-
     rankingViews,
-
 
 
     created,
 
 
-
     published,
-
 
 
     opinionRate:
@@ -182,7 +128,6 @@ export async function getAnalyticsOverview(){
       0,
 
 
-
     publishRate:
 
       created > 0
@@ -210,23 +155,10 @@ export async function getAnalyticsOverview(){
       0
 
 
-
   }
 
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 export async function getTopViewedRankings(){
@@ -257,25 +189,6 @@ export async function getTopViewedRankings(){
     )
 
 
-
-
-
-
-
-  console.log(
-
-    "VIEW EVENTS",
-
-    events
-
-  )
-
-
-
-
-
-
-
   if(eventError){
 
 
@@ -294,17 +207,7 @@ export async function getTopViewedRankings(){
   }
 
 
-
-
-
-
-
   const counts:any = {}
-
-
-
-
-
 
 
   ;(events ?? []).forEach(
@@ -312,16 +215,11 @@ export async function getTopViewedRankings(){
     event => {
 
 
-
       if(!event.ranking_id){
 
         return
 
       }
-
-
-
-
 
 
       if(!counts[event.ranking_id]){
@@ -333,33 +231,17 @@ export async function getTopViewedRankings(){
       }
 
 
-
-
-
-
       counts[event.ranking_id]++
-
 
 
     }
 
-
   )
-
-
-
-
-
 
 
   const rankingIds =
 
     Object.keys(counts)
-
-
-
-
-
 
 
   if(rankingIds.length === 0){
@@ -369,11 +251,6 @@ export async function getTopViewedRankings(){
 
 
   }
-
-
-
-
-
 
 
   const {
@@ -409,25 +286,6 @@ export async function getTopViewedRankings(){
     )
 
 
-
-
-
-
-
-  console.log(
-
-    "VIEWED RANKINGS",
-
-    rankings
-
-  )
-
-
-
-
-
-
-
   if(rankingError){
 
 
@@ -444,11 +302,6 @@ export async function getTopViewedRankings(){
 
 
   }
-
-
-
-
-
 
 
   return (
@@ -468,7 +321,6 @@ export async function getTopViewedRankings(){
       views:
 
         counts[ranking.id] ?? 0
-
 
 
     })
@@ -494,23 +346,10 @@ export async function getTopViewedRankings(){
   )
 
 
-
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 export async function getTopDebateRankings(){
-
 
 
   const {
@@ -550,11 +389,6 @@ export async function getTopDebateRankings(){
     )
 
 
-
-
-
-
-
   if(error){
 
 
@@ -573,23 +407,12 @@ export async function getTopDebateRankings(){
   }
 
 
-
-
-
-
-
   const debates:any = {}
-
-
-
-
-
 
 
   ;(data ?? []).forEach(
 
     ranking => {
-
 
 
       const root =
@@ -599,10 +422,6 @@ export async function getTopDebateRankings(){
         ??
 
         ranking.id
-
-
-
-
 
 
       if(!debates[root]){
@@ -622,30 +441,18 @@ export async function getTopDebateRankings(){
           count:0
 
 
-
         }
 
 
       }
 
 
-
-
-
-
       debates[root].count++
-
 
 
     }
 
-
   )
-
-
-
-
-
 
 
   return Object.values(debates)
@@ -669,23 +476,10 @@ export async function getTopDebateRankings(){
     )
 
 
-
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 export async function getCategoryBreakdown(){
-
 
 
   const {
@@ -703,11 +497,6 @@ export async function getCategoryBreakdown(){
       "category"
 
     )
-
-
-
-
-
 
 
   if(error){
@@ -728,23 +517,12 @@ export async function getCategoryBreakdown(){
   }
 
 
-
-
-
-
-
   const categories:any = {}
-
-
-
-
-
 
 
   ;(data ?? []).forEach(
 
     ranking => {
-
 
 
       const category =
@@ -756,10 +534,6 @@ export async function getCategoryBreakdown(){
         "General"
 
 
-
-
-
-
       if(!categories[category]){
 
 
@@ -769,45 +543,21 @@ export async function getCategoryBreakdown(){
       }
 
 
-
-
-
-
       categories[category]++
-
 
 
     }
 
-
   )
-
-
-
-
-
 
 
   return categories
 
 
-
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 export async function getCommunityCount(){
-
 
 
   const {
@@ -835,11 +585,6 @@ export async function getCommunityCount(){
     )
 
 
-
-
-
-
-
   if(error){
 
 
@@ -858,41 +603,18 @@ export async function getCommunityCount(){
   }
 
 
-
-
-
-
-
   return count ?? 0
-
 
 
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
 export async function getHealthScore(){
-
 
 
   const metrics =
 
     await getAnalyticsOverview()
-
-
-
-
-
 
 
   if(metrics.views === 0){
@@ -902,11 +624,6 @@ export async function getHealthScore(){
 
 
   }
-
-
-
-
-
 
 
   const score = Math.round(
@@ -926,11 +643,6 @@ export async function getHealthScore(){
   )
 
 
-
-
-
-
-
   return Math.min(
 
     score,
@@ -938,7 +650,6 @@ export async function getHealthScore(){
     100
 
   )
-
 
 
 }

@@ -124,30 +124,6 @@ export default function AdminPage(){
 
 
 
-      console.log(
-
-        "COMMAND CENTRE",
-
-        {
-
-          metricsData,
-
-          viewedData,
-
-          debateData,
-
-          categoryData,
-
-          trendingData
-
-        }
-
-      )
-
-
-
-
-
 
       setMetrics(metricsData)
 
