@@ -1,15 +1,18 @@
 import Hero from "@/components/Hero"
+
 import DailyRankd from "@/components/DailyRankd"
+
 import RANKDFeed from "@/components/RANKDFeed"
+
 import Trending from "@/components/Trending"
-import Categories from "@/components/Categories"
+
 import WhyRankd from "@/components/WhyRankd"
+
+import Categories from "@/components/Categories"
+
 import Footer from "@/components/Footer"
 
 import Link from "next/link"
-
-
-
 
 
 export default function Home(){
@@ -24,55 +27,22 @@ export default function Home(){
     ">
 
 
-
       <Hero />
-
-
-
-
-
 
 
       <DailyRankd />
 
 
-
-
-
-
-
       <RANKDFeed />
-
-
-
-
-
 
 
       <Trending />
 
 
-
-
-
-
-
       <WhyRankd />
 
 
-
-
-
-
-
       <Categories />
-
-
-
-
-
-
-
 
 
       <section className="
@@ -106,10 +76,6 @@ export default function Home(){
           </p>
 
 
-
-
-
-
           <h2 className="
             text-5xl
             md:text-7xl
@@ -119,14 +85,12 @@ export default function Home(){
           ">
 
             What is your
+
             <br />
+
             Top 7?
 
           </h2>
-
-
-
-
 
 
           <p className="
@@ -139,11 +103,6 @@ export default function Home(){
             Start a conversation.
 
           </p>
-
-
-
-
-
 
 
           <Link
@@ -171,22 +130,13 @@ export default function Home(){
           </Link>
 
 
-
-
         </div>
 
 
       </section>
 
 
-
-
-
-
-
-
       <Footer />
-
 
 
     </main>

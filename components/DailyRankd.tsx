@@ -143,6 +143,7 @@ export default function DailyRankd(){
 
     <section className="
       mb-20
+      px-6
       flex
       justify-center
     ">

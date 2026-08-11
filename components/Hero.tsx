@@ -171,43 +171,37 @@ export default function Hero() {
         "
       >
 
-        <Link href="/create">
+        <Link
+          href="/create"
+          className="
+            rankd-button
+            text-lg
+          "
+        >
 
-          <button
-            className="
-              rankd-button
-              text-lg
-            "
-          >
-
-            Create Your Top 7
-
-          </button>
+          Create Your Top 7
 
         </Link>
 
 
-        <Link href="/explore">
+        <Link
+          href="/explore"
+          className="
+            bg-white
+            border
+            border-black/10
+            text-black
+            px-8
+            py-4
+            rounded-full
+            font-black
+            text-lg
+            hover:-translate-y-1
+            transition
+          "
+        >
 
-          <button
-            className="
-              bg-white
-              border
-              border-black/10
-              text-black
-              px-8
-              py-4
-              rounded-full
-              font-black
-              text-lg
-              hover:-translate-y-1
-              transition
-            "
-          >
-
-            Explore Perspectives
-
-          </button>
+          Explore Perspectives
 
         </Link>
 

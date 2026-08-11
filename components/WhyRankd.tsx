@@ -1,53 +1,79 @@
 import Link from "next/link"
 
 
+type Step = {
 
-const steps = [
+  number: string
+
+  title: string
+
+  text: string
+
+  link: string
+
+  action: string
+
+}
+
+
+const steps: Step[] = [
 
   {
 
-    number:"01",
+    number:
+      "01",
 
-    title:"Choose a topic",
+    title:
+      "Choose a topic",
 
     text:
       "Pick anything. Films, food, travel, sport, music or your own idea.",
 
-    link:"/explore",
+    link:
+      "/explore",
 
-    action:"Find a topic →"
+    action:
+      "Find a topic →"
 
   },
 
 
   {
 
-    number:"02",
+    number:
+      "02",
 
-    title:"Rank your Top 7",
+    title:
+      "Rank your Top 7",
 
     text:
       "Put your choices in order. Your #1 says something about you.",
 
-    link:"/create",
+    link:
+      "/create",
 
-    action:"Create your RANKD →"
+    action:
+      "Create your RANKD →"
 
   },
 
 
   {
 
-    number:"03",
+    number:
+      "03",
 
-    title:"Compare perspectives",
+    title:
+      "Compare perspectives",
 
     text:
       "See where people agree, disagree and create different rankings.",
 
-    link:"/explore",
+    link:
+      "/explore",
 
-    action:"Explore debates →"
+    action:
+      "Explore debates →"
 
   }
 
@@ -148,7 +174,7 @@ export default function WhyRankd(){
 
 
 
-          {steps.map(step=>(
+          {steps.map(step => (
 
 
             <Link
@@ -156,6 +182,11 @@ export default function WhyRankd(){
               key={step.number}
 
               href={step.link}
+
+              className="
+                block
+                h-full
+              "
 
             >
 

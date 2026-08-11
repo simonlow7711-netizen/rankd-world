@@ -1,5 +1,6 @@
 "use client"
 
+
 import Link from "next/link"
 
 import {
@@ -8,6 +9,10 @@ import {
 } from "react"
 
 import RankingCard from "@/components/RankingCard"
+
+import {
+  Ranking
+} from "@/types/ranking"
 
 import {
   getAllRankings
@@ -22,7 +27,7 @@ export default function Trending(){
 
   const [rankings,setRankings] =
 
-    useState<any[]>([])
+    useState<Ranking[]>([])
 
 
 
@@ -43,48 +48,71 @@ export default function Trending(){
     async function loadRankings(){
 
 
-      const data =
-
-        await getAllRankings()
+      try {
 
 
+        const data =
+
+          await getAllRankings()
 
 
 
-      const trendingRankings =
 
-        (data ?? [])
 
-        .sort(
+        const trendingRankings =
 
-          (a,b)=>
+          (data ?? [])
 
-            (b.signals?.rankdScore ?? 0)
+            .sort(
 
-            -
+              (a,b)=>
 
-            (a.signals?.rankdScore ?? 0)
+                (b.signals?.rankdScore ?? 0)
+
+                -
+
+                (a.signals?.rankdScore ?? 0)
+
+            )
+
+            .slice(
+
+              0,
+
+              3
+
+            )
+
+
+
+
+
+        setRankings(
+
+          trendingRankings
 
         )
 
-        .slice(0,3)
+
+      }
 
 
+      catch(error){
 
 
-
-      setRankings(
-
-        trendingRankings
-
-      )
+        setRankings([])
 
 
+      }
 
 
+      finally {
 
-      setLoading(false)
 
+        setLoading(false)
+
+
+      }
 
 
     }

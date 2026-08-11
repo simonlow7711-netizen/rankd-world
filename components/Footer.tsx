@@ -1,9 +1,7 @@
 import Link from "next/link"
 
 
-
 export default function Footer(){
-
 
 
   return (
@@ -22,9 +20,6 @@ export default function Footer(){
       ">
 
 
-
-
-
         <div className="
           rounded-[40px]
           bg-zinc-900
@@ -32,9 +27,6 @@ export default function Footer(){
           md:p-14
           text-center
         ">
-
-
-
 
 
           <div className="
@@ -48,11 +40,6 @@ export default function Footer(){
           </div>
 
 
-
-
-
-
-
           <h2 className="
             text-4xl
             md:text-6xl
@@ -63,11 +50,6 @@ export default function Footer(){
             Everyone has a ranking.
 
           </h2>
-
-
-
-
-
 
 
           <p className="
@@ -83,12 +65,6 @@ export default function Footer(){
             See where your perspective differs.
 
           </p>
-
-
-
-
-
-
 
 
           <Link
@@ -115,17 +91,7 @@ export default function Footer(){
           </Link>
 
 
-
-
-
         </div>
-
-
-
-
-
-
-
 
 
         <div className="
@@ -137,7 +103,6 @@ export default function Footer(){
           gap-8
           items-center
         ">
-
 
 
           <div>
@@ -153,7 +118,6 @@ export default function Footer(){
             </h3>
 
 
-
             <p className="
               mt-2
               text-gray-500
@@ -165,12 +129,6 @@ export default function Footer(){
 
 
           </div>
-
-
-
-
-
-
 
 
           <div className="
@@ -196,9 +154,6 @@ export default function Footer(){
             </Link>
 
 
-
-
-
             <Link
 
               href="/create"
@@ -213,9 +168,6 @@ export default function Footer(){
               Create
 
             </Link>
-
-
-
 
 
             <Link
@@ -237,18 +189,7 @@ export default function Footer(){
           </div>
 
 
-
-
-
-
-
         </div>
-
-
-
-
-
-
 
 
         <div className="
@@ -265,11 +206,6 @@ export default function Footer(){
           Built around human opinions.
 
         </div>
-
-
-
-
-
 
 
       </div>

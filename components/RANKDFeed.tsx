@@ -121,6 +121,7 @@ export default function RANKDFeed(){
 
     <section className="
       py-20
+      px-6
     ">
 
 

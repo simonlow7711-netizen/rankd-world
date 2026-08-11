@@ -10,12 +10,6 @@ import RankdExplanation from "@/components/RankdExplanation"
 
 import DiscoveryReason from "@/components/DiscoveryReason"
 
-import RankingDebug from "@/components/RankingDebug"
-
-import {
-  SHOW_RANKD_DEBUG
-} from "@/utils/featureFlags"
-
 import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
@@ -266,25 +260,6 @@ export default function RankingCard({
           ranking={ranking}
 
         />
-
-
-
-
-
-
-
-        {SHOW_RANKD_DEBUG && (
-
-          <RankingDebug
-
-            ranking={ranking}
-
-          />
-
-        )}
-
-
-
 
 
       </article>
