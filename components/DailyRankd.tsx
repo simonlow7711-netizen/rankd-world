@@ -139,6 +139,22 @@ export default function DailyRankd(){
 
 
 
+  const createUrl =
+
+    `/create?title=${encodeURIComponent(
+
+      dailyRankd.title
+
+    )}&category=${encodeURIComponent(
+
+      dailyRankd.category
+
+    )}`
+
+
+
+
+
   return (
 
     <section className="
@@ -209,7 +225,9 @@ export default function DailyRankd(){
 
         <Link
 
-          href={`/create?title=${encodeURIComponent(dailyRankd.title)}&category=${encodeURIComponent(dailyRankd.category)}`}
+          href={
+            createUrl
+          }
 
           className="
             inline-block

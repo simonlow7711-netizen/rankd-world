@@ -269,7 +269,7 @@ export default function ProfileClient({
         bg-[#F7F4EE]
         flex
         items-center
-        justify-content-center
+        justify-center
         font-black
       ">
 

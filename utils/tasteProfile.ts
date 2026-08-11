@@ -148,25 +148,25 @@ export function calculateTasteDNA(
 
         totalItems > 0
 
-        ?
+          ?
 
-        Number(
+          Number(
 
-          (
+            (
 
-            totalPosition /
+              totalPosition /
 
-            totalItems
+              totalItems
+
+            )
+
+            .toFixed(2)
 
           )
 
-          .toFixed(2)
+          :
 
-        )
-
-        :
-
-        0,
+          0,
 
 
       totalRankings:
@@ -221,27 +221,27 @@ export function mergeTasteDNA(
 
       )
 
-      .forEach(
+        .forEach(
 
-        ([key, value]) => {
+          ([key, value]) => {
 
-          categories[key] =
+            categories[key] =
 
-            (
+              (
 
-              categories[key] ||
+                categories[key] ||
 
-              0
+                0
 
-            )
+              )
 
-            +
+              +
 
-            value
+              value
 
-        }
+          }
 
-      )
+        )
 
 
       Object.entries(
@@ -250,27 +250,27 @@ export function mergeTasteDNA(
 
       )
 
-      .forEach(
+        .forEach(
 
-        ([key, value]) => {
+          ([key, value]) => {
 
-          choices[key] =
+            choices[key] =
 
-            (
+              (
 
-              choices[key] ||
+                choices[key] ||
 
-              0
+                0
 
-            )
+              )
 
-            +
+              +
 
-            value
+              value
 
-        }
+          }
 
-      )
+        )
 
 
       totalRankings +=
@@ -313,6 +313,7 @@ export function mergeTasteDNA(
 
       }
 
+
       totalItems +=
 
         dna.behaviour
@@ -340,25 +341,25 @@ export function mergeTasteDNA(
 
         totalItems > 0
 
-        ?
+          ?
 
-        Number(
+          Number(
 
-          (
+            (
 
-            totalPosition /
+              totalPosition /
 
-            totalItems
+              totalItems
+
+            )
+
+            .toFixed(2)
 
           )
 
-          .toFixed(2)
+          :
 
-        )
-
-        :
-
-        0,
+          0,
 
 
       totalRankings
@@ -390,21 +391,21 @@ export function normaliseTasteDNA(
 
     )
 
-    .reduce(
+      .reduce(
 
-      (
+        (
 
-        total,
+          total,
 
-        value
+          value
 
-      ) =>
+        ) =>
 
-        total + value,
+          total + value,
 
-      0
+        0
 
-    )
+      )
 
 
   const choiceTotal =
@@ -415,21 +416,21 @@ export function normaliseTasteDNA(
 
     )
 
-    .reduce(
+      .reduce(
 
-      (
+        (
 
-        total,
+          total,
 
-        value
+          value
 
-      ) =>
+        ) =>
 
-        total + value,
+          total + value,
 
-      0
+        0
 
-    )
+      )
 
 
   const categories: Record<string, number> = {}
@@ -443,37 +444,37 @@ export function normaliseTasteDNA(
 
   )
 
-  .forEach(
+    .forEach(
 
-    ([key, value]) => {
+      ([key, value]) => {
 
-      categories[key] =
+        categories[key] =
 
-        categoryTotal > 0
+          categoryTotal > 0
 
-        ?
+            ?
 
-        Number(
+            Number(
 
-          (
+              (
 
-            value /
+                value /
 
-            categoryTotal
+                categoryTotal
 
-          )
+              )
 
-          .toFixed(3)
+              .toFixed(3)
 
-        )
+            )
 
-        :
+            :
 
-        0
+            0
 
-    }
+      }
 
-  )
+    )
 
 
   Object.entries(
@@ -482,37 +483,37 @@ export function normaliseTasteDNA(
 
   )
 
-  .forEach(
+    .forEach(
 
-    ([key, value]) => {
+      ([key, value]) => {
 
-      choices[key] =
+        choices[key] =
 
-        choiceTotal > 0
+          choiceTotal > 0
 
-        ?
+            ?
 
-        Number(
+            Number(
 
-          (
+              (
 
-            value /
+                value /
 
-            choiceTotal
+                choiceTotal
 
-          )
+              )
 
-          .toFixed(3)
+              .toFixed(3)
 
-        )
+            )
 
-        :
+            :
 
-        0
+            0
 
-    }
+      }
 
-  )
+    )
 
 
   return {

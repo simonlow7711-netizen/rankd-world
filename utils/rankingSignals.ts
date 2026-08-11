@@ -1,14 +1,22 @@
 import {
+  Ranking
+} from "@/types/ranking"
+
+
+import {
   calculateLivePerspectiveScore
 } from "@/utils/livePerspectiveScore"
+
 
 import {
   calculateDebateScore
 } from "@/utils/debateScore"
 
+
 import {
   calculatePerspectiveScore
 } from "@/utils/perspectiveScore"
+
 
 import {
   calculateRankdScore
@@ -20,9 +28,9 @@ import {
 
 export function getRankingSignals(
 
-  ranking:any
+  ranking: Ranking
 
-){
+) {
 
 
   return {
@@ -85,6 +93,5 @@ export function getRankingSignals(
 
 
   }
-
 
 }

@@ -1,4 +1,6 @@
-import { Ranking } from "@/types/ranking"
+import {
+  Ranking
+} from "@/types/ranking"
 
 
 
@@ -8,8 +10,7 @@ export function calculateDebateScore(
 
   ranking: Ranking
 
-){
-
+) {
 
 
   let score = 0
@@ -20,7 +21,11 @@ export function calculateDebateScore(
 
   // Popularity creates more potential disagreement
 
-  if((ranking.views || 0) > 500){
+  if (
+
+    (ranking.views || 0) > 500
+
+  ) {
 
     score += 20
 
@@ -28,13 +33,17 @@ export function calculateDebateScore(
 
 
 
-  if((ranking.views || 0) > 1500){
+
+
+  if (
+
+    (ranking.views || 0) > 1500
+
+  ) {
 
     score += 20
 
   }
-
-
 
 
 
@@ -42,19 +51,17 @@ export function calculateDebateScore(
 
   // Rankings with more items create more comparison
 
-  if(
+  if (
 
     ranking.items &&
 
     ranking.items.length === 7
 
-  ){
+  ) {
 
     score += 20
 
   }
-
-
 
 
 
@@ -62,11 +69,11 @@ export function calculateDebateScore(
 
   // Community rankings create more opinion diversity
 
-  if(
+  if (
 
     ranking.source === "community"
 
-  ){
+  ) {
 
     score += 20
 
@@ -76,11 +83,13 @@ export function calculateDebateScore(
 
 
 
-
-
   // Recently created rankings get a discovery boost
 
-  if(ranking.createdAt){
+  if (
+
+    ranking.createdAt
+
+  ) {
 
 
     const created =
@@ -92,11 +101,9 @@ export function calculateDebateScore(
       )
 
 
-
     const now =
 
       new Date()
-
 
 
     const days =
@@ -116,11 +123,8 @@ export function calculateDebateScore(
         (
 
           1000 *
-
           60 *
-
           60 *
-
           24
 
         )
@@ -128,9 +132,11 @@ export function calculateDebateScore(
       )
 
 
+    if (
 
+      days < 14
 
-    if(days < 14){
+    ) {
 
       score += 20
 
@@ -138,9 +144,6 @@ export function calculateDebateScore(
 
 
   }
-
-
-
 
 
 

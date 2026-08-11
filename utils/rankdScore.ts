@@ -1,10 +1,17 @@
 import {
+  Ranking
+} from "@/types/ranking"
+
+
+import {
   calculateDebateScore
 } from "@/utils/debateScore"
+
 
 import {
   calculatePerspectiveScore
 } from "@/utils/perspectiveScore"
+
 
 import {
   calculateLivePerspectiveScore
@@ -16,9 +23,9 @@ import {
 
 export function calculateRankdScore(
 
-  ranking:any
+  ranking: Ranking
 
-){
+) {
 
 
   const liveScore =

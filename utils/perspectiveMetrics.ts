@@ -2,6 +2,7 @@ import {
   Ranking
 } from "@/types/ranking"
 
+
 import {
   calculatePerspectiveScore
 } from "@/utils/perspectiveScore"
@@ -14,47 +15,41 @@ import {
 
 export function getInterestingPerspectives(
 
-  rankings:Ranking[] = []
+  rankings: Ranking[] = []
 
-){
+) {
 
 
 
   return rankings
 
-    .map((ranking)=>({
+    .map(
 
+      ranking => ({
 
+        ranking,
 
-      ranking,
+        score:
 
+          calculatePerspectiveScore(
 
+            ranking
 
-      score:
+          )
 
-        calculatePerspectiveScore(
+      })
 
-          ranking
-
-        )
-
-
-
-    }))
-
-
+    )
 
     .sort(
 
-      (a,b)=>
+      (a, b) =>
 
         b.score -
 
         a.score
 
     )
-
-
 
     .slice(
 

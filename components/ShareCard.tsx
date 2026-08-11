@@ -1,10 +1,17 @@
 "use client"
 
+
+
 export default function ShareCard({
+
   username,
+
   rankings,
+
   achievements
-}:any) {
+
+}:any){
+
 
 
   return (

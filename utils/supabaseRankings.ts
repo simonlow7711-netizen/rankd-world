@@ -111,6 +111,13 @@ async function getProfileMap(
 ) {
 
 
+  if (userIds.length === 0) {
+
+    return new Map<string, ProfileRow>()
+
+  }
+
+
   const {
     data: profiles
 
@@ -172,6 +179,13 @@ async function getRankingItems(
   rankingIds: string[]
 
 ) {
+
+
+  if (rankingIds.length === 0) {
+
+    return new Map<string, RankingItem[]>()
+
+  }
 
 
   const {
@@ -270,6 +284,115 @@ async function getRankingItems(
 
 
 
+function mapRanking(
+
+  row: RankingRow,
+
+  profile: ProfileRow | undefined,
+
+  items: RankingItem[]
+
+): Ranking {
+
+
+  const ranking: Ranking = {
+
+
+    id:
+
+      row.id,
+
+
+    title:
+
+      row.title,
+
+
+    category:
+
+      row.category ?? "General",
+
+
+    creator:
+
+      profile?.display_name ?? "Anonymous",
+
+
+    creatorId:
+
+      row.user_id,
+
+
+    creatorUsername:
+
+      profile?.username,
+
+
+    creatorDisplayName:
+
+      profile?.display_name,
+
+
+    description:
+
+      row.description ?? "",
+
+
+    items,
+
+
+    createdAt:
+
+      row.created_at ?? undefined,
+
+
+    views:
+
+      row.views ?? 0,
+
+
+    source:
+
+      "community",
+
+
+    parentId:
+
+      row.parent_id ?? null,
+
+
+    rootId:
+
+      row.root_id ?? null
+
+  }
+
+
+  return {
+
+
+    ...ranking,
+
+    signals:
+
+      getRankingSignals(
+
+        ranking
+
+      )
+
+  }
+
+}
+
+
+
+
+
+
+
+
+
 export async function getSupabaseRanking(
 
   id: string
@@ -307,25 +430,13 @@ export async function getSupabaseRanking(
 
   ) {
 
-
-    console.error(
-
-      "GET RANKING ERROR",
-
-      rankingError
-
-    )
-
-
     return null
 
   }
 
 
   const {
-    data: items,
-
-    error: itemError
+    data: items
 
   } = await supabase
 
@@ -354,20 +465,6 @@ export async function getSupabaseRanking(
     )
 
 
-  if (itemError) {
-
-
-    console.error(
-
-      "GET ITEMS ERROR",
-
-      itemError
-
-    )
-
-  }
-
-
   const {
     data: profile
 
@@ -377,7 +474,7 @@ export async function getSupabaseRanking(
 
     .select(
 
-      "username, display_name"
+      "id, username, display_name"
 
     )
 
@@ -392,116 +489,35 @@ export async function getSupabaseRanking(
     .single()
 
 
-  const ranking: Ranking = {
+  return mapRanking(
 
+    rankingRow as RankingRow,
 
-    id:
+    profile as ProfileRow | undefined,
 
-      rankingRow.id,
+    (items ?? [])
 
+      .map(
 
-    title:
+        (item: RankingItemRow) => ({
 
-      rankingRow.title,
+          position:
 
+            item.position,
 
-    category:
+          name:
 
-      rankingRow.category ?? "General",
+            item.name,
 
+          votes:
 
-    creator:
+            item.votes ?? 0
 
-      profile?.display_name ?? "Anonymous",
-
-
-    creatorId:
-
-      rankingRow.user_id,
-
-
-    creatorUsername:
-
-      profile?.username,
-
-
-    creatorDisplayName:
-
-      profile?.display_name,
-
-
-    description:
-
-      rankingRow.description ?? "",
-
-
-    items:
-
-      (items ?? [])
-
-        .map(
-
-          (item: any) => ({
-
-            position:
-
-              item.position,
-
-            name:
-
-              item.name,
-
-            votes:
-
-              item.votes ?? 0
-
-          })
-
-        ),
-
-
-    createdAt:
-
-      rankingRow.created_at ?? undefined,
-
-
-    views:
-
-      rankingRow.views ?? 0,
-
-
-    source:
-
-      "community",
-
-
-    parentId:
-
-      rankingRow.parent_id ?? null,
-
-
-    rootId:
-
-      rankingRow.root_id ?? null
-
-  }
-
-
-  return {
-
-
-    ...ranking,
-
-
-    signals:
-
-      getRankingSignals(
-
-        ranking
+        })
 
       )
 
-  }
+  )
 
 }
 
@@ -548,16 +564,6 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
   ) {
 
-
-    console.error(
-
-      "GET ALL RANKINGS ERROR",
-
-      error
-
-    )
-
-
     return []
 
   }
@@ -582,6 +588,17 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
     ]
 
 
+  const rankingIds =
+
+    rankings.map(
+
+      ranking =>
+
+        ranking.id
+
+    )
+
+
   const profileMap =
 
     await getProfileMap(
@@ -595,13 +612,7 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
     await getRankingItems(
 
-      rankings.map(
-
-        ranking =>
-
-          ranking.id
-
-      )
+      rankingIds
 
     )
 
@@ -624,96 +635,19 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
         )
 
 
-      const ranking: Ranking = {
+      return mapRanking(
 
+        row,
 
-        id:
+        profile,
 
-          row.id,
+        itemMap.get(
 
+          row.id
 
-        title:
+        ) ?? []
 
-          row.title,
-
-
-        category:
-
-          row.category ?? "General",
-
-
-        creator:
-
-          profile?.display_name ?? "Anonymous",
-
-
-        creatorId:
-
-          row.user_id,
-
-
-        creatorUsername:
-
-          profile?.username,
-
-
-        creatorDisplayName:
-
-          profile?.display_name,
-
-
-        description:
-
-          row.description ?? "",
-
-
-        items:
-
-          itemMap.get(row.id) ?? [],
-
-
-        createdAt:
-
-          row.created_at ?? undefined,
-
-
-        views:
-
-          row.views ?? 0,
-
-
-        source:
-
-          "community",
-
-
-        parentId:
-
-          row.parent_id ?? null,
-
-
-        rootId:
-
-          row.root_id ?? null
-
-      }
-
-
-      return {
-
-
-        ...ranking,
-
-
-        signals:
-
-          getRankingSignals(
-
-            ranking
-
-          )
-
-      }
+      )
 
     })
 
@@ -885,16 +819,6 @@ export async function createSupabaseRanking(
 
   if (error) {
 
-
-    console.error(
-
-      "CREATE RANKING ERROR",
-
-      error
-
-    )
-
-
     throw error
 
   }
@@ -938,16 +862,6 @@ export async function createSupabaseRanking(
 
 
   if (itemsError) {
-
-
-    console.error(
-
-      "CREATE ITEMS ERROR",
-
-      itemsError
-
-    )
-
 
     throw itemsError
 

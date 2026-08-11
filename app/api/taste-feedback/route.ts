@@ -23,6 +23,10 @@ import {
   buildTasteFeedbackSignals
 } from "@/utils/tasteFeedbackSignals"
 
+import {
+  TasteSignal
+} from "@/utils/tasteGraphTypes"
+
 
 export const dynamic =
   "force-dynamic"
@@ -72,6 +76,19 @@ export async function POST(
       await request.json()
 
 
+    const type =
+
+      typeof body?.type === "string"
+
+        ?
+
+        body.type
+
+        :
+
+        ""
+
+
     const rankingId =
 
       typeof body?.rankingId === "string"
@@ -79,6 +96,19 @@ export async function POST(
         ?
 
         body.rankingId
+
+        :
+
+        ""
+
+
+    const userRankingId =
+
+      typeof body?.userRankingId === "string"
+
+        ?
+
+        body.userRankingId
 
         :
 
@@ -105,6 +135,45 @@ export async function POST(
         {
           error:
             "Missing rankingId."
+        },
+
+        {
+          status:
+            400
+        }
+
+      )
+
+    }
+
+
+    if (
+
+      type !== "viewed"
+
+      &&
+
+      type !== "clicked"
+
+      &&
+
+      type !== "ranked"
+
+      &&
+
+      type !== "skipped"
+
+      &&
+
+      type !== "disagreed"
+
+    ) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "Invalid taste feedback type."
         },
 
         {
@@ -154,13 +223,283 @@ export async function POST(
       )
 
 
+    /*
+     *
+     * Direct recommendation feedback.
+     *
+     * These events happen before the user
+     * creates a new ranking, so there is no
+     * user ranking to compare yet.
+     *
+     */
+
+
+    if (
+
+      type === "viewed"
+
+      ||
+
+      type === "clicked"
+
+      ||
+
+      type === "skipped"
+
+      ||
+
+      type === "disagreed"
+
+    ) {
+
+      const feedbackSignalType =
+
+        type === "viewed"
+
+        ?
+
+        "feedback_clicked"
+
+        :
+
+        type === "clicked"
+
+        ?
+
+        "feedback_clicked"
+
+        :
+
+        type === "skipped"
+
+        ?
+
+        "feedback_skipped"
+
+        :
+
+        "feedback_disagreed"
+
+
+      const feedbackStrength =
+
+        type === "viewed"
+
+        ?
+
+        0.25
+
+        :
+
+        type === "clicked"
+
+        ?
+
+        0.5
+
+        :
+
+        type === "skipped"
+
+        ?
+
+        0.5
+
+        :
+
+        0.75
+
+
+      const signals: TasteSignal[] =
+
+        recommendation.items.map(
+
+          item => ({
+
+            id:
+              crypto.randomUUID(),
+
+            userId:
+              user.id,
+
+            type:
+              feedbackSignalType,
+
+            category:
+              recommendation.category,
+
+            item:
+              item.name,
+
+            strength:
+              feedbackStrength,
+
+            position:
+              item.position,
+
+            source:
+              recommendation.id
+
+          })
+
+        )
+
+
+      if (
+
+        signals.length === 0
+
+      ) {
+
+        return NextResponse.json(
+
+          {
+
+            success:
+              true,
+
+            signalsAdded:
+              0
+
+          }
+
+        )
+
+      }
+
+
+      const updatedGraph = {
+
+        ...existingGraph,
+
+        signals: [
+
+          ...existingGraph.signals,
+
+          ...signals
+
+        ]
+
+      }
+
+
+      await saveTasteGraph(
+
+        updatedGraph
+
+      )
+
+
+      return NextResponse.json(
+
+        {
+
+          success:
+            true,
+
+          signalsAdded:
+            signals.length
+
+        }
+
+      )
+
+    }
+
+
+    /*
+     *
+     * A ranked event represents the point at
+     * which the user has created their own
+     * ranking from the recommendation.
+     *
+     * The recommendation and user's ranking
+     * must be compared separately.
+     *
+     */
+
+
+    if (!userRankingId) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "Missing userRankingId for ranked feedback."
+        },
+
+        {
+          status:
+            400
+        }
+
+      )
+
+    }
+
+
+    const userRanking =
+
+      await getSupabaseRanking(
+
+        userRankingId
+
+      )
+
+
+    if (!userRanking) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "User ranking not found."
+        },
+
+        {
+          status:
+            404
+        }
+
+      )
+
+    }
+
+
+    if (
+
+      userRanking.creatorId
+
+      &&
+
+      userRanking.creatorId !== user.id
+
+    ) {
+
+      return NextResponse.json(
+
+        {
+          error:
+            "User ranking does not belong to the authenticated user."
+        },
+
+        {
+          status:
+            403
+        }
+
+      )
+
+    }
+
+
     const comparison =
 
       compareTasteFeedback(
 
         recommendation,
 
-        recommendation,
+        userRanking,
 
         recommendationScore
 
@@ -175,7 +514,7 @@ export async function POST(
 
         recommendation,
 
-        recommendation,
+        userRanking,
 
         comparison
 
@@ -191,11 +530,13 @@ export async function POST(
       return NextResponse.json(
 
         {
+
           success:
             true,
 
           signalsAdded:
             0
+
         }
 
       )

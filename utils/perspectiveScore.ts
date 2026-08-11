@@ -1,4 +1,6 @@
-import { Ranking } from "@/types/ranking"
+import {
+  Ranking
+} from "@/types/ranking"
 
 
 
@@ -8,7 +10,7 @@ export function calculatePerspectiveScore(
 
   ranking: Ranking
 
-){
+) {
 
 
   let score = 0
@@ -22,7 +24,11 @@ export function calculatePerspectiveScore(
     More opinions = more chance of differences
   */
 
-  if((ranking.views || 0) > 500){
+  if (
+
+    (ranking.views || 0) > 500
+
+  ) {
 
     score += 20
 
@@ -30,13 +36,17 @@ export function calculatePerspectiveScore(
 
 
 
-  if((ranking.views || 0) > 1500){
+
+
+  if (
+
+    (ranking.views || 0) > 1500
+
+  ) {
 
     score += 20
 
   }
-
-
 
 
 
@@ -47,19 +57,17 @@ export function calculatePerspectiveScore(
     comparison points
   */
 
-  if(
+  if (
 
     ranking.items &&
 
     ranking.items.length === 7
 
-  ){
+  ) {
 
     score += 20
 
   }
-
-
 
 
 
@@ -70,11 +78,11 @@ export function calculatePerspectiveScore(
     different viewpoints
   */
 
-  if(
+  if (
 
     ranking.source === "community"
 
-  ){
+  ) {
 
     score += 20
 
@@ -84,13 +92,15 @@ export function calculatePerspectiveScore(
 
 
 
-
-
   /*
     Recent rankings create active debate
   */
 
-  if(ranking.createdAt){
+  if (
+
+    ranking.createdAt
+
+  ) {
 
 
     const created =
@@ -102,11 +112,9 @@ export function calculatePerspectiveScore(
       )
 
 
-
     const now =
 
       new Date()
-
 
 
     const days =
@@ -126,11 +134,8 @@ export function calculatePerspectiveScore(
         (
 
           1000 *
-
           60 *
-
           60 *
-
           24
 
         )
@@ -138,9 +143,11 @@ export function calculatePerspectiveScore(
       )
 
 
+    if (
 
+      days < 30
 
-    if(days < 30){
+    ) {
 
       score += 20
 
@@ -148,9 +155,6 @@ export function calculatePerspectiveScore(
 
 
   }
-
-
-
 
 
 

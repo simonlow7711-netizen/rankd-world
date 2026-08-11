@@ -1,31 +1,42 @@
 "use client"
 
-import { useState } from "react"
+import {
+  useState
+} from "react"
 
 
 
 export default function ProfileCard({
+
   username,
+
   rankings,
+
   achievements
-}: any) {
 
-
-  const [copied, setCopied] = useState(false)
-
+}:any){
 
 
 
+  const [copied,setCopied] =
 
-  async function shareProfile() {
+    useState(false)
+
+
+
+
+
+  async function shareProfile(){
 
 
     const url =
+
       `${window.location.origin}/profile/${username}`
 
 
 
     const shareText =
+
       `Check out my RANKD — my Top 7 everything.`
 
 
@@ -34,8 +45,11 @@ export default function ProfileCard({
 
 
     const isMobile =
+
       /Android|iPhone|iPad/i.test(
+
         navigator.userAgent
+
       )
 
 
@@ -44,21 +58,25 @@ export default function ProfileCard({
 
 
 
-    if (
+    if(
 
-      navigator.share && isMobile
+      navigator.share &&
 
-    ) {
+      isMobile
+
+    ){
 
 
-      try {
+      try{
 
 
         await navigator.share({
 
-          title: `${username}'s RANKD`,
+          title:
+            `${username}'s RANKD`,
 
-          text: shareText,
+          text:
+            shareText,
 
           url
 
@@ -67,8 +85,7 @@ export default function ProfileCard({
 
       }
 
-      catch {
-
+      catch{
 
         return
 
@@ -82,7 +99,7 @@ export default function ProfileCard({
 
 
 
-    else {
+    else{
 
 
       await navigator.clipboard.writeText(

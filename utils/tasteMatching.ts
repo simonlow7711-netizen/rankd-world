@@ -10,29 +10,30 @@ import {
 
 function normaliseScores(
 
-  values:Record<string,number> = {}
+  values: Record<string, number> = {}
 
-){
+) {
+
 
   const total =
 
     Object.values(values)
 
-    .reduce(
+      .reduce(
 
-      (sum,value)=>
+        (sum, value) =>
 
-        sum + value,
+          sum + value,
 
-      0
+        0
 
-    )
-
-
+      )
 
 
 
-  if(!total){
+
+
+  if (!total) {
 
     return {}
 
@@ -46,13 +47,17 @@ function normaliseScores(
 
     Object.entries(values)
 
-    .map(([key,value])=>[
+      .map(
 
-      key,
+        ([key, value]) => [
 
-      value / total
+          key,
 
-    ])
+          value / total
+
+        ]
+
+      )
 
   )
 
@@ -69,46 +74,57 @@ function normaliseScores(
 
 function calculateCategorySimilarity(
 
-  a:Record<string,number> = {},
+  a: Record<string, number> = {},
 
-  b:Record<string,number> = {}
+  b: Record<string, number> = {}
 
-){
+) {
 
 
   const normalA =
 
-    normaliseScores(a)
+    normaliseScores(
 
+      a
+
+    )
 
 
   const normalB =
 
-    normaliseScores(b)
+    normaliseScores(
+
+      b
+
+    )
 
 
 
 
 
-  const categories = new Set([
+  const categories =
 
-    ...Object.keys(normalA),
+    new Set([
 
-    ...Object.keys(normalB)
+      ...Object.keys(normalA),
 
-  ])
+      ...Object.keys(normalB)
+
+    ])
 
 
 
 
 
-  if(categories.size === 0){
+  if (
+
+    categories.size === 0
+
+  ) {
 
     return 0
 
   }
-
-
 
 
 
@@ -120,21 +136,27 @@ function calculateCategorySimilarity(
 
 
 
-  categories.forEach(category=>{
+  categories.forEach(
+
+    category => {
 
 
-    difference += Math.abs(
+      difference +=
 
-      (normalA[category] ?? 0)
+        Math.abs(
 
-      -
+          (normalA[category] ?? 0)
 
-      (normalB[category] ?? 0)
+          -
 
-    )
+          (normalB[category] ?? 0)
+
+        )
 
 
-  })
+    }
+
+  )
 
 
 
@@ -170,47 +192,57 @@ function calculateCategorySimilarity(
 
 function calculateChoiceSimilarity(
 
-  a:Record<string,number> = {},
+  a: Record<string, number> = {},
 
-  b:Record<string,number> = {}
+  b: Record<string, number> = {}
 
-){
-
+) {
 
 
   const normalA =
 
-    normaliseScores(a)
+    normaliseScores(
 
+      a
+
+    )
 
 
   const normalB =
 
-    normaliseScores(b)
+    normaliseScores(
+
+      b
+
+    )
 
 
 
 
 
-  const choices = new Set([
+  const choices =
 
-    ...Object.keys(normalA),
+    new Set([
 
-    ...Object.keys(normalB)
+      ...Object.keys(normalA),
 
-  ])
+      ...Object.keys(normalB)
+
+    ])
 
 
 
 
 
-  if(choices.size === 0){
+  if (
+
+    choices.size === 0
+
+  ) {
 
     return 0
 
   }
-
-
 
 
 
@@ -222,21 +254,27 @@ function calculateChoiceSimilarity(
 
 
 
-  choices.forEach(choice=>{
+  choices.forEach(
+
+    choice => {
 
 
-    difference += Math.abs(
+      difference +=
 
-      (normalA[choice] ?? 0)
+        Math.abs(
 
-      -
+          (normalA[choice] ?? 0)
 
-      (normalB[choice] ?? 0)
+          -
 
-    )
+          (normalB[choice] ?? 0)
+
+        )
 
 
-  })
+    }
+
+  )
 
 
 
@@ -272,15 +310,14 @@ function calculateChoiceSimilarity(
 
 function calculateBehaviourSimilarity(
 
-  a:TasteDNA["behaviour"],
+  a: TasteDNA["behaviour"],
 
-  b:TasteDNA["behaviour"]
+  b: TasteDNA["behaviour"]
 
-){
+) {
 
 
-
-  if(
+  if (
 
     !a ||
 
@@ -290,13 +327,11 @@ function calculateBehaviourSimilarity(
 
     !b.totalRankings
 
-  ){
+  ) {
 
     return 0
 
   }
-
-
 
 
 
@@ -311,8 +346,6 @@ function calculateBehaviourSimilarity(
       b.averagePosition
 
     )
-
-
 
 
 
@@ -345,11 +378,11 @@ function calculateBehaviourSimilarity(
 
 function calculatePerspectiveScore(
 
-  choiceScore:number,
+  choiceScore: number,
 
-  behaviourScore:number
+  behaviourScore: number
 
-){
+) {
 
 
   const difference =
@@ -399,43 +432,40 @@ function calculatePerspectiveScore(
 
 export function calculateTasteMatch(
 
-  dnaA:TasteDNA = {
+  dnaA: TasteDNA = {
 
-    categories:{},
+    categories: {},
 
-    choices:{},
+    choices: {},
 
-    behaviour:{
+    behaviour: {
 
-      averagePosition:0,
+      averagePosition: 0,
 
-      totalRankings:0
+      totalRankings: 0
 
     }
 
   },
 
 
-  dnaB:TasteDNA = {
+  dnaB: TasteDNA = {
 
-    categories:{},
+    categories: {},
 
-    choices:{},
+    choices: {},
 
-    behaviour:{
+    behaviour: {
 
-      averagePosition:0,
+      averagePosition: 0,
 
-      totalRankings:0
+      totalRankings: 0
 
     }
 
   }
 
-){
-
-
-
+) {
 
 
   const categoryScore =
@@ -447,8 +477,6 @@ export function calculateTasteMatch(
       dnaB.categories
 
     )
-
-
 
 
 
@@ -468,8 +496,6 @@ export function calculateTasteMatch(
 
 
 
-
-
   const behaviourScore =
 
     calculateBehaviourSimilarity(
@@ -479,8 +505,6 @@ export function calculateTasteMatch(
       dnaB.behaviour
 
     )
-
-
 
 
 
@@ -500,43 +524,33 @@ export function calculateTasteMatch(
 
 
 
+  const score =
 
+    Math.round(
 
+      (
 
+        categoryScore * 0.35
 
-  const score = Math.round(
+      )
 
-    (
+      +
 
-      categoryScore * 0.35
+      (
+
+        choiceScore * 0.45
+
+      )
+
+      +
+
+      (
+
+        behaviourScore * 0.20
+
+      )
 
     )
-
-    +
-
-    (
-
-      choiceScore * 0.45
-
-    )
-
-    +
-
-    (
-
-      behaviourScore * 0.20
-
-    )
-
-  )
-
-
-
-
-
-
-
-
 
   const sharedCategories =
 
@@ -546,13 +560,13 @@ export function calculateTasteMatch(
 
     )
 
-    .filter(
+      .filter(
 
-      category =>
+        category =>
 
-        (dnaB.categories[category] ?? 0) > 0
+          (dnaB.categories[category] ?? 0) > 0
 
-    )
+      )
 
 
 
@@ -564,10 +578,9 @@ export function calculateTasteMatch(
 
   const differences = [
 
-
     {
 
-      type:"Categories",
+      type: "Categories",
 
       value:
 
@@ -583,7 +596,7 @@ export function calculateTasteMatch(
 
     {
 
-      type:"Choices",
+      type: "Choices",
 
       value:
 
@@ -599,7 +612,7 @@ export function calculateTasteMatch(
 
     {
 
-      type:"Ranking style",
+      type: "Ranking style",
 
       value:
 
@@ -611,16 +624,15 @@ export function calculateTasteMatch(
 
     }
 
-
   ]
 
-  .filter(
+    .filter(
 
-    item =>
+      item =>
 
-      item.value > 0
+        item.value > 0
 
-  )
+    )
 
 
 
@@ -638,15 +650,15 @@ export function calculateTasteMatch(
 
 
 
+  if (
 
+    sharedCategories.length > 0
 
-  if(sharedCategories.length > 0){
-
+  ) {
 
     explanation =
 
       `You share interests in ${sharedCategories.join(", ")}.`
-
 
   }
 
@@ -654,11 +666,11 @@ export function calculateTasteMatch(
 
 
 
+  if (
 
+    choiceScore >= 75
 
-
-  if(choiceScore >= 75){
-
+  ) {
 
     explanation +=
 
@@ -666,8 +678,11 @@ export function calculateTasteMatch(
 
   }
 
-  else if(choiceScore >= 45){
+  else if (
 
+    choiceScore >= 45
+
+  ) {
 
     explanation +=
 
@@ -676,7 +691,6 @@ export function calculateTasteMatch(
   }
 
   else {
-
 
     explanation +=
 
@@ -688,10 +702,7 @@ export function calculateTasteMatch(
 
 
 
-
-
   return {
-
 
     score,
 
@@ -701,29 +712,29 @@ export function calculateTasteMatch(
 
       score >= 85
 
-      ?
+        ?
 
-      "Taste twins"
+        "Taste twins"
 
-      :
+        :
 
-      score >= 70
+        score >= 70
 
-      ?
+          ?
 
-      "Strong taste alignment"
+          "Strong taste alignment"
 
-      :
+          :
 
-      score >= 50
+          score >= 50
 
-      ?
+            ?
 
-      "Similar perspectives"
+            "Similar perspectives"
 
-      :
+            :
 
-      "Different perspectives",
+            "Different perspectives",
 
 
 
@@ -753,24 +764,35 @@ export function calculateTasteMatch(
 
 
 
-    breakdown:{
-
+    breakdown: {
 
       categoryScore:
 
-        Math.round(categoryScore),
+        Math.round(
+
+          categoryScore
+
+        ),
 
 
 
       choiceScore:
 
-        Math.round(choiceScore),
+        Math.round(
+
+          choiceScore
+
+        ),
 
 
 
       behaviourScore:
 
-        Math.round(behaviourScore),
+        Math.round(
+
+          behaviourScore
+
+        ),
 
 
 
