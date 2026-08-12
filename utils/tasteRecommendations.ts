@@ -1308,33 +1308,6 @@ export function getTasteRecommendedRankings(
 
   /*
    *
-   * 5.2.1 — OWN-CONTENT EXCLUSION
-   *
-   * Never recommend a ranking created by
-   * the current user.
-   *
-   * Ownership is determined using creatorId,
-   * which is the stable identity field on
-   * the Ranking type.
-   *
-   */
-
-
-  const ownContentExcludedRankings =
-
-    rankings.filter(
-
-      ranking =>
-
-        ranking.creatorId !==
-
-        currentUserId
-
-    )
-
-
-  /*
-   *
    * Exclude every conversation the user has
    * already participated in.
    *
@@ -1352,16 +1325,39 @@ export function getTasteRecommendedRankings(
 
       graph,
 
-      ownContentExcludedRankings
+      rankings
 
     )
 
 
+  /*
+   *
+   * Exclude rankings created by the current user.
+   *
+   * Own content should never appear inside
+   * personalised recommendations.
+   *
+   */
+
+
   const eligibleRankings =
 
-    ownContentExcludedRankings.filter(
+    rankings.filter(
 
       ranking => {
+
+        if (
+
+          ranking.creatorId ===
+
+          currentUserId
+
+        ) {
+
+          return false
+
+        }
+
 
         const conversationRootId =
 
