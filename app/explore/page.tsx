@@ -1,44 +1,58 @@
 import Link from "next/link"
 
+
 import {
   getAllRankings
 } from "@/utils/supabaseRankings"
 
+
 import RankingCard from "@/components/RankingCard"
+
 
 import TasteRecommendationCard from "@/components/TasteRecommendationCard"
 
+
 import DailyRankd from "@/components/DailyRankd"
+
 
 import PerspectiveCard from "@/components/PerspectiveCard"
 
+
 import TasteMatchCard from "@/components/TasteMatchCard"
 
+
 import ChallengeCard from "@/components/ChallengeCard"
+
 
 import {
   getTrendingRankings
 } from "@/utils/rankingMetrics"
 
+
 import {
   getPerspectiveGaps
 } from "@/utils/perspectiveMetrics"
+
 
 import {
   getDiscoverableUsers
 } from "@/utils/userDiscovery"
 
+
 import {
   calculateChallenge
 } from "@/utils/challengeTaste"
+
 
 import {
   getCurrentUserId
 } from "@/utils/currentUserServer"
 
+
 import {
   getTasteGraph
 } from "@/utils/tasteGraphServer"
+
 
 import {
   getTasteRecommendedRankings
@@ -78,15 +92,14 @@ export default async function ExplorePage() {
 
 
   const recommendedRankings =
-    tasteGraph
+    tasteGraph &&
+    currentUserId
       ? getTasteRecommendedRankings(
           tasteGraph,
-          allRankings
+          allRankings,
+          currentUserId
         )
       : []
-
-
-
 
 
   const latestRankings =
