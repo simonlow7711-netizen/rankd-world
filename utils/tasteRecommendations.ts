@@ -255,6 +255,85 @@ function getExcludedConversationRoots(
 }
 
 
+/*
+ *
+ * Find every RANKD the user has previously
+ * ranked.
+ *
+ * A "ranked" signal represents an actual
+ * ranking choice made by the user.
+ *
+ * A "preferred" signal represents the user's
+ * #1 choice from that ranking.
+ *
+ * Both signals point back to the originating
+ * RANKD through signal.source.
+ *
+ * We use the ranking ID rather than item names
+ * so that overlapping items in a new RANKD
+ * remain discoverable.
+ *
+ */
+
+
+function getPreviouslyRankedRankingIds(
+
+  graph: TasteGraph
+
+) {
+
+  const previouslyRankedRankingIds =
+
+    new Set<string>()
+
+
+  graph.signals.forEach(
+
+    signal => {
+
+      if (
+
+        !signal.source
+
+      ) {
+
+        return
+
+      }
+
+
+      if (
+
+        signal.type ===
+
+          "ranked"
+
+        ||
+
+        signal.type ===
+
+          "preferred"
+
+      ) {
+
+        previouslyRankedRankingIds.add(
+
+          signal.source
+
+        )
+
+      }
+
+    }
+
+  )
+
+
+  return previouslyRankedRankingIds
+
+}
+
+
 function calculateDirectTasteMatch(
 
   graph: TasteGraph,
@@ -1332,10 +1411,35 @@ export function getTasteRecommendedRankings(
 
   /*
    *
-   * Exclude rankings created by the current user.
+   * Exclude every RANKD the user has previously
+   * ranked.
    *
-   * Own content should never appear inside
-   * personalised recommendations.
+   * This is deliberately based on the ranking ID
+   * stored in signal.source rather than matching
+   * individual item names.
+   *
+   * This means a new RANKD containing some of the
+   * same items can still be discovered.
+   *
+   */
+
+
+  const previouslyRankedRankingIds =
+
+    getPreviouslyRankedRankingIds(
+
+      graph
+
+    )
+
+
+  /*
+   *
+   * Build the eligible recommendation pool.
+   *
+   * 1. Exclude own content.
+   * 2. Exclude conversations already participated in.
+   * 3. Exclude RANKDs already ranked.
    *
    */
 
@@ -1368,13 +1472,37 @@ export function getTasteRecommendedRankings(
           )
 
 
-        return !
+        if (
 
           excludedConversationRoots.has(
 
             conversationRootId
 
           )
+
+        ) {
+
+          return false
+
+        }
+
+
+        if (
+
+          previouslyRankedRankingIds.has(
+
+            ranking.id
+
+          )
+
+        ) {
+
+          return false
+
+        }
+
+
+        return true
 
       }
 
