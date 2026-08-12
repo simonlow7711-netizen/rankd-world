@@ -260,18 +260,12 @@ function getExcludedConversationRoots(
  * Find every RANKD the user has previously
  * ranked.
  *
- * A "ranked" signal represents an actual
- * ranking choice made by the user.
+ * This is based on the ranking ID stored in
+ * signal.source rather than individual item
+ * names.
  *
- * A "preferred" signal represents the user's
- * #1 choice from that ranking.
- *
- * Both signals point back to the originating
- * RANKD through signal.source.
- *
- * We use the ranking ID rather than item names
- * so that overlapping items in a new RANKD
- * remain discoverable.
+ * A new RANKD containing familiar items can
+ * therefore still be recommended.
  *
  */
 
@@ -291,11 +285,7 @@ function getPreviouslyRankedRankingIds(
 
     signal => {
 
-      if (
-
-        !signal.source
-
-      ) {
+      if (!signal.source) {
 
         return
 
@@ -332,6 +322,13 @@ function getPreviouslyRankedRankingIds(
   return previouslyRankedRankingIds
 
 }
+
+
+/*
+ *
+ * Calculate direct item-level taste match.
+ *
+ */
 
 
 function calculateDirectTasteMatch(
@@ -492,6 +489,13 @@ function calculateDirectTasteMatch(
 }
 
 
+/*
+ *
+ * Calculate category affinity.
+ *
+ */
+
+
 function calculateCategoryAffinity(
 
   graph: TasteGraph,
@@ -614,6 +618,19 @@ function calculateCategoryAffinity(
 }
 
 
+/*
+ *
+ * 5.2.3
+ *
+ * Calculate recommendation novelty.
+ *
+ * Novelty is deliberately treated as a discovery
+ * signal rather than a replacement for taste
+ * relevance.
+ *
+ */
+
+
 function calculateNovelty(
 
   graph: TasteGraph,
@@ -622,9 +639,37 @@ function calculateNovelty(
 
 ) {
 
-  const rankedItems =
+  const rankingItems =
 
-    ranking.items.filter(
+    ranking.items ?? []
+
+
+  if (
+
+    rankingItems.length === 0
+
+  ) {
+
+    return {
+
+      score: 0,
+
+      newItems: 0,
+
+      knownItems: 0,
+
+      noveltyRatio: 0,
+
+      categoryIsNew: false
+
+    }
+
+  }
+
+
+  const knownItems =
+
+    rankingItems.filter(
 
       item =>
 
@@ -639,81 +684,144 @@ function calculateNovelty(
     )
 
 
-  if (
+  const knownItemCount =
 
-    ranking.items.length === 0
-
-  ) {
-
-    return {
-
-      score: 0,
-
-      newItems: 0,
-
-      knownItems: 0
-
-    }
-
-  }
+    knownItems.length
 
 
-  const newItems =
+  const newItemCount =
 
-    ranking.items.length -
+    rankingItems.length -
 
-    rankedItems.length
-
-
-  const knownItems =
-
-    rankedItems.length
-
-
-  if (
-
-    knownItems ===
-
-    ranking.items.length
-
-  ) {
-
-    return {
-
-      score: -25,
-
-      newItems,
-
-      knownItems
-
-    }
-
-  }
+    knownItemCount
 
 
   const noveltyRatio =
 
-    newItems /
+    newItemCount /
 
-    ranking.items.length
+    rankingItems.length
 
 
-  const score =
+  const categorySignals =
 
-    noveltyRatio * 15
+    getCategorySignals(
+
+      graph,
+
+      ranking.category
+
+    )
+
+
+  const categoryIsNew =
+
+    categorySignals.length === 0
+
+
+  if (
+
+    newItemCount === 0
+
+  ) {
+
+    return {
+
+      score: -20,
+
+      newItems:
+
+        newItemCount,
+
+      knownItems:
+
+        knownItemCount,
+
+      noveltyRatio,
+
+      categoryIsNew
+
+    }
+
+  }
+
+
+  let score =
+
+    noveltyRatio * 12
+
+
+  if (
+
+    noveltyRatio >= 0.25
+
+    &&
+
+    noveltyRatio <= 0.75
+
+  ) {
+
+    score += 6
+
+  }
+
+
+  if (
+
+    noveltyRatio > 0.75
+
+  ) {
+
+    score += 3
+
+  }
+
+
+  if (
+
+    categoryIsNew
+
+  ) {
+
+    score += 4
+
+  }
 
 
   return {
 
-    score,
+    score:
 
-    newItems,
+      Math.min(
 
-    knownItems
+        score,
+
+        15
+
+      ),
+
+    newItems:
+
+      newItemCount,
+
+    knownItems:
+
+      knownItemCount,
+
+    noveltyRatio,
+
+    categoryIsNew
 
   }
 
 }
+
+
+/*
+ *
+ * Calculate taste-neighbour discovery bonus.
+ *
+ */
 
 
 function calculateTasteNeighbourBonus(
@@ -833,6 +941,13 @@ function calculateTasteNeighbourBonus(
   }
 
 }
+
+
+/*
+ *
+ * Apply feedback adjustments.
+ *
+ */
 
 
 function calculateFeedbackAdjustment(
@@ -986,6 +1101,531 @@ function calculateFeedbackAdjustment(
   }
 
 }
+
+
+/*
+ *
+ * Calculate the percentage of overlapping items
+ * between two rankings.
+ *
+ */
+
+
+function calculateItemOverlap(
+
+  first: Ranking,
+
+  second: Ranking
+
+) {
+
+  const firstItems =
+
+    new Set(
+
+      first.items.map(
+
+        item =>
+
+          normaliseItem(
+
+            item.name
+
+          )
+
+      )
+
+    )
+
+
+  const secondItems =
+
+    new Set(
+
+      second.items.map(
+
+        item =>
+
+          normaliseItem(
+
+            item.name
+
+          )
+
+      )
+
+    )
+
+
+  if (
+
+    firstItems.size === 0
+
+    ||
+
+    secondItems.size === 0
+
+  ) {
+
+    return 0
+
+  }
+
+
+  let sharedItems = 0
+
+
+  secondItems.forEach(
+
+    item => {
+
+      if (
+
+        firstItems.has(
+
+          item
+
+        )
+
+      ) {
+
+        sharedItems += 1
+
+      }
+
+    }
+
+  )
+
+
+  return (
+
+    sharedItems /
+
+    Math.max(
+
+      firstItems.size,
+
+      secondItems.size
+
+    )
+
+  )
+
+}
+
+
+/*
+ *
+ * 5.2.4
+ *
+ * Select recommendations that are not overly
+ * similar to recommendations already selected.
+ *
+ * Diversity is deliberately applied after the
+ * Taste Graph score has been calculated.
+ *
+ * This means a strong taste match remains
+ * important, while preventing the final set
+ * from becoming three versions of the same idea.
+ *
+ */
+
+
+function selectDiverseRecommendations(
+
+  recommendations: TasteRecommendation[],
+
+  limit: number
+
+) {
+
+  if (
+
+    recommendations.length <= limit
+
+  ) {
+
+    return recommendations
+
+  }
+
+
+  const selected: TasteRecommendation[] = []
+
+  const selectedCategories =
+
+    new Set<string>()
+
+
+  const selectedCreators =
+
+    new Set<string>()
+
+
+  /*
+   *
+   * Start with the highest scoring recommendation.
+   *
+   */
+
+
+  const firstRecommendation =
+
+    recommendations[0]
+
+
+  if (
+
+    firstRecommendation
+
+  ) {
+
+    selected.push(
+
+      firstRecommendation
+
+    )
+
+
+    selectedCategories.add(
+
+      firstRecommendation.ranking.category
+
+    )
+
+
+    if (
+
+      firstRecommendation.ranking.creatorId
+
+    ) {
+
+      selectedCreators.add(
+
+        firstRecommendation.ranking.creatorId
+
+      )
+
+    }
+
+  }
+
+
+  /*
+   *
+   * Continue selecting the highest-scoring
+   * recommendation that provides useful
+   * diversity.
+   *
+   */
+
+
+  while (
+
+    selected.length < limit
+
+  ) {
+
+    let bestCandidate:
+
+      TasteRecommendation | null =
+
+      null
+
+
+    let bestCandidateScore =
+
+      -Infinity
+
+
+    /*
+     *
+     * Use for...of here so TypeScript correctly
+     * tracks the bestCandidate assignment.
+     *
+     */
+
+
+    for (
+
+      const candidate of recommendations
+
+    ) {
+
+      if (
+
+        selected.some(
+
+          recommendation =>
+
+            recommendation.ranking.id ===
+
+            candidate.ranking.id
+
+        )
+
+      ) {
+
+        continue
+
+      }
+
+
+      const category =
+
+        candidate.ranking.category
+
+
+      const creatorId =
+
+        candidate.ranking.creatorId
+
+
+      const categoryAlreadyUsed =
+
+        selectedCategories.has(
+
+          category
+
+        )
+
+
+      const creatorAlreadyUsed =
+
+        creatorId
+
+          ?
+
+          selectedCreators.has(
+
+              creatorId
+
+            )
+
+          :
+
+          false
+
+
+      const maximumItemOverlap =
+
+        selected.reduce(
+
+          (
+
+            maximum,
+
+            selectedRecommendation
+
+          ) =>
+
+            Math.max(
+
+              maximum,
+
+              calculateItemOverlap(
+
+                candidate.ranking,
+
+                selectedRecommendation.ranking
+
+              )
+
+            ),
+
+          0
+
+        )
+
+
+      let diversityBonus = 0
+
+
+      /*
+       *
+       * Prefer a new category.
+       *
+       */
+
+
+      if (
+
+        !categoryAlreadyUsed
+
+      ) {
+
+        diversityBonus += 12
+
+      }
+
+
+      /*
+       *
+       * Prefer a new creator.
+       *
+       */
+
+
+      if (
+
+        creatorId
+
+        &&
+
+        !creatorAlreadyUsed
+
+      ) {
+
+        diversityBonus += 6
+
+      }
+
+
+      /*
+       *
+       * Penalise heavy item overlap.
+       *
+       */
+
+
+      if (
+
+        maximumItemOverlap >= 0.75
+
+      ) {
+
+        diversityBonus -= 18
+
+      }
+
+      else if (
+
+        maximumItemOverlap >= 0.5
+
+      ) {
+
+        diversityBonus -= 10
+
+      }
+
+      else if (
+
+        maximumItemOverlap >= 0.25
+
+      ) {
+
+        diversityBonus -= 4
+
+      }
+
+
+      /*
+       *
+       * Keep the original recommendation score
+       * dominant.
+       *
+       */
+
+
+      const candidateScore =
+
+        candidate.score +
+
+        diversityBonus
+
+
+      if (
+
+        candidateScore >
+
+        bestCandidateScore
+
+      ) {
+
+        bestCandidate =
+
+          candidate
+
+        bestCandidateScore =
+
+          candidateScore
+
+      }
+
+    }
+
+
+    /*
+     *
+     * Safety fallback.
+     *
+     * If no candidate was found, stop rather than
+     * producing duplicate recommendations.
+     *
+     */
+
+
+    if (
+
+      bestCandidate === null
+
+    ) {
+
+      break
+
+    }
+
+
+    selected.push(
+
+      bestCandidate
+
+    )
+
+
+    selectedCategories.add(
+
+      bestCandidate.ranking.category
+
+    )
+
+
+    if (
+
+      bestCandidate.ranking.creatorId
+
+    ) {
+
+      selectedCreators.add(
+
+        bestCandidate.ranking.creatorId
+
+      )
+
+    }
+
+  }
+
+
+  /*
+   *
+   * Return the selected recommendations in their
+   * final recommendation order.
+   *
+   */
+
+
+  return selected
+
+}
+
+
+/*
+ *
+ * Calculate the complete recommendation score.
+ *
+ */
 
 
 function calculateRecommendationScore(
@@ -1247,11 +1887,33 @@ function calculateRecommendationScore(
 
   ) {
 
-    reasons.push(
+    if (
 
-      "Introduces new choices for you to discover"
+      novelty.noveltyRatio >= 0.25
 
-    )
+      &&
+
+      novelty.noveltyRatio <= 0.75
+
+    ) {
+
+      reasons.push(
+
+        "Balances familiar taste with new discoveries"
+
+      )
+
+    }
+
+    else {
+
+      reasons.push(
+
+        "Introduces new choices for you to discover"
+
+      )
+
+    }
 
   }
 
@@ -1509,7 +2171,7 @@ export function getTasteRecommendedRankings(
     )
 
 
-  return (
+  const scoredRecommendations =
 
     eligibleRankings
 
@@ -1550,6 +2212,27 @@ export function getTasteRecommendedRankings(
           a.score
 
       )
+
+
+  /*
+   *
+   * 5.2.4
+   *
+   * Apply diversity after recommendation
+   * scoring.
+   *
+   * The Explore page currently displays
+   * three recommendations, so we select
+   * three diverse recommendations here.
+   *
+   */
+
+
+  return selectDiverseRecommendations(
+
+    scoredRecommendations,
+
+    3
 
   )
 
