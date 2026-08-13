@@ -5,7 +5,7 @@ import {
 
 import {
   TasteGraph
-} from "@/utils/tasteGraph"
+} from "@/utils/tasteGraphTypes"
 
 
 export type TasteRecommendation = {
@@ -17,6 +17,13 @@ export type TasteRecommendation = {
   reasons: string[]
 
 }
+
+
+/*
+ *
+ * Normalise a score to 0–100.
+ *
+ */
 
 
 function normalise(
@@ -31,7 +38,11 @@ function normalise(
 
     Math.min(
 
-      Math.round(value),
+      Math.round(
+
+        value
+
+      ),
 
       100
 
@@ -40,6 +51,13 @@ function normalise(
   )
 
 }
+
+
+/*
+ *
+ * Normalise item/category text.
+ *
+ */
 
 
 function normaliseItem(
@@ -55,6 +73,13 @@ function normaliseItem(
     .trim()
 
 }
+
+
+/*
+ *
+ * Return all signals for an item.
+ *
+ */
 
 
 function getItemSignals(
@@ -91,6 +116,13 @@ function getItemSignals(
 }
 
 
+/*
+ *
+ * Return all signals for a category.
+ *
+ */
+
+
 function getCategorySignals(
 
   graph: TasteGraph,
@@ -99,17 +131,38 @@ function getCategorySignals(
 
 ) {
 
+  const normalisedCategory =
+
+    normaliseItem(
+
+      category
+
+    )
+
+
   return graph.signals.filter(
 
     signal =>
 
-      signal.category ===
+      normaliseItem(
 
-      category
+        signal.category
+
+      ) ===
+
+      normalisedCategory
 
   )
 
 }
+
+
+/*
+ *
+ * Determine whether an item has already
+ * appeared in the user's Taste Graph.
+ *
+ */
 
 
 function hasAlreadyRankedItem(
@@ -120,24 +173,32 @@ function hasAlreadyRankedItem(
 
 ) {
 
-  return getItemSignals(
+  return (
 
-    graph,
+    getItemSignals(
 
-    itemName
+      graph,
 
-  ).length > 0
+      itemName
+
+    ).length > 0
+
+  )
 
 }
 
 
 /*
  *
- * Return the conversation root for a ranking.
+ * Resolve the conversation root for a ranking.
  *
- * A root ranking points to itself.
- * A remix/perspective points back to the
- * original ranking through rootId.
+ * IMPORTANT:
+ *
+ * We prefer resolvedRootId because the ranking
+ * data may already have had its conversation
+ * lineage resolved.
+ *
+ * We then fall back to rootId, parentId and id.
  *
  */
 
@@ -146,11 +207,24 @@ function getConversationRootId(
 
   ranking: Ranking
 
-) {
+): string {
+
+  const rankingWithResolvedRoot =
+
+    ranking as Ranking & {
+
+      resolvedRootId?: string | null
+
+    }
+
 
   return (
 
+    rankingWithResolvedRoot.resolvedRootId ??
+
     ranking.rootId ??
+
+    ranking.parentId ??
 
     ranking.id
 
@@ -161,21 +235,12 @@ function getConversationRootId(
 
 /*
  *
- * Find every conversation the user has already
- * participated in through their Taste Graph.
- *
- * The Taste Graph signal.source contains the
- * ranking ID which generated the signal.
- *
- * Once we find that ranking, we resolve its
- * rootId and exclude the entire conversation.
+ * Build a map of ranking IDs.
  *
  */
 
 
-function getExcludedConversationRoots(
-
-  graph: TasteGraph,
+function buildRankingMap(
 
   rankings: Ranking[]
 
@@ -183,7 +248,13 @@ function getExcludedConversationRoots(
 
   const rankingMap =
 
-    new Map<string, Ranking>()
+    new Map<
+
+      string,
+
+      Ranking
+
+    >()
 
 
   rankings.forEach(
@@ -203,45 +274,204 @@ function getExcludedConversationRoots(
   )
 
 
+  return rankingMap
+
+}
+
+
+/*
+ *
+ * Find the root of a ranking by walking its
+ * parent chain when necessary.
+ *
+ * This is a defensive fallback for rankings
+ * where rootId/resolvedRootId is missing or
+ * inconsistent.
+ *
+ */
+
+
+function resolveConversationRootFromParents(
+
+  ranking: Ranking,
+
+  rankingMap: Map<string, Ranking>
+
+): string {
+
+  const rankingWithResolvedRoot =
+
+    ranking as Ranking & {
+
+      resolvedRootId?: string | null
+
+    }
+
+
+  if (
+
+    rankingWithResolvedRoot.resolvedRootId
+
+  ) {
+
+    return (
+
+      rankingWithResolvedRoot.resolvedRootId
+
+    )
+
+  }
+
+
+  if (
+
+    ranking.rootId
+
+  ) {
+
+    return ranking.rootId
+
+  }
+
+
+  const visited =
+
+    new Set<string>()
+
+
+  let current = ranking
+
+
+  while (
+
+    current.parentId &&
+
+    !visited.has(
+
+      current.id
+
+    )
+
+  ) {
+
+    visited.add(
+
+      current.id
+
+    )
+
+
+    const parent =
+
+      rankingMap.get(
+
+        current.parentId
+
+      )
+
+
+    if (
+
+      !parent
+
+    ) {
+
+      break
+
+    }
+
+
+    current = parent
+
+  }
+
+
+  return (
+
+    current.rootId ??
+
+    current.id
+
+  )
+
+}
+
+
+/*
+ *
+ * Find conversations the user has participated
+ * in directly.
+ *
+ * Any ranking created by the current user
+ * excludes the entire conversation.
+ *
+ */
+
+
+function getUserParticipatedConversationRoots(
+
+  rankings: Ranking[],
+
+  currentUserId?: string
+
+): Set<string> {
+
   const excludedRoots =
 
     new Set<string>()
 
 
-  graph.signals.forEach(
+  if (
 
-    signal => {
+    !currentUserId
 
-      if (!signal.source) {
+  ) {
+
+    return excludedRoots
+
+  }
+
+
+  const rankingMap =
+
+    buildRankingMap(
+
+      rankings
+
+    )
+
+
+  rankings.forEach(
+
+    ranking => {
+
+      if (
+
+        ranking.creatorId !==
+
+        currentUserId
+
+      ) {
 
         return
 
       }
 
 
-      const sourceRanking =
+      const rootId =
 
-        rankingMap.get(
+        resolveConversationRootFromParents(
 
-          signal.source
+          ranking,
+
+          rankingMap
 
         )
-
-
-      if (!sourceRanking) {
-
-        return
-
-      }
 
 
       excludedRoots.add(
 
-        getConversationRootId(
-
-          sourceRanking
-
-        )
+        rootId
 
       )
 
@@ -257,26 +487,37 @@ function getExcludedConversationRoots(
 
 /*
  *
- * Find every RANKD the user has previously
- * ranked.
+ * Find conversations represented in the
+ * Taste Graph.
  *
- * This is based on the ranking ID stored in
- * signal.source rather than individual item
- * names.
+ * A Taste Graph signal has a source ranking.
  *
- * A new RANKD containing familiar items can
- * therefore still be recommended.
+ * If that source ranking belongs to a
+ * conversation, that conversation is already
+ * represented in the user's taste history and
+ * should not be recommended again.
  *
  */
 
 
-function getPreviouslyRankedRankingIds(
+function getExcludedConversationRootsFromGraph(
 
-  graph: TasteGraph
+  graph: TasteGraph,
 
-) {
+  rankings: Ranking[]
 
-  const previouslyRankedRankingIds =
+): Set<string> {
+
+  const rankingMap =
+
+    buildRankingMap(
+
+      rankings
+
+    )
+
+
+  const excludedRoots =
 
     new Set<string>()
 
@@ -285,48 +526,67 @@ function getPreviouslyRankedRankingIds(
 
     signal => {
 
-      if (!signal.source) {
+      if (
+
+        !signal.source
+
+      ) {
 
         return
 
       }
 
 
-      if (
+      const sourceRanking =
 
-        signal.type ===
-
-          "ranked"
-
-        ||
-
-        signal.type ===
-
-          "preferred"
-
-      ) {
-
-        previouslyRankedRankingIds.add(
+        rankingMap.get(
 
           signal.source
 
         )
 
+
+      if (
+
+        !sourceRanking
+
+      ) {
+
+        return
+
       }
+
+
+      const rootId =
+
+        resolveConversationRootFromParents(
+
+          sourceRanking,
+
+          rankingMap
+
+        )
+
+
+      excludedRoots.add(
+
+        rootId
+
+      )
 
     }
 
   )
 
 
-  return previouslyRankedRankingIds
+  return excludedRoots
 
 }
 
 
 /*
  *
- * Calculate direct item-level taste match.
+ * Direct taste match.
  *
  */
 
@@ -442,7 +702,9 @@ function calculateDirectTasteMatch(
 
   let score =
 
-    strongestSignal.strength * 50
+    strongestSignal.strength *
+
+    50
 
 
   if (
@@ -491,7 +753,7 @@ function calculateDirectTasteMatch(
 
 /*
  *
- * Calculate category affinity.
+ * Category affinity.
  *
  */
 
@@ -620,13 +882,7 @@ function calculateCategoryAffinity(
 
 /*
  *
- * 5.2.3
- *
- * Calculate recommendation novelty.
- *
- * Novelty is deliberately treated as a discovery
- * signal rather than a replacement for taste
- * relevance.
+ * Novelty.
  *
  */
 
@@ -639,37 +895,9 @@ function calculateNovelty(
 
 ) {
 
-  const rankingItems =
+  const rankedItems =
 
-    ranking.items ?? []
-
-
-  if (
-
-    rankingItems.length === 0
-
-  ) {
-
-    return {
-
-      score: 0,
-
-      newItems: 0,
-
-      knownItems: 0,
-
-      noveltyRatio: 0,
-
-      categoryIsNew: false
-
-    }
-
-  }
-
-
-  const knownItems =
-
-    rankingItems.filter(
+    ranking.items.filter(
 
       item =>
 
@@ -684,133 +912,77 @@ function calculateNovelty(
     )
 
 
-  const knownItemCount =
-
-    knownItems.length
-
-
-  const newItemCount =
-
-    rankingItems.length -
-
-    knownItemCount
-
-
-  const noveltyRatio =
-
-    newItemCount /
-
-    rankingItems.length
-
-
-  const categorySignals =
-
-    getCategorySignals(
-
-      graph,
-
-      ranking.category
-
-    )
-
-
-  const categoryIsNew =
-
-    categorySignals.length === 0
-
-
   if (
 
-    newItemCount === 0
+    ranking.items.length === 0
 
   ) {
 
     return {
 
-      score: -20,
+      score: 0,
 
-      newItems:
+      newItems: 0,
 
-        newItemCount,
-
-      knownItems:
-
-        knownItemCount,
-
-      noveltyRatio,
-
-      categoryIsNew
+      knownItems: 0
 
     }
 
   }
 
 
-  let score =
+  const newItems =
 
-    noveltyRatio * 12
+    ranking.items.length -
+
+    rankedItems.length
 
 
-  if (
+  const knownItems =
 
-    noveltyRatio >= 0.25
-
-    &&
-
-    noveltyRatio <= 0.75
-
-  ) {
-
-    score += 6
-
-  }
+    rankedItems.length
 
 
   if (
 
-    noveltyRatio > 0.75
+    knownItems ===
+
+    ranking.items.length
 
   ) {
 
-    score += 3
+    return {
+
+      score: -25,
+
+      newItems,
+
+      knownItems
+
+    }
 
   }
 
 
-  if (
+  const noveltyRatio =
 
-    categoryIsNew
+    newItems /
 
-  ) {
+    ranking.items.length
 
-    score += 4
 
-  }
+  const score =
+
+    noveltyRatio * 15
 
 
   return {
 
-    score:
+    score,
 
-      Math.min(
+    newItems,
 
-        score,
-
-        15
-
-      ),
-
-    newItems:
-
-      newItemCount,
-
-    knownItems:
-
-      knownItemCount,
-
-    noveltyRatio,
-
-    categoryIsNew
+    knownItems
 
   }
 
@@ -819,7 +991,7 @@ function calculateNovelty(
 
 /*
  *
- * Calculate taste-neighbour discovery bonus.
+ * Taste neighbour discovery.
  *
  */
 
@@ -875,29 +1047,48 @@ function calculateTasteNeighbourBonus(
     )
 
 
-  const averagePosition =
+  const validPositions =
 
-    categorySignals.reduce(
+    categorySignals.filter(
 
-      (
+      signal =>
 
-        total,
+        typeof signal.position ===
 
-        signal
-
-      ) =>
-
-        total +
-
-        signal.position,
-
-      0
+        "number"
 
     )
 
-    /
 
-    categorySignals.length
+  const averagePosition =
+
+    validPositions.length > 0
+
+      ?
+
+      validPositions.reduce(
+
+        (
+
+          total,
+
+          signal
+
+        ) =>
+
+          total +
+
+          signal.position,
+
+        0
+
+      ) /
+
+      validPositions.length
+
+      :
+
+      7
 
 
   let score =
@@ -945,7 +1136,7 @@ function calculateTasteNeighbourBonus(
 
 /*
  *
- * Apply feedback adjustments.
+ * Feedback adjustment.
  *
  */
 
@@ -1022,13 +1213,15 @@ function calculateFeedbackAdjustment(
 
         signal.type ===
 
-          "feedback_clicked"
+        "feedback_clicked"
 
       ) {
 
         adjustment +=
 
-          signal.strength * 10
+          signal.strength *
+
+          10
 
         positiveFeedback += 1
 
@@ -1039,13 +1232,15 @@ function calculateFeedbackAdjustment(
 
         signal.type ===
 
-          "feedback_ranked"
+        "feedback_ranked"
 
       ) {
 
         adjustment +=
 
-          signal.strength * 30
+          signal.strength *
+
+          30
 
         positiveFeedback += 1
 
@@ -1056,13 +1251,15 @@ function calculateFeedbackAdjustment(
 
         signal.type ===
 
-          "feedback_skipped"
+        "feedback_skipped"
 
       ) {
 
         adjustment -=
 
-          signal.strength * 15
+          signal.strength *
+
+          15
 
         negativeFeedback += 1
 
@@ -1073,13 +1270,15 @@ function calculateFeedbackAdjustment(
 
         signal.type ===
 
-          "feedback_disagreed"
+        "feedback_disagreed"
 
       ) {
 
         adjustment -=
 
-          signal.strength * 30
+          signal.strength *
+
+          30
 
         negativeFeedback += 1
 
@@ -1105,525 +1304,7 @@ function calculateFeedbackAdjustment(
 
 /*
  *
- * Calculate the percentage of overlapping items
- * between two rankings.
- *
- */
-
-
-function calculateItemOverlap(
-
-  first: Ranking,
-
-  second: Ranking
-
-) {
-
-  const firstItems =
-
-    new Set(
-
-      first.items.map(
-
-        item =>
-
-          normaliseItem(
-
-            item.name
-
-          )
-
-      )
-
-    )
-
-
-  const secondItems =
-
-    new Set(
-
-      second.items.map(
-
-        item =>
-
-          normaliseItem(
-
-            item.name
-
-          )
-
-      )
-
-    )
-
-
-  if (
-
-    firstItems.size === 0
-
-    ||
-
-    secondItems.size === 0
-
-  ) {
-
-    return 0
-
-  }
-
-
-  let sharedItems = 0
-
-
-  secondItems.forEach(
-
-    item => {
-
-      if (
-
-        firstItems.has(
-
-          item
-
-        )
-
-      ) {
-
-        sharedItems += 1
-
-      }
-
-    }
-
-  )
-
-
-  return (
-
-    sharedItems /
-
-    Math.max(
-
-      firstItems.size,
-
-      secondItems.size
-
-    )
-
-  )
-
-}
-
-
-/*
- *
- * 5.2.4
- *
- * Select recommendations that are not overly
- * similar to recommendations already selected.
- *
- * Diversity is deliberately applied after the
- * Taste Graph score has been calculated.
- *
- * This means a strong taste match remains
- * important, while preventing the final set
- * from becoming three versions of the same idea.
- *
- */
-
-
-function selectDiverseRecommendations(
-
-  recommendations: TasteRecommendation[],
-
-  limit: number
-
-) {
-
-  if (
-
-    recommendations.length <= limit
-
-  ) {
-
-    return recommendations
-
-  }
-
-
-  const selected: TasteRecommendation[] = []
-
-  const selectedCategories =
-
-    new Set<string>()
-
-
-  const selectedCreators =
-
-    new Set<string>()
-
-
-  /*
-   *
-   * Start with the highest scoring recommendation.
-   *
-   */
-
-
-  const firstRecommendation =
-
-    recommendations[0]
-
-
-  if (
-
-    firstRecommendation
-
-  ) {
-
-    selected.push(
-
-      firstRecommendation
-
-    )
-
-
-    selectedCategories.add(
-
-      firstRecommendation.ranking.category
-
-    )
-
-
-    if (
-
-      firstRecommendation.ranking.creatorId
-
-    ) {
-
-      selectedCreators.add(
-
-        firstRecommendation.ranking.creatorId
-
-      )
-
-    }
-
-  }
-
-
-  /*
-   *
-   * Continue selecting the highest-scoring
-   * recommendation that provides useful
-   * diversity.
-   *
-   */
-
-
-  while (
-
-    selected.length < limit
-
-  ) {
-
-    let bestCandidate:
-
-      TasteRecommendation | null =
-
-      null
-
-
-    let bestCandidateScore =
-
-      -Infinity
-
-
-    /*
-     *
-     * Use for...of here so TypeScript correctly
-     * tracks the bestCandidate assignment.
-     *
-     */
-
-
-    for (
-
-      const candidate of recommendations
-
-    ) {
-
-      if (
-
-        selected.some(
-
-          recommendation =>
-
-            recommendation.ranking.id ===
-
-            candidate.ranking.id
-
-        )
-
-      ) {
-
-        continue
-
-      }
-
-
-      const category =
-
-        candidate.ranking.category
-
-
-      const creatorId =
-
-        candidate.ranking.creatorId
-
-
-      const categoryAlreadyUsed =
-
-        selectedCategories.has(
-
-          category
-
-        )
-
-
-      const creatorAlreadyUsed =
-
-        creatorId
-
-          ?
-
-          selectedCreators.has(
-
-              creatorId
-
-            )
-
-          :
-
-          false
-
-
-      const maximumItemOverlap =
-
-        selected.reduce(
-
-          (
-
-            maximum,
-
-            selectedRecommendation
-
-          ) =>
-
-            Math.max(
-
-              maximum,
-
-              calculateItemOverlap(
-
-                candidate.ranking,
-
-                selectedRecommendation.ranking
-
-              )
-
-            ),
-
-          0
-
-        )
-
-
-      let diversityBonus = 0
-
-
-      /*
-       *
-       * Prefer a new category.
-       *
-       */
-
-
-      if (
-
-        !categoryAlreadyUsed
-
-      ) {
-
-        diversityBonus += 12
-
-      }
-
-
-      /*
-       *
-       * Prefer a new creator.
-       *
-       */
-
-
-      if (
-
-        creatorId
-
-        &&
-
-        !creatorAlreadyUsed
-
-      ) {
-
-        diversityBonus += 6
-
-      }
-
-
-      /*
-       *
-       * Penalise heavy item overlap.
-       *
-       */
-
-
-      if (
-
-        maximumItemOverlap >= 0.75
-
-      ) {
-
-        diversityBonus -= 18
-
-      }
-
-      else if (
-
-        maximumItemOverlap >= 0.5
-
-      ) {
-
-        diversityBonus -= 10
-
-      }
-
-      else if (
-
-        maximumItemOverlap >= 0.25
-
-      ) {
-
-        diversityBonus -= 4
-
-      }
-
-
-      /*
-       *
-       * Keep the original recommendation score
-       * dominant.
-       *
-       */
-
-
-      const candidateScore =
-
-        candidate.score +
-
-        diversityBonus
-
-
-      if (
-
-        candidateScore >
-
-        bestCandidateScore
-
-      ) {
-
-        bestCandidate =
-
-          candidate
-
-        bestCandidateScore =
-
-          candidateScore
-
-      }
-
-    }
-
-
-    /*
-     *
-     * Safety fallback.
-     *
-     * If no candidate was found, stop rather than
-     * producing duplicate recommendations.
-     *
-     */
-
-
-    if (
-
-      bestCandidate === null
-
-    ) {
-
-      break
-
-    }
-
-
-    selected.push(
-
-      bestCandidate
-
-    )
-
-
-    selectedCategories.add(
-
-      bestCandidate.ranking.category
-
-    )
-
-
-    if (
-
-      bestCandidate.ranking.creatorId
-
-    ) {
-
-      selectedCreators.add(
-
-        bestCandidate.ranking.creatorId
-
-      )
-
-    }
-
-  }
-
-
-  /*
-   *
-   * Return the selected recommendations in their
-   * final recommendation order.
-   *
-   */
-
-
-  return selected
-
-}
-
-
-/*
- *
- * Calculate the complete recommendation score.
+ * Calculate recommendation score.
  *
  */
 
@@ -1635,7 +1316,6 @@ function calculateRecommendationScore(
   ranking: Ranking
 
 ): TasteRecommendation {
-
 
   let score = 0
 
@@ -1822,7 +1502,7 @@ function calculateRecommendationScore(
 
   /*
    *
-   * 3. TASTE-NEIGHBOUR DISCOVERY
+   * 3. TASTE NEIGHBOUR
    *
    */
 
@@ -1887,33 +1567,11 @@ function calculateRecommendationScore(
 
   ) {
 
-    if (
+    reasons.push(
 
-      novelty.noveltyRatio >= 0.25
+      "Introduces new choices for you to discover"
 
-      &&
-
-      novelty.noveltyRatio <= 0.75
-
-    ) {
-
-      reasons.push(
-
-        "Balances familiar taste with new discoveries"
-
-      )
-
-    }
-
-    else {
-
-      reasons.push(
-
-        "Introduces new choices for you to discover"
-
-      )
-
-    }
+    )
 
   }
 
@@ -1937,6 +1595,7 @@ function calculateRecommendationScore(
 
     score += 5
 
+
     reasons.push(
 
       "Fits your decisive ranking style"
@@ -1948,7 +1607,7 @@ function calculateRecommendationScore(
 
   /*
    *
-   * 6. NEW CATEGORY CURIOSITY
+   * 6. NEW CATEGORY
    *
    */
 
@@ -1972,6 +1631,7 @@ function calculateRecommendationScore(
 
     score += 8
 
+
     reasons.push(
 
       "Introduces a new taste direction"
@@ -1979,13 +1639,6 @@ function calculateRecommendationScore(
     )
 
   }
-
-
-  /*
-   *
-   * FINAL SCORE
-   *
-   */
 
 
   return {
@@ -2017,6 +1670,13 @@ function calculateRecommendationScore(
 }
 
 
+/*
+ *
+ * Public score function.
+ *
+ */
+
+
 export function calculateTasteRecommendationScore(
 
   graph: TasteGraph,
@@ -2036,33 +1696,194 @@ export function calculateTasteRecommendationScore(
 }
 
 
+/*
+ *
+ * Diagnostic helper.
+ *
+ * Returns the complete eligibility audit without
+ * writing anything to the browser/server console.
+ *
+ */
+
+
+export function debugTasteRecommendationEligibility(
+
+  rankings: Ranking[],
+
+  currentUserId?: string
+
+) {
+
+  const rankingMap =
+
+    buildRankingMap(
+
+      rankings
+
+    )
+
+
+  const userRoots =
+
+    getUserParticipatedConversationRoots(
+
+      rankings,
+
+      currentUserId
+
+    )
+
+
+  const results =
+
+    rankings.map(
+
+      ranking => {
+
+        const resolvedRootId =
+
+          resolveConversationRootFromParents(
+
+            ranking,
+
+            rankingMap
+
+          )
+
+
+        const isOwnRanking =
+
+          Boolean(
+
+            currentUserId
+
+            &&
+
+            ranking.creatorId ===
+
+              currentUserId
+
+          )
+
+
+        const rootExcluded =
+
+          userRoots.has(
+
+            resolvedRootId
+
+          )
+
+
+        const eligible =
+
+          !isOwnRanking
+
+          &&
+
+          !rootExcluded
+
+
+        return {
+
+          id:
+            ranking.id,
+
+          title:
+            ranking.title,
+
+          creatorId:
+            ranking.creatorId,
+
+          currentUserId,
+
+          parentId:
+            ranking.parentId,
+
+          rootId:
+            ranking.rootId,
+
+          resolvedRootId,
+
+          isOwnRanking,
+
+          rootExcluded,
+
+          eligible
+
+        }
+
+      }
+
+    )
+
+
+  return results
+
+}
+
+
+/*
+ *
+ * Return personalised recommendations.
+ *
+ */
+
+
 export function getTasteRecommendedRankings(
 
   graph: TasteGraph,
 
   rankings: Ranking[],
 
-  currentUserId: string
+  currentUserId?: string
 
 ): TasteRecommendation[] {
 
-
   /*
    *
-   * Exclude every conversation the user has
-   * already participated in.
-   *
-   * This means that if the user remixes one
-   * ranking, the original ranking and all
-   * perspectives belonging to that same
-   * root conversation are excluded.
+   * Build the ranking map once.
    *
    */
 
 
-  const excludedConversationRoots =
+  const rankingMap =
 
-    getExcludedConversationRoots(
+    buildRankingMap(
+
+      rankings
+
+    )
+
+
+  /*
+   *
+   * 1. Direct user participation.
+   *
+   */
+
+
+  const userParticipatedRoots =
+
+    getUserParticipatedConversationRoots(
+
+      rankings,
+
+      currentUserId
+
+    )
+
+
+  /*
+   *
+   * 2. Taste Graph participation.
+   *
+   */
+
+
+  const graphExcludedRoots =
+
+    getExcludedConversationRootsFromGraph(
 
       graph,
 
@@ -2073,35 +1894,35 @@ export function getTasteRecommendedRankings(
 
   /*
    *
-   * Exclude every RANKD the user has previously
-   * ranked.
-   *
-   * This is deliberately based on the ranking ID
-   * stored in signal.source rather than matching
-   * individual item names.
-   *
-   * This means a new RANKD containing some of the
-   * same items can still be discovered.
+   * 3. Combine exclusions.
    *
    */
 
 
-  const previouslyRankedRankingIds =
+  const excludedConversationRoots =
 
-    getPreviouslyRankedRankingIds(
+    new Set<string>([
 
-      graph
+      ...userParticipatedRoots,
 
-    )
+      ...graphExcludedRoots
+
+    ])
 
 
   /*
    *
-   * Build the eligible recommendation pool.
+   * 4. Filter rankings.
    *
-   * 1. Exclude own content.
-   * 2. Exclude conversations already participated in.
-   * 3. Exclude RANKDs already ranked.
+   *
+   * IMPORTANT:
+   *
+   * The exclusion happens BEFORE scoring.
+   *
+   * This means a ranking from a conversation
+   * the user has already participated in can
+   * never become a recommendation simply because
+   * it happens to score highly.
    *
    */
 
@@ -2112,29 +1933,33 @@ export function getTasteRecommendedRankings(
 
       ranking => {
 
-        if (
-
-          ranking.creatorId ===
-
-          currentUserId
-
-        ) {
-
-          return false
-
-        }
-
-
         const conversationRootId =
 
-          getConversationRootId(
+          resolveConversationRootFromParents(
 
-            ranking
+            ranking,
+
+            rankingMap
 
           )
 
 
-        if (
+        const isOwnRanking =
+
+          Boolean(
+
+            currentUserId
+
+            &&
+
+            ranking.creatorId ===
+
+              currentUserId
+
+          )
+
+
+        const rootExcluded =
 
           excludedConversationRoots.has(
 
@@ -2142,36 +1967,30 @@ export function getTasteRecommendedRankings(
 
           )
 
-        ) {
 
-          return false
+        return (
 
-        }
+          !isOwnRanking
 
+          &&
 
-        if (
+          !rootExcluded
 
-          previouslyRankedRankingIds.has(
-
-            ranking.id
-
-          )
-
-        ) {
-
-          return false
-
-        }
-
-
-        return true
+        )
 
       }
 
     )
 
 
-  const scoredRecommendations =
+  /*
+   *
+   * 5. Score and sort.
+   *
+   */
+
+
+  const recommendations =
 
     eligibleRankings
 
@@ -2205,35 +2024,62 @@ export function getTasteRecommendedRankings(
 
           b
 
-        ) =>
+        ) => {
 
-          b.score -
+          if (
 
-          a.score
+            b.score !==
+
+            a.score
+
+          ) {
+
+            return (
+
+              b.score -
+
+              a.score
+
+            )
+
+          }
+
+
+          const aTime =
+
+            new Date(
+
+              a.ranking.createdAt ||
+
+              0
+
+            ).getTime()
+
+
+          const bTime =
+
+            new Date(
+
+              b.ranking.createdAt ||
+
+              0
+
+            ).getTime()
+
+
+          return (
+
+            bTime -
+
+            aTime
+
+          )
+
+        }
 
       )
 
 
-  /*
-   *
-   * 5.2.4
-   *
-   * Apply diversity after recommendation
-   * scoring.
-   *
-   * The Explore page currently displays
-   * three recommendations, so we select
-   * three diverse recommendations here.
-   *
-   */
-
-
-  return selectDiverseRecommendations(
-
-    scoredRecommendations,
-
-    3
-
-  )
+  return recommendations
 
 }
