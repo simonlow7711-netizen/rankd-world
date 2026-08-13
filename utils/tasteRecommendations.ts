@@ -12,24 +12,40 @@ export type TasteRecommendation = {
 
   ranking: Ranking
 
+  /*
+   *
+   * Score is retained internally for
+   * candidate ordering and future work.
+   *
+   * It is deliberately NOT displayed
+   * to the user.
+   *
+   */
+
   score: number
 
-  reasons: string[]
+  /*
+   *
+   * One concise explanation only.
+   *
+   */
+
+  reason: string
 
 }
 
 
 /*
  *
- * Recommendation scoring model.
+ * Internal recommendation scoring model.
  *
- * The percentage represents:
+ * IMPORTANT:
  *
- * "How strongly RANKD believes this ranking
- * matches the user's demonstrated taste."
+ * This score is currently used only to
+ * order candidates.
  *
- * It is NOT a measure of how many scoring
- * bonuses the ranking has accumulated.
+ * It is NOT presented as a calibrated
+ * percentage to the user.
  *
  */
 
@@ -59,8 +75,29 @@ const SCORE_WEIGHTS = {
 
 /*
  *
- * Keep recommendation scores within
- * a realistic 0–100 range.
+ * Recommendation limits.
+ *
+ */
+
+
+const MAX_RECOMMENDATIONS = 3
+
+
+/*
+ *
+ * Prevent rankings with excessive item
+ * overlap from occupying multiple cards.
+ *
+ */
+
+
+const ITEM_OVERLAP_THRESHOLD = 0.6
+
+
+/*
+ *
+ * Keep internal scores within
+ * a 0–100 range.
  *
  */
 
@@ -92,9 +129,7 @@ function normalise(
 
 /*
  *
- * Normalise item/category strings so
- * matching is case-insensitive and
- * whitespace-safe.
+ * Normalise strings for matching.
  *
  */
 
@@ -111,12 +146,52 @@ function normaliseItem(
 
     .trim()
 
+    .replace(
+
+      /\s+/g,
+
+      " "
+
+    )
+
 }
 
 
 /*
  *
- * Find all Taste Graph signals for an item.
+ * Normalise ranking titles for
+ * duplicate detection.
+ *
+ */
+
+
+function normaliseTitle(
+
+  value: string
+
+) {
+
+  return normaliseItem(
+
+    value
+
+  )
+
+    .replace(
+
+      /[^a-z0-9\s]/g,
+
+      ""
+
+    )
+
+}
+
+
+/*
+ *
+ * Find all Taste Graph signals for
+ * an item.
  *
  */
 
@@ -157,7 +232,8 @@ function getItemSignals(
 
 /*
  *
- * Find all Taste Graph signals for a category.
+ * Find all Taste Graph signals for
+ * a category.
  *
  */
 
@@ -198,8 +274,8 @@ function getCategorySignals(
 
 /*
  *
- * Check whether the user has already
- * ranked an item.
+ * Check whether an item has already
+ * appeared in the user's Taste Graph.
  *
  */
 
@@ -423,8 +499,7 @@ function getExcludedConversationRootsFromGraph(
 
 /*
  *
- * Remove feedback-only signals from
- * direct taste calculations.
+ * Identify feedback signals.
  *
  */
 
@@ -464,11 +539,6 @@ function isFeedbackSignal(
  *
  * Direct taste evidence.
  *
- * This is the strongest recommendation signal.
- *
- * A #1 preference should contribute much more
- * than a #7 preference.
- *
  */
 
 
@@ -476,270 +546,324 @@ function calculateDirectTasteMatch(
 
   graph: TasteGraph,
 
-  itemName: string
+  ranking: Ranking
 
 ) {
 
-  const signals =
+  type DirectMatch = {
 
-    getItemSignals(
+    score: number
 
-      graph,
+    strongestPosition:
+      number | null
 
-      itemName
+    strongestStrength:
+      number
 
-    )
+    signalCount:
+      number
+
+    matchingItem:
+      string | null
+
+  }
 
 
-  const tasteSignals =
+  const initial: DirectMatch = {
 
-    signals.filter(
+    score:
+      0,
 
-      signal =>
+    strongestPosition:
+      null,
 
-        !isFeedbackSignal(
+    strongestStrength:
+      0,
 
-          signal.type
+    signalCount:
+      0,
+
+    matchingItem:
+      null
+
+  }
+
+
+  return ranking.items.reduce(
+
+    (
+
+      strongest,
+
+      item
+
+    ): DirectMatch => {
+
+      const signals =
+
+        getItemSignals(
+
+          graph,
+
+          item.name
+
+        ).filter(
+
+          signal =>
+
+            !isFeedbackSignal(
+
+              signal.type
+
+            )
 
         )
 
-    )
+
+      if (
+
+        signals.length === 0
+
+      ) {
+
+        return strongest
+
+      }
 
 
-  if (
+      const positionMultiplier = (
 
-    tasteSignals.length === 0
+        position: number
 
-  ) {
+      ) => {
 
-    return {
+        if (
 
-      score: 0,
+          position <= 1
 
-      strongestPosition: null,
+        ) {
 
-      strongestStrength: 0,
+          return 1
 
-      signalCount: 0
-
-    }
-
-  }
+        }
 
 
-  const positionMultiplier = (
+        if (
 
-    position: number
+          position >= 7
 
-  ) => {
+        ) {
 
-    if (
+          return 0.4
 
-      position <= 1
-
-    ) {
-
-      return 1
-
-    }
+        }
 
 
-    if (
+        return (
 
-      position >= 7
+          1 -
 
-    ) {
+          (
 
-      return 0.4
+            position - 1
 
-    }
+          ) *
 
+          0.1
 
-    return (
+        )
 
-      1 -
-
-      (
-
-        position - 1
-
-      ) *
-
-      0.1
-
-    )
-
-  }
+      }
 
 
-  const evidence =
+      const evidenceValues =
 
-    tasteSignals.map(
+        signals.map(
 
-      signal =>
+          signal =>
+
+            Math.max(
+
+              0,
+
+              Math.min(
+
+                signal.strength,
+
+                1
+
+              )
+
+            )
+
+            *
+
+            positionMultiplier(
+
+              signal.position
+
+            )
+
+        )
+
+
+      const strongestEvidence =
 
         Math.max(
 
-          0,
+          ...evidenceValues
 
-          Math.min(
+        )
 
-            signal.strength,
 
-            1
+      const averageEvidence =
+
+        evidenceValues.reduce(
+
+          (
+
+            total,
+
+            value
+
+          ) =>
+
+            total +
+
+            value,
+
+          0
+
+        )
+
+        /
+
+        evidenceValues.length
+
+
+      const confidenceMultiplier =
+
+        Math.min(
+
+          1,
+
+          0.7 +
+
+          (
+
+            Math.min(
+
+              signals.length,
+
+              3
+
+            )
+
+            *
+
+            0.1
 
           )
 
         )
 
-        *
 
-        positionMultiplier(
+      const evidenceScore =
 
-          signal.position
+        (
+
+          strongestEvidence *
+
+          0.7
 
         )
 
-    )
+        +
+
+        (
+
+          averageEvidence *
+
+          0.3
+
+        )
 
 
-  const strongestEvidence =
-
-    Math.max(
-
-      ...evidence
-
-    )
-
-
-  const averageEvidence =
-
-    evidence.reduce(
-
-      (
-
-        total,
-
-        value
-
-      ) =>
-
-        total +
-
-        value,
-
-      0
-
-    )
-
-    /
-
-    evidence.length
-
-
-  const confidenceMultiplier =
-
-    Math.min(
-
-      1,
-
-      0.7 +
-
-      (
+      const itemScore =
 
         Math.min(
 
-          tasteSignals.length,
+          1,
 
-          3
+          evidenceScore *
+
+          confidenceMultiplier
 
         )
 
-        *
 
-        0.1
+      const strongestSignal =
 
-      )
+        signals.reduce(
 
-    )
+          (
 
+            strongestSignalValue,
 
-  const evidenceScore =
+            signal
 
-    (
+          ) =>
 
-      strongestEvidence *
+            signal.strength >
 
-      0.7
+            strongestSignalValue.strength
 
-    )
+              ? signal
 
-    +
+              : strongestSignalValue,
 
-    (
+          signals[0]
 
-      averageEvidence *
-
-      0.3
-
-    )
+        )
 
 
-  const score =
+      if (
 
-    Math.min(
+        itemScore >
 
-      1,
+        strongest.score
 
-      evidenceScore *
+      ) {
 
-      confidenceMultiplier
+        return {
 
-    )
+          score:
+            itemScore,
 
+          strongestPosition:
+            strongestSignal.position,
 
-  const strongestSignal =
+          strongestStrength:
+            strongestSignal.strength,
 
-    tasteSignals.reduce(
+          signalCount:
+            signals.length,
 
-      (
+          matchingItem:
+            item.name
 
-        strongest,
+        }
 
-        signal
-
-      ) =>
-
-        signal.strength >
-
-        strongest.strength
-
-          ? signal
-
-          : strongest,
-
-      tasteSignals[0]
-
-    )
+      }
 
 
-  return {
+      return strongest
 
-    score,
+    },
 
-    strongestPosition:
+    initial
 
-      strongestSignal.position,
-
-    strongestStrength:
-
-      strongestSignal.strength,
-
-    signalCount:
-
-      tasteSignals.length
-
-  }
+  )
 
 }
 
@@ -747,11 +871,6 @@ function calculateDirectTasteMatch(
 /*
  *
  * Category affinity.
- *
- * Category affinity is supporting evidence.
- *
- * It cannot produce a strong recommendation
- * on its own.
  *
  */
 
@@ -921,10 +1040,6 @@ function calculateCategoryAffinity(
 /*
  *
  * Taste neighbour discovery.
- *
- * Measures whether this ranking sits in
- * a category where the user's existing
- * preferences are relatively strong.
  *
  */
 
@@ -1111,10 +1226,6 @@ function calculateTasteNeighbourBonus(
 /*
  *
  * Feedback adjustment.
- *
- * Feedback should modify existing evidence,
- * rather than create a recommendation from
- * nothing.
  *
  */
 
@@ -1345,9 +1456,6 @@ function calculateFeedbackAdjustment(
  *
  * Novelty.
  *
- * Novelty is useful for discovery but should
- * not masquerade as taste alignment.
- *
  */
 
 
@@ -1402,16 +1510,9 @@ function calculateNovelty(
     knownItems
 
 
-  const noveltyRatio =
-
-    newItems /
-
-    ranking.items.length
-
-
   if (
 
-    noveltyRatio === 0
+    newItems === 0
 
   ) {
 
@@ -1426,6 +1527,13 @@ function calculateNovelty(
     }
 
   }
+
+
+  const noveltyRatio =
+
+    newItems /
+
+    ranking.items.length
 
 
   return {
@@ -1452,8 +1560,6 @@ function calculateNovelty(
 /*
  *
  * Behaviour fit.
- *
- * This is deliberately small.
  *
  */
 
@@ -1524,379 +1630,7 @@ function calculateBehaviourFit(
 
 /*
  *
- * Direct match summary.
- *
- * Explicitly typed so TypeScript understands
- * that strongestPosition may be either a
- * number or null.
- *
- */
-
-
-type DirectMatchSummary = {
-
-  score: number
-
-  strongestPosition: number | null
-
-  strongestStrength: number
-
-  signalCount: number
-
-  matchingItem: string | null
-
-}
-
-
-/*
- *
- * Find the strongest direct item match
- * within a ranking.
- *
- */
-
-
-function getStrongestDirectMatch(
-
-  graph: TasteGraph,
-
-  ranking: Ranking
-
-): DirectMatchSummary {
-
-  return ranking.items.reduce(
-
-    (
-
-      strongest: DirectMatchSummary,
-
-      item
-
-    ): DirectMatchSummary => {
-
-      const directMatch =
-
-        calculateDirectTasteMatch(
-
-          graph,
-
-          item.name
-
-        )
-
-
-      if (
-
-        directMatch.score >
-
-        strongest.score
-
-      ) {
-
-        return {
-
-          score:
-            directMatch.score,
-
-          strongestPosition:
-            directMatch.strongestPosition,
-
-          strongestStrength:
-            directMatch.strongestStrength,
-
-          signalCount:
-            directMatch.signalCount,
-
-          matchingItem:
-            item.name
-
-        }
-
-      }
-
-
-      return strongest
-
-    },
-
-    {
-
-      score:
-        0,
-
-      strongestPosition:
-        null,
-
-      strongestStrength:
-        0,
-
-      signalCount:
-        0,
-
-      matchingItem:
-        null
-
-    } satisfies DirectMatchSummary
-
-  )
-
-}
-
-
-/*
- *
- * Generate reasons from the strongest
- * evidence rather than dumping every
- * scoring component into the card.
- *
- */
-
-
-function generateRecommendationReasons(
-
-  graph: TasteGraph,
-
-  ranking: Ranking,
-
-  directMatch: DirectMatchSummary,
-
-  categoryAffinity: ReturnType<
-    typeof calculateCategoryAffinity
-  >,
-
-  neighbourBonus: ReturnType<
-    typeof calculateTasteNeighbourBonus
-  >,
-
-  feedback: ReturnType<
-    typeof calculateFeedbackAdjustment
-  >,
-
-  novelty: ReturnType<
-    typeof calculateNovelty
-  >
-
-): string[] {
-
-  const reasons: string[] = []
-
-
-  /*
-   *
-   * 1. Strong direct item match.
-   *
-   */
-
-
-  if (
-
-    directMatch.matchingItem
-
-    &&
-
-    directMatch.score >= 0.75
-
-    &&
-
-    directMatch.strongestPosition === 1
-
-  ) {
-
-    reasons.push(
-
-      `You ranked ${directMatch.matchingItem} #1`
-
-    )
-
-  }
-
-  else if (
-
-    directMatch.matchingItem
-
-    &&
-
-    directMatch.score >= 0.6
-
-    &&
-
-    directMatch.strongestPosition !== null
-
-    &&
-
-    directMatch.strongestPosition <= 3
-
-  ) {
-
-    reasons.push(
-
-      `You ranked ${directMatch.matchingItem} highly`
-
-    )
-
-  }
-
-  else if (
-
-    directMatch.matchingItem
-
-    &&
-
-    directMatch.score > 0.25
-
-  ) {
-
-    reasons.push(
-
-      `Includes ${directMatch.matchingItem}, which matches your taste`
-
-    )
-
-  }
-
-
-  /*
-   *
-   * 2. Feedback.
-   *
-   */
-
-
-  if (
-
-    feedback.score >= 0.5
-
-    &&
-
-    reasons.length < 3
-
-  ) {
-
-    reasons.push(
-
-      "Your previous choices point in this direction"
-
-    )
-
-  }
-
-
-  /*
-   *
-   * 3. Category.
-   *
-   */
-
-
-  if (
-
-    categoryAffinity.score >= 0.65
-
-    &&
-
-    categoryAffinity.uniqueRankings >= 2
-
-    &&
-
-    reasons.length < 3
-
-  ) {
-
-    reasons.push(
-
-      `Strong match with your ${ranking.category} taste`
-
-    )
-
-  }
-
-
-  /*
-   *
-   * 4. Taste neighbour.
-   *
-   */
-
-
-  if (
-
-    neighbourBonus.active
-
-    &&
-
-    neighbourBonus.score >= 0.7
-
-    &&
-
-    reasons.length < 3
-
-  ) {
-
-    reasons.push(
-
-      "Close to choices you've ranked highly"
-
-    )
-
-  }
-
-
-  /*
-   *
-   * 5. Discovery.
-   *
-   */
-
-
-  if (
-
-    novelty.newItems > 0
-
-    &&
-
-    reasons.length < 3
-
-  ) {
-
-    reasons.push(
-
-      "Offers a new direction to explore"
-
-    )
-
-  }
-
-
-  /*
-   *
-   * Avoid generic repetition where stronger
-   * evidence is available.
-   *
-   */
-
-
-  return [
-
-    ...new Set(
-
-      reasons
-
-    )
-
-  ].slice(
-
-    0,
-
-    3
-
-  )
-
-}
-
-
-/*
- *
- * Calculate recommendation score.
+ * Calculate internal recommendation score.
  *
  */
 
@@ -1911,7 +1645,7 @@ function calculateRecommendationScore(
 
   const directMatch =
 
-    getStrongestDirectMatch(
+    calculateDirectTasteMatch(
 
       graph,
 
@@ -1986,6 +1720,7 @@ function calculateRecommendationScore(
         )
 
           ? current
+
           : strongest,
 
       {
@@ -2107,12 +1842,10 @@ function calculateRecommendationScore(
 
   /*
    *
-   * Category and novelty evidence alone
-   * must not masquerade as strong taste
-   * alignment.
+   * Prevent category and novelty evidence
+   * from masquerading as strong direct taste.
    *
    */
-
 
   if (
 
@@ -2151,9 +1884,15 @@ function calculateRecommendationScore(
   }
 
 
-  const reasons =
+  /*
+   *
+   * Generate one reason.
+   *
+   */
 
-    generateRecommendationReasons(
+  const reason =
+
+    generateRecommendationReason(
 
       graph,
 
@@ -2184,9 +1923,260 @@ function calculateRecommendationScore(
 
       ),
 
-    reasons
+    reason
 
   }
+
+}
+
+
+/*
+ *
+ * Generate ONE concise reason.
+ *
+ * The reason should explain actual evidence
+ * rather than repeating generic recommendation
+ * language.
+ *
+ */
+
+
+function generateRecommendationReason(
+
+  graph: TasteGraph,
+
+  ranking: Ranking,
+
+  directMatch: ReturnType<
+    typeof calculateDirectTasteMatch
+  >,
+
+  categoryAffinity: ReturnType<
+    typeof calculateCategoryAffinity
+  >,
+
+  neighbourBonus: ReturnType<
+    typeof calculateTasteNeighbourBonus
+  >,
+
+  feedback: ReturnType<
+    typeof calculateFeedbackAdjustment
+  >,
+
+  novelty: ReturnType<
+    typeof calculateNovelty
+  >
+
+): string {
+
+  /*
+   *
+   * Strongest direct item evidence.
+   *
+   */
+
+
+  if (
+
+    directMatch.matchingItem
+
+    &&
+
+    directMatch.strongestPosition === 1
+
+  ) {
+
+    return (
+
+      `You ranked ${
+
+        directMatch.matchingItem
+
+      } #1`
+
+    )
+
+  }
+
+
+  if (
+
+    directMatch.matchingItem
+
+    &&
+
+    directMatch.strongestPosition !== null
+
+    &&
+
+    directMatch.strongestPosition <= 3
+
+  ) {
+
+    return (
+
+      `You ranked ${
+
+        directMatch.matchingItem
+
+      } highly`
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Meaningful feedback evidence.
+   *
+   */
+
+
+  if (
+
+    feedback.score >= 0.65
+
+  ) {
+
+    return (
+
+      "Your previous choices point in this direction"
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Strong category evidence.
+   *
+   */
+
+
+  if (
+
+    categoryAffinity.score >= 0.65
+
+    &&
+
+    categoryAffinity.uniqueRankings >= 2
+
+  ) {
+
+    return (
+
+      `You've shown a strong interest in ${
+
+        ranking.category
+
+      }`
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Stronger neighbour evidence.
+   *
+   */
+
+
+  if (
+
+    neighbourBonus.active
+
+    &&
+
+    neighbourBonus.score >= 0.7
+
+  ) {
+
+    return (
+
+      `Close to choices you've ranked highly`
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Moderate direct evidence.
+   *
+   */
+
+
+  if (
+
+    directMatch.matchingItem
+
+  ) {
+
+    return (
+
+      `Includes ${
+
+        directMatch.matchingItem
+
+      }, which matches your taste`
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Novelty should only be described as
+   * discovery when there is no stronger
+   * evidence.
+   *
+   */
+
+  if (
+
+    novelty.newItems > 0
+
+    &&
+
+    ranking.category
+
+  ) {
+
+    return (
+
+      `A new ${
+
+        ranking.category
+
+      } ranking to explore`
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Final fallback.
+   *
+   *
+   * This is intentionally specific to the
+   * ranking rather than pretending there is
+   * strong taste evidence.
+   *
+   */
+
+  return (
+
+    `A new ranking to compare with your taste`
+
+  )
 
 }
 
@@ -2219,11 +2209,470 @@ export function calculateTasteRecommendationScore(
 
 /*
  *
- * Diagnostic helper.
+ * Determine the overlap between two rankings.
  *
- * This deliberately exposes the exclusion
- * decision so we can verify whether a remix
- * is being removed BEFORE scoring.
+ * This prevents several closely related rankings
+ * from occupying the recommendation slots.
+ *
+ */
+
+
+function calculateItemOverlap(
+
+  first: Ranking,
+
+  second: Ranking
+
+) {
+
+  const firstItems =
+
+    new Set(
+
+      first.items.map(
+
+        item =>
+
+          normaliseItem(
+
+            item.name
+
+          )
+
+      )
+
+    )
+
+
+  const secondItems =
+
+    new Set(
+
+      second.items.map(
+
+        item =>
+
+          normaliseItem(
+
+            item.name
+
+          )
+
+      )
+
+    )
+
+
+  if (
+
+    firstItems.size === 0
+
+    ||
+
+    secondItems.size === 0
+
+  ) {
+
+    return 0
+
+  }
+
+
+  let sharedItems = 0
+
+
+  firstItems.forEach(
+
+    item => {
+
+      if (
+
+        secondItems.has(
+
+          item
+
+        )
+
+      ) {
+
+        sharedItems += 1
+
+      }
+
+    }
+
+  )
+
+
+  const smallerSetSize =
+
+    Math.min(
+
+      firstItems.size,
+
+      secondItems.size
+
+    )
+
+
+  if (
+
+    smallerSetSize === 0
+
+  ) {
+
+    return 0
+
+  }
+
+
+  return (
+
+    sharedItems /
+
+    smallerSetSize
+
+  )
+
+}
+
+
+/*
+ *
+ * Determine whether a candidate is
+ * too similar to an already selected
+ * recommendation.
+ *
+ */
+
+
+function isTooSimilarToSelected(
+
+  candidate: Ranking,
+
+  selected: Ranking[]
+
+) {
+
+  const candidateRoot =
+
+    getConversationRootId(
+
+      candidate
+
+    )
+
+
+  const candidateTitle =
+
+    normaliseTitle(
+
+      candidate.title
+
+    )
+
+
+  for (
+
+    const existing of selected
+
+  ) {
+
+    /*
+     *
+     * Same ranking.
+     *
+     */
+
+    if (
+
+      existing.id ===
+
+      candidate.id
+
+    ) {
+
+      return true
+
+    }
+
+
+    /*
+     *
+     * Same conversation.
+     *
+     */
+
+    if (
+
+      getConversationRootId(
+
+        existing
+
+      ) ===
+
+      candidateRoot
+
+    ) {
+
+      return true
+
+    }
+
+
+    /*
+     *
+     * Same normalised title.
+     *
+     */
+
+    if (
+
+      normaliseTitle(
+
+        existing.title
+
+      ) ===
+
+      candidateTitle
+
+    ) {
+
+      return true
+
+    }
+
+
+    /*
+     *
+     * Heavy item overlap.
+     *
+     */
+
+    const overlap =
+
+      calculateItemOverlap(
+
+        existing,
+
+        candidate
+
+      )
+
+
+    if (
+
+      overlap >=
+
+      ITEM_OVERLAP_THRESHOLD
+
+    ) {
+
+      return true
+
+    }
+
+  }
+
+
+  return false
+
+}
+
+
+/*
+ *
+ * Select diverse recommendations.
+ *
+ *
+ * This is deliberately separate from
+ * scoring.
+ *
+ * Scoring decides which candidates are
+ * interesting.
+ *
+ * This function decides which candidates
+ * are sufficiently different to show.
+ *
+ */
+
+
+function selectDiverseRecommendations(
+
+  recommendations: TasteRecommendation[]
+
+): TasteRecommendation[] {
+
+  const selected:
+
+    TasteRecommendation[] = []
+
+
+  const usedIds =
+
+    new Set<string>()
+
+
+  const usedRoots =
+
+    new Set<string>()
+
+
+  const usedTitles =
+
+    new Set<string>()
+
+
+  for (
+
+    const recommendation of
+
+    recommendations
+
+  ) {
+
+    if (
+
+      selected.length >=
+
+      MAX_RECOMMENDATIONS
+
+    ) {
+
+      break
+
+    }
+
+
+    const ranking =
+
+      recommendation.ranking
+
+
+    const rootId =
+
+      getConversationRootId(
+
+        ranking
+
+      )
+
+
+    const title =
+
+      normaliseTitle(
+
+        ranking.title
+
+      )
+
+
+    if (
+
+      usedIds.has(
+
+        ranking.id
+
+      )
+
+    ) {
+
+      continue
+
+    }
+
+
+    if (
+
+      usedRoots.has(
+
+        rootId
+
+      )
+
+    ) {
+
+      continue
+
+    }
+
+
+    if (
+
+      usedTitles.has(
+
+        title
+
+      )
+
+    ) {
+
+      continue
+
+    }
+
+
+    if (
+
+      isTooSimilarToSelected(
+
+        ranking,
+
+        selected.map(
+
+          item =>
+
+            item.ranking
+
+        )
+
+      )
+
+    ) {
+
+      continue
+
+    }
+
+
+    selected.push(
+
+      recommendation
+
+    )
+
+
+    usedIds.add(
+
+      ranking.id
+
+    )
+
+
+    usedRoots.add(
+
+      rootId
+
+    )
+
+
+    usedTitles.add(
+
+      title
+
+    )
+
+  }
+
+
+  return selected
+
+}
+
+
+/*
+ *
+ * Diagnostic helper.
  *
  */
 
@@ -2351,6 +2800,12 @@ export function getTasteRecommendedRankings(
 
 ): TasteRecommendation[] {
 
+  /*
+   *
+   * 1. Direct user participation.
+   *
+   */
+
   const userParticipatedRoots =
 
     getUserParticipatedConversationRoots(
@@ -2361,6 +2816,12 @@ export function getTasteRecommendedRankings(
 
     )
 
+
+  /*
+   *
+   * 2. Taste Graph participation.
+   *
+   */
 
   const graphExcludedRoots =
 
@@ -2373,6 +2834,12 @@ export function getTasteRecommendedRankings(
     )
 
 
+  /*
+   *
+   * 3. Combine exclusions.
+   *
+   */
+
   const excludedConversationRoots =
 
     new Set<string>([
@@ -2383,6 +2850,13 @@ export function getTasteRecommendedRankings(
 
     ])
 
+
+  /*
+   *
+   * 4. Remove rankings that the user
+   * has already participated in.
+   *
+   */
 
   const eligibleRankings =
 
@@ -2438,6 +2912,15 @@ export function getTasteRecommendedRankings(
     )
 
 
+  /*
+   *
+   * 5. Score candidates.
+   *
+   *
+   * The score remains internal.
+   *
+   */
+
   const scoredRecommendations =
 
     eligibleRankings
@@ -2465,7 +2948,19 @@ export function getTasteRecommendedRankings(
       )
 
 
-  const recommendations =
+  /*
+   *
+   * 6. Sort candidates.
+   *
+   *
+   * Taste evidence still determines the
+   * order internally.
+   *
+   * Created date breaks ties.
+   *
+   */
+
+  const sortedRecommendations =
 
     scoredRecommendations.sort(
 
@@ -2531,6 +3026,20 @@ export function getTasteRecommendedRankings(
     )
 
 
-  return recommendations
+  /*
+   *
+   * 7. Apply diversity and duplication
+   * protection.
+   *
+   *
+   * This is the important new layer.
+   *
+   */
+
+  return selectDiverseRecommendations(
+
+    sortedRecommendations
+
+  )
 
 }

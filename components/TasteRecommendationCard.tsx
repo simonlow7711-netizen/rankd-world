@@ -1,14 +1,18 @@
 "use client"
 
+
 import Link from "next/link"
+
 
 import {
   TasteRecommendation
 } from "@/utils/tasteRecommendations"
 
+
 import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
+
 
 import {
   recordTasteFeedback
@@ -16,23 +20,29 @@ import {
 
 
 type Props = {
-  recommendation: TasteRecommendation
+
+  recommendation:
+    TasteRecommendation
+
 }
 
 
 export default function TasteRecommendationCard({
+
   recommendation
-}: Props){
+
+}: Props) {
 
   const ranking =
     recommendation.ranking
 
 
-  function handleClick(){
+  function handleClick() {
 
     void recordTasteFeedback({
 
-      type: "clicked",
+      type:
+        "clicked",
 
       rankingId:
         ranking.id,
@@ -46,31 +56,47 @@ export default function TasteRecommendationCard({
 
 
   const createHref =
+
     "/create" +
+
     "?recommendationId=" +
+
     encodeURIComponent(
+
       ranking.id
+
     ) +
+
     "&recommendationScore=" +
+
     encodeURIComponent(
+
       String(
+
         recommendation.score
+
       )
+
     )
 
 
   return (
 
     <Link
+
       href={createHref}
+
       onClick={handleClick}
+
       className="
         block
         h-full
       "
+
     >
 
       <article
+
         className="
           rankd-card
           p-8
@@ -79,6 +105,7 @@ export default function TasteRecommendationCard({
           transition
           cursor-pointer
         "
+
       >
 
         <p className="
@@ -88,7 +115,9 @@ export default function TasteRecommendationCard({
           text-xs
           font-black
         ">
-          Recommended through your taste
+
+          Picked for your taste
+
         </p>
 
 
@@ -98,79 +127,34 @@ export default function TasteRecommendationCard({
           mt-5
           leading-tight
         ">
+
           {formatRankingTitle(
+
             ranking.title
+
           )}
+
         </h3>
 
 
-        <div className="
-          mt-6
-          flex
-          items-center
-          justify-between
-        ">
-
-          <span className="
-            bg-black
-            text-white
-            rounded-full
-            px-5
-            py-3
-            font-black
-          ">
-            {recommendation.score}%
-          </span>
-
-
-          <span className="
-            rankd-muted
-            font-bold
-          ">
-            taste alignment
-          </span>
-
-        </div>
-
-
-        {recommendation.reasons.length > 0 && (
+        {recommendation.reason && (
 
           <div className="
-            mt-8
+            mt-6
             pt-6
             border-t
             border-black/10
           ">
 
             <p className="
-              font-black
-              mb-4
+              text-sm
+              font-bold
+              leading-relaxed
             ">
-              Why RANKD picked this
+
+              {recommendation.reason}
+
             </p>
-
-
-            <div className="
-              space-y-2
-            ">
-
-              {recommendation.reasons
-                .slice(0, 3)
-                .map(reason => (
-
-                  <p
-                    key={reason}
-                    className="
-                      text-sm
-                      font-bold
-                    "
-                  >
-                    ✓ {reason}
-                  </p>
-
-                ))}
-
-            </div>
 
           </div>
 
@@ -187,7 +171,9 @@ export default function TasteRecommendationCard({
           <p className="
             font-black
           ">
+
             Would you rank it differently?
+
           </p>
 
 
@@ -196,7 +182,9 @@ export default function TasteRecommendationCard({
             rankd-accent
             font-black
           ">
+
             Rank it yourself →
+
           </p>
 
         </div>
