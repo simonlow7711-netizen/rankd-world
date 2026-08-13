@@ -2,15 +2,32 @@ import type {
   Metadata
 } from "next"
 
+
+import {
+  notFound
+} from "next/navigation"
+
+
 import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
+
 
 import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
+
+import {
+  Ranking
+} from "@/types/ranking"
+
+
 import RankClient from "./RankClient"
+
+
+const SITE_URL =
+  "https://rankd.world"
 
 
 type Props = {
@@ -56,27 +73,62 @@ export async function generateMetadata(
   }
 
 
+  const title =
+    formatRankingTitle(
+      ranking.title
+    )
+
+
+  const description =
+    ranking.description
+    ||
+    `Discover ${title} on RANKD.`
+
+
   return {
 
     title:
-
-      `${formatRankingTitle(
-
-        ranking.title
-
-      )} | RANKD`,
+      `${title} | RANKD`,
 
     description:
 
-      ranking.description
+      description,
 
-      ||
+    alternates: {
 
-      `Discover ${formatRankingTitle(
+      canonical:
+        `${SITE_URL}/rank/${ranking.id}`
 
-        ranking.title
+    },
 
-      )} on RANKD.`
+    openGraph: {
+
+      type:
+        "website",
+
+      url:
+        `${SITE_URL}/rank/${ranking.id}`,
+
+      title:
+        `${title} | RANKD`,
+
+      description:
+        description
+
+    },
+
+    twitter: {
+
+      card:
+        "summary_large_image",
+
+      title:
+        `${title} | RANKD`,
+
+      description:
+        description
+
+    }
 
   }
 
@@ -100,11 +152,213 @@ export default async function RankPage(
     await params
 
 
+  const ranking =
+    await getSupabaseRanking(
+      id
+    )
+
+
+  if (!ranking) {
+
+    notFound()
+
+  }
+
+
+  const title =
+    formatRankingTitle(
+      ranking.title
+    )
+
+
+  const description =
+    ranking.description
+    ||
+    `Discover ${title} on RANKD.`
+
+
+  const rankingUrl =
+    `${SITE_URL}/rank/${ranking.id}`
+
+
+  const sortedItems =
+
+    [...ranking.items]
+
+      .sort(
+
+        (a, b) =>
+
+          a.position -
+          b.position
+
+      )
+
+
+  const structuredData = {
+
+    "@context":
+      "https://schema.org",
+
+    "@graph": [
+
+      {
+
+        "@type":
+          "WebSite",
+
+        "@id":
+          `${SITE_URL}/#website`,
+
+        url:
+          SITE_URL,
+
+        name:
+          "RANKD",
+
+        description:
+          "The world's Top 7 everything.",
+
+        inLanguage:
+          "en-GB"
+
+      },
+
+
+      {
+
+        "@type":
+          "Organization",
+
+        "@id":
+          `${SITE_URL}/#organization`,
+
+        name:
+          "RANKD",
+
+        url:
+          SITE_URL
+
+      },
+
+
+      {
+
+        "@type":
+          "WebPage",
+
+        "@id":
+          `${rankingUrl}/#webpage`,
+
+        url:
+          rankingUrl,
+
+        name:
+          `${title} | RANKD`,
+
+        description:
+          description,
+
+        isPartOf: {
+
+          "@id":
+            `${SITE_URL}/#website`
+
+        },
+
+        about: {
+
+          "@id":
+            `${SITE_URL}/#organization`
+
+        },
+
+        inLanguage:
+          "en-GB"
+
+      },
+
+
+      {
+
+        "@type":
+          "ItemList",
+
+        "@id":
+          `${rankingUrl}/#ranking`,
+
+        name:
+          title,
+
+        description:
+          description,
+
+        url:
+          rankingUrl,
+
+        numberOfItems:
+          sortedItems.length,
+
+        itemListOrder:
+          "https://schema.org/ItemListOrderAscending",
+
+        itemListElement:
+
+          sortedItems.map(
+
+            item => ({
+
+              "@type":
+                "ListItem",
+
+              position:
+                item.position,
+
+              name:
+                item.name
+
+            })
+
+          )
+
+      }
+
+    ]
+
+  }
+
+
   return (
 
-    <RankClient
-      id={id}
-    />
+    <>
+
+      <script
+
+        type="application/ld+json"
+
+        dangerouslySetInnerHTML={{
+
+          __html:
+            JSON.stringify(
+              structuredData
+            )
+
+        }}
+
+      />
+
+
+      <RankClient
+
+        id={id}
+
+        initialRanking={
+          ranking
+        }
+
+      />
+
+    </>
 
   )
 

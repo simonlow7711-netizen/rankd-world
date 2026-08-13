@@ -1,11 +1,4 @@
-"use client"
-
 import Link from "next/link"
-
-import {
-  useEffect,
-  useState
-} from "react"
 
 import RankingCard from "@/components/RankingCard"
 
@@ -14,107 +7,43 @@ import {
 } from "@/utils/supabaseRankings"
 
 
+export default async function RANKDFeed() {
 
 
-
-export default function RANKDFeed(){
-
-
-  const [rankings,setRankings] =
-
-    useState<any[]>([])
+  const data =
+    await getAllRankings()
 
 
+  const latestRankings =
 
-  const [loading,setLoading] =
+    (data ?? [])
 
-    useState(true)
+      .sort(
 
+        (a, b) =>
 
+          new Date(
 
+            b.createdAt ??
+            "1970-01-01"
 
+          ).getTime()
 
+          -
 
+          new Date(
 
+            a.createdAt ??
+            "1970-01-01"
 
-  useEffect(()=>{
-
-
-    async function loadRankings(){
-
-
-      const data =
-
-        await getAllRankings()
-
-
-
-
-
-      const latestRankings =
-
-        (data ?? [])
-
-        .sort(
-
-          (a,b)=>
-
-            new Date(
-
-              b.createdAt ?? "1970-01-01"
-
-            ).getTime()
-
-            -
-
-            new Date(
-
-              a.createdAt ?? "1970-01-01"
-
-            ).getTime()
-
-        )
-
-        .slice(0,6)
-
-
-
-
-
-
-
-      setRankings(
-
-        latestRankings
+          ).getTime()
 
       )
 
-
-
-
-
-      setLoading(false)
-
-
-
-    }
-
-
-
-
-
-    loadRankings()
-
-
-
-  },[])
-
-
-
-
-
-
-
+      .slice(
+        0,
+        6
+      )
 
 
   return (
@@ -124,14 +53,10 @@ export default function RANKDFeed(){
       px-6
     ">
 
-
       <div className="
         max-w-6xl
         mx-auto
       ">
-
-
-
 
 
         <div className="
@@ -158,9 +83,6 @@ export default function RANKDFeed(){
             </p>
 
 
-
-
-
             <h2 className="
               text-4xl
               md:text-5xl
@@ -171,9 +93,6 @@ export default function RANKDFeed(){
               Latest RANKDs
 
             </h2>
-
-
-
 
 
             <p className="
@@ -187,13 +106,7 @@ export default function RANKDFeed(){
             </p>
 
 
-
           </div>
-
-
-
-
-
 
 
           <Link
@@ -215,123 +128,98 @@ export default function RANKDFeed(){
           </Link>
 
 
-
         </div>
 
 
+        {
+          latestRankings.length === 0 ? (
 
-
-
-
-
-
-
-        {loading ? (
-
-
-          <div className="
-            rankd-card
-            p-8
-            text-center
-            font-black
-          ">
-
-            Loading RANKDs...
-
-          </div>
-
-
-        ) : rankings.length === 0 ? (
-
-
-          <div className="
-            rankd-card
-            p-8
-            text-center
-          ">
-
-
-            <h3 className="
-              text-2xl
-              font-black
+            <div className="
+              rankd-card
+              p-8
+              text-center
             ">
 
-              No RANKDs yet
 
-            </h3>
+              <h3 className="
+                text-2xl
+                font-black
+              ">
+
+                No RANKDs yet
+
+              </h3>
 
 
+              <p className="
+                mt-3
+                text-gray-500
+              ">
 
-            <p className="
-              mt-3
-              text-gray-500
+                Be the first person to create a Top 7.
+
+              </p>
+
+
+              <Link
+
+                href="/create"
+
+                className="
+                  inline-block
+                  mt-6
+                  rankd-button
+                "
+
+              >
+
+                Create a RANKD →
+
+              </Link>
+
+
+            </div>
+
+          ) : (
+
+            <div className="
+              grid
+              md:grid-cols-3
+              gap-8
             ">
 
-              Be the first person to create a Top 7.
 
-            </p>
+              {
+                latestRankings.map(
 
+                  ranking => (
 
+                    <RankingCard
 
-            <Link
+                      key={
+                        ranking.id
+                      }
 
-              href="/create"
+                      ranking={
+                        ranking
+                      }
 
-              className="
-                inline-block
-                mt-6
-                rankd-button
-              "
+                    />
 
-            >
+                  )
 
-              Create a RANKD →
-
-            </Link>
-
-
-          </div>
+                )
+              }
 
 
-        ) : (
+            </div>
 
+          )
 
-
-          <div className="
-            grid
-            md:grid-cols-3
-            gap-8
-          ">
-
-
-
-            {rankings.map(ranking=>(
-
-
-              <RankingCard
-
-                key={ranking.id}
-
-                ranking={ranking}
-
-              />
-
-
-            ))}
-
-
-
-          </div>
-
-
-        )}
-
-
-
+        }
 
 
       </div>
-
 
     </section>
 

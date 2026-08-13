@@ -1,5 +1,3 @@
-"use client"
-
 import {
   Ranking
 } from "@/types/ranking"
@@ -9,9 +7,6 @@ import {
 } from "@/utils/rankdExplanation"
 
 
-
-
-
 type Props = {
 
   ranking: Ranking
@@ -19,14 +14,11 @@ type Props = {
 }
 
 
-
-
-
 export default function RankdExplanation({
 
   ranking
 
-}: Props){
+}: Props) {
 
 
   const reasons =
@@ -36,9 +28,6 @@ export default function RankdExplanation({
       ranking
 
     )
-
-
-
 
 
   return (
@@ -62,9 +51,6 @@ export default function RankdExplanation({
         Why it's trending
 
       </p>
-
-
-
 
 
       <div className="

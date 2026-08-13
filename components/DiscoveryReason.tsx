@@ -1,12 +1,11 @@
-"use client"
-
-import { Ranking } from "@/types/ranking"
+import {
+  Ranking
+} from "@/types/ranking"
 
 import {
-
   getDiscoveryReason
-
 } from "@/utils/discoveryReason"
+
 
 type Props = {
 
@@ -14,11 +13,13 @@ type Props = {
 
 }
 
+
 export default function DiscoveryReason({
 
   ranking
 
 }: Props) {
+
 
   return (
 
@@ -30,14 +31,20 @@ export default function DiscoveryReason({
       py-3
     ">
 
+
       <p className="
         text-sm
         font-semibold
       ">
 
-        {getDiscoveryReason(ranking)}
+        {
+          getDiscoveryReason(
+            ranking
+          )
+        }
 
       </p>
+
 
     </div>
 

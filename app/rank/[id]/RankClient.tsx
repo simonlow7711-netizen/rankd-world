@@ -1,65 +1,87 @@
 "use client"
 
+
 import {
   useEffect,
   useState
 } from "react"
 
+
 import {
   useRouter
 } from "next/navigation"
 
+
 import Link from "next/link"
+
 
 import {
   trackEvent
 } from "@/utils/analytics"
 
+
 import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
+
 
 import {
   supabase
 } from "@/utils/supabase"
 
+
 import {
   getStoredUserId
 } from "@/utils/currentUser"
 
+
 import ConversationTree from "@/components/ConversationTree"
 
+
 import TasteInsightCard from "@/components/TasteInsightCard"
+
 
 import {
   buildConversationTree,
   ConversationNode
 } from "@/utils/conversationTree"
 
+
 import {
   generateTasteInsight
 } from "@/utils/tasteInsights"
+
 
 import {
   generateTasteGraphSignal
 } from "@/utils/tasteGraphSignal"
 
+
 import {
   generateTasteIdentity
 } from "@/utils/tasteIdentity"
 
+
 import {
   buildTasteGraph
 } from "@/utils/tasteGraph"
+
 
 import {
   Ranking
 } from "@/types/ranking"
 
 
+import {
+  formatRankingTitle
+} from "@/utils/rankingTitle"
+
+
 type RankClientProps = {
 
   id: string
+
+  initialRanking?: Ranking
 
 }
 
@@ -81,7 +103,9 @@ type PerspectiveRanking = {
 
 export default function RankClient({
 
-  id
+  id,
+
+  initialRanking
 
 }: RankClientProps) {
 
@@ -95,6 +119,7 @@ export default function RankClient({
     setRanking
   ] =
     useState<Ranking | null>(
+      initialRanking ??
       null
     )
 
@@ -104,6 +129,7 @@ export default function RankClient({
     setOriginalRanking
   ] =
     useState<Ranking | null>(
+      initialRanking ??
       null
     )
 
@@ -141,7 +167,9 @@ export default function RankClient({
     loading,
     setLoading
   ] =
-    useState(true)
+    useState(
+      !initialRanking
+    )
 
 
   useEffect(() => {
@@ -155,7 +183,9 @@ export default function RankClient({
 
     async function load() {
 
-      setLoading(true)
+      setLoading(
+        !initialRanking
+      )
 
 
       trackEvent(
@@ -172,10 +202,33 @@ export default function RankClient({
       )
 
 
-      const currentRanking =
-        await getSupabaseRanking(
-          id
-        )
+      /*
+       *
+       * The server already provides the
+       * current ranking when possible.
+       *
+       * This means the core RANKD content
+       * can render immediately without
+       * waiting for a client-side fetch.
+       *
+       * We only fetch here when an initial
+       * ranking was not supplied.
+       *
+       */
+
+      let currentRanking =
+        initialRanking ??
+        null
+
+
+      if (!currentRanking) {
+
+        currentRanking =
+          await getSupabaseRanking(
+            id
+          )
+
+      }
 
 
       if (!currentRanking) {
@@ -317,6 +370,7 @@ export default function RankClient({
                   )
 
                 )
+
               )
 
                 .filter(
@@ -588,12 +642,13 @@ export default function RankClient({
 
 
       if (
-        parentId
-        &&
+        parentId &&
         !conversationItems.some(
+
           item =>
             item.id ===
             parentId
+
         )
       ) {
 
@@ -711,7 +766,7 @@ export default function RankClient({
     load()
 
 
-  }, [id])
+  }, [id, initialRanking])
 
 
   function rankIt() {
@@ -784,59 +839,9 @@ export default function RankClient({
   }
 
 
-  function viewPerspective(
-    perspectiveId: string
-  ) {
-
-    router.push(
-
-      `/rank/${perspectiveId}`
-
-    )
-
-  }
-
-
-  function viewOriginal() {
-
-    if (!originalRanking) {
-
-      return
-
-    }
-
-
-    router.push(
-
-      `/rank/${originalRanking.id}`
-
-    )
-
-  }
-
-
   if (loading) {
 
-    return (
-
-      <main
-        className="
-          min-h-screen
-          bg-[#F7F4EE]
-          flex
-          items-center
-          justify-center
-          text-black
-          font-black
-          text-2xl
-        "
-      >
-
-        Loading RANKD...
-
-      </main>
-
-    )
+    return null
 
   }
 
@@ -849,14 +854,32 @@ export default function RankClient({
         className="
           min-h-screen
           bg-[#F7F4EE]
-          flex
-          items-center
-          justify-center
-          font-black
+          text-black
+          px-6
+          py-20
         "
       >
 
-        Ranking not found
+        <div
+          className="
+            max-w-6xl
+            mx-auto
+            text-center
+          "
+        >
+
+          <h1
+            className="
+              text-4xl
+              font-black
+            "
+          >
+
+            Ranking not found
+
+          </h1>
+
+        </div>
 
       </main>
 
@@ -871,6 +894,47 @@ export default function RankClient({
 
     originalRanking.id !==
     ranking.id
+
+
+  const displayRanking =
+    originalRanking ??
+    ranking
+
+
+  const displayTitle =
+    formatRankingTitle(
+      displayRanking.title
+    )
+
+
+  const displayDescription =
+    displayRanking.description
+
+
+  const sortedOriginalItems =
+
+    [...displayRanking.items]
+
+      .sort(
+
+        (a, b) =>
+          a.position -
+          b.position
+
+      )
+
+
+  const sortedPerspectiveItems =
+
+    [...ranking.items]
+
+      .sort(
+
+        (a, b) =>
+          a.position -
+          b.position
+
+      )
 
 
   const tasteInsight =
@@ -910,36 +974,6 @@ export default function RankClient({
 
       generateTasteIdentity(
         tasteSignal
-      )
-
-
-  const sortedOriginalItems =
-
-    originalRanking
-
-      ? [...originalRanking.items]
-
-          .sort(
-
-            (a, b) =>
-              a.position -
-              b.position
-
-          )
-
-      : []
-
-
-  const sortedPerspectiveItems =
-
-    [...ranking.items]
-
-      .sort(
-
-        (a, b) =>
-          a.position -
-          b.position
-
       )
 
 
@@ -999,7 +1033,7 @@ export default function RankClient({
                   </p>
 
 
-                  <h1
+                  <h2
                     className="
                       text-4xl
                       md:text-5xl
@@ -1009,31 +1043,36 @@ export default function RankClient({
                     "
                   >
 
-                    {ranking.creator ||
-                      "RANKD user"}{" "}
+                    {
+                      ranking.creatorDisplayName ||
+                      ranking.creator ||
+                      "RANKD user"
+                    }{" "}
 
                     ranked this differently.
 
-                  </h1>
+                  </h2>
 
                 </div>
 
 
-                <button
+                <Link
 
-                  onClick={
-                    viewOriginal
+                  href={
+                    `/rank/${originalRanking?.id}`
                   }
 
                   className="
                     rankd-button
                     whitespace-nowrap
+                    inline-block
                   "
+
                 >
 
                   View original RANKD →
 
-                </button>
+                </Link>
 
               </div>
 
@@ -1095,15 +1134,14 @@ export default function RankClient({
             >
 
               {
-                originalRanking?.category ||
-                ranking.category ||
+                displayRanking.category ||
                 "General"
               }
 
             </p>
 
 
-            <h2
+            <h1
               className="
                 text-6xl
                 md:text-8xl
@@ -1113,12 +1151,31 @@ export default function RankClient({
               "
             >
 
-              {
-                originalRanking?.title ||
-                ranking.title
-              }
+              {displayTitle}
 
-            </h2>
+            </h1>
+
+
+            {
+              displayDescription && (
+
+                <p
+                  className="
+                    mt-8
+                    text-xl
+                    md:text-2xl
+                    rankd-muted
+                    leading-relaxed
+                    max-w-3xl
+                  "
+                >
+
+                  {displayDescription}
+
+                </p>
+
+              )
+            }
 
 
             <p
@@ -1132,7 +1189,8 @@ export default function RankClient({
               Ranked by{" "}
 
               {
-                originalRanking?.creator ||
+                displayRanking.creatorDisplayName ||
+                displayRanking.creator ||
                 "RANKD user"
               }
 
@@ -1182,6 +1240,7 @@ export default function RankClient({
                       <div
                         className="
                           text-2xl
+                          md:text-3xl
                           font-black
                         "
                       >
@@ -1237,6 +1296,7 @@ export default function RankClient({
                   >
 
                     {
+                      ranking.creatorDisplayName ||
                       ranking.creator ||
                       "RANKD user"
                     }{" "}
@@ -1342,7 +1402,7 @@ export default function RankClient({
                   </p>
 
 
-                  <h3
+                  <h2
                     className="
                       text-3xl
                       md:text-4xl
@@ -1353,7 +1413,7 @@ export default function RankClient({
 
                     Would you rank it differently?
 
-                  </h3>
+                  </h2>
 
                 </div>
 
@@ -1373,6 +1433,7 @@ export default function RankClient({
                 rankd-button
                 text-xl
               "
+
             >
 
               Rank it differently
@@ -1514,19 +1575,18 @@ export default function RankClient({
 
                       perspective => (
 
-                        <button
+                        <Link
 
                           key={
                             perspective.id
                           }
 
-                          onClick={() =>
-                            viewPerspective(
-                              perspective.id
-                            )
+                          href={
+                            `/rank/${perspective.id}`
                           }
 
                           className="
+                            block
                             w-full
                             rounded-2xl
                             p-4
@@ -1537,6 +1597,7 @@ export default function RankClient({
                             border-black/5
                             hover:bg-black/[0.07]
                           "
+
                         >
 
                           <p
@@ -1569,7 +1630,7 @@ export default function RankClient({
 
                           </p>
 
-                        </button>
+                        </Link>
 
                       )
 
@@ -1622,6 +1683,7 @@ export default function RankClient({
                 hover:-translate-y-1
                 transition
               "
+
             >
 
               <h2

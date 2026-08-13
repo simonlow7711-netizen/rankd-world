@@ -1,3 +1,7 @@
+import type {
+  Metadata
+} from "next"
+
 import Link from "next/link"
 
 
@@ -59,21 +63,79 @@ import {
 } from "@/utils/tasteRecommendations"
 
 
-export const dynamic = "force-dynamic"
+const SITE_URL =
+  "https://rankd.world"
 
 
-export const metadata = {
+export const dynamic =
+  "force-dynamic"
+
+
+export const metadata: Metadata = {
 
   title:
-    "Explore Top 7 Rankings | RANKD",
+    "Explore Top 7 Rankings",
 
   description:
-    "Discover what the world is ranking."
+    "Discover the world's Top 7 rankings, trending debates and different perspectives on RANKD.",
+
+  alternates: {
+
+    canonical:
+      `${SITE_URL}/explore`
+
+  },
+
+  openGraph: {
+
+    type:
+      "website",
+
+    url:
+      `${SITE_URL}/explore`,
+
+    siteName:
+      "RANKD",
+
+    title:
+      "Explore Top 7 Rankings | RANKD",
+
+    description:
+      "Discover the world's Top 7 rankings, trending debates and different perspectives on RANKD.",
+
+    locale:
+      "en_GB"
+
+  },
+
+  twitter: {
+
+    card:
+      "summary_large_image",
+
+    title:
+      "Explore Top 7 Rankings | RANKD",
+
+    description:
+      "Discover the world's Top 7 rankings, trending debates and different perspectives on RANKD."
+
+  },
+
+  robots: {
+
+    index:
+      true,
+
+    follow:
+      true
+
+  }
 
 }
 
 
 export default async function ExplorePage() {
+
 
   const allRankings =
     await getAllRankings()
@@ -105,14 +167,19 @@ export default async function ExplorePage() {
   const latestRankings =
     [...allRankings]
       .sort(
+
         (a, b) =>
+
           new Date(
             b.createdAt || 0
           ).getTime()
+
           -
+
           new Date(
             a.createdAt || 0
           ).getTime()
+
       )
       .slice(
         0,
@@ -269,6 +336,7 @@ export default async function ExplorePage() {
 
           {
             recommendedRankings.length > 0
+
               ? (
 
                 <div
@@ -281,11 +349,14 @@ export default async function ExplorePage() {
 
                   {
                     recommendedRankings
+
                       .slice(
                         0,
                         3
                       )
+
                       .map(
+
                         recommendation => (
 
                           <TasteRecommendationCard
@@ -303,12 +374,14 @@ export default async function ExplorePage() {
                           />
 
                         )
+
                       )
                   }
 
                 </div>
 
               )
+
               : (
 
                 <div
@@ -390,6 +463,7 @@ export default async function ExplorePage() {
 
             {
               latestRankings.map(
+
                 ranking => (
 
                   <RankingCard
@@ -405,6 +479,7 @@ export default async function ExplorePage() {
                   />
 
                 )
+
               )
             }
 
@@ -442,11 +517,14 @@ export default async function ExplorePage() {
 
             {
               trendingRankings
+
                 .slice(
                   0,
                   3
                 )
+
                 .map(
+
                   ranking => (
 
                     <RankingCard
@@ -462,6 +540,7 @@ export default async function ExplorePage() {
                     />
 
                   )
+
                 )
             }
 
@@ -499,11 +578,14 @@ export default async function ExplorePage() {
 
             {
               perspectiveGaps
+
                 .slice(
                   0,
                   3
                 )
+
                 .map(
+
                   (
                     gap,
                     index
@@ -522,6 +604,7 @@ export default async function ExplorePage() {
                     />
 
                   )
+
                 )
             }
 
@@ -551,6 +634,7 @@ export default async function ExplorePage() {
 
           {
             discoverableUsers.length > 0
+
               ? (
 
                 <TasteMatchCard
@@ -566,6 +650,7 @@ export default async function ExplorePage() {
                 />
 
               )
+
               : (
 
                 <div

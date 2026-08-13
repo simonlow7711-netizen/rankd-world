@@ -1,5 +1,3 @@
-"use client"
-
 import Link from "next/link"
 
 import {
@@ -15,19 +13,11 @@ import {
 } from "@/utils/rankingTitle"
 
 
-
-
-
 type RankingCardProps = {
 
   ranking: Ranking
 
 }
-
-
-
-
-
 
 
 export default function RankingCard({
@@ -37,13 +27,9 @@ export default function RankingCard({
 }: RankingCardProps) {
 
 
-
   const debateScore =
 
     ranking.signals?.debateHeat ?? 0
-
-
-
 
 
   return (
@@ -53,7 +39,6 @@ export default function RankingCard({
       href={`/rank/${ranking.id}`}
 
     >
-
 
       <article
 
@@ -68,10 +53,6 @@ export default function RankingCard({
 
       >
 
-
-
-
-
         <p
 
           className="
@@ -84,14 +65,12 @@ export default function RankingCard({
 
         >
 
-          {ranking.category || "General"}
+          {
+            ranking.category ||
+            "General"
+          }
 
         </p>
-
-
-
-
-
 
 
         <h3
@@ -105,18 +84,13 @@ export default function RankingCard({
 
         >
 
-          {formatRankingTitle(
-
-            ranking.title
-
-          )}
+          {
+            formatRankingTitle(
+              ranking.title
+            )
+          }
 
         </h3>
-
-
-
-
-
 
 
         <div
@@ -130,9 +104,6 @@ export default function RankingCard({
 
         >
 
-
-
-
           <div
 
             className="
@@ -143,7 +114,6 @@ export default function RankingCard({
             "
 
           >
-
 
             <span
 
@@ -157,13 +127,7 @@ export default function RankingCard({
 
             </span>
 
-
           </div>
-
-
-
-
-
 
 
           <span
@@ -179,14 +143,7 @@ export default function RankingCard({
 
           </span>
 
-
-
         </div>
-
-
-
-
-
 
 
         <div
@@ -200,8 +157,6 @@ export default function RankingCard({
 
         >
 
-
-
           <p
 
             className="
@@ -213,10 +168,6 @@ export default function RankingCard({
             Would you rank it differently?
 
           </p>
-
-
-
-
 
 
           <p
@@ -233,37 +184,27 @@ export default function RankingCard({
 
           </p>
 
-
-
         </div>
-
-
-
-
-
 
 
         <RankdExplanation
 
-          ranking={ranking}
+          ranking={
+            ranking
+          }
 
         />
-
-
-
-
-
 
 
         <DiscoveryReason
 
-          ranking={ranking}
+          ranking={
+            ranking
+          }
 
         />
 
-
       </article>
-
 
     </Link>
 
