@@ -23,6 +23,10 @@ import {
   supabase
 } from "@/utils/supabase"
 
+import {
+  getStoredUserId
+} from "@/utils/currentUser"
+
 import ConversationTree from "@/components/ConversationTree"
 
 import TasteInsightCard from "@/components/TasteInsightCard"
@@ -43,6 +47,10 @@ import {
 import {
   generateTasteIdentity
 } from "@/utils/tasteIdentity"
+
+import {
+  buildTasteGraph
+} from "@/utils/tasteGraph"
 
 import {
   Ranking
@@ -119,6 +127,17 @@ export default function RankClient({
 
 
   const [
+    tasteGraph,
+    setTasteGraph
+  ] =
+    useState<ReturnType<
+      typeof buildTasteGraph
+    > | null>(
+      null
+    )
+
+
+  const [
     loading,
     setLoading
   ] =
@@ -184,7 +203,6 @@ export default function RankClient({
        *
        */
 
-
       const rootId =
         currentRanking.rootId ??
         currentRanking.id
@@ -195,7 +213,6 @@ export default function RankClient({
        * Load the original ranking.
        *
        */
-
 
       let rootRanking =
         currentRanking
@@ -229,11 +246,135 @@ export default function RankClient({
 
       /*
        *
+       * Build the user's accumulated Taste Graph.
+       *
+       * IMPORTANT:
+       *
+       * Ranking does not expose userId as part
+       * of the Ranking type.
+       *
+       * Therefore we first query Supabase for
+       * ranking IDs belonging to the stored user.
+       *
+       * We then load those rankings through the
+       * existing ranking mapper.
+       *
+       */
+
+      const storedUserId =
+        getStoredUserId()
+
+
+      if (storedUserId) {
+
+        try {
+
+          const {
+            data: userRankingRows,
+            error: userRankingError
+          } =
+            await supabase
+
+              .from("rankings")
+
+              .select(
+                "id"
+              )
+
+              .eq(
+                "user_id",
+                storedUserId
+              )
+
+
+          if (userRankingError) {
+
+            console.error(
+
+              "TASTE GRAPH RANKING LOAD ERROR",
+
+              userRankingError
+
+            )
+
+          }
+          else if (
+            userRankingRows &&
+            userRankingRows.length > 0
+          ) {
+
+            const userRankings =
+              (
+                await Promise.all(
+
+                  userRankingRows.map(
+
+                    row =>
+                      getSupabaseRanking(
+                        row.id
+                      )
+
+                  )
+
+                )
+              )
+
+                .filter(
+
+                  (
+                    userRanking
+                  ): userRanking is Ranking =>
+                    userRanking !== null
+
+                )
+
+
+            if (
+              userRankings.length > 0
+            ) {
+
+              const graph =
+                buildTasteGraph(
+
+                  storedUserId,
+
+                  userRankings
+
+                )
+
+
+              setTasteGraph(
+                graph
+              )
+
+            }
+
+          }
+
+        }
+        catch (
+          tasteGraphError
+        ) {
+
+          console.error(
+
+            "TASTE GRAPH LOAD ERROR",
+
+            tasteGraphError
+
+          )
+
+        }
+
+      }
+
+
+      /*
+       *
        * Load every ranking belonging to this
        * conversation tree.
        *
        */
-
 
       const {
 
@@ -301,7 +442,6 @@ export default function RankClient({
        *
        */
 
-
       const conversationItems:
         Omit<
           ConversationNode,
@@ -345,11 +485,7 @@ export default function RankClient({
        * Make sure the original ranking is
        * always represented in the tree.
        *
-       * This protects against cases where the
-       * Supabase root query returns no row.
-       *
        */
-
 
       const hasOriginal =
         conversationItems.some(
@@ -396,11 +532,7 @@ export default function RankClient({
        * Make sure the current ranking is
        * represented in the tree.
        *
-       * This is particularly important for a
-       * newly-created remix.
-       *
        */
-
 
       const hasCurrent =
         conversationItems.some(
@@ -450,7 +582,6 @@ export default function RankClient({
        * parent is also available.
        *
        */
-
 
       const parentId =
         currentRanking.parentId
@@ -510,16 +641,12 @@ export default function RankClient({
        *
        */
 
-
       const tree =
         buildConversationTree(
 
           conversationItems
 
         )
-
-
-
 
 
       setConversationTree(
@@ -532,7 +659,6 @@ export default function RankClient({
        * Build perspective list.
        *
        */
-
 
       const perspectiveItems:
         PerspectiveRanking[] =
@@ -599,7 +725,7 @@ export default function RankClient({
 
     const items =
 
-      ranking.items
+      [...ranking.items]
 
         .sort(
 
@@ -759,10 +885,32 @@ export default function RankClient({
     )
 
 
+  /*
+   *
+   * Taste Identity uses the accumulated
+   * user Taste Graph.
+   *
+   * It therefore represents broader
+   * behaviour rather than only the ranking
+   * currently being viewed.
+   *
+   */
+
   const tasteIdentity =
-    generateTasteIdentity(
-      tasteSignal
-    )
+
+    tasteGraph
+
+      ?
+
+      generateTasteIdentity(
+        tasteGraph
+      )
+
+      :
+
+      generateTasteIdentity(
+        tasteSignal
+      )
 
 
   const sortedOriginalItems =

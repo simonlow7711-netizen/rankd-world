@@ -1,3 +1,9 @@
+import {
+  Ranking,
+  RankingItem
+} from "@/types/ranking"
+
+
 export type TasteDNA = {
 
   categories: Record<string, number>
@@ -15,21 +21,102 @@ export type TasteDNA = {
 }
 
 
+/*
+ *
+ * Normalise category names so that
+ *
+ * "Sport"
+ * "sport"
+ * " SPORT "
+ *
+ * are treated as the same category.
+ *
+ */
 
 
+function normaliseCategory(
 
+  value: string
+
+): string {
+
+  const normalised =
+
+    value
+
+      .trim()
+
+      .toLowerCase()
+
+
+  return (
+
+    normalised ||
+
+    "general"
+
+  )
+
+}
+
+
+/*
+ *
+ * Normalise item names so that
+ * whitespace and capitalisation do not
+ * create duplicate taste choices.
+ *
+ */
+
+
+function normaliseChoice(
+
+  value: string
+
+): string {
+
+  return value
+
+    .trim()
+
+    .toLowerCase()
+
+}
+
+
+/*
+ *
+ * Calculate a basic Taste DNA profile
+ * from a collection of rankings.
+ *
+ * This measures:
+ *
+ * - category frequency
+ * - item/choice frequency
+ * - average ranking position
+ * - total number of rankings
+ *
+ * This is intentionally a profile utility.
+ *
+ * Recommendation scoring should remain
+ * separate from this model.
+ *
+ */
 
 
 export function calculateTasteDNA(
 
-  rankings: any[] = []
+  rankings: Ranking[] = []
 
 ): TasteDNA {
 
 
-  const categories: Record<string, number> = {}
+  const categories:
+    Record<string, number> = {}
 
-  const choices: Record<string, number> = {}
+
+  const choices:
+    Record<string, number> = {}
 
 
   let totalPosition = 0
@@ -50,9 +137,13 @@ export function calculateTasteDNA(
 
       const category =
 
-        ranking.category ||
+        normaliseCategory(
 
-        "General"
+          ranking.category ||
+
+          "General"
+
+        )
 
 
       categories[category] =
@@ -70,9 +161,14 @@ export function calculateTasteDNA(
         1
 
 
-      ranking.items?.forEach(
+      const rankingItems =
 
-        (item: any) => {
+        ranking.items ?? []
+
+
+      rankingItems.forEach(
+
+        (item: RankingItem) => {
 
           if (!item) {
 
@@ -83,11 +179,11 @@ export function calculateTasteDNA(
 
           const name =
 
-            item.name
+            normaliseChoice(
 
-              ?.trim()
+              item.name || ""
 
-              ?.toLowerCase()
+            )
 
 
           if (!name) {
@@ -112,7 +208,7 @@ export function calculateTasteDNA(
             1
 
 
-          totalPosition +=
+          const position =
 
             Number(
 
@@ -120,9 +216,18 @@ export function calculateTasteDNA(
 
             )
 
-            ||
 
-            7
+          totalPosition +=
+
+            position > 0
+
+              ?
+
+              position
+
+              :
+
+              7
 
 
           totalItems++
@@ -158,9 +263,7 @@ export function calculateTasteDNA(
 
               totalItems
 
-            )
-
-            .toFixed(2)
+            ).toFixed(2)
 
           )
 
@@ -180,9 +283,24 @@ export function calculateTasteDNA(
 }
 
 
-
-
-
+/*
+ *
+ * Merge multiple Taste DNA profiles.
+ *
+ * Category and choice frequencies are
+ * combined directly.
+ *
+ * Average position is reconstructed using
+ * the number of rankings represented by
+ * each profile.
+ *
+ * NOTE:
+ *
+ * TasteDNA currently stores average position
+ * rather than total position and total item
+ * count, so this remains an approximation.
+ *
+ */
 
 
 export function mergeTasteDNA(
@@ -192,9 +310,12 @@ export function mergeTasteDNA(
 ): TasteDNA {
 
 
-  const categories: Record<string, number> = {}
+  const categories:
+    Record<string, number> = {}
 
-  const choices: Record<string, number> = {}
+
+  const choices:
+    Record<string, number> = {}
 
 
   let totalPosition = 0
@@ -219,69 +340,88 @@ export function mergeTasteDNA(
 
         dna.categories
 
+      ).forEach(
+
+        ([key, value]) => {
+
+          const category =
+
+            normaliseCategory(
+
+              key
+
+            )
+
+
+          categories[category] =
+
+            (
+
+              categories[category] ||
+
+              0
+
+            )
+
+            +
+
+            value
+
+        }
+
       )
-
-        .forEach(
-
-          ([key, value]) => {
-
-            categories[key] =
-
-              (
-
-                categories[key] ||
-
-                0
-
-              )
-
-              +
-
-              value
-
-          }
-
-        )
 
 
       Object.entries(
 
         dna.choices
 
-      )
+      ).forEach(
 
-        .forEach(
+        ([key, value]) => {
 
-          ([key, value]) => {
+          const choice =
 
-            choices[key] =
+            normaliseChoice(
 
-              (
+              key
 
-                choices[key] ||
+            )
 
-                0
 
-              )
+          if (!choice) {
 
-              +
-
-              value
+            return
 
           }
 
-        )
+
+          choices[choice] =
+
+            (
+
+              choices[choice] ||
+
+              0
+
+            )
+
+            +
+
+            value
+
+        }
+
+      )
 
 
-      totalRankings +=
+      const rankingsInDNA =
 
         dna.behaviour
 
           ?.totalRankings
 
-        ||
-
-        0
+        || 0
 
 
       const averagePosition =
@@ -290,18 +430,19 @@ export function mergeTasteDNA(
 
           ?.averagePosition
 
-        ||
+        || 0
 
-        0
+
+      totalRankings +=
+
+        rankingsInDNA
 
 
       if (
 
         averagePosition > 0 &&
 
-        dna.behaviour
-
-          ?.totalRankings > 0
+        rankingsInDNA > 0
 
       ) {
 
@@ -309,20 +450,14 @@ export function mergeTasteDNA(
 
           averagePosition *
 
-          dna.behaviour.totalRankings
+          rankingsInDNA
+
+
+        totalItems +=
+
+          rankingsInDNA
 
       }
-
-
-      totalItems +=
-
-        dna.behaviour
-
-          ?.totalRankings
-
-        ||
-
-        0
 
     }
 
@@ -351,9 +486,7 @@ export function mergeTasteDNA(
 
               totalItems
 
-            )
-
-            .toFixed(2)
+            ).toFixed(2)
 
           )
 
@@ -371,9 +504,12 @@ export function mergeTasteDNA(
 }
 
 
-
-
-
+/*
+ *
+ * Convert raw Taste DNA frequencies
+ * into normalised proportions.
+ *
+ */
 
 
 export function normaliseTasteDNA(
@@ -389,23 +525,21 @@ export function normaliseTasteDNA(
 
       dna.categories
 
+    ).reduce(
+
+      (
+
+        total,
+
+        value
+
+      ) =>
+
+        total + value,
+
+      0
+
     )
-
-      .reduce(
-
-        (
-
-          total,
-
-          value
-
-        ) =>
-
-          total + value,
-
-        0
-
-      )
 
 
   const choiceTotal =
@@ -414,106 +548,152 @@ export function normaliseTasteDNA(
 
       dna.choices
 
+    ).reduce(
+
+      (
+
+        total,
+
+        value
+
+      ) =>
+
+        total + value,
+
+      0
+
     )
 
-      .reduce(
 
-        (
-
-          total,
-
-          value
-
-        ) =>
-
-          total + value,
-
-        0
-
-      )
+  const categories:
+    Record<string, number> = {}
 
 
-  const categories: Record<string, number> = {}
-
-  const choices: Record<string, number> = {}
+  const choices:
+    Record<string, number> = {}
 
 
   Object.entries(
 
     dna.categories
 
+  ).forEach(
+
+    ([key, value]) => {
+
+      const category =
+
+        normaliseCategory(
+
+          key
+
+        )
+
+
+      const existingValue =
+
+        categories[category] ||
+
+        0
+
+
+      const combinedValue =
+
+        existingValue +
+
+        value
+
+
+      categories[category] =
+
+        categoryTotal > 0
+
+          ?
+
+          Number(
+
+            (
+
+              combinedValue /
+
+              categoryTotal
+
+            ).toFixed(3)
+
+          )
+
+          :
+
+          0
+
+    }
+
   )
-
-    .forEach(
-
-      ([key, value]) => {
-
-        categories[key] =
-
-          categoryTotal > 0
-
-            ?
-
-            Number(
-
-              (
-
-                value /
-
-                categoryTotal
-
-              )
-
-              .toFixed(3)
-
-            )
-
-            :
-
-            0
-
-      }
-
-    )
 
 
   Object.entries(
 
     dna.choices
 
-  )
+  ).forEach(
 
-    .forEach(
+    ([key, value]) => {
 
-      ([key, value]) => {
+      const choice =
 
-        choices[key] =
+        normaliseChoice(
 
-          choiceTotal > 0
+          key
 
-            ?
+        )
 
-            Number(
 
-              (
+      if (!choice) {
 
-                value /
-
-                choiceTotal
-
-              )
-
-              .toFixed(3)
-
-            )
-
-            :
-
-            0
+        return
 
       }
 
-    )
+
+      const existingValue =
+
+        choices[choice] ||
+
+        0
+
+
+      const combinedValue =
+
+        existingValue +
+
+        value
+
+
+      choices[choice] =
+
+        choiceTotal > 0
+
+          ?
+
+          Number(
+
+            (
+
+              combinedValue /
+
+              choiceTotal
+
+            ).toFixed(3)
+
+          )
+
+          :
+
+          0
+
+    }
+
+  )
 
 
   return {
@@ -530,9 +710,7 @@ export function normaliseTasteDNA(
 
           ?.averagePosition
 
-        ||
-
-        0,
+        || 0,
 
 
       totalRankings:
@@ -541,9 +719,7 @@ export function normaliseTasteDNA(
 
           ?.totalRankings
 
-        ||
-
-        0
+        || 0
 
     }
 

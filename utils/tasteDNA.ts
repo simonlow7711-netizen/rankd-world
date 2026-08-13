@@ -48,6 +48,10 @@ export type TasteDNADiagnostic = {
 }
 
 
+/*
+ * Keep all diagnostic values between 0 and 1.
+ */
+
 function clamp(
   value: number,
   minimum: number = 0,
@@ -65,6 +69,10 @@ function clamp(
 }
 
 
+/*
+ * Round diagnostic values consistently.
+ */
+
 function round(
   value: number,
   decimals: number = 3
@@ -79,6 +87,16 @@ function round(
 }
 
 
+/*
+ * Normalise text so that:
+ *
+ * "Sport"
+ * "sport"
+ * " SPORT "
+ *
+ * are treated as the same value.
+ */
+
 function normaliseText(
   value: string
 ): string {
@@ -90,16 +108,13 @@ function normaliseText(
 }
 
 
-/**
- * Item-level ranking signals.
+/*
+ * Actual ranked item signals.
  *
- * These represent actual ranked choices.
- *
- * Positions run from 1 to 7.
- *
- * Category marker signals at position 0
- * are deliberately excluded.
+ * Position 0 signals are category markers
+ * and are deliberately excluded.
  */
+
 function getRankingSignals(
   graph: TasteGraph
 ): TasteSignal[] {
@@ -113,15 +128,11 @@ function getRankingSignals(
 }
 
 
-/**
- * Category marker signals.
- *
- * These are position 0 signals created when
+/*
+ * Category marker signals created when
  * a ranking is created.
- *
- * They identify the category but are NOT
- * themselves behavioural preference strength.
  */
+
 function getCategorySignals(
   graph: TasteGraph
 ): TasteSignal[] {
@@ -135,11 +146,11 @@ function getCategorySignals(
 }
 
 
-/**
- * Preferred item signals.
- *
- * These represent actual preferred choices.
+/*
+ * Preferred signals represent explicit
+ * #1 preference signals.
  */
+
 function getPreferredSignals(
   graph: TasteGraph
 ): TasteSignal[] {
@@ -154,28 +165,17 @@ function getPreferredSignals(
 }
 
 
-/**
+/*
  * Calculate category strength from actual
  * ranked item behaviour.
  *
- * IMPORTANT:
+ * Category marker signals are excluded.
  *
- * We deliberately do NOT use the strength of
- * the category marker signal.
- *
- * A category marker tells us:
- *
- * "This ranking belongs to Sport."
- *
- * It does not tell us:
- *
- * "The user has X amount of taste strength
- * for Sport."
- *
- * Category strength is therefore derived by
- * summing the strength of the ranked items
- * belonging to that category.
+ * This means category strength is based on
+ * what the user actually ranked, rather than
+ * simply how many rankings belong to a category.
  */
+
 function calculateCategoryStrength(
   signals: TasteSignal[]
 ): Map<string, number> {
@@ -187,9 +187,9 @@ function calculateCategoryStrength(
   signals.forEach(
     signal => {
 
-      if(
+      if (
         signal.position <= 0
-      ){
+      ) {
 
         return
 
@@ -202,7 +202,9 @@ function calculateCategoryStrength(
         )
 
 
-      if(!category){
+      if (
+        !category
+      ) {
 
         return
 
@@ -238,10 +240,11 @@ function calculateCategoryStrength(
 }
 
 
-/**
- * Calculate total strength for each
- * individual ranked choice.
+/*
+ * Calculate the accumulated strength
+ * of individual choices.
  */
+
 function calculateChoiceStrength(
   signals: TasteSignal[]
 ): Map<string, number> {
@@ -259,7 +262,9 @@ function calculateChoiceStrength(
         )
 
 
-      if(!item){
+      if (
+        !item
+      ) {
 
         return
 
@@ -295,16 +300,14 @@ function calculateChoiceStrength(
 }
 
 
-/**
- * Convert a strength map into the
- * strongest diagnostic insights.
+/*
+ * Convert a strength map into diagnostic
+ * insights.
  *
- * Value is normalised against the
- * strongest entry.
- *
- * Description contains the actual
- * calculated strength.
+ * Values are relative to the strongest
+ * entry rather than raw totals.
  */
+
 function getStrongestInsights(
   values: Map<string, number>,
   limit: number = 5
@@ -316,9 +319,9 @@ function getStrongestInsights(
     )
 
 
-  if(
+  if (
     entries.length === 0
-  ){
+  ) {
 
     return []
 
@@ -362,7 +365,10 @@ function getStrongestInsights(
           ),
 
         description:
-          `Relative taste strength: ${round(value, 2)}`
+          `Relative taste strength: ${round(
+            value,
+            2
+          )}`
 
       })
     )
@@ -370,16 +376,20 @@ function getStrongestInsights(
 }
 
 
-/**
- * Calculate average ranked position.
+/*
+ * Calculate the average position across
+ * all ranked choices.
+ *
+ * Lower position = stronger average choice.
  */
+
 function calculateAveragePosition(
   signals: TasteSignal[]
 ): number {
 
-  if(
+  if (
     signals.length === 0
-  ){
+  ) {
 
     return 0
 
@@ -407,50 +417,117 @@ function calculateAveragePosition(
 }
 
 
-/**
- * Calculate proportion of ranked choices
- * placed at #1.
+/*
+ * Calculate the proportion of rankings
+ * where the user selected a clear #1.
+ *
+ * IMPORTANT:
+ *
+ * This is calculated against rankings,
+ * NOT against individual ranked items.
+ *
+ * Therefore:
+ *
+ * 7 rankings
+ * 7 #1 choices
+ *
+ * produces:
+ *
+ * 1.0
+ *
+ * rather than:
+ *
+ * 1 / 49
  */
+
 function calculateTopChoiceRate(
-  signals: TasteSignal[]
+  signals: TasteSignal[],
+  totalRankings: number
 ): number {
 
-  if(
-    signals.length === 0
-  ){
+  if (
+    signals.length === 0 ||
+    totalRankings === 0
+  ) {
 
     return 0
 
   }
 
 
-  const topChoices =
-    signals.filter(
-      signal =>
-        signal.position === 1
-    ).length
+  const rankingIds =
+    new Set<string>()
+
+
+  const topChoiceRankingIds =
+    new Set<string>()
+
+
+  signals.forEach(
+    signal => {
+
+      if (
+        signal.source
+      ) {
+
+        rankingIds.add(
+          signal.source
+        )
+
+      }
+
+
+      if (
+        signal.position === 1 &&
+        signal.source
+      ) {
+
+        topChoiceRankingIds.add(
+          signal.source
+        )
+
+      }
+
+    }
+  )
+
+
+  const measuredRankings =
+    rankingIds.size > 0
+
+      ?
+
+      rankingIds.size
+
+      :
+
+      totalRankings
 
 
   return round(
-    topChoices /
-    signals.length
+    clamp(
+      topChoiceRankingIds.size /
+      measuredRankings
+    )
   )
 
 }
 
 
-/**
+/*
  * Calculate average preference strength.
  *
- * Preferred signals are used where available.
+ * Explicit preferred signals are preferred
+ * over generic ranked signals when available.
  */
+
 function calculatePreferenceStrength(
   signals: TasteSignal[]
 ): number {
 
-  if(
+  if (
     signals.length === 0
-  ){
+  ) {
 
     return 0
 
@@ -467,67 +544,202 @@ function calculatePreferenceStrength(
         clamp(
           Number(
             signal.strength
-          )
+          ) || 0
         ),
       0
     )
 
 
   return round(
-    totalStrength /
-    signals.length
-  )
-
-}
-
-
-/**
- * Measures the proportion of unique
- * choices within the ranked choices.
- *
- * 1 = every ranked choice is unique.
- */
-function calculateTasteVariety(
-  uniqueItems: number,
-  totalItems: number
-): number {
-
-  if(
-    totalItems === 0
-  ){
-
-    return 0
-
-  }
-
-
-  return round(
     clamp(
-      uniqueItems /
-      totalItems
+      totalStrength /
+      signals.length
     )
   )
 
 }
 
 
-/**
- * Measures concentration around the
- * strongest individual choice.
+/*
+ * Exploration measures how much genuinely
+ * new territory the user explores.
  *
- * Lower values indicate a distributed
- * taste graph.
+ * It combines:
  *
- * Higher values indicate that one or
- * a small number of choices dominate.
+ * - unique choices
+ * - unique categories
+ * - number of rankings
+ *
+ * This is intentionally different from
+ * simple uniqueness.
  */
+
+function calculateExploration(
+  totalRankings: number,
+  uniqueItems: number,
+  totalItems: number,
+  uniqueCategories: number
+): number {
+
+  if (
+    totalRankings === 0 ||
+    totalItems === 0
+  ) {
+
+    return 0
+
+  }
+
+
+  const itemBreadth =
+    clamp(
+      uniqueItems /
+      Math.max(
+        totalItems,
+        1
+      )
+    )
+
+
+  const categoryBreadth =
+    clamp(
+      uniqueCategories /
+      Math.max(
+        Math.min(
+          totalRankings,
+          7
+        ),
+        1
+      )
+    )
+
+
+  const rankingBreadth =
+    clamp(
+      totalRankings /
+      10
+    )
+
+
+  return round(
+    clamp(
+      (
+        itemBreadth *
+        0.45
+      )
+      +
+      (
+        categoryBreadth *
+        0.35
+      )
+      +
+      (
+        rankingBreadth *
+        0.20
+      )
+    )
+  )
+
+}
+
+
+/*
+ * Measures how much the user tends to
+ * repeat the same choices.
+ *
+ * Higher uniqueness means choices are
+ * more distinctive across the user's
+ * own ranking history.
+ */
+
+function calculateTasteUniqueness(
+  signals: TasteSignal[],
+  uniqueItems: number
+): number {
+
+  if (
+    signals.length === 0
+  ) {
+
+    return 0
+
+  }
+
+
+  const uniqueRatio =
+    clamp(
+      uniqueItems /
+      signals.length
+    )
+
+
+  const choiceStrength =
+    calculateChoiceStrength(
+      signals
+    )
+
+
+  const repeatedChoices =
+    Array.from(
+      choiceStrength.entries()
+    ).filter(
+      ([, strength]) =>
+        strength > 1
+    ).length
+
+
+  const repeatRatio =
+    choiceStrength.size > 0
+
+      ?
+
+      clamp(
+        repeatedChoices /
+        choiceStrength.size
+      )
+
+      :
+
+      0
+
+
+  return round(
+    clamp(
+      (
+        uniqueRatio *
+        0.7
+      )
+      +
+      (
+        (
+          1 -
+          repeatRatio
+        )
+        *
+        0.3
+      )
+    )
+  )
+
+}
+
+
+/*
+ * Measures concentration around the
+ * strongest individual choices.
+ *
+ * Higher values mean a smaller number
+ * of choices account for a larger share
+ * of the Taste Graph.
+ */
+
 function calculateTasteConcentration(
   signals: TasteSignal[]
 ): number {
 
-  if(
+  if (
     signals.length === 0
-  ){
+  ) {
 
     return 0
 
@@ -546,9 +758,9 @@ function calculateTasteConcentration(
     )
 
 
-  if(
+  if (
     strengths.length === 0
-  ){
+  ) {
 
     return 0
 
@@ -567,94 +779,197 @@ function calculateTasteConcentration(
     )
 
 
-  if(
+  if (
     totalStrength === 0
-  ){
+  ) {
 
     return 0
 
   }
 
 
-  const strongestStrength =
-    Math.max(
-      ...strengths
-    )
+  /*
+   * Instead of only looking at the single
+   * strongest item, look at the strongest
+   * three choices where possible.
+   *
+   * This better represents a concentrated
+   * taste profile.
+   */
+
+  const strongestChoices =
+    [...strengths]
+      .sort(
+        (a, b) =>
+          b - a
+      )
+      .slice(
+        0,
+        3
+      )
+
+
+  const concentration =
+    strongestChoices.reduce(
+      (
+        sum,
+        value
+      ) =>
+        sum +
+        value,
+      0
+    ) /
+    totalStrength
 
 
   return round(
     clamp(
-      strongestStrength /
-      totalStrength
+      concentration
     )
   )
 
 }
 
 
-/**
- * Confidence measures how much actual
- * behavioural evidence exists.
+/*
+ * Confidence measures the amount and quality
+ * of behavioural evidence.
  *
- * This deliberately uses:
+ * It considers:
  *
- * - number of rankings
- * - number of signals
- * - number of unique choices
+ * - ranking volume
+ * - signal volume
+ * - unique choices
+ * - category breadth
+ * - repeated behavioural evidence
  *
- * Category count is NOT used as a proxy
- * for confidence.
+ * More data increases confidence, but
+ * confidence deliberately approaches 1
+ * rather than jumping there quickly.
  */
+
 function calculateConfidence(
   totalRankings: number,
   totalSignals: number,
-  uniqueItems: number
+  uniqueItems: number,
+  uniqueCategories: number,
+  signals: TasteSignal[]
 ): number {
 
-  const rankingConfidence =
+  if (
+    totalRankings === 0 ||
+    signals.length === 0
+  ) {
+
+    return 0
+
+  }
+
+
+  const rankingEvidence =
     clamp(
       totalRankings /
-      10
+      20
     )
 
 
-  const signalConfidence =
+  const signalEvidence =
     clamp(
       totalSignals /
-      70
+      140
     )
 
 
-  const varietyConfidence =
+  const itemEvidence =
     clamp(
       uniqueItems /
-      35
+      50
     )
+
+
+  const categoryEvidence =
+    clamp(
+      uniqueCategories /
+      8
+    )
+
+
+  /*
+   * Repeated choices indicate that the
+   * observed behaviour is becoming a
+   * recurring pattern rather than a
+   * collection of isolated decisions.
+   */
+
+  const choiceStrength =
+    calculateChoiceStrength(
+      signals
+    )
+
+
+  const repeatedChoices =
+    Array.from(
+      choiceStrength.values()
+    ).filter(
+      value =>
+        value > 1
+    ).length
+
+
+  const repeatEvidence =
+    choiceStrength.size > 0
+
+      ?
+
+      clamp(
+        repeatedChoices /
+        Math.max(
+          choiceStrength.size,
+          1
+        )
+      )
+
+      :
+
+      0
 
 
   return round(
-    (
-      rankingConfidence *
-      0.4
-    )
-    +
-    (
-      signalConfidence *
-      0.4
-    )
-    +
-    (
-      varietyConfidence *
-      0.2
+    clamp(
+      (
+        rankingEvidence *
+        0.30
+      )
+      +
+      (
+        signalEvidence *
+        0.20
+      )
+      +
+      (
+        itemEvidence *
+        0.15
+      )
+      +
+      (
+        categoryEvidence *
+        0.10
+      )
+      +
+      (
+        repeatEvidence *
+        0.25
+      )
     )
   )
 
 }
 
 
-/**
- * Build human-readable Taste DNA insights.
+/*
+ * Build human-readable diagnostic insights.
  */
+
 function buildInsights({
 
   totalRankings,
@@ -669,7 +984,9 @@ function buildInsights({
 
   tasteConcentration,
 
-  confidence
+  confidence,
+
+  exploration
 
 }: {
 
@@ -687,14 +1004,16 @@ function buildInsights({
 
   confidence: number
 
+  exploration: number
+
 }): string[] {
 
   const insights: string[] = []
 
 
-  if(
+  if (
     totalRankings === 0
-  ){
+  ) {
 
     insights.push(
       "Your Taste Graph does not have enough ranking activity yet."
@@ -705,102 +1024,153 @@ function buildInsights({
   }
 
 
-  if(
+  if (
+    topChoiceRate >= 0.7
+  ) {
+
+    insights.push(
+      "You consistently establish a clear favourite when ranking."
+    )
+
+  }
+  else if (
+    topChoiceRate >= 0.4
+  ) {
+
+    insights.push(
+      "You often identify a clear favourite, but your decisiveness varies by ranking."
+    )
+
+  }
+  else if (
+    topChoiceRate < 0.2 &&
+    totalRankings >= 3
+  ) {
+
+    insights.push(
+      "Your rankings suggest that you are comfortable with more nuanced choices rather than always having a clear favourite."
+    )
+
+  }
+
+
+  if (
     averagePosition > 0 &&
     averagePosition <= 3
-  ){
+  ) {
 
     insights.push(
-      "You tend to rank choices decisively."
+      "Your strongest preferences tend to appear near the top of your rankings."
     )
 
   }
-  else if(
+  else if (
     averagePosition >= 5
-  ){
+  ) {
 
     insights.push(
-      "Your rankings tend to spread preference across the list."
+      "Your rankings tend to distribute preference more evenly across the list."
     )
 
   }
 
 
-  if(
-    topChoiceRate >= 0.2
-  ){
-
-    insights.push(
-      "You have a strong tendency to identify clear #1 choices."
-    )
-
-  }
-
-
-  if(
+  if (
     preferenceStrength >= 0.9
-  ){
+  ) {
 
     insights.push(
       "Your current Taste Graph contains strong preference signals."
     )
 
   }
+  else if (
+    preferenceStrength >= 0.7
+  ) {
+
+    insights.push(
+      "Your choices are producing increasingly clear preference signals."
+    )
+
+  }
 
 
-  if(
+  if (
+    exploration >= 0.75
+  ) {
+
+    insights.push(
+      "You explore widely across different choices and categories."
+    )
+
+  }
+  else if (
+    exploration <= 0.35 &&
+    totalRankings >= 3
+  ) {
+
+    insights.push(
+      "Your taste is becoming concentrated around a relatively focused set of interests."
+    )
+
+  }
+
+
+  if (
     tasteVariety >= 0.8
-  ){
+  ) {
 
     insights.push(
-      "Your taste currently covers a broad range of distinct choices."
+      "You introduce a high proportion of distinct choices into your rankings."
     )
 
   }
-  else if(
-    tasteVariety <= 0.4
-  ){
+  else if (
+    tasteVariety <= 0.4 &&
+    totalRankings >= 3
+  ) {
 
     insights.push(
-      "Your taste currently appears concentrated around a smaller set of choices."
-    )
-
-  }
-
-
-  if(
-    tasteConcentration >= 0.3
-  ){
-
-    insights.push(
-      "A small number of choices currently carry a significant share of your taste signal."
+      "You return to familiar choices frequently."
     )
 
   }
 
 
-  if(
-    confidence >= 0.7
-  ){
+  if (
+    tasteConcentration >= 0.6 &&
+    totalRankings >= 3
+  ) {
 
     insights.push(
-      "There is enough behavioural data for the Taste Graph to begin making meaningful personal recommendations."
+      "A small number of choices currently carry a large share of your taste signal."
     )
 
   }
-  else if(
-    confidence >= 0.35
-  ){
+
+
+  if (
+    confidence >= 0.75
+  ) {
 
     insights.push(
-      "Your Taste Graph is developing, but more rankings will improve recommendation confidence."
+      "There is substantial behavioural evidence for the Taste Graph to make confident personal recommendations."
     )
 
   }
-  else{
+  else if (
+    confidence >= 0.4
+  ) {
 
     insights.push(
-      "More rankings are needed before your Taste Graph can confidently model your preferences."
+      "Your Taste Graph is developing and is beginning to reveal recurring patterns."
+    )
+
+  }
+  else {
+
+    insights.push(
+      "More rankings will help the Taste Graph distinguish recurring taste from isolated choices."
     )
 
   }
@@ -811,37 +1181,38 @@ function buildInsights({
 }
 
 
-/**
+/*
  * Main Taste DNA diagnostic.
  */
+
 export function calculateTasteDNADiagnostic(
   graph: TasteGraph
 ): TasteDNADiagnostic {
 
-  /**
+  /*
    * Actual ranked item signals.
    */
+
   const rankingSignals =
     getRankingSignals(
       graph
     )
 
 
-  /**
+  /*
    * Category marker signals.
-   *
-   * These are retained for determining
-   * which categories exist.
    */
+
   const categorySignals =
     getCategorySignals(
       graph
     )
 
 
-  /**
-   * Preferred item signals.
+  /*
+   * Explicit preferred signals.
    */
+
   const preferredSignals =
     getPreferredSignals(
       graph
@@ -856,32 +1227,44 @@ export function calculateTasteDNADiagnostic(
     graph.behaviour.totalRankings
 
 
-  /**
+  /*
    * Unique ranked items.
    */
+
   const uniqueItemsSet =
-    new Set(
-      rankingSignals.map(
-        signal =>
-          normaliseText(
-            signal.item
-          )
-      )
-    )
+    new Set<string>()
 
 
-  /**
-   * Unique categories are determined from
-   * category context attached to the graph.
+  rankingSignals.forEach(
+    signal => {
+
+      const item =
+        normaliseText(
+          signal.item
+        )
+
+
+      if (
+        item
+      ) {
+
+        uniqueItemsSet.add(
+          item
+        )
+
+      }
+
+    }
+  )
+
+
+  /*
+   * Unique categories.
    *
-   * We use BOTH:
-   *
-   * 1. category marker signals
-   * 2. categories inherited by item signals
-   *
-   * This makes the diagnostic resilient if
-   * category marker behaviour changes later.
+   * We use both category marker signals
+   * and item-level category context.
    */
+
   const uniqueCategoriesSet =
     new Set<string>()
 
@@ -895,7 +1278,9 @@ export function calculateTasteDNADiagnostic(
         )
 
 
-      if(category){
+      if (
+        category
+      ) {
 
         uniqueCategoriesSet.add(
           category
@@ -916,7 +1301,9 @@ export function calculateTasteDNADiagnostic(
         )
 
 
-      if(category){
+      if (
+        category
+      ) {
 
         uniqueCategoriesSet.add(
           category
@@ -948,7 +1335,8 @@ export function calculateTasteDNADiagnostic(
 
   const topChoiceRate =
     calculateTopChoiceRate(
-      rankingSignals
+      rankingSignals,
+      totalRankings
     )
 
 
@@ -961,9 +1349,9 @@ export function calculateTasteDNADiagnostic(
 
 
   const tasteVariety =
-    calculateTasteVariety(
-      uniqueItems,
-      totalItems
+    calculateTasteUniqueness(
+      rankingSignals,
+      uniqueItems
     )
 
 
@@ -973,43 +1361,40 @@ export function calculateTasteDNADiagnostic(
     )
 
 
+  const exploration =
+    calculateExploration(
+      totalRankings,
+      uniqueItems,
+      totalItems,
+      uniqueCategories
+    )
+
+
   const confidence =
     calculateConfidence(
       totalRankings,
       totalSignals,
-      uniqueItems
+      uniqueItems,
+      uniqueCategories,
+      rankingSignals
     )
 
 
-  /**
-   * IMPORTANT:
-   *
-   * Category strength comes from the actual
-   * ranked items and their strengths.
-   *
-   * We do NOT use the category marker signal
-   * strength.
-   *
-   * This means:
-   *
-   * Sport strength =
-   * sum of ranked Sport item strengths
-   *
-   * General strength =
-   * sum of ranked General item strengths
-   *
-   * This is the correct behavioural model.
+  /*
+   * Category strength is derived from
+   * actual ranked item behaviour.
    */
+
   const categoryStrength =
     calculateCategoryStrength(
       rankingSignals
     )
 
 
-  /**
-   * Individual choices continue to use
-   * item-level ranking signals.
+  /*
+   * Individual choice strength.
    */
+
   const choiceStrength =
     calculateChoiceStrength(
       rankingSignals
@@ -1043,7 +1428,9 @@ export function calculateTasteDNADiagnostic(
 
       tasteConcentration,
 
-      confidence
+      confidence,
+
+      exploration
 
     })
 
