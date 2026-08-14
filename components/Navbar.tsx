@@ -2,6 +2,7 @@
 
 
 import {
+  useCallback,
   useEffect,
   useState
 } from "react"
@@ -28,6 +29,67 @@ export default function Navbar() {
   ] = useState(0)
 
 
+  const loadUnreadCount =
+    useCallback(
+
+      async () => {
+
+        try {
+
+          const {
+            data: {
+              user
+            }
+          } =
+            await supabase.auth.getUser()
+
+
+          if (
+            !user
+          ) {
+
+            setUnreadCount(
+              0
+            )
+
+            return
+
+          }
+
+
+          const count =
+            await getUnreadNotificationCount(
+              user.id
+            )
+
+
+          setUnreadCount(
+            count
+          )
+
+        }
+
+        catch (
+          error
+        ) {
+
+          console.error(
+
+            "LOAD NOTIFICATION COUNT ERROR",
+
+            error
+
+          )
+
+        }
+
+      },
+
+      []
+
+    )
+
+
   useEffect(() => {
 
     let mounted =
@@ -42,7 +104,7 @@ export default function Navbar() {
         null
 
 
-    async function loadUnreadCount() {
+    async function initialiseNotifications() {
 
       try {
 
@@ -118,39 +180,16 @@ export default function Navbar() {
 
               async () => {
 
-                try {
-
-                  const updatedCount =
-                    await getUnreadNotificationCount(
-                      user.id
-                    )
-
-
-                  if (
-                    mounted
-                  ) {
-
-                    setUnreadCount(
-                      updatedCount
-                    )
-
-                  }
-
-                }
-
-                catch (
-                  error
+                if (
+                  !mounted
                 ) {
 
-                  console.error(
-
-                    "REFRESH NOTIFICATION COUNT ERROR",
-
-                    error
-
-                  )
+                  return
 
                 }
+
+
+                await loadUnreadCount()
 
               }
 
@@ -185,7 +224,7 @@ export default function Navbar() {
 
         console.error(
 
-          "LOAD NOTIFICATION COUNT ERROR",
+          "INITIALISE NOTIFICATIONS ERROR",
 
           error
 
@@ -196,13 +235,70 @@ export default function Navbar() {
     }
 
 
-    loadUnreadCount()
+    initialiseNotifications()
+
+
+    function handleVisibilityChange() {
+
+      if (
+        document.visibilityState ===
+        "visible"
+      ) {
+
+        loadUnreadCount()
+
+      }
+
+    }
+
+
+    function handleWindowFocus() {
+
+      loadUnreadCount()
+
+    }
+
+
+    document.addEventListener(
+
+      "visibilitychange",
+
+      handleVisibilityChange
+
+    )
+
+
+    window.addEventListener(
+
+      "focus",
+
+      handleWindowFocus
+
+    )
 
 
     return () => {
 
       mounted =
         false
+
+
+      document.removeEventListener(
+
+        "visibilitychange",
+
+        handleVisibilityChange
+
+      )
+
+
+      window.removeEventListener(
+
+        "focus",
+
+        handleWindowFocus
+
+      )
 
 
       if (
@@ -217,7 +313,11 @@ export default function Navbar() {
 
     }
 
-  }, [])
+  }, [
+
+    loadUnreadCount
+
+  ])
 
 
   return (
