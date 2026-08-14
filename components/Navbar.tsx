@@ -12,6 +12,15 @@ import Link from "next/link"
 
 
 import {
+  Bell,
+  Compass,
+  Grid2X2,
+  Plus,
+  User
+} from "lucide-react"
+
+
+import {
   supabase
 } from "@/utils/supabase"
 
@@ -346,88 +355,228 @@ export default function Navbar() {
           md:px-7
           py-3
           shadow-sm
-          flex
-          items-center
-          justify-between
-          gap-6
         "
       >
 
-        <Link
-          href="/"
+        <div
           className="
             flex
-            flex-col
-            shrink-0
-            leading-none
+            items-center
+            justify-between
+            gap-6
           "
         >
 
-          <span
+          <Link
+            href="/"
             className="
-              text-2xl
-              md:text-3xl
-              font-black
-              tracking-tight
+              flex
+              flex-col
+              shrink-0
+              leading-none
             "
           >
 
-            RANKD
+            <span
+              className="
+                text-2xl
+                md:text-3xl
+                font-black
+                tracking-tight
+              "
+            >
 
-          </span>
+              RANKD
+
+            </span>
 
 
-          <span
+            <span
+              className="
+                mt-1
+                text-[9px]
+                md:text-[10px]
+                font-bold
+                tracking-tight
+                text-black/50
+                whitespace-nowrap
+              "
+            >
+
+              The world's Top 7 everything.
+
+            </span>
+
+          </Link>
+
+
+          <div
             className="
-              mt-1
-              text-[9px]
-              md:text-[10px]
+              hidden
+              md:flex
+              items-center
+              gap-7
               font-bold
-              tracking-tight
-              text-black/50
-              whitespace-nowrap
             "
           >
 
-            The world's Top 7 everything.
+            <Link
+              href="/explore"
+              className="
+                hover:opacity-60
+                transition
+              "
+            >
 
-          </span>
+              Explore
 
-        </Link>
+            </Link>
+
+
+            <Link
+              href="/create"
+              className="
+                hover:opacity-60
+                transition
+              "
+            >
+
+              Create
+
+            </Link>
+
+
+            <Link
+              href="/categories"
+              className="
+                hover:opacity-60
+                transition
+              "
+            >
+
+              Categories
+
+            </Link>
+
+
+            <Link
+              href="/profile"
+              className="
+                hover:opacity-60
+                transition
+              "
+            >
+
+              Profile
+
+            </Link>
+
+
+            <Link
+              href="/notifications"
+              className="
+                relative
+                flex
+                items-center
+                justify-center
+                w-10
+                h-10
+                rounded-full
+                hover:bg-black/5
+                transition
+              "
+              aria-label={
+                unreadCount > 0
+                  ? `Notifications, ${unreadCount} unread`
+                  : "Notifications"
+              }
+            >
+
+              <Bell
+                size={20}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+
+
+              {
+                unreadCount > 0 && (
+
+                  <span
+                    className="
+                      absolute
+                      -top-1
+                      -right-1
+                      min-w-5
+                      h-5
+                      px-1
+                      rounded-full
+                      bg-black
+                      text-white
+                      text-[10px]
+                      font-black
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+
+                    {
+                      unreadCount > 99
+                        ? "99+"
+                        : unreadCount
+                    }
+
+                  </span>
+
+                )
+              }
+
+            </Link>
+
+          </div>
+
+        </div>
 
 
         <div
           className="
-            hidden
-            md:flex
+            md:hidden
+            mt-4
+            pt-3
+            border-t
+            border-black/10
+            grid
+            grid-cols-5
             items-center
-            gap-7
-            font-bold
           "
         >
 
           <Link
             href="/explore"
             className="
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-1
+              min-h-12
+              text-[11px]
+              font-bold
               hover:opacity-60
               transition
             "
           >
 
-            Explore
+            <Compass
+              size={20}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
 
-          </Link>
-
-
-          <Link
-            href="/create"
-            className="
-              hover:opacity-60
-              transition
-            "
-          >
-
-            Create
+            <span>
+              Explore
+            </span>
 
           </Link>
 
@@ -435,25 +584,74 @@ export default function Navbar() {
           <Link
             href="/categories"
             className="
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-1
+              min-h-12
+              text-[11px]
+              font-bold
               hover:opacity-60
               transition
             "
           >
 
-            Categories
+            <Grid2X2
+              size={20}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+
+            <span>
+              Categories
+            </span>
 
           </Link>
 
 
           <Link
-            href="/profile"
+            href="/create"
             className="
+              flex
+              flex-col
+              items-center
+              justify-center
+              gap-1
+              min-h-12
+              text-[11px]
+              font-bold
               hover:opacity-60
               transition
             "
+            aria-label="Create a RANKD"
           >
 
-            Profile
+            <span
+              className="
+                w-8
+                h-8
+                rounded-full
+                bg-black
+                text-white
+                flex
+                items-center
+                justify-center
+              "
+            >
+
+              <Plus
+                size={20}
+                strokeWidth={3}
+                aria-hidden="true"
+              />
+
+            </span>
+
+
+            <span>
+              Create
+            </span>
 
           </Link>
 
@@ -463,12 +661,14 @@ export default function Navbar() {
             className="
               relative
               flex
+              flex-col
               items-center
               justify-center
-              w-10
-              h-10
-              rounded-full
-              hover:bg-black/5
+              gap-1
+              min-h-12
+              text-[11px]
+              font-bold
+              hover:opacity-60
               transition
             "
             aria-label={
@@ -480,172 +680,89 @@ export default function Navbar() {
 
             <span
               className="
-                text-xl
-                leading-none
+                relative
+                flex
+                items-center
+                justify-center
               "
-              aria-hidden="true"
             >
 
-              🔔
+              <Bell
+                size={20}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
+
+
+              {
+                unreadCount > 0 && (
+
+                  <span
+                    className="
+                      absolute
+                      -top-2
+                      -right-3
+                      min-w-5
+                      h-5
+                      px-1
+                      rounded-full
+                      bg-black
+                      text-white
+                      text-[10px]
+                      font-black
+                      flex
+                      items-center
+                      justify-center
+                    "
+                  >
+
+                    {
+                      unreadCount > 99
+                        ? "99+"
+                        : unreadCount
+                    }
+
+                  </span>
+
+                )
+              }
 
             </span>
 
 
-            {
-              unreadCount > 0 && (
-
-                <span
-                  className="
-                    absolute
-                    -top-1
-                    -right-1
-                    min-w-5
-                    h-5
-                    px-1
-                    rounded-full
-                    bg-black
-                    text-white
-                    text-[10px]
-                    font-black
-                    flex
-                    items-center
-                    justify-center
-                  "
-                >
-
-                  {
-                    unreadCount > 99
-                      ? "99+"
-                      : unreadCount
-                  }
-
-                </span>
-
-              )
-            }
-
-          </Link>
-
-        </div>
-
-
-        <div
-          className="
-            md:hidden
-            flex
-            items-center
-            gap-3
-          "
-        >
-
-          <Link
-            href="/explore"
-            className="
-              text-sm
-              font-bold
-            "
-          >
-
-            Explore
-
-          </Link>
-
-
-          <Link
-            href="/categories"
-            className="
-              text-sm
-              font-bold
-            "
-          >
-
-            Categories
-
-          </Link>
-
-
-          <Link
-            href="/notifications"
-            className="
-              relative
-              w-10
-              h-10
-              rounded-full
-              flex
-              items-center
-              justify-center
-              text-lg
-            "
-            aria-label={
-              unreadCount > 0
-                ? `Notifications, ${unreadCount} unread`
-                : "Notifications"
-            }
-          >
-
-            <span
-              aria-hidden="true"
-            >
-
-              🔔
-
+            <span>
+              Notifications
             </span>
 
-
-            {
-              unreadCount > 0 && (
-
-                <span
-                  className="
-                    absolute
-                    -top-1
-                    -right-1
-                    min-w-5
-                    h-5
-                    px-1
-                    rounded-full
-                    bg-black
-                    text-white
-                    text-[10px]
-                    font-black
-                    flex
-                    items-center
-                    justify-center
-                  "
-                >
-
-                  {
-                    unreadCount > 99
-                      ? "99+"
-                      : unreadCount
-                  }
-
-                </span>
-
-              )
-            }
-
           </Link>
 
 
           <Link
-            href="/create"
+            href="/profile"
             className="
-              w-10
-              h-10
-              rounded-full
-              bg-black
-              text-white
               flex
+              flex-col
               items-center
               justify-center
-              text-xl
-              font-black
+              gap-1
+              min-h-12
+              text-[11px]
+              font-bold
+              hover:opacity-60
+              transition
             "
-            aria-label="Create a RANKD"
+            aria-label="Profile"
           >
 
-            +
+            <User
+              size={20}
+              strokeWidth={2}
+              aria-hidden="true"
+            />
+
+            <span>
+              Profile
+            </span>
 
           </Link>
 
