@@ -12,6 +12,11 @@ import {
 
 
 import {
+  createSupabaseServerClient
+} from "@/utils/supabaseServer"
+
+
+import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
@@ -21,11 +26,6 @@ import {
   markAllNotificationsAsRead,
   markNotificationAsRead
 } from "@/utils/notifications"
-
-
-import {
-  supabase
-} from "@/utils/supabase"
 
 
 export const metadata: Metadata = {
@@ -44,6 +44,10 @@ export const revalidate =
 
 
 export default async function NotificationsPage() {
+
+  const supabase =
+    await createSupabaseServerClient()
+
 
   const {
     data: {
@@ -241,8 +245,32 @@ export default async function NotificationsPage() {
 
                       "use server"
 
+
+                      const serverSupabase =
+                        await createSupabaseServerClient()
+
+
+                      const {
+                        data: {
+                          user: currentUser
+                        }
+                      } =
+                        await serverSupabase.auth.getUser()
+
+
+                      if (
+                        !currentUser
+                      ) {
+
+                        return
+
+                      }
+
+
                       await markAllNotificationsAsRead(
-                        user.id
+
+                        currentUser.id
+
                       )
 
                     }
@@ -360,16 +388,6 @@ export default async function NotificationsPage() {
                         : null
 
 
-                    const originalTitle =
-                      originalRanking?.title ??
-                      "your RANKD"
-
-
-                    const remixTitle =
-                      remixRanking?.title ??
-                      "a new RANKD"
-
-
                     const isRemix =
                       notification.type ===
                       "remix"
@@ -379,6 +397,22 @@ export default async function NotificationsPage() {
                       notification.remixRankingId
                         ? `/rank/${notification.remixRankingId}`
                         : null
+
+
+                    const originalUrl =
+                      notification.rankingId
+                        ? `/rank/${notification.rankingId}`
+                        : null
+
+
+                    const originalTitle =
+                      originalRanking?.title ??
+                      "Your RANKD"
+
+
+                    const remixTitle =
+                      remixRanking?.title ??
+                      "New Remix"
 
 
                     return (
@@ -504,17 +538,43 @@ export default async function NotificationsPage() {
                                       </p>
 
 
-                                      <p
-                                        className="
-                                          mt-2
-                                          text-lg
-                                          font-black
-                                        "
-                                      >
+                                      {
+                                        originalUrl ? (
 
-                                        {originalTitle}
+                                          <Link
+                                            href={
+                                              originalUrl
+                                            }
+                                            className="
+                                              block
+                                              mt-2
+                                              text-lg
+                                              font-black
+                                              hover:opacity-60
+                                              transition
+                                            "
+                                          >
 
-                                      </p>
+                                            {originalTitle}
+
+                                          </Link>
+
+                                        ) : (
+
+                                          <p
+                                            className="
+                                              mt-2
+                                              text-lg
+                                              font-black
+                                            "
+                                          >
+
+                                            {originalTitle}
+
+                                          </p>
+
+                                        )
+                                      }
 
 
                                       <div
@@ -584,17 +644,43 @@ export default async function NotificationsPage() {
                                       </p>
 
 
-                                      <p
-                                        className="
-                                          mt-2
-                                          text-lg
-                                          font-black
-                                        "
-                                      >
+                                      {
+                                        remixUrl ? (
 
-                                        {remixTitle}
+                                          <Link
+                                            href={
+                                              remixUrl
+                                            }
+                                            className="
+                                              block
+                                              mt-2
+                                              text-lg
+                                              font-black
+                                              hover:opacity-60
+                                              transition
+                                            "
+                                          >
 
-                                      </p>
+                                            {remixTitle}
+
+                                          </Link>
+
+                                        ) : (
+
+                                          <p
+                                            className="
+                                              mt-2
+                                              text-lg
+                                              font-black
+                                            "
+                                          >
+
+                                            {remixTitle}
+
+                                          </p>
+
+                                        )
+                                      }
 
                                     </div>
 
@@ -684,11 +770,11 @@ export default async function NotificationsPage() {
 
 
                                   {
-                                    notification.rankingId && (
+                                    originalUrl && (
 
                                       <Link
                                         href={
-                                          `/rank/${notification.rankingId}`
+                                          originalUrl
                                         }
                                         className={`
                                           rounded-full
@@ -721,6 +807,7 @@ export default async function NotificationsPage() {
                                           async () => {
 
                                             "use server"
+
 
                                             await markNotificationAsRead(
 
@@ -782,6 +869,7 @@ export default async function NotificationsPage() {
 
                                             "use server"
 
+
                                             await markNotificationAsRead(
 
                                               notification.id
@@ -794,19 +882,14 @@ export default async function NotificationsPage() {
 
                                         <button
                                           type="submit"
-                                          className={`
+                                          className="
                                             rounded-full
                                             border
+                                            border-black
                                             px-5
                                             py-3
                                             font-black
-                                            transition
-                                            ${
-                                              notification.read
-                                                ? "border-black"
-                                                : "border-black"
-                                            }
-                                          `}
+                                          "
                                         >
 
                                           Mark as read
