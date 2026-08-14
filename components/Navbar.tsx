@@ -373,6 +373,8 @@ export default function Navbar() {
             className="
               flex
               flex-col
+              items-center
+              md:items-start
               shrink-0
               leading-none
             "
