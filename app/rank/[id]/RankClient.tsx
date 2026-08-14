@@ -41,6 +41,9 @@ import ConversationTree from "@/components/ConversationTree"
 import TasteInsightCard from "@/components/TasteInsightCard"
 
 
+import RankingResponse from "@/components/RankingResponse"
+
+
 import {
   buildConversationTree,
   ConversationNode
@@ -202,20 +205,6 @@ export default function RankClient({
       )
 
 
-      /*
-       *
-       * The server already provides the
-       * current ranking when possible.
-       *
-       * This means the core RANKD content
-       * can render immediately without
-       * waiting for a client-side fetch.
-       *
-       * We only fetch here when an initial
-       * ranking was not supplied.
-       *
-       */
-
       let currentRanking =
         initialRanking ??
         null
@@ -247,25 +236,10 @@ export default function RankClient({
       )
 
 
-      /*
-       *
-       * Determine the conversation root.
-       *
-       * Every remix should carry the original
-       * ranking ID in root_id.
-       *
-       */
-
       const rootId =
         currentRanking.rootId ??
         currentRanking.id
 
-
-      /*
-       *
-       * Load the original ranking.
-       *
-       */
 
       let rootRanking =
         currentRanking
@@ -296,23 +270,6 @@ export default function RankClient({
         rootRanking
       )
 
-
-      /*
-       *
-       * Build the user's accumulated Taste Graph.
-       *
-       * IMPORTANT:
-       *
-       * Ranking does not expose userId as part
-       * of the Ranking type.
-       *
-       * Therefore we first query Supabase for
-       * ranking IDs belonging to the stored user.
-       *
-       * We then load those rankings through the
-       * existing ranking mapper.
-       *
-       */
 
       const storedUserId =
         getStoredUserId()
@@ -423,13 +380,6 @@ export default function RankClient({
       }
 
 
-      /*
-       *
-       * Load every ranking belonging to this
-       * conversation tree.
-       *
-       */
-
       const {
 
         data: conversationRankings,
@@ -489,13 +439,6 @@ export default function RankClient({
       }
 
 
-      /*
-       *
-       * Convert Supabase rows into the shape
-       * expected by buildConversationTree.
-       *
-       */
-
       const conversationItems:
         Omit<
           ConversationNode,
@@ -533,13 +476,6 @@ export default function RankClient({
 
           )
 
-
-      /*
-       *
-       * Make sure the original ranking is
-       * always represented in the tree.
-       *
-       */
 
       const hasOriginal =
         conversationItems.some(
@@ -581,13 +517,6 @@ export default function RankClient({
       }
 
 
-      /*
-       *
-       * Make sure the current ranking is
-       * represented in the tree.
-       *
-       */
-
       const hasCurrent =
         conversationItems.some(
 
@@ -628,14 +557,6 @@ export default function RankClient({
 
       }
 
-
-      /*
-       *
-       * If the current ranking has a parent
-       * which is not the root, make sure that
-       * parent is also available.
-       *
-       */
 
       const parentId =
         currentRanking.parentId
@@ -690,12 +611,6 @@ export default function RankClient({
       }
 
 
-      /*
-       *
-       * Build the actual conversation tree.
-       *
-       */
-
       const tree =
         buildConversationTree(
 
@@ -708,12 +623,6 @@ export default function RankClient({
         tree
       )
 
-
-      /*
-       *
-       * Build perspective list.
-       *
-       */
 
       const perspectiveItems:
         PerspectiveRanking[] =
@@ -778,6 +687,20 @@ export default function RankClient({
     }
 
 
+    trackEvent(
+
+      "ranking_rerank_started",
+
+      {
+
+        rankingId:
+          ranking.id
+
+      }
+
+    )
+
+
     const items =
 
       [...ranking.items]
@@ -833,6 +756,31 @@ export default function RankClient({
         rootId
 
       )}`
+
+    )
+
+  }
+
+
+  function handleRankd() {
+
+    if (!ranking) {
+
+      return
+
+    }
+
+
+    trackEvent(
+
+      "ranking_rankd",
+
+      {
+
+        rankingId:
+          ranking.id
+
+      }
 
     )
 
@@ -948,17 +896,6 @@ export default function RankClient({
       ranking
     )
 
-
-  /*
-   *
-   * Taste Identity uses the accumulated
-   * user Taste Graph.
-   *
-   * It therefore represents broader
-   * behaviour rather than only the ranking
-   * currently being viewed.
-   *
-   */
 
   const tasteIdentity =
 
@@ -1375,86 +1312,17 @@ export default function RankClient({
             }
 
 
-            {
-              !isPerspective && (
+            <RankingResponse
 
-                <div
-                  className="
-                    mt-14
-                    pt-12
-                    border-t
-                    border-black/10
-                  "
-                >
+              onRankd={
+                handleRankd
+              }
 
-                  <p
-                    className="
-                      rankd-accent
-                      uppercase
-                      tracking-widest
-                      text-sm
-                      font-black
-                    "
-                  >
-
-                    The conversation starts here
-
-                  </p>
-
-
-                  <h2
-                    className="
-                      text-3xl
-                      md:text-4xl
-                      font-black
-                      mt-3
-                    "
-                  >
-
-                    Would you rank it differently?
-
-                  </h2>
-
-                </div>
-
-              )
-            }
-
-
-            <button
-
-              onClick={
+              onRerankd={
                 rankIt
               }
 
-              className="
-                mt-10
-                w-full
-                rankd-button
-                text-xl
-              "
-
-            >
-
-              Rank it differently
-
-            </button>
-
-
-            <p
-              className="
-                mt-4
-                text-center
-                text-sm
-                rankd-muted
-              "
-            >
-
-              Your perspective will join
-              the conversation around this
-              RANKD.
-
-            </p>
+            />
 
 
             <div
@@ -1635,6 +1503,7 @@ export default function RankClient({
                       )
 
                     )
+
                 }
 
               </div>

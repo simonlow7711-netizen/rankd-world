@@ -121,23 +121,24 @@ async function getProfileMap(
   const {
     data: profiles
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("profiles")
+      .from("profiles")
 
-    .select(
+      .select(
 
-      "id, username, display_name"
+        "id, username, display_name"
 
-    )
+      )
 
-    .in(
+      .in(
 
-      "id",
+        "id",
 
-      userIds
+        userIds
 
-    )
+      )
 
 
   const map =
@@ -188,44 +189,122 @@ async function getRankingItems(
   }
 
 
-  const {
-    data: items
-
-  } = await supabase
-
-    .from("ranking_items")
-
-    .select("*")
-
-    .in(
-
-      "ranking_id",
-
-      rankingIds
-
-    )
-
-    .order(
-
-      "position",
-
-      {
-
-        ascending: true
-
-      }
-
-    )
-
-
   const map =
 
     new Map<string, RankingItem[]>()
 
 
-  ;(items ?? [])
+  const pageSize =
 
-    .forEach(item => {
+    1000
+
+
+  let page =
+
+    0
+
+
+  while (true) {
+
+
+    const from =
+
+      page *
+      pageSize
+
+
+    const to =
+
+      from +
+      pageSize -
+      1
+
+
+    const {
+      data: items,
+
+      error
+
+    } =
+      await supabase
+
+        .from("ranking_items")
+
+        .select("*")
+
+        .in(
+
+          "ranking_id",
+
+          rankingIds
+
+        )
+
+        .order(
+
+          "ranking_id",
+
+          {
+
+            ascending:
+              true
+
+          }
+
+        )
+
+        .order(
+
+          "position",
+
+          {
+
+            ascending:
+              true
+
+          }
+
+        )
+
+        .range(
+
+          from,
+
+          to
+
+        )
+
+
+    if (error) {
+
+      console.error(
+
+        "RANKING ITEMS FETCH ERROR",
+
+        error
+
+      )
+
+
+      break
+
+    }
+
+
+    if (
+
+      !items ||
+
+      items.length === 0
+
+    ) {
+
+      break
+
+    }
+
+
+    items.forEach(item => {
 
 
       const row =
@@ -233,7 +312,15 @@ async function getRankingItems(
         item as RankingItemRow
 
 
-      if (!map.has(row.ranking_id)) {
+      if (
+
+        !map.has(
+
+          row.ranking_id
+
+        )
+
+      ) {
 
 
         map.set(
@@ -244,13 +331,16 @@ async function getRankingItems(
 
         )
 
-
       }
 
 
       map
 
-        .get(row.ranking_id)!
+        .get(
+
+          row.ranking_id
+
+        )!
 
         .push({
 
@@ -268,8 +358,25 @@ async function getRankingItems(
 
         })
 
-
     })
+
+
+    if (
+
+      items.length <
+
+      pageSize
+
+    ) {
+
+      break
+
+    }
+
+
+    page += 1
+
+  }
 
 
   return map
@@ -315,7 +422,8 @@ function mapRanking(
 
     creator:
 
-      profile?.display_name ?? "Anonymous",
+      profile?.display_name ??
+      "Anonymous",
 
 
     creatorId:
@@ -343,7 +451,8 @@ function mapRanking(
 
     createdAt:
 
-      row.created_at ?? undefined,
+      row.created_at ??
+      undefined,
 
 
     views:
@@ -358,12 +467,14 @@ function mapRanking(
 
     parentId:
 
-      row.parent_id ?? null,
+      row.parent_id ??
+      null,
 
 
     rootId:
 
-      row.root_id ?? null
+      row.root_id ??
+      null
 
   }
 
@@ -405,21 +516,22 @@ export async function getSupabaseRanking(
 
     error: rankingError
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("rankings")
+      .from("rankings")
 
-    .select("*")
+      .select("*")
 
-    .eq(
+      .eq(
 
-      "id",
+        "id",
 
-      id
+        id
 
-    )
+      )
 
-    .single()
+      .single()
 
 
   if (
@@ -438,55 +550,58 @@ export async function getSupabaseRanking(
   const {
     data: items
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("ranking_items")
+      .from("ranking_items")
 
-    .select("*")
+      .select("*")
 
-    .eq(
+      .eq(
 
-      "ranking_id",
+        "ranking_id",
 
-      id
+        id
 
-    )
+      )
 
-    .order(
+      .order(
 
-      "position",
+        "position",
 
-      {
+        {
 
-        ascending: true
+          ascending:
+            true
 
-      }
+        }
 
-    )
+      )
 
 
   const {
     data: profile
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("profiles")
+      .from("profiles")
 
-    .select(
+      .select(
 
-      "id, username, display_name"
+        "id, username, display_name"
 
-    )
+      )
 
-    .eq(
+      .eq(
 
-      "id",
+        "id",
 
-      rankingRow.user_id
+        rankingRow.user_id
 
-    )
+      )
 
-    .single()
+      .single()
 
 
   return mapRanking(
@@ -537,23 +652,25 @@ export async function getAllSupabaseRankings(): Promise<Ranking[]> {
 
     error
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("rankings")
+      .from("rankings")
 
-    .select("*")
+      .select("*")
 
-    .order(
+      .order(
 
-      "created_at",
+        "created_at",
 
-      {
+        {
 
-        ascending: false
+          ascending:
+            false
 
-      }
+        }
 
-    )
+      )
 
 
   if (
@@ -689,7 +806,9 @@ export async function getAllRankings(): Promise<Ranking[]> {
 
             item =>
 
-              item.id === ranking.id
+              item.id ===
+
+              ranking.id
 
           )
 
@@ -744,7 +863,9 @@ export async function getUserRankings(
 
     ranking =>
 
-      ranking.creatorId === userId
+      ranking.creatorId ===
+
+      userId
 
   )
 
@@ -772,49 +893,52 @@ export async function createSupabaseRanking(
 
     error
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("rankings")
+      .from("rankings")
 
-    .insert({
+      .insert({
 
-      id:
+        id:
 
-        ranking.id,
+          ranking.id,
 
-      title:
+        title:
 
-        ranking.title,
+          ranking.title,
 
-      category:
+        category:
 
-        ranking.category,
+          ranking.category,
 
-      description:
+        description:
 
-        ranking.description,
+          ranking.description,
 
-      user_id:
+        user_id:
 
-        userId,
+          userId,
 
-      views:
+        views:
 
-        0,
+          0,
 
-      parent_id:
+        parent_id:
 
-        ranking.parentId ?? null,
+          ranking.parentId ??
+          null,
 
-      root_id:
+        root_id:
 
-        ranking.rootId ?? ranking.id
+          ranking.rootId ??
+          ranking.id
 
-    })
+      })
 
-    .select()
+      .select()
 
-    .single()
+      .single()
 
 
   if (error) {
@@ -854,11 +978,12 @@ export async function createSupabaseRanking(
   const {
     error: itemsError
 
-  } = await supabase
+  } =
+    await supabase
 
-    .from("ranking_items")
+      .from("ranking_items")
 
-    .insert(items)
+      .insert(items)
 
 
   if (itemsError) {

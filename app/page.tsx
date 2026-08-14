@@ -1,4 +1,4 @@
-import Hero from "@/components/Hero"
+import EntryExperience from "@/components/EntryExperience"
 
 import DailyRankd from "@/components/DailyRankd"
 
@@ -12,132 +12,66 @@ import Categories from "@/components/Categories"
 
 import Footer from "@/components/Footer"
 
-import Link from "next/link"
+import {
+  getAllRankings
+} from "@/utils/supabaseRankings"
 
 
-export default function Home(){
+export const dynamic =
+  "force-dynamic"
+
+
+export default async function HomePage() {
+
+
+  const rankings =
+    await getAllRankings()
 
 
   return (
 
-    <main className="
-      min-h-screen
-      bg-[#F7F4EE]
-      text-black
-    ">
+    <main
+      className="
+        bg-[#F7F4EE]
+        text-black
+      "
+    >
+
+      <EntryExperience
+
+        rankings={
+          rankings
+        }
+
+      />
 
 
-      <Hero />
-
-
-      <DailyRankd />
-
-
-      <RANKDFeed />
-
-
-      <Trending />
-
-
-      <WhyRankd />
-
-
-      <Categories />
-
-
-      <section className="
-        px-6
-        py-24
-      ">
-
-
-        <div className="
-          max-w-5xl
+      <div
+        className="
+          max-w-7xl
           mx-auto
-          bg-black
-          text-white
-          rounded-[40px]
-          px-8
-          py-16
-          text-center
-        ">
+          px-6
+        "
+      >
+
+        <DailyRankd />
 
 
-          <p className="
-            rankd-accent
-            uppercase
-            tracking-[0.3em]
-            font-black
-            text-sm
-          ">
-
-            Your opinion matters
-
-          </p>
+        <RANKDFeed />
 
 
-          <h2 className="
-            text-5xl
-            md:text-7xl
-            font-black
-            mt-6
-            leading-none
-          ">
-
-            What is your
-
-            <br />
-
-            Top 7?
-
-          </h2>
+        <Trending />
 
 
-          <p className="
-            mt-6
-            text-xl
-            text-gray-300
-          ">
-
-            Create your ranking.
-            Start a conversation.
-
-          </p>
+        <WhyRankd />
 
 
-          <Link
+        <Categories />
 
-            href="/create"
-
-            className="
-              inline-block
-              mt-10
-              bg-white
-              text-black
-              px-10
-              py-5
-              rounded-full
-              font-black
-              text-xl
-              hover:scale-105
-              transition
-            "
-
-          >
-
-            Create Your Top 7 →
-
-          </Link>
-
-
-        </div>
-
-
-      </section>
+      </div>
 
 
       <Footer />
-
 
     </main>
 
