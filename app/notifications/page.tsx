@@ -1,8 +1,3 @@
-import type {
-  Metadata
-} from "next"
-
-
 import Link from "next/link"
 
 
@@ -17,35 +12,83 @@ import {
 
 
 import {
+  getServerNotifications,
+  markAllServerNotificationsAsRead,
+  markServerNotificationAsRead
+} from "@/utils/notificationsServer"
+
+
+import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
 
-import {
-  getNotifications,
-  markAllNotificationsAsRead,
-  markNotificationAsRead
-} from "@/utils/notifications"
+type NotificationView = {
 
+  id: string
 
-export const metadata: Metadata = {
+  type: string
 
-  title:
-    "Notifications | RANKD",
+  read: boolean
 
-  description:
-    "Your RANKD notifications."
+  createdAt: string
+
+  actorUserId: string
+
+  actorName: string
+
+  originalRankingId: string | null
+
+  originalRankingTitle: string | null
+
+  remixRankingId: string | null
+
+  remixRankingTitle: string | null
 
 }
 
 
-export const revalidate =
-  0
+function formatNotificationDate(
+  value: string
+) {
+
+  const date =
+    new Date(
+      value
+    )
+
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+
+    return ""
+
+  }
+
+
+  return date.toLocaleDateString(
+    "en-GB",
+    {
+      day:
+        "numeric",
+
+      month:
+        "short",
+
+      year:
+        "numeric"
+    }
+  )
+
+}
 
 
 export default async function NotificationsPage() {
 
-  const supabase =
+  const serverSupabase =
     await createSupabaseServerClient()
 
 
@@ -54,7 +97,7 @@ export default async function NotificationsPage() {
       user
     }
   } =
-    await supabase.auth.getUser()
+    await serverSupabase.auth.getUser()
 
 
   if (
@@ -69,91 +112,116 @@ export default async function NotificationsPage() {
 
 
   const notifications =
-    await getNotifications(
+    await getServerNotifications(
       user.id
     )
 
 
-  const rankingIds =
+  const notificationViews:
+    NotificationView[] =
+      await Promise.all(
 
-    notifications
+        notifications.map(
 
-      .flatMap(
+          async notification => {
 
-        notification => [
+            let originalRankingTitle:
+              string | null =
+                null
 
-          notification.rankingId,
 
-          notification.remixRankingId
+            let remixRankingTitle:
+              string | null =
+                null
 
-        ]
+
+            if (
+              notification.rankingId
+            ) {
+
+              try {
+
+                const originalRanking =
+                  await getSupabaseRanking(
+                    notification.rankingId
+                  )
+
+
+                originalRankingTitle =
+                  originalRanking?.title ??
+                  null
+
+              }
+
+              catch {
+
+              }
+
+            }
+
+
+            if (
+              notification.remixRankingId
+            ) {
+
+              try {
+
+                const remixRanking =
+                  await getSupabaseRanking(
+                    notification.remixRankingId
+                  )
+
+
+                remixRankingTitle =
+                  remixRanking?.title ??
+                  null
+
+              }
+
+              catch {
+
+              }
+
+            }
+
+
+            return {
+
+              id:
+                notification.id,
+
+              type:
+                notification.type,
+
+              read:
+                notification.read,
+
+              createdAt:
+                notification.createdAt,
+
+              actorUserId:
+                notification.actorUserId,
+
+              actorName:
+                "Another RANKD user",
+
+              originalRankingId:
+                notification.rankingId,
+
+              originalRankingTitle,
+
+              remixRankingId:
+                notification.remixRankingId,
+
+              remixRankingTitle
+
+            }
+
+          }
+
+        )
 
       )
-
-      .filter(
-
-        (
-          id
-        ): id is string =>
-
-          Boolean(
-            id
-          )
-
-      )
-
-
-  const uniqueRankingIds =
-    Array.from(
-      new Set(
-        rankingIds
-      )
-    )
-
-
-  const rankings =
-
-    await Promise.all(
-
-      uniqueRankingIds.map(
-
-        async rankingId => {
-
-          const ranking =
-            await getSupabaseRanking(
-              rankingId
-            )
-
-
-          return [
-
-            rankingId,
-
-            ranking
-
-          ] as const
-
-        }
-
-      )
-
-    )
-
-
-  const rankingMap =
-    new Map(
-      rankings
-    )
-
-
-  const unreadCount =
-
-    notifications.filter(
-
-      notification =>
-        !notification.read
-
-    ).length
 
 
   return (
@@ -161,169 +229,135 @@ export default async function NotificationsPage() {
     <main
       className="
         min-h-screen
-        bg-[#F7F4EE]
-        text-black
-        px-6
-        py-16
+        px-4
+        py-12
+        md:px-8
+        md:py-16
       "
     >
 
       <div
         className="
-          max-w-4xl
           mx-auto
+          max-w-4xl
         "
       >
 
-        <header
+        <div
           className="
-            mb-12
+            flex
+            items-start
+            justify-between
+            gap-6
+            mb-10
           "
         >
 
-          <p
-            className="
-              rankd-accent
-              uppercase
-              tracking-[0.3em]
-              text-sm
-              font-black
-            "
-          >
+          <div>
 
-            Notifications
+            <p
+              className="
+                rankd-accent
+                uppercase
+                tracking-widest
+                text-sm
+                font-black
+              "
+            >
 
-          </p>
+              Activity
 
-
-          <div
-            className="
-              flex
-              items-end
-              justify-between
-              gap-6
-              mt-4
-            "
-          >
-
-            <div>
-
-              <h1
-                className="
-                  text-5xl
-                  md:text-7xl
-                  font-black
-                "
-              >
-
-                Your notifications.
-
-              </h1>
+            </p>
 
 
-              <p
-                className="
-                  mt-4
-                  text-lg
-                  text-gray-500
-                "
-              >
+            <h1
+              className="
+                mt-3
+                text-4xl
+                md:text-5xl
+                font-black
+              "
+            >
 
-                See what is happening with your RANKDs.
+              Notifications
 
-              </p>
-
-            </div>
-
-
-            {
-              unreadCount > 0 && (
-
-                <form
-                  action={
-                    async () => {
-
-                      "use server"
+            </h1>
 
 
-                      const serverSupabase =
-                        await createSupabaseServerClient()
+            <p
+              className="
+                mt-3
+                opacity-70
+                max-w-xl
+              "
+            >
 
+              See when someone remixes one of
+              your RANKDs.
 
-                      const {
-                        data: {
-                          user: currentUser
-                        }
-                      } =
-                        await serverSupabase.auth.getUser()
-
-
-                      if (
-                        !currentUser
-                      ) {
-
-                        return
-
-                      }
-
-
-                      await markAllNotificationsAsRead(
-
-                        currentUser.id
-
-                      )
-
-                    }
-                  }
-                >
-
-                  <button
-                    type="submit"
-                    className="
-                      rounded-full
-                      border
-                      border-black
-                      px-5
-                      py-3
-                      text-sm
-                      font-black
-                      hover:bg-black
-                      hover:text-white
-                      transition
-                      whitespace-nowrap
-                    "
-                  >
-
-                    Mark all as read
-
-                  </button>
-
-                </form>
-
-              )
-            }
+            </p>
 
           </div>
 
-        </header>
+
+          {
+            notifications.length > 0 && (
+
+              <form
+                action={
+                  async () => {
+
+                    "use server"
+
+
+                    await markAllServerNotificationsAsRead(
+                      user.id
+                    )
+
+                  }
+                }
+              >
+
+                <button
+                  type="submit"
+                  className="
+                    rounded-xl
+                    border
+                    px-4
+                    py-3
+                    text-sm
+                    font-black
+                    hover:opacity-70
+                    transition
+                  "
+                >
+
+                  Mark all as read
+
+                </button>
+
+              </form>
+
+            )
+          }
+
+        </div>
 
 
         {
-          notifications.length === 0 ? (
+          notificationViews.length === 0 ? (
 
-            <section
+            <div
               className="
-                bg-white
-                rounded-[32px]
-                p-10
-                md:p-14
-                text-center
+                rankd-card
+                p-8
+                md:p-10
               "
             >
 
               <div
                 className="
-                  text-5xl
+                  text-4xl
                 "
               >
 
@@ -334,8 +368,8 @@ export default async function NotificationsPage() {
 
               <h2
                 className="
-                  mt-6
-                  text-3xl
+                  mt-4
+                  text-2xl
                   font-black
                 "
               >
@@ -348,133 +382,51 @@ export default async function NotificationsPage() {
               <p
                 className="
                   mt-3
-                  text-gray-500
+                  opacity-70
                 "
               >
 
-                When someone remixes one of your RANKDs,
-                you will see it here.
+                When someone remixes one of your
+                RANKDs, you will see it here.
 
               </p>
 
-            </section>
+            </div>
 
           ) : (
 
-            <section
+            <div
               className="
-                space-y-4
+                space-y-5
               "
             >
 
               {
-                notifications.map(
+                notificationViews.map(
 
-                  notification => {
+                  notification => (
 
-                    const originalRanking =
-                      notification.rankingId
-                        ? rankingMap.get(
-                            notification.rankingId
-                          )
-                        : null
-
-
-                    const remixRanking =
-                      notification.remixRankingId
-                        ? rankingMap.get(
-                            notification.remixRankingId
-                          )
-                        : null
-
-
-                    const isRemix =
-                      notification.type ===
-                      "remix"
-
-
-                    const remixUrl =
-                      notification.remixRankingId
-                        ? `/rank/${notification.remixRankingId}`
-                        : null
-
-
-                    const originalUrl =
-                      notification.rankingId
-                        ? `/rank/${notification.rankingId}`
-                        : null
-
-
-                    const originalTitle =
-                      originalRanking?.title ??
-                      "Your RANKD"
-
-
-                    const remixTitle =
-                      remixRanking?.title ??
-                      "New Remix"
-
-
-                    return (
-
-                      <article
-                        key={
-                          notification.id
+                    <div
+                      key={
+                        notification.id
+                      }
+                      className={`
+                        rankd-card
+                        p-6
+                        md:p-8
+                        ${
+                          notification.read
+                            ? ""
+                            : "ring-2 ring-black/10"
                         }
-                        className={`
-                          rounded-[28px]
-                          p-6
-                          md:p-8
-                          transition
-                          ${
-                            notification.read
-                              ? "bg-white"
-                              : "bg-black text-white"
-                          }
-                        `}
-                      >
+                      `}
+                    >
 
-                        <div
-                          className="
-                            flex
-                            items-start
-                            gap-5
-                          "
-                        >
+                      {
+                        notification.type ===
+                        "remix" ? (
 
-                          <div
-                            className={`
-                              shrink-0
-                              w-12
-                              h-12
-                              rounded-full
-                              flex
-                              items-center
-                              justify-center
-                              text-xl
-                              ${
-                                notification.read
-                                  ? "bg-[#F7F4EE]"
-                                  : "bg-white text-black"
-                              }
-                            `}
-                          >
-
-                            {
-                              isRemix
-                                ? "🔄"
-                                : "🔔"
-                            }
-
-                          </div>
-
-
-                          <div
-                            className="
-                              min-w-0
-                              flex-1
-                            "
-                          >
+                          <>
 
                             <div
                               className="
@@ -489,220 +441,34 @@ export default async function NotificationsPage() {
 
                                 <p
                                   className="
-                                    text-xl
+                                    text-sm
                                     font-black
+                                    uppercase
+                                    tracking-widest
+                                    rankd-accent
                                   "
                                 >
 
-                                  {
-                                    isRemix
-                                      ? "Your RANKD was remixed."
-                                      : "You have a new notification."
-                                  }
+                                  Remix
 
                                 </p>
 
 
-                                {
-                                  isRemix ? (
+                                <h2
+                                  className="
+                                    mt-2
+                                    text-xl
+                                    md:text-2xl
+                                    font-black
+                                  "
+                                >
 
-                                    <div
-                                      className={`
-                                        mt-4
-                                        rounded-2xl
-                                        p-5
-                                        ${
-                                          notification.read
-                                            ? "bg-[#F7F4EE]"
-                                            : "bg-white/10"
-                                        }
-                                      `}
-                                    >
+                                  {notification.actorName}
 
-                                      <p
-                                        className={`
-                                          text-xs
-                                          uppercase
-                                          tracking-[0.2em]
-                                          font-black
-                                          ${
-                                            notification.read
-                                              ? "text-gray-500"
-                                              : "text-white/60"
-                                          }
-                                        `}
-                                      >
+                                  {" "}
+                                  remixed your RANKD.
 
-                                        Original RANKD
-
-                                      </p>
-
-
-                                      {
-                                        originalUrl ? (
-
-                                          <Link
-                                            href={
-                                              originalUrl
-                                            }
-                                            className="
-                                              block
-                                              mt-2
-                                              text-lg
-                                              font-black
-                                              hover:opacity-60
-                                              transition
-                                            "
-                                          >
-
-                                            {originalTitle}
-
-                                          </Link>
-
-                                        ) : (
-
-                                          <p
-                                            className="
-                                              mt-2
-                                              text-lg
-                                              font-black
-                                            "
-                                          >
-
-                                            {originalTitle}
-
-                                          </p>
-
-                                        )
-                                      }
-
-
-                                      <div
-                                        className="
-                                          flex
-                                          items-center
-                                          gap-3
-                                          my-4
-                                        "
-                                      >
-
-                                        <span
-                                          className={`
-                                            h-px
-                                            flex-1
-                                            ${
-                                              notification.read
-                                                ? "bg-black/10"
-                                                : "bg-white/20"
-                                            }
-                                          `}
-                                        />
-
-
-                                        <span
-                                          className="
-                                            text-xl
-                                          "
-                                        >
-
-                                          ↓
-
-                                        </span>
-
-
-                                        <span
-                                          className={`
-                                            h-px
-                                            flex-1
-                                            ${
-                                              notification.read
-                                                ? "bg-black/10"
-                                                : "bg-white/20"
-                                            }
-                                          `}
-                                        />
-
-                                      </div>
-
-
-                                      <p
-                                        className={`
-                                          text-xs
-                                          uppercase
-                                          tracking-[0.2em]
-                                          font-black
-                                          ${
-                                            notification.read
-                                              ? "text-gray-500"
-                                              : "text-white/60"
-                                          }
-                                        `}
-                                      >
-
-                                        Remix
-
-                                      </p>
-
-
-                                      {
-                                        remixUrl ? (
-
-                                          <Link
-                                            href={
-                                              remixUrl
-                                            }
-                                            className="
-                                              block
-                                              mt-2
-                                              text-lg
-                                              font-black
-                                              hover:opacity-60
-                                              transition
-                                            "
-                                          >
-
-                                            {remixTitle}
-
-                                          </Link>
-
-                                        ) : (
-
-                                          <p
-                                            className="
-                                              mt-2
-                                              text-lg
-                                              font-black
-                                            "
-                                          >
-
-                                            {remixTitle}
-
-                                          </p>
-
-                                        )
-                                      }
-
-                                    </div>
-
-                                  ) : (
-
-                                    <p
-                                      className={`
-                                        mt-2
-                                        ${
-                                          notification.read
-                                            ? "text-gray-500"
-                                            : "text-white/70"
-                                        }
-                                      `}
-                                    >
-
-                                      You have a new RANKD notification.
-
-                                    </p>
-
-                                  )
-                                }
+                                </h2>
 
                               </div>
 
@@ -713,14 +479,19 @@ export default async function NotificationsPage() {
                                   <span
                                     className="
                                       shrink-0
-                                      w-2
-                                      h-2
                                       rounded-full
-                                      bg-white
-                                      mt-3
+                                      bg-black
+                                      px-3
+                                      py-1
+                                      text-xs
+                                      font-black
+                                      text-white
                                     "
-                                    aria-label="Unread"
-                                  />
+                                  >
+
+                                    NEW
+
+                                  </span>
 
                                 )
                               }
@@ -729,36 +500,132 @@ export default async function NotificationsPage() {
 
 
                             {
-                              isRemix && (
+                              notification.originalRankingTitle && (
 
                                 <div
                                   className="
-                                    flex
-                                    flex-wrap
-                                    gap-3
                                     mt-6
+                                    rounded-2xl
+                                    border
+                                    p-5
                                   "
                                 >
 
+                                  <p
+                                    className="
+                                      text-xs
+                                      font-black
+                                      uppercase
+                                      tracking-widest
+                                      opacity-50
+                                    "
+                                  >
+
+                                    Your original RANKD
+
+                                  </p>
+
+
+                                  <p
+                                    className="
+                                      mt-2
+                                      font-black
+                                    "
+                                  >
+
+                                    {notification.originalRankingTitle}
+
+                                  </p>
+
+
                                   {
-                                    remixUrl && (
+                                    notification.originalRankingId && (
 
                                       <Link
                                         href={
-                                          remixUrl
+                                          `/rank/${notification.originalRankingId}`
                                         }
-                                        className={`
-                                          rounded-full
-                                          px-6
-                                          py-3
+                                        className="
+                                          inline-block
+                                          mt-3
+                                          text-sm
                                           font-black
-                                          transition
-                                          ${
-                                            notification.read
-                                              ? "bg-black text-white hover:opacity-70"
-                                              : "bg-white text-black hover:bg-white/80"
-                                          }
-                                        `}
+                                          underline
+                                          underline-offset-4
+                                        "
+                                      >
+
+                                        View original
+
+                                      </Link>
+
+                                    )
+                                  }
+
+                                </div>
+
+                              )
+                            }
+
+
+                            {
+                              notification.remixRankingTitle && (
+
+                                <div
+                                  className="
+                                    mt-4
+                                    rounded-2xl
+                                    border
+                                    p-5
+                                  "
+                                >
+
+                                  <p
+                                    className="
+                                      text-xs
+                                      font-black
+                                      uppercase
+                                      tracking-widest
+                                      opacity-50
+                                    "
+                                  >
+
+                                    Their remix
+
+                                  </p>
+
+
+                                  <p
+                                    className="
+                                      mt-2
+                                      text-lg
+                                      font-black
+                                    "
+                                  >
+
+                                    {notification.remixRankingTitle}
+
+                                  </p>
+
+
+                                  {
+                                    notification.remixRankingId && (
+
+                                      <Link
+                                        href={
+                                          `/rank/${notification.remixRankingId}`
+                                        }
+                                        className="
+                                          inline-flex
+                                          items-center
+                                          justify-center
+                                          mt-4
+                                          rounded-xl
+                                          px-5
+                                          py-3
+                                          rankd-primary
+                                          font-black
+                                        "
                                       >
 
                                         View Remix →
@@ -768,83 +635,6 @@ export default async function NotificationsPage() {
                                     )
                                   }
 
-
-                                  {
-                                    originalUrl && (
-
-                                      <Link
-                                        href={
-                                          originalUrl
-                                        }
-                                        className={`
-                                          rounded-full
-                                          border
-                                          px-5
-                                          py-3
-                                          font-black
-                                          transition
-                                          ${
-                                            notification.read
-                                              ? "border-black hover:bg-black hover:text-white"
-                                              : "border-white hover:bg-white hover:text-black"
-                                          }
-                                        `}
-                                      >
-
-                                        View Original
-
-                                      </Link>
-
-                                    )
-                                  }
-
-
-                                  {
-                                    !notification.read && (
-
-                                      <form
-                                        action={
-                                          async () => {
-
-                                            "use server"
-
-
-                                            await markNotificationAsRead(
-
-                                              notification.id
-
-                                            )
-
-                                          }
-                                        }
-                                      >
-
-                                        <button
-                                          type="submit"
-                                          className={`
-                                            rounded-full
-                                            border
-                                            px-5
-                                            py-3
-                                            font-black
-                                            transition
-                                            ${
-                                              notification.read
-                                                ? "border-black"
-                                                : "border-white"
-                                            }
-                                          `}
-                                        >
-
-                                          Mark as read
-
-                                        </button>
-
-                                      </form>
-
-                                    )
-                                  }
-
                                 </div>
 
                               )
@@ -852,74 +642,141 @@ export default async function NotificationsPage() {
 
 
                             {
-                              !isRemix && (
+                              !notification.remixRankingTitle
+                              &&
+                              notification.remixRankingId && (
 
-                                <div
+                                <Link
+                                  href={
+                                    `/rank/${notification.remixRankingId}`
+                                  }
                                   className="
+                                    inline-flex
+                                    items-center
+                                    justify-center
                                     mt-6
+                                    rounded-xl
+                                    px-5
+                                    py-3
+                                    rankd-primary
+                                    font-black
                                   "
                                 >
 
-                                  {
-                                    !notification.read && (
+                                  View Remix →
 
-                                      <form
-                                        action={
-                                          async () => {
-
-                                            "use server"
-
-
-                                            await markNotificationAsRead(
-
-                                              notification.id
-
-                                            )
-
-                                          }
-                                        }
-                                      >
-
-                                        <button
-                                          type="submit"
-                                          className="
-                                            rounded-full
-                                            border
-                                            border-black
-                                            px-5
-                                            py-3
-                                            font-black
-                                          "
-                                        >
-
-                                          Mark as read
-
-                                        </button>
-
-                                      </form>
-
-                                    )
-                                  }
-
-                                </div>
+                                </Link>
 
                               )
                             }
 
+
+                            <div
+                              className="
+                                mt-5
+                                flex
+                                items-center
+                                justify-between
+                                gap-4
+                                text-xs
+                                opacity-50
+                              "
+                            >
+
+                              <span>
+
+                                {
+                                  formatNotificationDate(
+                                    notification.createdAt
+                                  )
+                                }
+
+                              </span>
+
+
+                              {
+                                !notification.read && (
+
+                                  <form
+                                    action={
+                                      async () => {
+
+                                        "use server"
+
+
+                                        await markServerNotificationAsRead(
+                                          notification.id
+                                        )
+
+                                      }
+                                    }
+                                  >
+
+                                    <button
+                                      type="submit"
+                                      className="
+                                        font-black
+                                        hover:opacity-70
+                                      "
+                                    >
+
+                                      Mark as read
+
+                                    </button>
+
+                                  </form>
+
+                                )
+                              }
+
+                            </div>
+
+                          </>
+
+                        ) : (
+
+                          <div>
+
+                            <p
+                              className="
+                                font-bold
+                              "
+                            >
+
+                              You have a new notification.
+
+                            </p>
+
+
+                            <p
+                              className="
+                                mt-2
+                                text-sm
+                                opacity-60
+                              "
+                            >
+
+                              {
+                                formatNotificationDate(
+                                  notification.createdAt
+                                )
+                              }
+
+                            </p>
+
                           </div>
 
-                        </div>
+                        )
+                      }
 
-                      </article>
+                    </div>
 
-                    )
-
-                  }
+                  )
 
                 )
               }
 
-            </section>
+            </div>
 
           )
         }

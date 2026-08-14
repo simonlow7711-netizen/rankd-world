@@ -34,6 +34,14 @@ export default function Navbar() {
       true
 
 
+    let notificationChannel:
+      ReturnType<
+        typeof supabase.channel
+      > |
+      null =
+        null
+
+
     async function loadUnreadCount() {
 
       try {
@@ -49,6 +57,16 @@ export default function Navbar() {
         if (
           !user
         ) {
+
+          if (
+            mounted
+          ) {
+
+            setUnreadCount(
+              0
+            )
+
+          }
 
           return
 
@@ -70,6 +88,94 @@ export default function Navbar() {
           )
 
         }
+
+
+        notificationChannel =
+          supabase
+
+            .channel(
+              `notifications-${user.id}`
+            )
+
+            .on(
+
+              "postgres_changes",
+
+              {
+                event:
+                  "*",
+
+                schema:
+                  "public",
+
+                table:
+                  "notifications",
+
+                filter:
+                  `recipient_user_id=eq.${user.id}`
+
+              },
+
+              async () => {
+
+                try {
+
+                  const updatedCount =
+                    await getUnreadNotificationCount(
+                      user.id
+                    )
+
+
+                  if (
+                    mounted
+                  ) {
+
+                    setUnreadCount(
+                      updatedCount
+                    )
+
+                  }
+
+                }
+
+                catch (
+                  error
+                ) {
+
+                  console.error(
+
+                    "REFRESH NOTIFICATION COUNT ERROR",
+
+                    error
+
+                  )
+
+                }
+
+              }
+
+            )
+
+            .subscribe(
+
+              status => {
+
+                if (
+                  status ===
+                  "CHANNEL_ERROR"
+                ) {
+
+                  console.error(
+
+                    "NOTIFICATION REALTIME CHANNEL ERROR"
+
+                  )
+
+                }
+
+              }
+
+            )
 
       }
 
@@ -97,6 +203,17 @@ export default function Navbar() {
 
       mounted =
         false
+
+
+      if (
+        notificationChannel
+      ) {
+
+        supabase.removeChannel(
+          notificationChannel
+        )
+
+      }
 
     }
 
