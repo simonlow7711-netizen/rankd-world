@@ -133,6 +133,8 @@ export default function Footer(){
 
           <div className="
             flex
+            flex-wrap
+            justify-center
             gap-8
             font-bold
           ">
@@ -182,6 +184,22 @@ export default function Footer(){
             >
 
               Profile
+
+            </Link>
+
+
+            <Link
+
+              href="/contact"
+
+              className="
+                hover:text-orange-400
+                transition
+              "
+
+            >
+
+              Contact RANKD
 
             </Link>
 
