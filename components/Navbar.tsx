@@ -1,7 +1,106 @@
+"use client"
+
+
+import {
+  useEffect,
+  useState
+} from "react"
+
+
 import Link from "next/link"
 
 
+import {
+  supabase
+} from "@/utils/supabase"
+
+
+import {
+  getUnreadNotificationCount
+} from "@/utils/notifications"
+
+
 export default function Navbar() {
+
+  const [
+    unreadCount,
+    setUnreadCount
+  ] = useState(0)
+
+
+  useEffect(() => {
+
+    let mounted =
+      true
+
+
+    async function loadUnreadCount() {
+
+      try {
+
+        const {
+          data: {
+            user
+          }
+        } =
+          await supabase.auth.getUser()
+
+
+        if (
+          !user
+        ) {
+
+          return
+
+        }
+
+
+        const count =
+          await getUnreadNotificationCount(
+            user.id
+          )
+
+
+        if (
+          mounted
+        ) {
+
+          setUnreadCount(
+            count
+          )
+
+        }
+
+      }
+
+      catch (
+        error
+      ) {
+
+        console.error(
+
+          "LOAD NOTIFICATION COUNT ERROR",
+
+          error
+
+        )
+
+      }
+
+    }
+
+
+    loadUnreadCount()
+
+
+    return () => {
+
+      mounted =
+        false
+
+    }
+
+  }, [])
 
 
   return (
@@ -141,6 +240,75 @@ export default function Navbar() {
 
           </Link>
 
+
+          <Link
+            href="/notifications"
+            className="
+              relative
+              flex
+              items-center
+              justify-center
+              w-10
+              h-10
+              rounded-full
+              hover:bg-black/5
+              transition
+            "
+            aria-label={
+              unreadCount > 0
+                ? `Notifications, ${unreadCount} unread`
+                : "Notifications"
+            }
+          >
+
+            <span
+              className="
+                text-xl
+                leading-none
+              "
+              aria-hidden="true"
+            >
+
+              🔔
+
+            </span>
+
+
+            {
+              unreadCount > 0 && (
+
+                <span
+                  className="
+                    absolute
+                    -top-1
+                    -right-1
+                    min-w-5
+                    h-5
+                    px-1
+                    rounded-full
+                    bg-black
+                    text-white
+                    text-[10px]
+                    font-black
+                    flex
+                    items-center
+                    justify-center
+                  "
+                >
+
+                  {
+                    unreadCount > 99
+                      ? "99+"
+                      : unreadCount
+                  }
+
+                </span>
+
+              )
+            }
+
+          </Link>
+
         </div>
 
 
@@ -175,6 +343,70 @@ export default function Navbar() {
           >
 
             Categories
+
+          </Link>
+
+
+          <Link
+            href="/notifications"
+            className="
+              relative
+              w-10
+              h-10
+              rounded-full
+              flex
+              items-center
+              justify-center
+              text-lg
+            "
+            aria-label={
+              unreadCount > 0
+                ? `Notifications, ${unreadCount} unread`
+                : "Notifications"
+            }
+          >
+
+            <span
+              aria-hidden="true"
+            >
+
+              🔔
+
+            </span>
+
+
+            {
+              unreadCount > 0 && (
+
+                <span
+                  className="
+                    absolute
+                    -top-1
+                    -right-1
+                    min-w-5
+                    h-5
+                    px-1
+                    rounded-full
+                    bg-black
+                    text-white
+                    text-[10px]
+                    font-black
+                    flex
+                    items-center
+                    justify-center
+                  "
+                >
+
+                  {
+                    unreadCount > 99
+                      ? "99+"
+                      : unreadCount
+                  }
+
+                </span>
+
+              )
+            }
 
           </Link>
 
