@@ -1,71 +1,74 @@
 "use client"
 
+
 import {
   useEffect,
   useRef,
   useState
 } from "react"
 
+
 import {
   useRouter,
   useSearchParams
 } from "next/navigation"
+
 
 import {
   Ranking,
   RankingBuilderItem
 } from "@/types/ranking"
 
+
 import {
   createSupabaseRanking,
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
+
 import {
   stripRankingPrefix
 } from "@/utils/rankingTitle"
+
 
 import {
   supabase
 } from "@/utils/supabase"
 
+
 import SortableRankingList from "@/components/SortableRankingList"
+
 
 import {
   getTasteGraph,
   saveTasteGraph
 } from "@/utils/tasteGraphRepository"
 
+
 import {
   compareTasteFeedback
 } from "@/utils/tasteFeedbackComparison"
+
 
 import {
   buildTasteFeedbackSignals
 } from "@/utils/tasteFeedbackSignals"
 
+
 import {
   buildTasteBaselineSignals
 } from "@/utils/tasteBaselineSignals"
+
 
 import {
   TasteGraph
 } from "@/utils/tasteGraph"
 
 
-const categories = [
-
-  "Food & Drink",
-  "Film & TV",
-  "Music",
-  "Sport",
-  "Gaming",
-  "Travel",
-  "Technology",
-  "Lifestyle",
-  "General"
-
-]
+import {
+  categories,
+  isValidRankingCategory
+} from "@/utils/categories"
 
 
 function createEmptyItems(): RankingBuilderItem[] {
@@ -121,6 +124,7 @@ export default function CreateClient() {
   const router =
     useRouter()
 
+
   const searchParams =
     useSearchParams()
 
@@ -134,7 +138,9 @@ export default function CreateClient() {
   const [
     category,
     setCategory
-  ] = useState("General")
+  ] = useState(
+    "General"
+  )
 
 
   const [
@@ -239,6 +245,12 @@ export default function CreateClient() {
         )
 
 
+      /*
+       *
+       * Taste recommendation flow.
+       *
+       */
+
       if (
         recommendationId
         &&
@@ -289,7 +301,7 @@ export default function CreateClient() {
 
           setCategory(
 
-            categories.includes(
+            isValidRankingCategory(
               recommendationCategory
             )
 
@@ -376,6 +388,13 @@ export default function CreateClient() {
       }
 
 
+      /*
+       *
+       * Standard creation / RANKD / RE-RANKD
+       * hydration.
+       *
+       */
+
       if (
         initialTitle
       ) {
@@ -395,15 +414,19 @@ export default function CreateClient() {
 
       if (
         initialCategory
-        &&
-        categories.includes(
-          initialCategory
-        )
       ) {
 
-        setCategory(
-          initialCategory
-        )
+        if (
+          isValidRankingCategory(
+            initialCategory
+          )
+        ) {
+
+          setCategory(
+            initialCategory
+          )
+
+        }
 
       }
 
@@ -564,8 +587,33 @@ export default function CreateClient() {
     }
 
 
+    /*
+     *
+     * Always persist a valid category.
+     *
+     */
+
+    const finalCategory =
+      isValidRankingCategory(
+        category
+      )
+
+        ? category
+        : "General"
+
+
     setSaving(true)
 
+
+    /*
+     *
+     * Preserve the conversation chain.
+     *
+     * This is what makes a new ranking a
+     * RANKD / RE-RANKD perspective rather
+     * than an unrelated ranking.
+     *
+     */
 
     const finalParentId =
       searchParams.get(
@@ -588,7 +636,7 @@ export default function CreateClient() {
         cleanTitle,
 
       category:
-        category || "General",
+        finalCategory,
 
       creator:
         "Anonymous",
@@ -654,13 +702,20 @@ export default function CreateClient() {
         await supabase.auth.getUser()
 
 
+      /*
+       *
+       * Start an anonymous session if
+       * necessary.
+       *
+       */
+
       if (
         !user
       ) {
 
         const {
           data,
-          error:anonymousAuthError
+          error: anonymousAuthError
         } =
           await supabase.auth.signInAnonymously()
 
@@ -697,6 +752,12 @@ export default function CreateClient() {
       }
 
 
+      /*
+       *
+       * Create the ranking.
+       *
+       */
+
       await createSupabaseRanking(
 
         ranking,
@@ -705,6 +766,12 @@ export default function CreateClient() {
 
       )
 
+
+      /*
+       *
+       * Build baseline Taste Graph signals.
+       *
+       */
 
       try {
 
@@ -767,6 +834,12 @@ export default function CreateClient() {
 
       }
 
+
+      /*
+       *
+       * Recommendation feedback.
+       *
+       */
 
       if (
         recommendationId
@@ -868,12 +941,17 @@ export default function CreateClient() {
       }
 
 
+      /*
+       *
+       * Open the newly created RANKD.
+       *
+       */
+
       router.push(
 
         `/rank/${ranking.id}`
 
       )
-
 
     }
 
@@ -1051,49 +1129,51 @@ export default function CreateClient() {
           </p>
 
 
-          {recommendationId && (
+          {
+            recommendationId && (
 
-            <div
-              className="
-                mt-6
-                rounded-2xl
-                border
-                p-5
-                rankd-card
-              "
-            >
-
-              <p
+              <div
                 className="
-                  text-sm
-                  font-black
-                  uppercase
-                  tracking-widest
-                  rankd-accent
+                  mt-6
+                  rounded-2xl
+                  border
+                  p-5
+                  rankd-card
                 "
               >
 
-                Taste recommendation
+                <p
+                  className="
+                    text-sm
+                    font-black
+                    uppercase
+                    tracking-widest
+                    rankd-accent
+                  "
+                >
 
-              </p>
+                  Taste recommendation
+
+                </p>
 
 
-              <p
-                className="
-                  mt-2
-                  font-bold
-                "
-              >
+                <p
+                  className="
+                    mt-2
+                    font-bold
+                  "
+                >
 
-                Adjust the ranking to challenge
-                the recommendation and improve
-                your Taste Graph.
+                  Adjust the ranking to challenge
+                  the recommendation and improve
+                  your Taste Graph.
 
-              </p>
+                </p>
 
-            </div>
+              </div>
 
-          )}
+            )
+          }
 
         </div>
 
@@ -1198,26 +1278,28 @@ export default function CreateClient() {
               "
             >
 
-              {categories.map(
+              {
+                categories.map(
 
-                option => (
+                  option => (
 
-                  <option
-                    key={
-                      option
-                    }
-                    value={
-                      option
-                    }
-                  >
+                    <option
+                      key={
+                        option
+                      }
+                      value={
+                        option
+                      }
+                    >
 
-                    {option}
+                      {option}
 
-                  </option>
+                    </option>
+
+                  )
 
                 )
-
-              )}
+              }
 
             </select>
 
@@ -1267,28 +1349,30 @@ export default function CreateClient() {
             </div>
 
 
-            {items.length < 7 && (
+            {
+              items.length < 7 && (
 
-              <button
-                type="button"
-                onClick={
-                  addItem
-                }
-                className="
-                  mt-6
-                  rounded-xl
-                  border
-                  px-5
-                  py-3
-                  font-black
-                "
-              >
+                <button
+                  type="button"
+                  onClick={
+                    addItem
+                  }
+                  className="
+                    mt-6
+                    rounded-xl
+                    border
+                    px-5
+                    py-3
+                    font-black
+                  "
+                >
 
-                Add item
+                  Add item
 
-              </button>
+                </button>
 
-            )}
+              )
+            }
 
           </div>
 
@@ -1340,26 +1424,28 @@ export default function CreateClient() {
           </div>
 
 
-          {error && (
+          {
+            error && (
 
-            <div
-              className="
-                rounded-xl
-                border
-                border-red-300
-                bg-red-50
-                px-5
-                py-4
-                text-red-700
-                font-bold
-              "
-            >
+              <div
+                className="
+                  rounded-xl
+                  border
+                  border-red-300
+                  bg-red-50
+                  px-5
+                  py-4
+                  text-red-700
+                  font-bold
+                "
+              >
 
-              {error}
+                {error}
 
-            </div>
+              </div>
 
-          )}
+            )
+          }
 
 
           <button
@@ -1381,16 +1467,16 @@ export default function CreateClient() {
             "
           >
 
-            {saving
+            {
+              saving
 
-              ? "Creating..."
+                ? "Creating..."
 
-              : recommendationId
+                : recommendationId
 
-                ? "Create RANKD & Improve My Taste Graph"
+                  ? "Create RANKD & Improve My Taste Graph"
 
-                : "Create RANKD"
-
+                  : "Create RANKD"
             }
 
           </button>

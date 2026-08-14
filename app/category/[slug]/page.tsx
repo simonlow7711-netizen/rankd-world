@@ -14,6 +14,19 @@ import {
   getAllRankings
 } from "@/utils/supabaseRankings"
 
+import {
+  categories,
+  RankingCategory
+} from "@/utils/categories"
+
+import {
+  categoryMetadata
+} from "@/utils/categoryMetadata"
+
+import {
+  categoryToSlug
+} from "@/utils/categorySlug"
+
 
 const SITE_URL =
   "https://rankd.world"
@@ -28,90 +41,38 @@ type Props = {
 }
 
 
-const categoryMap: Record<
-  string,
-  string
-> = {
-
-  "food-drink":
-    "Food & Drink",
-
-  "film-tv":
-    "Film & TV",
-
-  "music":
-    "Music",
-
-  "sport":
-    "Sport",
-
-  "travel":
-    "Travel",
-
-  "gaming":
-    "Gaming",
-
-  "technology":
-    "Technology",
-
-  "lifestyle":
-    "Lifestyle"
-
-}
-
-
-const categorySlugs =
-  Object.keys(
-    categoryMap
-  )
-
-
-function getCategoryName(
+function slugToCategory(
   slug: string
-) {
+): RankingCategory | null {
 
-  return (
+  const match =
+    categories.find(
 
-    categoryMap[slug]
+      category =>
 
-    ??
+        categoryToSlug(
+          category
+        ) === slug
 
-    slug
+    )
 
-      .split("-")
-
-      .map(
-
-        word =>
-
-          word.charAt(0).toUpperCase()
-
-          +
-
-          word.slice(1)
-
-      )
-
-      .join(" ")
-
-  )
+  return match ?? null
 
 }
 
 
 export async function generateStaticParams() {
 
-  return (
+  return categories.map(
 
-    categorySlugs.map(
+    category => ({
 
-      slug => ({
+      slug:
+        categoryToSlug(
+          category
+        )
 
-        slug
-
-      })
-
-    )
+    })
 
   )
 
@@ -131,7 +92,6 @@ export async function generateMetadata(
 
 ): Promise<Metadata> {
 
-
   const {
     slug
   } =
@@ -139,7 +99,9 @@ export async function generateMetadata(
 
 
   const category =
-    categoryMap[slug]
+    slugToCategory(
+      slug
+    )
 
 
   if (!category) {
@@ -154,8 +116,14 @@ export async function generateMetadata(
   }
 
 
+  const metadata =
+    categoryMetadata[
+      category
+    ]
+
+
   const description =
-    `Discover the best ${category} Top 7 rankings from the RANKD community. Compare opinions, explore different perspectives and create your own ranking.`
+    metadata.description
 
 
   const categoryUrl =
@@ -233,7 +201,6 @@ export default async function CategoryPage(
 
 ) {
 
-
   const {
     slug
   } =
@@ -241,7 +208,9 @@ export default async function CategoryPage(
 
 
   const category =
-    categoryMap[slug]
+    slugToCategory(
+      slug
+    )
 
 
   if (!category) {
@@ -249,6 +218,12 @@ export default async function CategoryPage(
     notFound()
 
   }
+
+
+  const metadata =
+    categoryMetadata[
+      category
+    ]
 
 
   const allRankings =
@@ -320,7 +295,7 @@ export default async function CategoryPage(
           `${category} Rankings | RANKD`,
 
         description:
-          `Discover the best ${category} Top 7 rankings from the RANKD community.`,
+          metadata.description,
 
         isPartOf: {
 
@@ -429,12 +404,14 @@ export default async function CategoryPage(
             max-w-7xl
             mx-auto
           "
+
         >
 
           <header
             className="
               mb-16
             "
+
           >
 
             <p
@@ -445,6 +422,7 @@ export default async function CategoryPage(
                 text-sm
                 font-black
               "
+
             >
 
               Category
@@ -452,35 +430,65 @@ export default async function CategoryPage(
             </p>
 
 
-            <h1
+            <div
               className="
-                text-5xl
-                md:text-7xl
-                font-black
+                flex
+                items-center
+                gap-4
                 mt-4
               "
+
             >
 
-              {category}
+              <span
+                className="
+                  text-6xl
+                "
 
-            </h1>
+              >
+
+                {
+                  metadata.emoji
+                }
+
+              </span>
 
 
-            <p
-              className="
-                mt-6
-                text-xl
-                text-gray-500
-                max-w-2xl
-              "
-            >
+              <div>
 
-              Explore the community's
-              Top 7 opinions in{" "}
+                <h1
+                  className="
+                    text-5xl
+                    md:text-7xl
+                    font-black
+                  "
 
-              {category}.
+                >
 
-            </p>
+                  {category}
+
+                </h1>
+
+
+                <p
+                  className="
+                    mt-3
+                    text-xl
+                    text-gray-500
+                    max-w-2xl
+                  "
+
+                >
+
+                  {
+                    metadata.description
+                  }
+
+                </p>
+
+              </div>
+
+            </div>
 
           </header>
 
@@ -493,6 +501,7 @@ export default async function CategoryPage(
                 md:grid-cols-3
                 gap-8
               "
+
             >
 
               {
@@ -526,6 +535,7 @@ export default async function CategoryPage(
             className="
               mt-20
             "
+
           >
 
             <div
@@ -537,6 +547,7 @@ export default async function CategoryPage(
                 py-14
                 text-center
               "
+
             >
 
               <h2
@@ -545,6 +556,7 @@ export default async function CategoryPage(
                   md:text-5xl
                   font-black
                 "
+
               >
 
                 Have a different opinion?
@@ -557,16 +569,22 @@ export default async function CategoryPage(
                   mt-4
                   text-gray-300
                 "
+
               >
 
-                Create your own Top 7.
+                Create your own Top 7 in{" "}
+                {category}.
 
               </p>
 
 
               <Link
 
-                href="/create"
+                href={
+                  `/create?category=${encodeURIComponent(
+                    category
+                  )}`
+                }
 
                 className="
                   inline-block

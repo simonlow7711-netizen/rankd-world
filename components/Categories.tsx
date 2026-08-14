@@ -1,110 +1,22 @@
 import Link from "next/link"
 
 
-const categories = [
-
-  {
-    name:
-      "Food & Drink",
-
-    slug:
-      "food-drink",
-
-    emoji:
-      "🍕"
-  },
+import {
+  categories
+} from "@/utils/categories"
 
 
-  {
-    name:
-      "Film & TV",
-
-    slug:
-      "film-tv",
-
-    emoji:
-      "🎬"
-  },
+import {
+  categoryMetadata
+} from "@/utils/categoryMetadata"
 
 
-  {
-    name:
-      "Music",
-
-    slug:
-      "music",
-
-    emoji:
-      "🎵"
-  },
+import {
+  categoryToSlug
+} from "@/utils/categorySlug"
 
 
-  {
-    name:
-      "Sport",
-
-    slug:
-      "sport",
-
-    emoji:
-      "⚽"
-  },
-
-
-  {
-    name:
-      "Travel",
-
-    slug:
-      "travel",
-
-    emoji:
-      "🌍"
-  },
-
-
-  {
-    name:
-      "Gaming",
-
-    slug:
-      "gaming",
-
-    emoji:
-      "🎮"
-  },
-
-
-  {
-    name:
-      "Technology",
-
-    slug:
-      "technology",
-
-    emoji:
-      "💡"
-  },
-
-
-  {
-    name:
-      "Lifestyle",
-
-    slug:
-      "lifestyle",
-
-    emoji:
-      "✨"
-  }
-
-]
-
-
-
-
-
-export default function Categories(){
+export default function Categories() {
 
 
   return (
@@ -119,20 +31,68 @@ export default function Categories(){
     >
 
 
-      <h2
+      <div
         className="
-          text-4xl
-          font-black
+          flex
+          items-end
+          justify-between
+          gap-6
           mb-8
         "
       >
 
-        Browse Categories
+        <div>
 
-      </h2>
+          <p
+            className="
+              rankd-accent
+              uppercase
+              tracking-[0.3em]
+              text-sm
+              font-black
+            "
+          >
+
+            Explore RANKD
+
+          </p>
 
 
+          <h2
+            className="
+              mt-2
+              text-4xl
+              font-black
+            "
+          >
 
+            Browse Categories
+
+          </h2>
+
+        </div>
+
+
+        <Link
+
+          href="/categories"
+
+          className="
+            hidden
+            md:block
+            text-sm
+            font-black
+            uppercase
+            tracking-[0.15em]
+            hover:underline
+          "
+        >
+
+          View all →
+
+        </Link>
+
+      </div>
 
 
       <div
@@ -145,84 +105,135 @@ export default function Categories(){
       >
 
 
-        {categories.map(
+        {
+          categories.map(
 
-          category => (
+            category => {
 
-
-            <Link
-
-              key={
-                category.slug
-              }
-
-              href={
-                `/category/${category.slug}`
-              }
-
-              className="
-                bg-white
-                rounded-3xl
-                p-6
-                font-black
-                hover:-translate-y-1
-                transition
-              "
-
-            >
+              const metadata =
+                categoryMetadata[
+                  category
+                ]
 
 
-              <div
-                className="
-                  text-4xl
-                "
-              >
-
-                {category.emoji}
-
-              </div>
+              const slug =
+                categoryToSlug(
+                  category
+                )
 
 
+              return (
+
+                <Link
+
+                  key={
+                    category
+                  }
+
+                  href={
+                    `/category/${slug}`
+                  }
+
+                  className="
+                    bg-white
+                    rounded-3xl
+                    p-6
+                    font-black
+                    hover:-translate-y-1
+                    hover:shadow-lg
+                    transition
+                  "
+                >
 
 
+                  <div
+                    className="
+                      text-4xl
+                    "
+                  >
 
-              <h3
-                className="
-                  mt-4
-                  text-xl
-                "
-              >
+                    {
+                      metadata.emoji
+                    }
 
-                {category.name}
-
-              </h3>
-
-
+                  </div>
 
 
+                  <h3
+                    className="
+                      mt-4
+                      text-xl
+                    "
+                  >
 
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  text-gray-500
-                "
-              >
+                    {
+                      category
+                    }
 
-                Explore Top 7s →
-
-              </p>
+                  </h3>
 
 
-            </Link>
+                  <p
+                    className="
+                      mt-2
+                      text-sm
+                      text-gray-500
+                      line-clamp-2
+                    "
+                  >
 
+                    {
+                      metadata.description
+                    }
+
+                  </p>
+
+
+                  <p
+                    className="
+                      mt-4
+                      text-sm
+                      rankd-accent
+                    "
+                  >
+
+                    Explore Top 7s →
+
+                  </p>
+
+
+                </Link>
+
+              )
+
+            }
 
           )
-
-        )}
+        }
 
 
       </div>
+
+
+      <Link
+
+        href="/categories"
+
+        className="
+          md:hidden
+          block
+          mt-8
+          text-center
+          font-black
+          uppercase
+          tracking-[0.15em]
+          text-sm
+        "
+      >
+
+        View all categories →
+
+      </Link>
 
 
     </section>

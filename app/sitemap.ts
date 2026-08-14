@@ -8,29 +8,18 @@ import {
 } from "@/utils/supabaseRankings"
 
 
+import {
+  categories
+} from "@/utils/categories"
+
+
+import {
+  categoryToSlug
+} from "@/utils/categorySlug"
+
+
 const SITE_URL =
   "https://rankd.world"
-
-
-const categories = [
-
-  "food-drink",
-
-  "film-tv",
-
-  "music",
-
-  "sport",
-
-  "travel",
-
-  "gaming",
-
-  "technology",
-
-  "lifestyle"
-
-]
 
 
 export default async function sitemap(): Promise<
@@ -86,10 +75,12 @@ export default async function sitemap(): Promise<
 
     categories.map(
 
-      slug => ({
+      category => ({
 
         url:
-          `${SITE_URL}/category/${slug}`,
+          `${SITE_URL}/category/${categoryToSlug(
+            category
+          )}`,
 
         lastModified:
           latestRankingDate
@@ -151,6 +142,24 @@ export default async function sitemap(): Promise<
 
       priority:
         1
+
+    },
+
+
+    {
+
+      url:
+        `${SITE_URL}/categories`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "weekly",
+
+      priority:
+        0.9
 
     },
 
