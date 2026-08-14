@@ -1,12 +1,32 @@
+"use client"
+
+
+import {
+  useState
+} from "react"
+
+
+import {
+  useRouter
+} from "next/navigation"
+
+
 import Link from "next/link"
+
 
 import {
   Ranking
 } from "@/types/ranking"
 
+
 import RankdExplanation from "@/components/RankdExplanation"
 
+
 import DiscoveryReason from "@/components/DiscoveryReason"
+
+
+import RankingResponse from "@/components/RankingResponse"
+
 
 import {
   formatRankingTitle
@@ -27,28 +47,126 @@ export default function RankingCard({
 }: RankingCardProps) {
 
 
+  const router =
+    useRouter()
+
+
+  const [
+    response,
+    setResponse
+  ] =
+    useState<
+      "rankd" |
+      "rerankd" |
+      null
+    >(
+      null
+    )
+
+
   const debateScore =
 
     ranking.signals?.debateHeat ?? 0
 
 
+  const sortedItems =
+
+    [...ranking.items]
+
+      .sort(
+
+        (a, b) =>
+          a.position -
+          b.position
+
+      )
+
+
+  function handleRankd() {
+
+    setResponse(
+      "rankd"
+    )
+
+  }
+
+
+  function handleRerankd() {
+
+    const items =
+
+      sortedItems
+
+        .map(
+
+          item =>
+            item.name
+
+        )
+
+        .join(
+          "|"
+        )
+
+
+    const rootId =
+
+      ranking.rootId ??
+      ranking.id
+
+
+    router.push(
+
+      `/create?title=${encodeURIComponent(
+
+        ranking.title
+
+      )}&category=${encodeURIComponent(
+
+        ranking.category
+
+      )}&items=${encodeURIComponent(
+
+        items
+
+      )}&parentId=${encodeURIComponent(
+
+        ranking.id
+
+      )}&rootId=${encodeURIComponent(
+
+        rootId
+
+      )}`
+
+    )
+
+  }
+
+
   return (
 
-    <Link
+    <article
 
-      href={`/rank/${ranking.id}`}
+      className="
+        rankd-card
+        p-8
+        h-full
+        transition
+      "
 
     >
 
-      <article
+      <Link
+
+        href={
+          `/rank/${ranking.id}`
+        }
 
         className="
-          rankd-card
-          p-8
-          h-full
-          hover:-translate-y-2
+          block
+          hover:-translate-y-1
           transition
-          cursor-pointer
         "
 
       >
@@ -93,13 +211,35 @@ export default function RankingCard({
         </h3>
 
 
+        {
+          ranking.description && (
+
+            <p
+
+              className="
+                mt-4
+                rankd-muted
+                leading-relaxed
+              "
+
+            >
+
+              {
+                ranking.description
+              }
+
+            </p>
+
+          )
+        }
+
+
         <div
 
           className="
             mt-8
-            flex
-            items-center
-            justify-between
+            border-t
+            border-black/10
           "
 
         >
@@ -107,106 +247,391 @@ export default function RankingCard({
           <div
 
             className="
-              bg-[#F7F4EE]
-              rounded-full
-              px-5
-              py-3
+              pt-6
             "
 
           >
 
-            <span
+            <p
 
               className="
+                rankd-accent
+                uppercase
+                tracking-widest
+                text-xs
                 font-black
               "
 
             >
 
-              🔥 {debateScore}%
+              Top 7
+
+            </p>
+
+
+            <div
+
+              className="
+                mt-4
+                space-y-2
+              "
+
+            >
+
+              {
+                sortedItems.map(
+
+                  item => (
+
+                    <div
+
+                      key={
+                        `${ranking.id}-${item.position}`
+                      }
+
+                      className="
+                        flex
+                        items-center
+                        gap-4
+                        py-2
+                      "
+
+                    >
+
+                      <span
+
+                        className="
+                          w-8
+                          shrink-0
+                          text-sm
+                          font-black
+                          rankd-accent
+                        "
+
+                      >
+
+                        {
+                          String(
+                            item.position
+                          ).padStart(
+                            2,
+                            "0"
+                          )
+                        }
+
+                      </span>
+
+
+                      <span
+
+                        className="
+                          text-lg
+                          font-black
+                          leading-tight
+                        "
+
+                      >
+
+                        {
+                          item.name
+                        }
+
+                      </span>
+
+                    </div>
+
+                  )
+
+                )
+              }
+
+            </div>
+
+          </div>
+
+
+          <div
+
+            className="
+              mt-6
+              flex
+              items-center
+              justify-between
+              gap-4
+            "
+
+          >
+
+            <div
+
+              className="
+                bg-[#F7F4EE]
+                rounded-full
+                px-5
+                py-3
+              "
+
+            >
+
+              <span
+
+                className="
+                  font-black
+                "
+
+              >
+
+                🔥 {debateScore}%
+
+              </span>
+
+            </div>
+
+
+            <span
+
+              className="
+                rankd-muted
+                font-bold
+                text-sm
+              "
+
+            >
+
+              Debate heat
 
             </span>
 
           </div>
 
-
-          <span
-
-            className="
-              rankd-muted
-              font-bold
-            "
-
-          >
-
-            Debate heat
-
-          </span>
-
         </div>
 
-
-        <div
-
-          className="
-            mt-8
-            pt-6
-            border-t
-            border-black/10
-          "
-
-        >
-
-          <p
-
-            className="
-              font-black
-            "
-
-          >
-
-            Would you rank it differently?
-
-          </p>
+      </Link>
 
 
-          <p
+      <div
 
-            className="
-              mt-3
-              rankd-accent
-              font-black
-            "
+        className="
+          mt-8
+          pt-6
+          border-t
+          border-black/10
+        "
 
-          >
+      >
 
-            Rank it yourself →
+        {
+          response === null && (
 
-          </p>
+            <>
 
-        </div>
+              <div
+
+                className="
+                  text-center
+                "
+
+              >
+
+                <p
+
+                  className="
+                    font-black
+                    text-xl
+                  "
+
+                >
+
+                  Would you rank this
+                  the same?
+
+                </p>
 
 
-        <RankdExplanation
+                <p
 
-          ranking={
-            ranking
-          }
+                  className="
+                    mt-2
+                    text-sm
+                    rankd-muted
+                  "
 
-        />
+                >
+
+                  Make your call.
+
+                </p>
+
+              </div>
 
 
-        <DiscoveryReason
+              <div
 
-          ranking={
-            ranking
-          }
+                className="
+                  mt-5
+                  grid
+                  grid-cols-2
+                  gap-3
+                "
 
-        />
+              >
 
-      </article>
+                <button
 
-    </Link>
+                  type="button"
+
+                  onClick={
+                    handleRankd
+                  }
+
+                  className="
+                    rounded-2xl
+                    bg-black
+                    text-white
+                    px-4
+                    py-5
+                    text-center
+                    hover:-translate-y-1
+                    transition
+                  "
+
+                >
+
+                  <span
+
+                    className="
+                      block
+                      text-xl
+                      font-black
+                    "
+
+                  >
+
+                    RANKD
+
+                  </span>
+
+
+                  <span
+
+                    className="
+                      block
+                      mt-1
+                      text-xs
+                      opacity-70
+                    "
+
+                  >
+
+                    I'd keep this
+
+                  </span>
+
+                </button>
+
+
+                <button
+
+                  type="button"
+
+                  onClick={
+                    handleRerankd
+                  }
+
+                  className="
+                    rounded-2xl
+                    bg-white
+                    text-black
+                    border-2
+                    border-black
+                    px-4
+                    py-5
+                    text-center
+                    hover:-translate-y-1
+                    transition
+                  "
+
+                >
+
+                  <span
+
+                    className="
+                      block
+                      text-xl
+                      font-black
+                    "
+
+                  >
+
+                    RE-RANKD
+
+                  </span>
+
+
+                  <span
+
+                    className="
+                      block
+                      mt-1
+                      text-xs
+                      opacity-60
+                    "
+
+                  >
+
+                    I'd change it
+
+                  </span>
+
+                </button>
+
+              </div>
+
+            </>
+
+          )
+        }
+
+
+        {
+          response !== null && (
+
+            <RankingResponse
+
+              onRankd={
+                handleRankd
+              }
+
+              onRerankd={
+                handleRerankd
+              }
+
+            />
+
+          )
+        }
+
+      </div>
+
+
+      <RankdExplanation
+
+        ranking={
+          ranking
+        }
+
+      />
+
+
+      <DiscoveryReason
+
+        ranking={
+          ranking
+        }
+
+      />
+
+    </article>
 
   )
 
