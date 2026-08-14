@@ -260,15 +260,6 @@ export default async function CategoryPage(
       )
 
 
-  if (
-    rankings.length === 0
-  ) {
-
-    notFound()
-
-  }
-
-
   const categoryUrl =
     `${SITE_URL}/category/${slug}`
 
@@ -495,117 +486,216 @@ export default async function CategoryPage(
 
           <section>
 
-            <div
-              className="
-                grid
-                md:grid-cols-3
-                gap-8
-              "
+            {
+              rankings.length > 0 ? (
 
-            >
+                <div
+                  className="
+                    grid
+                    md:grid-cols-3
+                    gap-8
+                  "
 
-              {
-                rankings.map(
+                >
 
-                  ranking => (
+                  {
+                    rankings.map(
 
-                    <RankingCard
+                      ranking => (
 
-                      key={
-                        ranking.id
-                      }
+                        <RankingCard
 
-                      ranking={
-                        ranking
-                      }
+                          key={
+                            ranking.id
+                          }
 
-                    />
+                          ranking={
+                            ranking
+                          }
 
-                  )
+                        />
 
-                )
-              }
+                      )
 
-            </div>
+                    )
+                  }
+
+                </div>
+
+              ) : (
+
+                <div
+                  className="
+                    bg-white
+                    rounded-[40px]
+                    px-8
+                    py-16
+                    md:px-16
+                    text-center
+                    border
+                    border-black/5
+                  "
+                >
+
+                  <div
+                    className="
+                      text-6xl
+                    "
+                  >
+
+                    {
+                      metadata.emoji
+                    }
+
+                  </div>
+
+
+                  <h2
+                    className="
+                      mt-6
+                      text-4xl
+                      md:text-5xl
+                      font-black
+                    "
+                  >
+
+                    No RANKDs yet.
+
+                  </h2>
+
+
+                  <p
+                    className="
+                      mt-4
+                      text-xl
+                      text-gray-500
+                      max-w-2xl
+                      mx-auto
+                    "
+                  >
+
+                    Be the first to create
+                    a Top 7 in {category}.
+
+                  </p>
+
+
+                  <Link
+
+                    href={
+                      `/create?category=${encodeURIComponent(
+                        category
+                      )}`
+                    }
+
+                    className="
+                      inline-block
+                      mt-8
+                      bg-black
+                      text-white
+                      px-8
+                      py-4
+                      rounded-full
+                      font-black
+                    "
+
+                  >
+
+                    Create the first RANKD →
+
+                  </Link>
+
+                </div>
+
+              )
+
+            }
 
           </section>
 
 
-          <section
-            className="
-              mt-20
-            "
+          {
+            rankings.length > 0 && (
 
-          >
-
-            <div
-              className="
-                bg-black
-                text-white
-                rounded-[40px]
-                px-8
-                py-14
-                text-center
-              "
-
-            >
-
-              <h2
+              <section
                 className="
-                  text-4xl
-                  md:text-5xl
-                  font-black
+                  mt-20
                 "
 
               >
 
-                Have a different opinion?
+                <div
+                  className="
+                    bg-black
+                    text-white
+                    rounded-[40px]
+                    px-8
+                    py-14
+                    text-center
+                  "
 
-              </h2>
+                >
+
+                  <h2
+                    className="
+                      text-4xl
+                      md:text-5xl
+                      font-black
+                    "
+
+                  >
+
+                    Have a different opinion?
+
+                  </h2>
 
 
-              <p
-                className="
-                  mt-4
-                  text-gray-300
-                "
+                  <p
+                    className="
+                      mt-4
+                      text-gray-300
+                    "
 
-              >
+                  >
 
-                Create your own Top 7 in{" "}
-                {category}.
+                    Create your own Top 7 in{" "}
+                    {category}.
 
-              </p>
+                  </p>
 
 
-              <Link
+                  <Link
 
-                href={
-                  `/create?category=${encodeURIComponent(
-                    category
-                  )}`
-                }
+                    href={
+                      `/create?category=${encodeURIComponent(
+                        category
+                      )}`
+                    }
 
-                className="
-                  inline-block
-                  mt-8
-                  bg-white
-                  text-black
-                  px-8
-                  py-4
-                  rounded-full
-                  font-black
-                "
+                    className="
+                      inline-block
+                      mt-8
+                      bg-white
+                      text-black
+                      px-8
+                      py-4
+                      rounded-full
+                      font-black
+                    "
 
-              >
+                  >
 
-                Create a RANKD →
+                    Create a RANKD →
 
-              </Link>
+                  </Link>
 
-            </div>
+                </div>
 
-          </section>
+              </section>
+
+            )
+
+          }
 
         </div>
 
