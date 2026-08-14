@@ -362,7 +362,8 @@ export default function Navbar() {
           className="
             flex
             items-center
-            justify-between
+            justify-center
+            md:justify-between
             gap-6
           "
         >
