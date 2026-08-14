@@ -71,6 +71,11 @@ import {
 } from "@/utils/categories"
 
 
+import {
+  createRemixNotification
+} from "@/utils/notifications"
+
+
 function createEmptyItems(): RankingBuilderItem[] {
 
   return Array.from(
@@ -765,6 +770,75 @@ export default function CreateClient() {
         user.id
 
       )
+
+
+      /*
+       *
+       * Notify the creator of the ranking
+       * being remixed.
+       *
+       */
+
+      if (
+        finalParentId
+      ) {
+
+        try {
+
+          const parentRanking =
+            await getSupabaseRanking(
+
+              finalParentId
+
+            )
+
+
+          const parentCreatorId =
+            parentRanking?.creatorId
+
+
+          if (
+            parentCreatorId
+            &&
+            parentCreatorId !==
+            user.id
+          ) {
+
+            await createRemixNotification({
+
+              recipientUserId:
+                parentCreatorId,
+
+              actorUserId:
+                user.id,
+
+              originalRankingId:
+                finalParentId,
+
+              remixRankingId:
+                ranking.id
+
+            })
+
+          }
+
+        }
+
+        catch (
+          notificationError
+        ) {
+
+          console.error(
+
+            "REMIX NOTIFICATION ERROR",
+
+            notificationError
+
+          )
+
+        }
+
+      }
 
 
       /*
