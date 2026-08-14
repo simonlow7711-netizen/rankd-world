@@ -138,9 +138,7 @@ export default async function NotificationsPage() {
 
   const rankingMap =
     new Map(
-
       rankings
-
     )
 
 
@@ -372,9 +370,20 @@ export default async function NotificationsPage() {
                       "a new RANKD"
 
 
+                    const isRemix =
+                      notification.type ===
+                      "remix"
+
+
+                    const remixUrl =
+                      notification.remixRankingId
+                        ? `/rank/${notification.remixRankingId}`
+                        : null
+
+
                     return (
 
-                      <div
+                      <article
                         key={
                           notification.id
                         }
@@ -417,7 +426,11 @@ export default async function NotificationsPage() {
                             `}
                           >
 
-                            🔄
+                            {
+                              isRemix
+                                ? "🔄"
+                                : "🔔"
+                            }
 
                           </div>
 
@@ -447,49 +460,163 @@ export default async function NotificationsPage() {
                                   "
                                 >
 
-                                  Someone remixed your RANKD.
+                                  {
+                                    isRemix
+                                      ? "Your RANKD was remixed."
+                                      : "You have a new notification."
+                                  }
 
                                 </p>
 
 
-                                <p
-                                  className={`
-                                    mt-2
-                                    ${
-                                      notification.read
-                                        ? "text-gray-500"
-                                        : "text-white/70"
-                                    }
-                                  `}
-                                >
+                                {
+                                  isRemix ? (
 
-                                  Your RANKD{" "}
+                                    <div
+                                      className={`
+                                        mt-4
+                                        rounded-2xl
+                                        p-5
+                                        ${
+                                          notification.read
+                                            ? "bg-[#F7F4EE]"
+                                            : "bg-white/10"
+                                        }
+                                      `}
+                                    >
 
-                                  <span
-                                    className="
-                                      font-bold
-                                    "
-                                  >
+                                      <p
+                                        className={`
+                                          text-xs
+                                          uppercase
+                                          tracking-[0.2em]
+                                          font-black
+                                          ${
+                                            notification.read
+                                              ? "text-gray-500"
+                                              : "text-white/60"
+                                          }
+                                        `}
+                                      >
 
-                                    {originalTitle}
+                                        Original RANKD
 
-                                  </span>
+                                      </p>
 
-                                  {" "}was remixed into{" "}
 
-                                  <span
-                                    className="
-                                      font-bold
-                                    "
-                                  >
+                                      <p
+                                        className="
+                                          mt-2
+                                          text-lg
+                                          font-black
+                                        "
+                                      >
 
-                                    {remixTitle}
+                                        {originalTitle}
 
-                                  </span>
+                                      </p>
 
-                                  .
 
-                                </p>
+                                      <div
+                                        className="
+                                          flex
+                                          items-center
+                                          gap-3
+                                          my-4
+                                        "
+                                      >
+
+                                        <span
+                                          className={`
+                                            h-px
+                                            flex-1
+                                            ${
+                                              notification.read
+                                                ? "bg-black/10"
+                                                : "bg-white/20"
+                                            }
+                                          `}
+                                        />
+
+
+                                        <span
+                                          className="
+                                            text-xl
+                                          "
+                                        >
+
+                                          ↓
+
+                                        </span>
+
+
+                                        <span
+                                          className={`
+                                            h-px
+                                            flex-1
+                                            ${
+                                              notification.read
+                                                ? "bg-black/10"
+                                                : "bg-white/20"
+                                            }
+                                          `}
+                                        />
+
+                                      </div>
+
+
+                                      <p
+                                        className={`
+                                          text-xs
+                                          uppercase
+                                          tracking-[0.2em]
+                                          font-black
+                                          ${
+                                            notification.read
+                                              ? "text-gray-500"
+                                              : "text-white/60"
+                                          }
+                                        `}
+                                      >
+
+                                        Remix
+
+                                      </p>
+
+
+                                      <p
+                                        className="
+                                          mt-2
+                                          text-lg
+                                          font-black
+                                        "
+                                      >
+
+                                        {remixTitle}
+
+                                      </p>
+
+                                    </div>
+
+                                  ) : (
+
+                                    <p
+                                      className={`
+                                        mt-2
+                                        ${
+                                          notification.read
+                                            ? "text-gray-500"
+                                            : "text-white/70"
+                                        }
+                                      `}
+                                    >
+
+                                      You have a new RANKD notification.
+
+                                    </p>
+
+                                  )
+                                }
 
                               </div>
 
@@ -516,7 +643,7 @@ export default async function NotificationsPage() {
 
 
                             {
-                              notification.remixRankingId && (
+                              isRemix && (
 
                                 <div
                                   className="
@@ -527,27 +654,33 @@ export default async function NotificationsPage() {
                                   "
                                 >
 
-                                  <Link
-                                    href={
-                                      `/rank/${notification.remixRankingId}`
-                                    }
-                                    className={`
-                                      rounded-full
-                                      px-5
-                                      py-3
-                                      font-black
-                                      transition
-                                      ${
-                                        notification.read
-                                          ? "bg-black text-white"
-                                          : "bg-white text-black"
-                                      }
-                                    `}
-                                  >
+                                  {
+                                    remixUrl && (
 
-                                    See the remix →
+                                      <Link
+                                        href={
+                                          remixUrl
+                                        }
+                                        className={`
+                                          rounded-full
+                                          px-6
+                                          py-3
+                                          font-black
+                                          transition
+                                          ${
+                                            notification.read
+                                              ? "bg-black text-white hover:opacity-70"
+                                              : "bg-white text-black hover:bg-white/80"
+                                          }
+                                        `}
+                                      >
 
-                                  </Link>
+                                        View Remix →
+
+                                      </Link>
+
+                                    )
+                                  }
 
 
                                   {
@@ -572,7 +705,7 @@ export default async function NotificationsPage() {
                                         `}
                                       >
 
-                                        View your RANKD
+                                        View Original
 
                                       </Link>
 
@@ -630,11 +763,71 @@ export default async function NotificationsPage() {
                               )
                             }
 
+
+                            {
+                              !isRemix && (
+
+                                <div
+                                  className="
+                                    mt-6
+                                  "
+                                >
+
+                                  {
+                                    !notification.read && (
+
+                                      <form
+                                        action={
+                                          async () => {
+
+                                            "use server"
+
+                                            await markNotificationAsRead(
+
+                                              notification.id
+
+                                            )
+
+                                          }
+                                        }
+                                      >
+
+                                        <button
+                                          type="submit"
+                                          className={`
+                                            rounded-full
+                                            border
+                                            px-5
+                                            py-3
+                                            font-black
+                                            transition
+                                            ${
+                                              notification.read
+                                                ? "border-black"
+                                                : "border-black"
+                                            }
+                                          `}
+                                        >
+
+                                          Mark as read
+
+                                        </button>
+
+                                      </form>
+
+                                    )
+                                  }
+
+                                </div>
+
+                              )
+                            }
+
                           </div>
 
                         </div>
 
-                      </div>
+                      </article>
 
                     )
 
