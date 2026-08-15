@@ -6,6 +6,18 @@ import {
 
 
 
+type RankingRow = {
+
+  id: string
+
+  title: string
+
+}
+
+
+
+
+
 export async function GET(
 
   request: Request
@@ -28,7 +40,85 @@ export async function GET(
       "id"
     )
     ??
-    "NO ID"
+    ""
+
+
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL
+
+
+  const supabaseAnonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+
+  let title =
+    "RANKD"
+
+
+  if (
+
+    id &&
+
+    supabaseUrl &&
+
+    supabaseAnonKey
+
+  ) {
+
+
+    try {
+
+
+      const response =
+        await fetch(
+
+          `${supabaseUrl}/rest/v1/rankings?id=eq.${encodeURIComponent(id)}&select=id,title`,
+
+          {
+
+            headers: {
+
+              apikey:
+                supabaseAnonKey,
+
+              Authorization:
+                `Bearer ${supabaseAnonKey}`
+
+            },
+
+            cache:
+              "no-store"
+
+          }
+
+        )
+
+
+      if (response.ok) {
+
+
+        const rankings =
+          await response.json() as RankingRow[]
+
+
+        if (rankings[0]) {
+
+          title =
+            rankings[0].title
+
+        }
+
+      }
+
+
+    } catch {
+
+      title =
+        "RANKD"
+
+    }
+
+  }
 
 
   return new ImageResponse(
@@ -88,16 +178,13 @@ export async function GET(
               "24px",
 
             fontSize:
-              28,
-
-            opacity:
-              0.7
+              48
 
           }}
 
         >
 
-          {id}
+          {title}
 
         </div>
 
