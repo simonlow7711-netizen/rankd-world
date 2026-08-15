@@ -13,10 +13,6 @@ import {
 } from "@/utils/rankingTitle"
 
 
-export const runtime =
-  "edge"
-
-
 export const alt =
   "RANKD"
 
@@ -395,7 +391,7 @@ export default async function Image(
 
         >
 
-          rankd.world
+          www.rankd.world
 
         </div>
 
