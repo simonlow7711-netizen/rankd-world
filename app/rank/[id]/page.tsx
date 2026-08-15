@@ -18,11 +18,6 @@ import {
 } from "@/utils/rankingTitle"
 
 
-import {
-  Ranking
-} from "@/types/ranking"
-
-
 import RankClient from "./RankClient"
 
 
@@ -51,6 +46,7 @@ export async function generateMetadata(
 
   const {
     id
+
   } =
     await params
 
@@ -90,7 +86,9 @@ export async function generateMetadata(
 
 
   const imageUrl =
-    `${SITE_URL}/rank/${ranking.id}/opengraph-image`
+    `${SITE_URL}/api/og?id=${encodeURIComponent(
+      ranking.id
+    )}`
 
 
   return {
