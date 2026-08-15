@@ -2,11 +2,20 @@ import type {
   Metadata
 } from "next"
 
+
+import {
+  GeistSans
+} from "geist/font/sans"
+
+
 import "./globals.css"
+
 
 import Navbar from "@/components/Navbar"
 
+
 import GoogleAnalytics from "@/components/GoogleAnalytics"
+
 
 import GoogleAnalyticsPageView from "@/components/GoogleAnalyticsPageView"
 
@@ -169,11 +178,12 @@ export default function RootLayout({
 
       <body
 
-        className="
+        className={`
+          ${GeistSans.className}
           bg-[#F7F4EE]
           text-black
           antialiased
-        "
+        `}
 
       >
 
@@ -253,7 +263,6 @@ export default function RootLayout({
 
 
       </body>
-
 
     </html>
 

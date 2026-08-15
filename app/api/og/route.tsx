@@ -3,6 +3,11 @@ import {
 } from "next/og"
 
 
+import {
+  GeistSans
+} from "geist/font/sans"
+
+
 export const runtime =
   "edge"
 
@@ -57,8 +62,13 @@ export async function GET(
         />,
 
         {
-          width: 1200,
-          height: 630
+
+          width:
+            1200,
+
+          height:
+            630
+
         }
 
       )
@@ -74,6 +84,7 @@ export async function GET(
         `&id=eq.${encodeURIComponent(id)}`,
 
         {
+
           headers: {
 
             apikey:
@@ -86,6 +97,7 @@ export async function GET(
 
           cache:
             "no-store"
+
         }
 
       )
@@ -120,8 +132,13 @@ export async function GET(
       />,
 
       {
-        width: 1200,
-        height: 630
+
+        width:
+          1200,
+
+        height:
+          630
+
       }
 
     )
@@ -135,8 +152,13 @@ export async function GET(
       />,
 
       {
-        width: 1200,
-        height: 630
+
+        width:
+          1200,
+
+        height:
+          630
+
       }
 
     )
@@ -157,38 +179,127 @@ function OgCard(
   return (
 
     <div
+
       style={{
-        width: "1200px",
-        height: "630px",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        backgroundColor: "#000000",
-        color: "#ffffff",
-        padding: "64px 72px",
+
+        width:
+          "1200px",
+
+        height:
+          "630px",
+
+        display:
+          "flex",
+
+        flexDirection:
+          "column",
+
+        justifyContent:
+          "space-between",
+
+        position:
+          "relative",
+
+        overflow:
+          "hidden",
+
+        backgroundColor:
+          "#F7F4EE",
+
+        color:
+          "#111111",
+
+        padding:
+          "58px 68px",
+
         fontFamily:
-          "Arial, Helvetica, sans-serif"
+          GeistSans.style.fontFamily
+
       }}
+
     >
 
       <div
+
         style={{
-          display: "flex",
-          alignItems: "center",
+
+          position:
+            "absolute",
+
+          right:
+            "-20px",
+
+          top:
+            "-70px",
+
+          display:
+            "flex",
+
+          fontSize:
+            "300px",
+
+          lineHeight:
+            1,
+
+          fontWeight:
+            900,
+
+          color:
+            "#111111",
+
+          opacity:
+            0.035
+
+        }}
+
+      >
+
+        7
+
+      </div>
+
+
+      <div
+
+        style={{
+
+          display:
+            "flex",
+
+          alignItems:
+            "center",
+
           justifyContent:
             "space-between",
-          width: "100%"
+
+          position:
+            "relative"
+
         }}
+
       >
 
         <div
+
           style={{
-            display: "flex",
-            fontSize: "44px",
-            fontWeight: 800,
+
+            display:
+              "flex",
+
+            fontSize:
+              "52px",
+
+            lineHeight:
+              1,
+
+            fontWeight:
+              900,
+
             letterSpacing:
-              "-2px"
+              "-0.06em"
+
           }}
+
         >
 
           RANKD
@@ -197,20 +308,41 @@ function OgCard(
 
 
         <div
+
           style={{
-            display: "flex",
-            width: "42px",
-            height: "42px",
-            alignItems: "center",
-            justifyContent: "center",
-            borderRadius: "50%",
+
+            display:
+              "flex",
+
+            alignItems:
+              "center",
+
+            justifyContent:
+              "center",
+
+            width:
+              "52px",
+
+            height:
+              "52px",
+
+            borderRadius:
+              "999px",
+
             backgroundColor:
-              "#ffffff",
+              "#FF6B35",
+
             color:
-              "#000000",
-            fontSize: "22px",
-            fontWeight: 800
+              "#FFFFFF",
+
+            fontSize:
+              "25px",
+
+            fontWeight:
+              900
+
           }}
+
         >
 
           7
@@ -221,37 +353,110 @@ function OgCard(
 
 
       <div
+
         style={{
-          display: "flex",
-          flexDirection: "column",
-          maxWidth: "1000px"
+
+          display:
+            "flex",
+
+          flexDirection:
+            "column",
+
+          position:
+            "relative",
+
+          maxWidth:
+            "1030px"
+
         }}
+
       >
 
         <div
+
           style={{
-            display: "flex",
-            width: "72px",
-            height: "6px",
-            marginBottom: "30px",
+
+            display:
+              "flex",
+
+            width:
+              "74px",
+
+            height:
+              "7px",
+
+            marginBottom:
+              "28px",
+
             backgroundColor:
-              "#ffffff"
+              "#FF6B35"
+
           }}
+
         />
 
 
         <div
+
           style={{
-            display: "flex",
-            fontSize: "68px",
-            lineHeight: 1.05,
-            fontWeight: 800,
+
+            display:
+              "flex",
+
+            fontSize:
+              "76px",
+
+            lineHeight:
+              0.94,
+
+            fontWeight:
+              900,
+
             letterSpacing:
-              "-3px"
+              "-0.055em",
+
+            textTransform:
+              "uppercase"
+
           }}
+
         >
 
           {title}
+
+        </div>
+
+
+        <div
+
+          style={{
+
+            display:
+              "flex",
+
+            marginTop:
+              "28px",
+
+            fontSize:
+              "32px",
+
+            lineHeight:
+              1.1,
+
+            fontWeight:
+              900,
+
+            letterSpacing:
+              "-0.035em",
+
+            color:
+              "#FF6B35"
+
+          }}
+
+        >
+
+          Would you rank it differently?
 
         </div>
 
@@ -259,22 +464,52 @@ function OgCard(
 
 
       <div
+
         style={{
-          display: "flex",
-          alignItems: "flex-end",
+
+          display:
+            "flex",
+
+          alignItems:
+            "flex-end",
+
           justifyContent:
             "space-between",
-          width: "100%"
+
+          position:
+            "relative",
+
+          paddingTop:
+            "20px",
+
+          borderTop:
+            "1px solid rgba(17,17,17,0.10)"
+
         }}
+
       >
 
         <div
+
           style={{
-            display: "flex",
-            fontSize: "22px",
-            fontWeight: 600,
-            opacity: 0.55
+
+            display:
+              "flex",
+
+            fontSize:
+              "21px",
+
+            fontWeight:
+              700,
+
+            color:
+              "#6B6B6B",
+
+            letterSpacing:
+              "-0.02em"
+
           }}
+
         >
 
           rankd.world
@@ -283,14 +518,29 @@ function OgCard(
 
 
         <div
+
           style={{
-            display: "flex",
-            fontSize: "18px",
-            fontWeight: 700,
+
+            display:
+              "flex",
+
+            fontSize:
+              "18px",
+
+            fontWeight:
+              900,
+
             letterSpacing:
-              "2px",
-            opacity: 0.45
+              "0.08em",
+
+            color:
+              "#111111",
+
+            opacity:
+              0.45
+
           }}
+
         >
 
           THE WORLD'S TOP 7 EVERYTHING
