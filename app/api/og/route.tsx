@@ -3,8 +3,14 @@ import {
 } from "next/og"
 
 
+import fs from "node:fs/promises"
+
+
+import path from "node:path"
+
+
 export const runtime =
-  "edge"
+  "nodejs"
 
 
 const SUPABASE_URL =
@@ -20,6 +26,41 @@ type RankingRow = {
   id: string
 
   title: string
+
+}
+
+
+async function getFont(
+
+  filename: string
+
+) {
+
+  const fontPath =
+    path.join(
+
+      process.cwd(),
+
+      "node_modules",
+
+      "geist",
+
+      "dist",
+
+      "fonts",
+
+      "geist-sans",
+
+      filename
+
+    )
+
+
+  return fs.readFile(
+
+    fontPath
+
+  )
 
 }
 
@@ -44,86 +85,94 @@ export async function GET(
       )
 
 
+    let title =
+      "RANKD"
+
+
     if (
-      !id ||
-      !SUPABASE_URL ||
-      !SUPABASE_ANON_KEY
+
+      id &&
+
+      SUPABASE_URL &&
+
+      SUPABASE_ANON_KEY
+
     ) {
 
-      return new ImageResponse(
+      const response =
+        await fetch(
 
-        <OgCard
-          title="RANKD"
-        />,
+          `${SUPABASE_URL}/rest/v1/rankings` +
+          `?select=id,title` +
+          `&id=eq.${encodeURIComponent(id)}`,
 
-        {
+          {
 
-          width:
-            1200,
+            headers: {
 
-          height:
-            630
+              apikey:
+                SUPABASE_ANON_KEY,
 
-        }
+              Authorization:
+                `Bearer ${SUPABASE_ANON_KEY}`
 
-      )
+            },
+
+            cache:
+              "no-store"
+
+          }
+
+        )
+
+
+      if (
+        response.ok
+      ) {
+
+        const rankings =
+          await response.json() as RankingRow[]
+
+
+        title =
+          rankings[0]?.title ??
+          "RANKD"
+
+      }
 
     }
 
 
-    const response =
-      await fetch(
+    const [
 
-        `${SUPABASE_URL}/rest/v1/rankings` +
-        `?select=id,title` +
-        `&id=eq.${encodeURIComponent(id)}`,
+      geistRegular,
 
-        {
+      geistBold,
 
-          headers: {
+      geistBlack
 
-            apikey:
-              SUPABASE_ANON_KEY,
+    ] =
+      await Promise.all([
 
-            Authorization:
-              `Bearer ${SUPABASE_ANON_KEY}`
+        getFont(
+          "Geist-Regular.ttf"
+        ),
 
-          },
+        getFont(
+          "Geist-Bold.ttf"
+        ),
 
-          cache:
-            "no-store"
+        getFont(
+          "Geist-Black.ttf"
+        )
 
-        }
-
-      )
-
-
-    if (
-      !response.ok
-    ) {
-
-      throw new Error(
-        "Ranking request failed"
-      )
-
-    }
-
-
-    const rankings =
-      await response.json() as RankingRow[]
-
-
-    const ranking =
-      rankings[0]
+      ])
 
 
     return new ImageResponse(
 
       <OgCard
-        title={
-          ranking?.title ??
-          "RANKD"
-        }
+        title={title}
       />,
 
       {
@@ -132,13 +181,76 @@ export async function GET(
           1200,
 
         height:
-          630
+          630,
+
+        fonts: [
+
+          {
+
+            name:
+              "Geist",
+
+            data:
+              geistRegular,
+
+            weight:
+              400,
+
+            style:
+              "normal"
+
+          },
+
+          {
+
+            name:
+              "Geist",
+
+            data:
+              geistBold,
+
+            weight:
+              700,
+
+            style:
+              "normal"
+
+          },
+
+          {
+
+            name:
+              "Geist",
+
+            data:
+              geistBlack,
+
+            weight:
+              900,
+
+            style:
+              "normal"
+
+          }
+
+        ]
 
       }
 
     )
 
-  } catch {
+  } catch (
+    error
+  ) {
+
+    console.error(
+
+      "RANKD OG IMAGE ERROR",
+
+      error
+
+    )
+
 
     return new ImageResponse(
 
@@ -208,7 +320,7 @@ function OgCard(
           "58px 68px",
 
         fontFamily:
-          "Arial, Helvetica, sans-serif"
+          "Geist"
 
       }}
 
