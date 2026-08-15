@@ -3,11 +3,6 @@ import {
 } from "next/og"
 
 
-import {
-  GeistSans
-} from "geist/font/sans"
-
-
 export const runtime =
   "edge"
 
@@ -213,7 +208,7 @@ function OgCard(
           "58px 68px",
 
         fontFamily:
-          GeistSans.style.fontFamily
+          "Arial, Helvetica, sans-serif"
 
       }}
 
