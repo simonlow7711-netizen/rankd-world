@@ -4,11 +4,6 @@ import {
 
 
 import {
-  getSupabaseRanking
-} from "@/utils/supabaseRankings"
-
-
-import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
@@ -41,6 +36,24 @@ type Props = {
 }
 
 
+type RankingRow = {
+
+  id: string
+
+  title: string
+
+}
+
+
+type RankingItemRow = {
+
+  position: number
+
+  name: string
+
+}
+
+
 export default async function Image(
 
   {
@@ -58,10 +71,45 @@ export default async function Image(
     await params
 
 
-  const ranking =
-    await getSupabaseRanking(
-      id
+  const supabaseUrl =
+    process.env.NEXT_PUBLIC_SUPABASE_URL!
+
+
+  const supabaseAnonKey =
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+
+  const rankingResponse =
+    await fetch(
+
+      `${supabaseUrl}/rest/v1/rankings?id=eq.${encodeURIComponent(id)}&select=id,title`,
+
+      {
+
+        headers: {
+
+          apikey:
+            supabaseAnonKey,
+
+          Authorization:
+            `Bearer ${supabaseAnonKey}`
+
+        },
+
+        cache:
+          "no-store"
+
+      }
+
     )
+
+
+  const rankings =
+    await rankingResponse.json() as RankingRow[]
+
+
+  const ranking =
+    rankings[0]
 
 
   if (!ranking) {
@@ -122,15 +170,44 @@ export default async function Image(
   }
 
 
+  const itemsResponse =
+    await fetch(
+
+      `${supabaseUrl}/rest/v1/ranking_items?ranking_id=eq.${encodeURIComponent(id)}&select=position,name&order=position.asc`,
+
+      {
+
+        headers: {
+
+          apikey:
+            supabaseAnonKey,
+
+          Authorization:
+            `Bearer ${supabaseAnonKey}`
+
+        },
+
+        cache:
+          "no-store"
+
+      }
+
+    )
+
+
+  const items =
+    await itemsResponse.json() as RankingItemRow[]
+
+
   const title =
     formatRankingTitle(
       ranking.title
     )
 
 
-  const items =
+  const sortedItems =
 
-    [...ranking.items]
+    items
 
       .sort(
 
@@ -138,6 +215,14 @@ export default async function Image(
 
           a.position -
           b.position
+
+      )
+
+      .slice(
+
+        0,
+
+        7
 
       )
 
@@ -308,63 +393,58 @@ export default async function Image(
 
           >
 
-            {items
-              .slice(
-                0,
-                7
-              )
-              .map(
+            {sortedItems.map(
 
-                item => (
+              item => (
+
+                <div
+
+                  key={
+                    item.position
+                  }
+
+                  style={{
+
+                    display:
+                      "flex",
+
+                    alignItems:
+                      "center"
+
+                  }}
+
+                >
 
                   <div
 
-                    key={
-                      item.position
-                    }
-
                     style={{
 
-                      display:
-                        "flex",
+                      width:
+                        44,
 
-                      alignItems:
-                        "center"
+                      fontWeight:
+                        800
 
                     }}
 
                   >
 
-                    <div
-
-                      style={{
-
-                        width:
-                          44,
-
-                        fontWeight:
-                          800
-
-                      }}
-
-                    >
-
-                      {item.position}.
-
-                    </div>
-
-
-                    <div>
-
-                      {item.name}
-
-                    </div>
+                    {item.position}.
 
                   </div>
 
-                )
 
-              )}
+                  <div>
+
+                    {item.name}
+
+                  </div>
+
+                </div>
+
+              )
+
+            )}
 
           </div>
 
