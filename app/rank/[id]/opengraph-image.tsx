@@ -8,6 +8,10 @@ import {
 } from "@/utils/rankingTitle"
 
 
+export const runtime =
+  "edge"
+
+
 export const alt =
   "RANKD"
 
