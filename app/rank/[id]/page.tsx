@@ -27,7 +27,7 @@ import RankClient from "./RankClient"
 
 
 const SITE_URL =
-  "https://rankd.world"
+  "https://www.rankd.world"
 
 
 type Props = {
@@ -85,19 +85,26 @@ export async function generateMetadata(
     `Discover ${title} on RANKD.`
 
 
+  const rankingUrl =
+    `${SITE_URL}/rank/${ranking.id}`
+
+
+  const imageUrl =
+    `${SITE_URL}/rank/${ranking.id}/opengraph-image`
+
+
   return {
 
     title:
       `${title} | RANKD`,
 
     description:
-
       description,
 
     alternates: {
 
       canonical:
-        `${SITE_URL}/rank/${ranking.id}`
+        rankingUrl
 
     },
 
@@ -107,13 +114,39 @@ export async function generateMetadata(
         "website",
 
       url:
-        `${SITE_URL}/rank/${ranking.id}`,
+        rankingUrl,
 
       title:
         `${title} | RANKD`,
 
       description:
-        description
+        description,
+
+      siteName:
+        "RANKD",
+
+      locale:
+        "en_GB",
+
+      images: [
+
+        {
+
+          url:
+            imageUrl,
+
+          width:
+            1200,
+
+          height:
+            630,
+
+          alt:
+            `${title} | RANKD`
+
+        }
+
+      ]
 
     },
 
@@ -126,7 +159,27 @@ export async function generateMetadata(
         `${title} | RANKD`,
 
       description:
-        description
+        description,
+
+      images: [
+
+        {
+
+          url:
+            imageUrl,
+
+          width:
+            1200,
+
+          height:
+            630,
+
+          alt:
+            `${title} | RANKD`
+
+        }
+
+      ]
 
     }
 
@@ -148,6 +201,7 @@ export default async function RankPage(
 
   const {
     id
+
   } =
     await params
 
