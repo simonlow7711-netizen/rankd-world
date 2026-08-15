@@ -3,9 +3,7 @@ import {
 } from "next/og"
 
 
-import {
-  formatRankingTitle
-} from "@/utils/rankingTitle"
+
 
 
 type RankingRow = {
@@ -17,6 +15,9 @@ type RankingRow = {
 }
 
 
+
+
+
 type RankingItemRow = {
 
   position: number
@@ -26,7 +27,16 @@ type RankingItemRow = {
 }
 
 
-function createFallbackImage() {
+
+
+
+function createFallbackImage(
+
+  title:
+    string = "RANKD"
+
+) {
+
 
   return new ImageResponse(
 
@@ -45,29 +55,64 @@ function createFallbackImage() {
           display:
             "flex",
 
-          alignItems:
-            "center",
+          flexDirection:
+            "column",
 
           justifyContent:
             "center",
+
+          padding:
+            "64px",
 
           background:
             "#000000",
 
           color:
-            "#ffffff",
-
-          fontSize:
-            72,
-
-          fontWeight:
-            700
+            "#ffffff"
 
         }}
 
       >
 
-        RANKD
+        <div
+
+          style={{
+
+            fontSize:
+              72,
+
+            fontWeight:
+              700
+
+          }}
+
+        >
+
+          {title}
+
+        </div>
+
+
+        <div
+
+          style={{
+
+            marginTop:
+              "24px",
+
+            fontSize:
+              28,
+
+            opacity:
+              0.7
+
+          }}
+
+        >
+
+          RANKD
+
+        </div>
 
       </div>
 
@@ -88,6 +133,9 @@ function createFallbackImage() {
 }
 
 
+
+
+
 export async function GET(
 
   request: Request
@@ -99,7 +147,9 @@ export async function GET(
     searchParams
   } =
     new URL(
+
       request.url
+
     )
 
 
@@ -212,19 +262,17 @@ export async function GET(
       )
 
 
-    const items =
-
-      itemsResponse.ok
-
-        ? await itemsResponse.json() as RankingItemRow[]
-
-        : []
+    let items:
+      RankingItemRow[] =
+      []
 
 
-    const title =
-      formatRankingTitle(
-        ranking.title
-      )
+    if (itemsResponse.ok) {
+
+      items =
+        await itemsResponse.json() as RankingItemRow[]
+
+    }
 
 
     const sortedItems =
@@ -270,16 +318,13 @@ export async function GET(
               "column",
 
             padding:
-              "64px",
+              "56px 64px",
 
             background:
               "#000000",
 
             color:
-              "#ffffff",
-
-            fontFamily:
-              "Arial"
+              "#ffffff"
 
           }}
 
@@ -299,7 +344,7 @@ export async function GET(
                 "space-between",
 
               marginBottom:
-                "36px"
+                "28px"
 
             }}
 
@@ -329,13 +374,13 @@ export async function GET(
               style={{
 
                 fontSize:
-                  28,
+                  24,
 
                 fontWeight:
                   600,
 
                 opacity:
-                  0.7
+                  0.65
 
               }}
 
@@ -370,9 +415,9 @@ export async function GET(
               style={{
 
                 fontSize:
-                  title.length > 55
-                    ? 52
-                    : 64,
+                  ranking.title.length > 55
+                    ? 48
+                    : 60,
 
                 fontWeight:
                   800,
@@ -381,13 +426,13 @@ export async function GET(
                   1.05,
 
                 marginBottom:
-                  "34px"
+                  "28px"
 
               }}
 
             >
 
-              {title}
+              {ranking.title}
 
             </div>
 
@@ -403,13 +448,10 @@ export async function GET(
                   "column",
 
                 gap:
-                  "8px",
+                  "7px",
 
                 fontSize:
-                  24,
-
-                opacity:
-                  0.85
+                  23
 
               }}
 
@@ -442,7 +484,7 @@ export async function GET(
                       style={{
 
                         width:
-                          44,
+                          42,
 
                         fontWeight:
                           800
@@ -481,13 +523,13 @@ export async function GET(
                 "flex",
 
               fontSize:
-                24,
+                22,
 
               fontWeight:
                 600,
 
               opacity:
-                0.7
+                0.65
 
             }}
 
@@ -507,14 +549,7 @@ export async function GET(
           1200,
 
         height:
-          630,
-
-        headers: {
-
-          "Cache-Control":
-            "public, s-maxage=3600, stale-while-revalidate=86400"
-
-        }
+          630
 
       }
 
