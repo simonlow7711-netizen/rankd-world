@@ -334,28 +334,34 @@ function OgCard(
             "absolute",
 
           right:
-            "-20px",
+            "30px",
 
           top:
-            "-70px",
+            "90px",
 
           display:
             "flex",
 
           fontSize:
-            "300px",
+            "760px",
 
           lineHeight:
-            1,
+            0.82,
 
           fontWeight:
             900,
 
+          letterSpacing:
+            "-0.10em",
+
           color:
-            "#111111",
+            "#FF6B35",
 
           opacity:
-            0.035
+            0.18,
+
+          zIndex:
+            0
 
         }}
 
@@ -376,11 +382,11 @@ function OgCard(
           alignItems:
             "center",
 
-          justifyContent:
-            "space-between",
-
           position:
-            "relative"
+            "relative",
+
+          zIndex:
+            2
 
         }}
 
@@ -413,49 +419,6 @@ function OgCard(
 
         </div>
 
-
-        <div
-
-          style={{
-
-            display:
-              "flex",
-
-            alignItems:
-              "center",
-
-            justifyContent:
-              "center",
-
-            width:
-              "52px",
-
-            height:
-              "52px",
-
-            borderRadius:
-              "999px",
-
-            backgroundColor:
-              "#FF6B35",
-
-            color:
-              "#FFFFFF",
-
-            fontSize:
-              "25px",
-
-            fontWeight:
-              900
-
-          }}
-
-        >
-
-          7
-
-        </div>
-
       </div>
 
 
@@ -473,7 +436,10 @@ function OgCard(
             "relative",
 
           maxWidth:
-            "1030px"
+            "1030px",
+
+          zIndex:
+            2
 
         }}
 
@@ -585,6 +551,9 @@ function OgCard(
 
           position:
             "relative",
+
+          zIndex:
+            2,
 
           paddingTop:
             "20px",
