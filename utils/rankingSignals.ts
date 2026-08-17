@@ -9,11 +9,6 @@ import {
 
 
 import {
-  calculateDebateScore
-} from "@/utils/debateScore"
-
-
-import {
   calculatePerspectiveScore
 } from "@/utils/perspectiveScore"
 
@@ -51,18 +46,6 @@ export function getRankingSignals(
     liveScore:
 
       calculateLivePerspectiveScore(
-
-        ranking
-
-      ),
-
-
-
-
-
-    debateHeat:
-
-      calculateDebateScore(
 
         ranking
 

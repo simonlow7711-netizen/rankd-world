@@ -2,6 +2,7 @@
 
 
 import {
+  useEffect,
   useState
 } from "react"
 
@@ -26,6 +27,20 @@ import DiscoveryReason from "@/components/DiscoveryReason"
 
 
 import RankingResponse from "@/components/RankingResponse"
+
+
+import RankingEngagement from "@/components/RankingEngagement"
+
+
+import {
+  getRankingEngagement,
+  RankingEngagementData
+} from "@/utils/rankingEngagement"
+
+
+import {
+  trackEvent
+} from "@/utils/analytics"
 
 
 import {
@@ -64,9 +79,57 @@ export default function RankingCard({
     )
 
 
-  const debateScore =
+  const [
+    engagement,
+    setEngagement
+  ] =
+    useState<RankingEngagementData>({
 
-    ranking.signals?.debateHeat ?? 0
+      views:0,
+
+      rankd:0,
+
+      rerankd:0
+
+    })
+
+
+  useEffect(() => {
+
+    let cancelled = false
+
+
+    async function loadEngagement() {
+
+      const data =
+        await getRankingEngagement(
+
+          ranking.id
+
+        )
+
+
+      if (!cancelled) {
+
+        setEngagement(
+          data
+        )
+
+      }
+
+    }
+
+
+    loadEngagement()
+
+
+    return () => {
+
+      cancelled = true
+
+    }
+
+  }, [ranking.id])
 
 
   const sortedItems =
@@ -76,6 +139,7 @@ export default function RankingCard({
       .sort(
 
         (a, b) =>
+
           a.position -
           b.position
 
@@ -84,14 +148,70 @@ export default function RankingCard({
 
   function handleRankd() {
 
+    if (response !== null) {
+
+      return
+
+    }
+
+
+    trackEvent(
+
+      "ranking_rankd",
+
+      {
+
+        rankingId:
+          ranking.id
+
+      }
+
+    )
+
+
     setResponse(
       "rankd"
+    )
+
+
+    setEngagement(
+
+      current => ({
+
+        ...current,
+
+        rankd:
+          current.rankd + 1
+
+      })
+
     )
 
   }
 
 
   function handleRerankd() {
+
+    if (response !== null) {
+
+      return
+
+    }
+
+
+    trackEvent(
+
+      "ranking_rerank_started",
+
+      {
+
+        rankingId:
+          ranking.id
+
+      }
+
+    )
+
 
     const items =
 
@@ -354,53 +474,28 @@ export default function RankingCard({
 
             className="
               mt-6
-              flex
-              items-center
-              justify-between
-              gap-4
+              pt-5
+              border-t
+              border-black/5
             "
 
           >
 
-            <div
+            <RankingEngagement
 
-              className="
-                bg-[#F7F4EE]
-                rounded-full
-                px-5
-                py-3
-              "
+              views={
+                engagement.views
+              }
 
-            >
+              rankd={
+                engagement.rankd
+              }
 
-              <span
+              rerankd={
+                engagement.rerankd
+              }
 
-                className="
-                  font-black
-                "
-
-              >
-
-                🔥 {debateScore}%
-
-              </span>
-
-            </div>
-
-
-            <span
-
-              className="
-                rankd-muted
-                font-bold
-                text-sm
-              "
-
-            >
-
-              Debate heat
-
-            </span>
+            />
 
           </div>
 

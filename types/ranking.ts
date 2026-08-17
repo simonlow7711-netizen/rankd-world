@@ -30,8 +30,6 @@ export interface RankingSignals {
 
   liveScore?:number
 
-  debateHeat?:number
-
   perspectiveScore?:number
 
   views?:number

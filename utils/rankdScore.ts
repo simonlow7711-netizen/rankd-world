@@ -4,11 +4,6 @@ import {
 
 
 import {
-  calculateDebateScore
-} from "@/utils/debateScore"
-
-
-import {
   calculatePerspectiveScore
 } from "@/utils/perspectiveScore"
 
@@ -31,18 +26,6 @@ export function calculateRankdScore(
   const liveScore =
 
     calculateLivePerspectiveScore(
-
-      ranking
-
-    )
-
-
-
-
-
-  const debateHeat =
-
-    calculateDebateScore(
 
       ranking
 
@@ -97,7 +80,7 @@ export function calculateRankdScore(
 
     (
 
-      perspectiveScore * 0.35
+      perspectiveScore * 0.50
 
     )
 
@@ -105,7 +88,7 @@ export function calculateRankdScore(
 
     (
 
-      debateHeat * 0.30
+      liveScore * 0.30
 
     )
 
@@ -113,15 +96,7 @@ export function calculateRankdScore(
 
     (
 
-      liveScore * 0.20
-
-    )
-
-    +
-
-    (
-
-      normalisedViews * 0.15
+      normalisedViews * 0.20
 
     )
 

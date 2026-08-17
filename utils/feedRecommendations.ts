@@ -2,10 +2,6 @@ import { rankings } from "@/data/rankings"
 
 import { Ranking } from "@/types/ranking"
 
-import {
-  calculateDebateScore
-} from "@/utils/debateScore"
-
 
 
 
@@ -141,26 +137,6 @@ function calculateFeedScore(
     score += 15
 
   }
-
-
-
-
-
-  // Debate strength
-
-  score +=
-
-    Math.round(
-
-      calculateDebateScore(
-
-        ranking
-
-      ) / 5
-
-    )
-
-
 
 
 
@@ -375,11 +351,11 @@ export function getFeedSections(){
 
         .sort(
 
-          (a,b)=>
+          (a,b) =>
 
-            calculateDebateScore(b) -
+            (b.views || 0) -
 
-            calculateDebateScore(a)
+            (a.views || 0)
 
         )
 

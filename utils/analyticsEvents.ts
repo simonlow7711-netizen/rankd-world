@@ -21,6 +21,14 @@ export const ANALYTICS_EVENTS = {
     "rankd_remixed",
 
 
+  RANKING_RANKD:
+    "ranking_rankd",
+
+
+  RANKING_RERANK_STARTED:
+    "ranking_rerank_started",
+
+
   CATEGORY_VIEW:
     "category_view",
 

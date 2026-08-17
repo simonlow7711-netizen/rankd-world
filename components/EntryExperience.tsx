@@ -1,26 +1,32 @@
 "use client"
 
+
 import {
   useEffect,
   useMemo,
   useState
 } from "react"
 
+
 import {
   useRouter
 } from "next/navigation"
+
 
 import {
   Ranking
 } from "@/types/ranking"
 
+
 import {
   trackEvent
 } from "@/utils/analytics"
 
+
 import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
+
 
 import RankingResponse from "@/components/RankingResponse"
 
@@ -494,19 +500,52 @@ export default function EntryExperience({
       )
 
 
-  const debateHeat =
+  const perspectiveScore =
 
     Math.round(
 
-      ranking.signals?.debateHeat ??
+      ranking.signals?.perspectiveScore ??
       0
+
+    )
+
+
+  const liveScore =
+
+    Math.round(
+
+      ranking.signals?.liveScore ??
+      0
+
+    )
+
+
+  const insightScore =
+
+    Math.min(
+
+      100,
+
+      Math.round(
+
+        (
+          perspectiveScore +
+          Math.min(
+            liveScore,
+            100
+          )
+        )
+        /
+        2
+
+      )
 
     )
 
 
   const insight =
 
-    debateHeat >= 70
+    insightScore >= 70
 
       ? {
 
@@ -514,19 +553,19 @@ export default function EntryExperience({
             "You're joining a big debate.",
 
           description:
-            "This ranking is dividing opinion across the community."
+            "This ranking has strong signs of community interest and differing perspectives."
 
         }
 
-      : debateHeat >= 40
+      : insightScore >= 40
 
         ? {
 
             title:
-              "This one splits opinion.",
+              "This one could split opinion.",
 
             description:
-              "There's a real difference of opinion around this ranking."
+              "There's a meaningful opportunity for different perspectives around this ranking."
 
           }
 
@@ -536,7 +575,7 @@ export default function EntryExperience({
               "You're backing a clear opinion.",
 
             description:
-              "This ranking has relatively little disagreement across the community."
+              "This ranking currently shows relatively little evidence of competing perspectives."
 
           }
 
@@ -963,7 +1002,7 @@ export default function EntryExperience({
                             "
                           >
 
-                            {debateHeat}%
+                            {insightScore}%
 
                           </div>
 
@@ -1007,7 +1046,7 @@ export default function EntryExperience({
                             style={{
                               width:
                                 `${Math.min(
-                                  debateHeat,
+                                  insightScore,
                                   100
                                 )}%`
                             }}
@@ -1024,8 +1063,8 @@ export default function EntryExperience({
                           "
                         >
 
-                          Debate heat measures how
-                          much opinion is divided
+                          Community insight combines
+                          perspective and live activity
                           around this ranking.
 
                         </p>

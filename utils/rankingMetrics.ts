@@ -8,6 +8,11 @@ import {
 } from "@/utils/livePerspectiveScore"
 
 
+import {
+  calculatePerspectiveScore
+} from "@/utils/perspectiveScore"
+
+
 
 
 
@@ -154,7 +159,7 @@ export function getRootRanking(
  *   newest createdAt first.
  *
  * Trending:
- *   recent activity + engagement + debate,
+ *   recent activity + engagement,
  *   weighted by how recently the ranking appeared.
  *
  * This prevents Trending from simply becoming
@@ -189,14 +194,18 @@ export function calculateRankingMomentum(
     )
 
 
-  const debateHeat =
+  const liveScore =
 
     Number(
 
       ranking.signals
-        ?.debateHeat ??
+        ?.liveScore ??
 
-      0
+      calculateLivePerspectiveScore(
+
+        ranking
+
+      )
 
     )
 
@@ -268,8 +277,8 @@ export function calculateRankingMomentum(
    * they represent an active decision rather
    * than passive viewing.
    *
-   * Debate heat represents disagreement /
-   * perspective activity.
+   * Live score represents current activity
+   * and attention around the ranking.
    */
   const activityScore =
 
@@ -286,7 +295,7 @@ export function calculateRankingMomentum(
     +
 
     (
-      debateHeat * 0.3
+      liveScore * 0.3
     )
 
 
@@ -530,34 +539,42 @@ export function getBiggestDebates(
 
     [...rankings]
 
+      .map(
+
+        ranking => ({
+
+          ranking,
+
+          perspectiveScore:
+
+            ranking.signals
+              ?.perspectiveScore ??
+
+            calculatePerspectiveScore(
+
+              ranking
+
+            )
+
+        })
+
+      )
+
       .sort(
 
-        (a, b) => {
+        (a, b) =>
 
-          const debateA =
+          b.perspectiveScore -
 
-            a.signals
-              ?.debateHeat ??
+          a.perspectiveScore
 
-            0
+      )
 
+      .map(
 
-          const debateB =
+        entry =>
 
-            b.signals
-              ?.debateHeat ??
-
-            0
-
-
-          return (
-
-            debateB -
-            debateA
-
-          )
-
-        }
+          entry.ranking
 
       )
 

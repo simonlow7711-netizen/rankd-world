@@ -51,26 +51,6 @@ export function getRankdExplanation(
 
   if(
 
-    (signals?.debateHeat ?? 0) >= 70
-
-  ){
-
-    reasons.push(
-
-      "🔥 High debate activity"
-
-    )
-
-  }
-
-
-
-
-
-
-
-  if(
-
     (signals?.liveScore ?? 0) >= 70
 
   ){

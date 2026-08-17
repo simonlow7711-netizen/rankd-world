@@ -44,6 +44,15 @@ import TasteInsightCard from "@/components/TasteInsightCard"
 import RankingResponse from "@/components/RankingResponse"
 
 
+import RankingEngagement from "@/components/RankingEngagement"
+
+
+import {
+  getRankingEngagement,
+  RankingEngagementData
+} from "@/utils/rankingEngagement"
+
+
 import {
   buildConversationTree,
   ConversationNode
@@ -82,24 +91,24 @@ import {
 
 type RankClientProps = {
 
-  id: string
+  id:string
 
-  initialRanking?: Ranking
+  initialRanking?:Ranking
 
 }
 
 
 type PerspectiveRanking = {
 
-  id: string
+  id:string
 
-  title: string
+  title:string
 
-  parentId: string | null
+  parentId:string | null
 
-  rootId: string | null
+  rootId:string | null
 
-  createdAt: string | null
+  createdAt:string | null
 
 }
 
@@ -110,7 +119,7 @@ export default function RankClient({
 
   initialRanking
 
-}: RankClientProps) {
+}:RankClientProps) {
 
 
   const router =
@@ -159,11 +168,28 @@ export default function RankClient({
     tasteGraph,
     setTasteGraph
   ] =
-    useState<ReturnType<
-      typeof buildTasteGraph
-    > | null>(
+    useState<
+      ReturnType<
+        typeof buildTasteGraph
+      > | null
+    >(
       null
     )
+
+
+  const [
+    engagement,
+    setEngagement
+  ] =
+    useState<RankingEngagementData>({
+
+      views:0,
+
+      rankd:0,
+
+      rerankd:0
+
+    })
 
 
   const [
@@ -197,8 +223,7 @@ export default function RankClient({
 
         {
 
-          rankingId:
-            id
+          rankingId:id
 
         }
 
@@ -233,6 +258,19 @@ export default function RankClient({
 
       setRanking(
         currentRanking
+      )
+
+
+      const rankingEngagement =
+        await getRankingEngagement(
+
+          currentRanking.id
+
+        )
+
+
+      setEngagement(
+        rankingEngagement
       )
 
 
@@ -280,8 +318,11 @@ export default function RankClient({
         try {
 
           const {
-            data: userRankingRows,
-            error: userRankingError
+
+            data:userRankingRows,
+
+            error:userRankingError
+
           } =
             await supabase
 
@@ -309,12 +350,17 @@ export default function RankClient({
 
           }
           else if (
+
             userRankingRows &&
+
             userRankingRows.length > 0
+
           ) {
 
             const userRankings =
+
               (
+
                 await Promise.all(
 
                   userRankingRows.map(
@@ -334,14 +380,17 @@ export default function RankClient({
 
                   (
                     userRanking
-                  ): userRanking is Ranking =>
+                  ):userRanking is Ranking =>
+
                     userRanking !== null
 
                 )
 
 
             if (
+
               userRankings.length > 0
+
             ) {
 
               const graph =
@@ -382,9 +431,9 @@ export default function RankClient({
 
       const {
 
-        data: conversationRankings,
+        data:conversationRankings,
 
-        error: conversationError
+        error:conversationError
 
       } =
         await supabase
@@ -418,8 +467,7 @@ export default function RankClient({
 
             {
 
-              ascending:
-                true
+              ascending:true
 
             }
 
@@ -440,19 +488,22 @@ export default function RankClient({
 
 
       const conversationItems:
+
         Omit<
           ConversationNode,
           "children"
         >[] =
 
         (
+
           conversationRankings ??
           []
+
         )
 
           .map(
 
-            (item: any) => ({
+            (item:any) => ({
 
               id:
                 item.id,
@@ -487,9 +538,7 @@ export default function RankClient({
         )
 
 
-      if (
-        !hasOriginal
-      ) {
+      if (!hasOriginal) {
 
         conversationItems.unshift(
 
@@ -527,9 +576,7 @@ export default function RankClient({
         )
 
 
-      if (
-        !hasCurrent
-      ) {
+      if (!hasCurrent) {
 
         conversationItems.push(
 
@@ -563,7 +610,9 @@ export default function RankClient({
 
 
       if (
+
         parentId &&
+
         !conversationItems.some(
 
           item =>
@@ -571,6 +620,7 @@ export default function RankClient({
             parentId
 
         )
+
       ) {
 
         const fetchedParent =
@@ -707,7 +757,8 @@ export default function RankClient({
 
         .sort(
 
-          (a, b) =>
+          (a,b) =>
+
             a.position -
             b.position
 
@@ -720,9 +771,7 @@ export default function RankClient({
 
         )
 
-        .join(
-          "|"
-        )
+        .join("|")
 
 
     const rootId =
@@ -784,6 +833,20 @@ export default function RankClient({
 
     )
 
+
+    setEngagement(
+
+      current => ({
+
+        ...current,
+
+        rankd:
+          current.rankd + 1
+
+      })
+
+    )
+
   }
 
 
@@ -799,6 +862,7 @@ export default function RankClient({
     return (
 
       <main
+
         className="
           min-h-screen
           bg-[#F7F4EE]
@@ -806,21 +870,26 @@ export default function RankClient({
           px-6
           py-20
         "
+
       >
 
         <div
+
           className="
             max-w-6xl
             mx-auto
             text-center
           "
+
         >
 
           <h1
+
             className="
               text-4xl
               font-black
             "
+
           >
 
             Ranking not found
@@ -865,7 +934,8 @@ export default function RankClient({
 
       .sort(
 
-        (a, b) =>
+        (a,b) =>
+
           a.position -
           b.position
 
@@ -878,7 +948,8 @@ export default function RankClient({
 
       .sort(
 
-        (a, b) =>
+        (a,b) =>
+
           a.position -
           b.position
 
@@ -917,6 +988,7 @@ export default function RankClient({
   return (
 
     <main
+
       className="
         min-h-screen
         bg-[#F7F4EE]
@@ -924,25 +996,31 @@ export default function RankClient({
         px-6
         py-12
       "
+
     >
 
       <div
+
         className="
           max-w-6xl
           mx-auto
         "
+
       >
 
         {
           isPerspective && (
 
             <div
+
               className="
                 mb-10
               "
+
             >
 
               <div
+
                 className="
                   flex
                   flex-col
@@ -951,11 +1029,13 @@ export default function RankClient({
                   md:justify-between
                   gap-4
                 "
+
               >
 
                 <div>
 
                   <p
+
                     className="
                       rankd-accent
                       uppercase
@@ -963,6 +1043,7 @@ export default function RankClient({
                       text-sm
                       font-black
                     "
+
                   >
 
                     Different perspective
@@ -971,6 +1052,7 @@ export default function RankClient({
 
 
                   <h2
+
                     className="
                       text-4xl
                       md:text-5xl
@@ -978,6 +1060,7 @@ export default function RankClient({
                       leading-tight
                       mt-2
                     "
+
                   >
 
                     {
@@ -1023,9 +1106,11 @@ export default function RankClient({
           conversationTree.length > 0 && (
 
             <div
+
               className="
                 mb-10
               "
+
             >
 
               <ConversationTree
@@ -1047,20 +1132,25 @@ export default function RankClient({
 
 
         <div
+
           className="
             grid
             lg:grid-cols-3
             gap-10
           "
+
         >
 
           <section
+
             className="
               lg:col-span-2
             "
+
           >
 
             <p
+
               className="
                 rankd-accent
                 uppercase
@@ -1068,6 +1158,7 @@ export default function RankClient({
                 text-sm
                 font-black
               "
+
             >
 
               {
@@ -1079,6 +1170,7 @@ export default function RankClient({
 
 
             <h1
+
               className="
                 text-6xl
                 md:text-8xl
@@ -1086,6 +1178,7 @@ export default function RankClient({
                 leading-none
                 mt-6
               "
+
             >
 
               {displayTitle}
@@ -1097,6 +1190,7 @@ export default function RankClient({
               displayDescription && (
 
                 <p
+
                   className="
                     mt-8
                     text-xl
@@ -1105,6 +1199,7 @@ export default function RankClient({
                     leading-relaxed
                     max-w-3xl
                   "
+
                 >
 
                   {displayDescription}
@@ -1116,11 +1211,13 @@ export default function RankClient({
 
 
             <p
+
               className="
                 mt-6
                 rankd-muted
                 text-lg
               "
+
             >
 
               Ranked by{" "}
@@ -1135,10 +1232,39 @@ export default function RankClient({
 
 
             <div
+
+              className="
+                mt-5
+              "
+
+            >
+
+              <RankingEngagement
+
+                views={
+                  engagement.views
+                }
+
+                rankd={
+                  engagement.rankd
+                }
+
+                rerankd={
+                  engagement.rerankd
+                }
+
+              />
+
+            </div>
+
+
+            <div
+
               className="
                 mt-10
                 space-y-4
               "
+
             >
 
               {
@@ -1159,14 +1285,17 @@ export default function RankClient({
                         items-center
                         gap-6
                       "
+
                     >
 
                       <div
+
                         className="
                           text-4xl
                           font-black
                           rankd-accent
                         "
+
                       >
 
                         #{item.position}
@@ -1175,11 +1304,13 @@ export default function RankClient({
 
 
                       <div
+
                         className="
                           text-2xl
                           md:text-3xl
                           font-black
                         "
+
                       >
 
                         {item.name}
@@ -1200,15 +1331,18 @@ export default function RankClient({
               isPerspective && (
 
                 <div
+
                   className="
                     mt-14
                     pt-12
                     border-t
                     border-black/10
                   "
+
                 >
 
                   <p
+
                     className="
                       rankd-accent
                       uppercase
@@ -1216,6 +1350,7 @@ export default function RankClient({
                       text-sm
                       font-black
                     "
+
                   >
 
                     This perspective
@@ -1224,12 +1359,14 @@ export default function RankClient({
 
 
                   <h3
+
                     className="
                       text-3xl
                       md:text-4xl
                       font-black
                       mt-3
                     "
+
                   >
 
                     {
@@ -1244,10 +1381,12 @@ export default function RankClient({
 
 
                   <div
+
                     className="
                       mt-8
                       space-y-4
                     "
+
                   >
 
                     {
@@ -1271,14 +1410,17 @@ export default function RankClient({
                               items-center
                               gap-6
                             "
+
                           >
 
                             <div
+
                               className="
                                 text-4xl
                                 font-black
                                 rankd-accent
                               "
+
                             >
 
                               #{item.position}
@@ -1287,10 +1429,12 @@ export default function RankClient({
 
 
                             <div
+
                               className="
                                 text-2xl
                                 font-black
                               "
+
                             >
 
                               {item.name}
@@ -1326,9 +1470,11 @@ export default function RankClient({
 
 
             <div
+
               className="
                 mt-12
               "
+
             >
 
               <TasteInsightCard
@@ -1353,19 +1499,24 @@ export default function RankClient({
 
 
           <aside
+
             className="
               space-y-6
             "
+
           >
 
             <div
+
               className="
                 rankd-card
                 p-8
               "
+
             >
 
               <p
+
                 className="
                   rankd-accent
                   uppercase
@@ -1373,6 +1524,7 @@ export default function RankClient({
                   text-sm
                   font-black
                 "
+
               >
 
                 {perspectives.length}
@@ -1381,11 +1533,13 @@ export default function RankClient({
 
 
               <h2
+
                 className="
                   text-3xl
                   font-black
                   mt-1
                 "
+
               >
 
                 Perspectives
@@ -1394,10 +1548,12 @@ export default function RankClient({
 
 
               <p
+
                 className="
                   mt-4
                   rankd-muted
                 "
+
               >
 
                 {
@@ -1425,10 +1581,12 @@ export default function RankClient({
 
 
               <div
+
                 className="
                   mt-6
                   space-y-3
                 "
+
               >
 
                 {
@@ -1469,9 +1627,11 @@ export default function RankClient({
                         >
 
                           <p
+
                             className="
                               font-black
                             "
+
                           >
 
                             {
@@ -1487,11 +1647,13 @@ export default function RankClient({
 
 
                           <p
+
                             className="
                               mt-1
                               text-sm
                               rankd-muted
                             "
+
                           >
 
                             View this perspective →
@@ -1513,12 +1675,14 @@ export default function RankClient({
                 perspectives.length > 7 && (
 
                   <p
+
                     className="
                       mt-5
                       text-sm
                       font-bold
                       rankd-muted
                     "
+
                   >
 
                     +
@@ -1556,10 +1720,12 @@ export default function RankClient({
             >
 
               <h2
+
                 className="
                   text-2xl
                   font-black
                 "
+
               >
 
                 Find another debate →
@@ -1568,10 +1734,12 @@ export default function RankClient({
 
 
               <p
+
                 className="
                   mt-3
                   rankd-muted
                 "
+
               >
 
                 Discover more opinions
