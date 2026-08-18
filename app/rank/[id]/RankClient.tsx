@@ -113,6 +113,16 @@ type PerspectiveRanking = {
 }
 
 
+type ShareMethod =
+
+  | "clipboard"
+  | "whatsapp"
+  | "x"
+  | "facebook"
+  | "messages"
+  | "email"
+
+
 export default function RankClient({
 
   id,
@@ -199,6 +209,27 @@ export default function RankClient({
     useState(
       !initialRanking
     )
+
+
+  const [
+    shareOpen,
+    setShareOpen
+  ] =
+    useState(false)
+
+
+  const [
+    shareComplete,
+    setShareComplete
+  ] =
+    useState(false)
+
+
+  const [
+    sharing,
+    setSharing
+  ] =
+    useState(false)
 
 
   useEffect(() => {
@@ -728,6 +759,288 @@ export default function RankClient({
   }, [id, initialRanking])
 
 
+  async function copyRankingLink() {
+
+    if (!ranking) {
+
+      return false
+
+    }
+
+
+    const shareUrl =
+      `${window.location.origin}/rank/${ranking.id}`
+
+
+    try {
+
+      if (
+        navigator.clipboard &&
+        window.isSecureContext
+      ) {
+
+        await navigator.clipboard.writeText(
+          shareUrl
+        )
+
+      }
+      else {
+
+        const textarea =
+          document.createElement(
+            "textarea"
+          )
+
+
+        textarea.value =
+          shareUrl
+
+
+        textarea.style.position =
+          "fixed"
+
+
+        textarea.style.left =
+          "-9999px"
+
+
+        document.body.appendChild(
+          textarea
+        )
+
+
+        textarea.focus()
+
+        textarea.select()
+
+
+        const copied =
+          document.execCommand(
+            "copy"
+          )
+
+
+        document.body.removeChild(
+          textarea
+        )
+
+
+        if (!copied) {
+
+          throw new Error(
+            "Unable to copy link"
+          )
+
+        }
+
+      }
+
+
+      trackEvent(
+
+        "ranking_shared",
+
+        {
+
+          rankingId:
+            ranking.id,
+
+          method:
+            "clipboard"
+
+        }
+
+      )
+
+
+      setShareComplete(true)
+
+
+      window.setTimeout(
+
+        () => {
+
+          setShareComplete(false)
+
+        },
+
+        2000
+
+      )
+
+
+      return true
+
+    }
+    catch (copyError) {
+
+      console.error(
+
+        "RANKD COPY LINK ERROR",
+
+        copyError
+
+      )
+
+
+      return false
+
+    }
+
+  }
+
+
+  function shareRanking(
+    method:ShareMethod
+  ) {
+
+    if (!ranking || sharing) {
+
+      return
+
+    }
+
+
+    if (method === "clipboard") {
+
+      copyRankingLink()
+
+      return
+
+    }
+
+
+    const shareUrl =
+      `${window.location.origin}/rank/${ranking.id}`
+
+
+    const shareTitle =
+      formatRankingTitle(
+        ranking.title
+      )
+
+
+    const shareText =
+      `${shareTitle} — RANKD`
+
+
+    const encodedUrl =
+      encodeURIComponent(
+        shareUrl
+      )
+
+
+    const encodedText =
+      encodeURIComponent(
+        shareText
+      )
+
+
+    let destination = ""
+
+
+    switch (method) {
+
+      case "whatsapp":
+
+        destination =
+          `https://wa.me/?text=${encodedText}%20${encodedUrl}`
+
+        break
+
+
+      case "x":
+
+        destination =
+          `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
+
+        break
+
+
+      case "facebook":
+
+        destination =
+          `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
+
+        break
+
+
+      case "messages":
+
+        destination =
+          `sms:?&body=${encodedText}%20${encodedUrl}`
+
+        break
+
+
+      case "email":
+
+        destination =
+          `mailto:?subject=${encodeURIComponent(
+
+            `${shareTitle} — RANKD`
+
+          )}&body=${encodedText}%0A%0A${encodedUrl}`
+
+        break
+
+    }
+
+
+    if (!destination) {
+
+      return
+
+    }
+
+
+    trackEvent(
+
+      "ranking_shared",
+
+      {
+
+        rankingId:
+          ranking.id,
+
+        method
+
+      }
+
+    )
+
+
+    setSharing(true)
+
+
+    window.open(
+
+      destination,
+
+      "_blank",
+      "noopener,noreferrer"
+
+    )
+
+
+    setShareOpen(false)
+
+
+    window.setTimeout(
+
+      () => {
+
+        setSharing(false)
+
+      },
+
+      500
+
+    )
+
+  }
+
+
   function rankIt() {
 
     if (!ranking) {
@@ -1254,6 +1567,515 @@ export default function RankClient({
                 }
 
               />
+
+            </div>
+
+
+            <div
+
+              className="
+                mt-6
+                relative
+              "
+
+            >
+
+              <button
+
+                type="button"
+
+                onClick={() => {
+
+                  setShareOpen(
+                    current => !current
+                  )
+
+                  setShareComplete(
+                    false
+                  )
+
+                }}
+
+                className="
+                  rankd-button
+                  inline-flex
+                  items-center
+                  justify-center
+                  gap-2
+                "
+
+              >
+
+                Share RANKD
+
+              </button>
+
+
+              {
+                shareOpen && (
+
+                  <div
+
+                    className="
+                      absolute
+                      z-30
+                      left-0
+                      top-full
+                      mt-3
+                      w-full
+                      max-w-sm
+                      rounded-3xl
+                      border
+                      border-black/10
+                      bg-white
+                      p-5
+                      shadow-xl
+                    "
+
+                  >
+
+                    <div
+
+                      className="
+                        flex
+                        items-center
+                        justify-between
+                        gap-4
+                      "
+
+                    >
+
+                      <div>
+
+                        <p
+
+                          className="
+                            text-lg
+                            font-black
+                          "
+
+                        >
+
+                          Share this RANKD
+
+                        </p>
+
+
+                        <p
+
+                          className="
+                            mt-1
+                            text-sm
+                            rankd-muted
+                          "
+
+                        >
+
+                          Choose where you want
+                          to share it.
+
+                        </p>
+
+                      </div>
+
+
+                      <button
+
+                        type="button"
+
+                        onClick={() => {
+
+                          setShareOpen(
+                            false
+                          )
+
+                          setShareComplete(
+                            false
+                          )
+
+                        }}
+
+                        className="
+                          h-9
+                          w-9
+                          rounded-full
+                          bg-black/[0.05]
+                          font-black
+                          hover:bg-black/[0.1]
+                          transition
+                        "
+
+                        aria-label="Close sharing options"
+
+                      >
+
+                        ×
+
+                      </button>
+
+                    </div>
+
+
+                    <div
+
+                      className="
+                        mt-5
+                        grid
+                        grid-cols-2
+                        gap-3
+                      "
+
+                    >
+
+                      <button
+
+                        type="button"
+
+                        onClick={() =>
+                          shareRanking(
+                            "clipboard"
+                          )
+                        }
+
+                        disabled={
+                          sharing
+                        }
+
+                        className="
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-[#F7F4EE]
+                          px-4
+                          py-4
+                          text-left
+                          font-black
+                          hover:bg-black/[0.05]
+                          transition
+                          disabled:opacity-50
+                        "
+
+                      >
+
+                        <span
+                          className="
+                            block
+                            text-xl
+                          "
+                        >
+
+                          🔗
+
+                        </span>
+
+
+                        <span
+                          className="
+                            mt-1
+                            block
+                          "
+                        >
+
+                          {
+                            shareComplete
+                              ? "Link copied ✓"
+                              : "Copy link"
+                          }
+
+                        </span>
+
+                      </button>
+
+
+                      <button
+
+                        type="button"
+
+                        onClick={() =>
+                          shareRanking(
+                            "whatsapp"
+                          )
+                        }
+
+                        disabled={
+                          sharing
+                        }
+
+                        className="
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-[#F7F4EE]
+                          px-4
+                          py-4
+                          text-left
+                          font-black
+                          hover:bg-black/[0.05]
+                          transition
+                          disabled:opacity-50
+                        "
+
+                      >
+
+                        <span
+                          className="
+                            block
+                            text-xl
+                          "
+                        >
+
+                          💬
+
+                        </span>
+
+
+                        <span
+                          className="
+                            mt-1
+                            block
+                          "
+                        >
+
+                          WhatsApp
+
+                        </span>
+
+                      </button>
+
+
+                      <button
+
+                        type="button"
+
+                        onClick={() =>
+                          shareRanking(
+                            "x"
+                          )
+                        }
+
+                        disabled={
+                          sharing
+                        }
+
+                        className="
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-[#F7F4EE]
+                          px-4
+                          py-4
+                          text-left
+                          font-black
+                          hover:bg-black/[0.05]
+                          transition
+                          disabled:opacity-50
+                        "
+
+                      >
+
+                        <span
+                          className="
+                            block
+                            text-xl
+                          "
+                        >
+
+                          𝕏
+
+                        </span>
+
+
+                        <span
+                          className="
+                            mt-1
+                            block
+                          "
+                        >
+
+                          X
+
+                        </span>
+
+                      </button>
+
+
+                      <button
+
+                        type="button"
+
+                        onClick={() =>
+                          shareRanking(
+                            "facebook"
+                          )
+                        }
+
+                        disabled={
+                          sharing
+                        }
+
+                        className="
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-[#F7F4EE]
+                          px-4
+                          py-4
+                          text-left
+                          font-black
+                          hover:bg-black/[0.05]
+                          transition
+                          disabled:opacity-50
+                        "
+
+                      >
+
+                        <span
+                          className="
+                            block
+                            text-xl
+                          "
+                        >
+
+                          f
+
+                        </span>
+
+
+                        <span
+                          className="
+                            mt-1
+                            block
+                          "
+
+                        >
+
+                          Facebook
+
+                        </span>
+
+                      </button>
+
+
+                      <button
+
+                        type="button"
+
+                        onClick={() =>
+                          shareRanking(
+                            "messages"
+                          )
+                        }
+
+                        disabled={
+                          sharing
+                        }
+
+                        className="
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-[#F7F4EE]
+                          px-4
+                          py-4
+                          text-left
+                          font-black
+                          hover:bg-black/[0.05]
+                          transition
+                          disabled:opacity-50
+                        "
+
+                      >
+
+                        <span
+                          className="
+                            block
+                            text-xl
+                          "
+                        >
+
+                          💬
+
+                        </span>
+
+
+                        <span
+                          className="
+                            mt-1
+                            block
+                          "
+
+                        >
+
+                          Messages
+
+                        </span>
+
+                      </button>
+
+
+                      <button
+
+                        type="button"
+
+                        onClick={() =>
+                          shareRanking(
+                            "email"
+                          )
+                        }
+
+                        disabled={
+                          sharing
+                        }
+
+                        className="
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-[#F7F4EE]
+                          px-4
+                          py-4
+                          text-left
+                          font-black
+                          hover:bg-black/[0.05]
+                          transition
+                          disabled:opacity-50
+                        "
+
+                      >
+
+                        <span
+                          className="
+                            block
+                            text-xl
+                          "
+                        >
+
+                          ✉
+
+                        </span>
+
+
+                        <span
+                          className="
+                            mt-1
+                            block
+                          "
+
+                        >
+
+                          Email
+
+                        </span>
+
+                      </button>
+
+                    </div>
+
+                  </div>
+
+                )
+
+              }
 
             </div>
 

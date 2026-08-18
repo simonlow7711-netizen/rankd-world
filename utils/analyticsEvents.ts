@@ -29,6 +29,10 @@ export const ANALYTICS_EVENTS = {
     "ranking_rerank_started",
 
 
+  RANKING_SHARED:
+    "ranking_shared",
+
+
   CATEGORY_VIEW:
     "category_view",
 
