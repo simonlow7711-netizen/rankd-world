@@ -2,6 +2,7 @@ import dotenv from "dotenv"
 import { createClient } from "@supabase/supabase-js"
 
 import { seedRankings } from "../data/seedRankings"
+import { seedRankingsWilliamsburg } from "../data/seedRankingsWilliamsburg"
 
 
 dotenv.config({
@@ -39,7 +40,17 @@ const RANKD_TEAM_ID =
   "00000000-0000-0000-0000-000000000001"
 
 
+const allSeedRankings = [
+
+  ...seedRankings,
+
+  ...seedRankingsWilliamsburg
+
+]
+
+
 async function seed(){
+
 
   console.log(
     "🚀 Starting RANKD seed..."
@@ -47,13 +58,21 @@ async function seed(){
 
 
   const {
+
     error:profileError
+
   } = await supabase
+
     .from("profiles")
+
     .upsert({
+
       id:RANKD_TEAM_ID,
+
       username:"rankd",
+
       display_name:"RANKD Team"
+
     })
 
 
@@ -75,34 +94,48 @@ async function seed(){
 
 
   let created = 0
+
   let skipped = 0
 
 
-  for(const ranking of seedRankings){
+  for(const ranking of allSeedRankings){
+
 
     const {
+
       data:existing,
+
       error:existingError
+
     } = await supabase
+
       .from("rankings")
+
       .select("id")
+
       .eq(
         "user_id",
         RANKD_TEAM_ID
       )
+
       .eq(
         "title",
         ranking.title
       )
+
       .maybeSingle()
 
 
     if(existingError){
 
       console.error(
+
         "Lookup error:",
+
         ranking.title,
+
         existingError
+
       )
 
       continue
@@ -134,28 +167,46 @@ async function seed(){
 
 
     const {
+
       error:rankingError
+
     } = await supabase
+
       .from("rankings")
+
       .insert({
+
         id:rankingId,
+
         user_id:RANKD_TEAM_ID,
+
         title:ranking.title,
+
         category:ranking.category,
+
         description:ranking.description,
+
         views,
+
         parent_id:null,
+
         root_id:rankingId,
+
         source_type:"team"
+
       })
 
 
     if(rankingError){
 
       console.error(
+
         "Ranking error:",
+
         ranking.title,
+
         rankingError
+
       )
 
       continue
@@ -164,34 +215,53 @@ async function seed(){
 
 
     const rankingItems =
+
       ranking.items.map(
+
         (item,index) => ({
+
           ranking_id:rankingId,
+
           position:index+1,
+
           name:item,
+
           votes:
+
             Math.floor(
               Math.random()*200
             )
+
         })
+
       )
 
 
     const {
+
       error:itemError
+
     } = await supabase
+
       .from("ranking_items")
+
       .insert(
+
         rankingItems
+
       )
 
 
     if(itemError){
 
       console.error(
+
         "Items error:",
+
         ranking.title,
+
         itemError
+
       )
 
       continue
@@ -203,13 +273,17 @@ async function seed(){
       `✅ Created ${ranking.title}`
     )
 
+
     created++
+
 
   }
 
 
   console.log(
+
     `
+
 🎉 RANKD seed complete
 
 Created:
@@ -219,7 +293,9 @@ Skipped:
 ${skipped}
 
 `
+
   )
+
 
 }
 
