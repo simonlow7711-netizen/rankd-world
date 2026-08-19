@@ -194,33 +194,35 @@ async function getRankingItems(
     new Map<string, RankingItem[]>()
 
 
-  const pageSize =
+  const batchSize =
 
-    1000
-
-
-  let page =
-
-    0
+    50
 
 
-  while (true) {
+  for (
+
+    let start = 0;
+
+    start < rankingIds.length;
+
+    start += batchSize
+
+  ) {
 
 
-    const from =
+    const batchIds =
 
-      page *
-      pageSize
+      rankingIds.slice(
 
+        start,
 
-    const to =
+        start + batchSize
 
-      from +
-      pageSize -
-      1
+      )
 
 
     const {
+
       data: items,
 
       error
@@ -236,7 +238,7 @@ async function getRankingItems(
 
           "ranking_id",
 
-          rankingIds
+          batchIds
 
         )
 
@@ -266,14 +268,6 @@ async function getRankingItems(
 
         )
 
-        .range(
-
-          from,
-
-          to
-
-        )
-
 
     if (error) {
 
@@ -285,26 +279,12 @@ async function getRankingItems(
 
       )
 
-
-      break
-
-    }
-
-
-    if (
-
-      !items ||
-
-      items.length === 0
-
-    ) {
-
-      break
+      continue
 
     }
 
 
-    items.forEach(item => {
+    ;(items ?? []).forEach(item => {
 
 
       const row =
@@ -359,22 +339,6 @@ async function getRankingItems(
         })
 
     })
-
-
-    if (
-
-      items.length <
-
-      pageSize
-
-    ) {
-
-      break
-
-    }
-
-
-    page += 1
 
   }
 
@@ -922,7 +886,12 @@ export async function createSupabaseRanking(
 
         views:
 
-          0,
+          ranking.views ?? 0,
+
+        created_at:
+
+          ranking.createdAt ??
+          new Date().toISOString(),
 
         parent_id:
 
@@ -952,7 +921,7 @@ export async function createSupabaseRanking(
 
     ranking.items.map(
 
-      (item: RankingItem) => ({
+      item => ({
 
         ranking_id:
 
@@ -983,7 +952,11 @@ export async function createSupabaseRanking(
 
       .from("ranking_items")
 
-      .insert(items)
+      .insert(
+
+        items
+
+      )
 
 
   if (itemsError) {
@@ -991,28 +964,6 @@ export async function createSupabaseRanking(
     throw itemsError
 
   }
-
-
-  const tasteGraph =
-
-    buildTasteGraph(
-
-      userId,
-
-      [
-
-        ranking
-
-      ]
-
-    )
-
-
-  await saveTasteGraph(
-
-    tasteGraph
-
-  )
 
 
   return data

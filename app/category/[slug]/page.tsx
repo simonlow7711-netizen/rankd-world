@@ -260,6 +260,29 @@ export default async function CategoryPage(
       )
 
 
+  console.log(
+
+    "CATEGORY RANKINGS",
+
+    category,
+
+    rankings.map(
+
+      ranking => ({
+
+        title:
+          ranking.title,
+
+        items:
+          ranking.items?.length ?? 0
+
+      })
+
+    )
+
+  )
+
+
   const categoryUrl =
     `${SITE_URL}/category/${slug}`
 
