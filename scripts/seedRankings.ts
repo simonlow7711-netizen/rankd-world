@@ -9,15 +9,12 @@ dotenv.config({
 })
 
 
-
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL
 
 
-
 const serviceRoleKey =
   process.env.SUPABASE_SERVICE_ROLE_KEY
-
 
 
 if(!supabaseUrl || !serviceRoleKey){
@@ -31,7 +28,6 @@ if(!supabaseUrl || !serviceRoleKey){
 }
 
 
-
 const supabase =
   createClient(
     supabaseUrl,
@@ -39,318 +35,181 @@ const supabase =
   )
 
 
-
-
-
 const RANKD_TEAM_ID =
   "00000000-0000-0000-0000-000000000001"
 
 
-
-
-
-
-
-
-
 async function seed(){
 
+  console.log(
+    "🚀 Starting RANKD seed..."
+  )
 
-console.log(
-  "🚀 Starting RANKD seed..."
-)
 
+  const {
+    error:profileError
+  } = await supabase
+    .from("profiles")
+    .upsert({
+      id:RANKD_TEAM_ID,
+      username:"rankd",
+      display_name:"RANKD Team"
+    })
 
 
+  if(profileError){
 
+    console.error(
+      "Profile error:",
+      profileError
+    )
 
+    process.exit(1)
 
+  }
 
-//
-// Ensure RAND Team profile exists
-//
 
+  console.log(
+    "✅ RANKD Team ready"
+  )
 
-const {
 
-error:profileError
+  let created = 0
+  let skipped = 0
 
-}=await supabase
 
-.from("profiles")
+  for(const ranking of seedRankings){
 
-.upsert({
+    const {
+      data:existing,
+      error:existingError
+    } = await supabase
+      .from("rankings")
+      .select("id")
+      .eq(
+        "user_id",
+        RANKD_TEAM_ID
+      )
+      .eq(
+        "title",
+        ranking.title
+      )
+      .maybeSingle()
 
-id:RANKD_TEAM_ID,
 
-username:"rankd",
+    if(existingError){
 
-display_name:"RANKD Team"
+      console.error(
+        "Lookup error:",
+        ranking.title,
+        existingError
+      )
 
-})
+      continue
 
+    }
 
 
+    if(existing){
 
+      console.log(
+        `⏭ Skipping ${ranking.title}`
+      )
 
-if(profileError){
+      skipped++
 
-console.error(
-"Profile error:",
-profileError
-)
+      continue
 
-process.exit(1)
+    }
 
-}
 
+    const rankingId =
+      crypto.randomUUID()
 
 
+    const views =
+      Math.floor(
+        Math.random()*900
+      )+100
 
 
+    const {
+      error:rankingError
+    } = await supabase
+      .from("rankings")
+      .insert({
+        id:rankingId,
+        user_id:RANKD_TEAM_ID,
+        title:ranking.title,
+        category:ranking.category,
+        description:ranking.description,
+        views,
+        parent_id:null,
+        root_id:rankingId,
+        source_type:"team"
+      })
 
 
-console.log(
-"✅ RANKD Team ready"
-)
+    if(rankingError){
 
+      console.error(
+        "Ranking error:",
+        ranking.title,
+        rankingError
+      )
 
+      continue
 
+    }
 
 
+    const rankingItems =
+      ranking.items.map(
+        (item,index) => ({
+          ranking_id:rankingId,
+          position:index+1,
+          name:item,
+          votes:
+            Math.floor(
+              Math.random()*200
+            )
+        })
+      )
 
 
+    const {
+      error:itemError
+    } = await supabase
+      .from("ranking_items")
+      .insert(
+        rankingItems
+      )
 
-let created = 0
 
-let skipped = 0
+    if(itemError){
 
+      console.error(
+        "Items error:",
+        ranking.title,
+        itemError
+      )
 
+      continue
 
+    }
 
 
+    console.log(
+      `✅ Created ${ranking.title}`
+    )
 
+    created++
 
-for(const ranking of seedRankings){
+  }
 
 
-
-const {
-
-data:existing
-
-}=await supabase
-
-.from("rankings")
-
-.select("id")
-
-.eq(
-"user_id",
-RANKD_TEAM_ID
-)
-
-.eq(
-"title",
-ranking.title
-)
-
-.maybeSingle()
-
-
-
-
-
-
-if(existing){
-
-
-console.log(
-`⏭ Skipping ${ranking.title}`
-)
-
-
-skipped++
-
-continue
-
-
-}
-
-
-
-
-
-
-
-
-const rankingId =
-crypto.randomUUID()
-
-
-
-
-
-
-
-const views =
-Math.floor(
-Math.random()*900
-)+100
-
-
-
-
-
-
-
-
-const {
-
-error:rankingError
-
-}=await supabase
-
-.from("rankings")
-
-.insert({
-
-id:rankingId,
-
-user_id:RANKD_TEAM_ID,
-
-title:ranking.title,
-
-category:ranking.category,
-
-description:ranking.description,
-
-views,
-
-parent_id:null,
-
-root_id:rankingId,
-
-source_type:"team"
-
-})
-
-
-
-
-
-
-
-if(rankingError){
-
-console.error(
-
-"Ranking error:",
-ranking.title,
-
-rankingError
-
-)
-
-continue
-
-}
-
-
-
-
-
-
-
-
-const rankingItems =
-
-ranking.items.map(
-
-(item,index)=>({
-
-ranking_id:rankingId,
-
-position:index+1,
-
-name:item,
-
-votes:
-Math.floor(
-Math.random()*200
-)
-
-})
-
-)
-
-
-
-
-
-
-
-
-const {
-
-error:itemError
-
-}=await supabase
-
-.from("ranking_items")
-
-.insert(
-rankingItems
-)
-
-
-
-
-
-
-
-
-if(itemError){
-
-console.error(
-
-"Items error:",
-ranking.title,
-
-itemError
-
-)
-
-continue
-
-}
-
-
-
-
-
-
-
-
-console.log(
-`✅ Created ${ranking.title}`
-)
-
-
-created++
-
-
-}
-
-
-
-
-
-
-
-
-console.log(
-`
+  console.log(
+    `
 🎉 RANKD seed complete
 
 Created:
@@ -360,13 +219,9 @@ Skipped:
 ${skipped}
 
 `
-)
-
+  )
 
 }
-
-
-
 
 
 seed()

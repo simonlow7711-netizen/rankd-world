@@ -4,824 +4,238 @@ export const seedRankings = [
   // FOOD & DRINK
   // ============================
 
+  {
+    title: "Top 7 Restaurants in Islington",
+    category: "Food & Drink",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Trullo",
+      "The Tamil Prince",
+      "Primeur",
+      "Farang",
+      "Ottolenghi Islington",
+      "The Compton Arms",
+      "Little Bat"
+    ]
+  },
 
   {
-    id:"seed-pizza-top-7",
-    title:"Top 7 Pizzas Everyone Should Try",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Neapolitan Margherita",
-      "New York Slice",
-      "Detroit Style Pizza",
-      "Pepperoni Pizza",
-      "Sicilian Pizza",
-      "Chicago Deep Dish",
-      "Truffle Pizza"
+    title: "Top 7 Pubs in Islington",
+    category: "Food & Drink",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "The Albion",
+      "The Old Queen's Head",
+      "The Duke of Cambridge",
+      "The Hope & Anchor",
+      "The Hemingford Arms",
+      "The Earl of Essex",
+      "The Fox on the Green"
     ]
   },
-
 
   {
-    id:"seed-burgers-top-7",
-    title:"Top 7 Burgers Worth Trying",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Classic Cheeseburger",
-      "Smash Burger",
-      "Bacon Burger",
-      "Double Patty Burger",
-      "BBQ Burger",
-      "Chicken Burger",
-      "Veggie Burger"
+    title: "Top 7 Places for Brunch in Islington",
+    category: "Food & Drink",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Sunday",
+      "Ottolenghi Islington",
+      "Pophams Islington",
+      "Food Lab",
+      "Alpino Cafe",
+      "The Breakfast Club Angel",
+      "Boulangerie Bon Matin"
     ]
   },
-
 
   {
-    id:"seed-breakfast-top-7",
-    title:"Top 7 Breakfast Foods",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Full English Breakfast",
-      "Eggs Benedict",
-      "Croissant",
-      "Pancakes",
-      "Avocado Toast",
-      "Porridge",
-      "Bagel"
+    title: "Top 7 Food Experiences in Islington",
+    category: "Food & Drink",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Exmouth Market",
+      "Chapel Market",
+      "Camden Passage food stops",
+      "Upper Street restaurant crawl",
+      "Sunday roast",
+      "Coffee around Angel",
+      "Dinner around Highbury Corner"
     ]
   },
-
 
   {
-    id:"seed-desserts-top-7",
-    title:"Top 7 Desserts",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Chocolate Brownie",
-      "Cheesecake",
-      "Ice Cream",
-      "Tiramisu",
-      "Crème Brûlée",
-      "Apple Pie",
-      "Sticky Toffee Pudding"
+    title: "Top 7 Islington Food Debates",
+    category: "Food & Drink",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Trullo",
+      "The Tamil Prince",
+      "Primeur",
+      "Farang",
+      "Ottolenghi Islington",
+      "The Compton Arms",
+      "Goodbye Horses"
     ]
   },
 
+
+  // ============================
+  // FILM & TV
+  // ============================
 
   {
-    id:"seed-coffee-top-7",
-    title:"Top 7 Coffee Drinks",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Flat White",
-      "Espresso",
-      "Cappuccino",
-      "Latte",
-      "Americano",
-      "Mocha",
-      "Cold Brew"
+    title: "Top 7 Places to Watch a Film Near Islington",
+    category: "Film & TV",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Everyman Screen on the Green",
+      "Vue Islington",
+      "Everyman King's Cross",
+      "Rio Cinema",
+      "Curzon Bloomsbury",
+      "Genesis Cinema",
+      "BFI Southbank"
     ]
   },
-
 
   {
-    id:"seed-restaurants-top-7",
-    title:"Top 7 Restaurant Experiences",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Fine Dining",
-      "Local Favourite",
-      "Street Food",
-      "Family Restaurant",
-      "Hidden Gem",
-      "Chef's Table",
-      "Food Market"
+    title: "Top 7 Films for an Islington Night In",
+    category: "Film & TV",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Notting Hill",
+      "Love Actually",
+      "Paddington",
+      "The King's Speech",
+      "Bridget Jones's Diary",
+      "About Time",
+      "Four Weddings and a Funeral"
     ]
   },
-
 
   {
-    id:"seed-snacks-top-7",
-    title:"Top 7 Snacks",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Chocolate",
-      "Crisps",
-      "Popcorn",
-      "Nuts",
-      "Cookies",
-      "Pretzels",
-      "Fruit"
+    title: "Top 7 London Films to Watch in Islington",
+    category: "Film & TV",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Notting Hill",
+      "Paddington",
+      "Love Actually",
+      "28 Days Later",
+      "About Time",
+      "Locke",
+      "Bridget Jones's Diary"
     ]
   },
-
 
   {
-    id:"seed-pasta-top-7",
-    title:"Top 7 Pasta Dishes",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Carbonara",
-      "Lasagne",
-      "Bolognese",
-      "Pesto Pasta",
-      "Arrabbiata",
-      "Ravioli",
-      "Mac & Cheese"
+    title: "Top 7 Islington Film & TV Locations",
+    category: "Film & TV",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street",
+      "Canonbury Square",
+      "Highbury Fields",
+      "Regent's Canal",
+      "Camden Passage",
+      "Angel",
+      "Highbury Corner"
     ]
   },
-
 
   {
-    id:"seed-steak-top-7",
-    title:"Top 7 Steak Cuts",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Ribeye",
-      "Fillet",
-      "Sirloin",
-      "T-Bone",
-      "Tomahawk",
-      "Rump",
-      "Flank"
+    title: "Top 7 Screen Experiences Around Islington",
+    category: "Film & TV",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Screen on the Green",
+      "Vue Islington",
+      "Everyman King's Cross",
+      "Rio Cinema",
+      "Curzon Bloomsbury",
+      "Genesis Cinema",
+      "BFI Southbank"
     ]
   },
 
 
-  {
-    id:"seed-chocolate-top-7",
-    title:"Top 7 Chocolate Bars",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Cadbury Dairy Milk",
-      "Galaxy",
-      "Lindt",
-      "KitKat",
-      "Toblerone",
-      "Snickers",
-      "Ferrero Rocher"
-    ]
-  },
-
-
-  {
-    id:"seed-cocktails-top-7",
-    title:"Top 7 Cocktails",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Mojito",
-      "Old Fashioned",
-      "Margarita",
-      "Espresso Martini",
-      "Negroni",
-      "Martini",
-      "Cosmopolitan"
-    ]
-  },
-
-
-  {
-    id:"seed-comfort-food-top-7",
-    title:"Top 7 Comfort Foods",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Mac & Cheese",
-      "Roast Dinner",
-      "Pizza",
-      "Curry",
-      "Lasagne",
-      "Soup",
-      "Fish & Chips"
-    ]
-  },
-
-
-  {
-    id:"seed-street-food-top-7",
-    title:"Top 7 Street Foods",
-    category:"Food & Drink",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Tacos",
-      "Pizza Slice",
-      "Bao Buns",
-      "Kebab",
-      "Banh Mi",
-      "Hot Dog",
-      "Jerk Chicken"
-    ]
-  },
-
-
-  {
-    id:"seed-film-nolan-top-7",
-    title:"Top 7 Christopher Nolan Films",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Interstellar",
-      "The Dark Knight",
-      "Inception",
-      "The Prestige",
-      "Memento",
-      "Dunkirk",
-      "Tenet"
-    ]
-  },
-
-
-  {
-    id:"seed-film-alltime-top-7",
-    title:"Top 7 Films Everyone Should Watch",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "The Godfather",
-      "The Shawshank Redemption",
-      "The Dark Knight",
-      "Pulp Fiction",
-      "Inception",
-      "Forrest Gump",
-      "Interstellar"
-    ]
-  },
-
-
-  {
-    id:"seed-tv-shows-top-7",
-    title:"Top 7 TV Shows Of All Time",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Breaking Bad",
-      "The Sopranos",
-      "Game of Thrones",
-      "The Wire",
-      "Stranger Things",
-      "Friends",
-      "Succession"
-    ]
-  },
-
-
-  {
-    id:"seed-netflix-top-7",
-    title:"Top 7 Netflix Shows",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Stranger Things",
-      "Breaking Bad",
-      "The Crown",
-      "Wednesday",
-      "Black Mirror",
-      "Narcos",
-      "The Witcher"
-    ]
-  },
-
-
-  {
-    id:"seed-comedy-films-top-7",
-    title:"Top 7 Comedy Films",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "The Hangover",
-      "Monty Python and the Holy Grail",
-      "Anchorman",
-      "Superbad",
-      "Groundhog Day",
-      "Airplane!",
-      "Step Brothers"
-    ]
-  },
-
-
-  {
-    id:"seed-pixar-films-top-7",
-    title:"Top 7 Pixar Films",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Toy Story",
-      "Finding Nemo",
-      "The Incredibles",
-      "Up",
-      "Wall-E",
-      "Ratatouille",
-      "Inside Out"
-    ]
-  },
-
-
-  {
-    id:"seed-marvel-films-top-7",
-    title:"Top 7 Marvel Films",
-    category:"Film & TV",
-    description:"A RANKD Team starter ranking.",
-    items:[
-      "Avengers: Endgame",
-      "Avengers: Infinity War",
-      "Iron Man",
-      "Guardians of the Galaxy",
-      "Spider-Man: No Way Home",
-      "Captain America: The Winter Soldier",
-      "Black Panther"
-    ]
-  },
-    {
-    id:"seed-horror-films-top-7",
-
-    title:
-      "Top 7 Horror Films",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Shining",
-      "The Exorcist",
-      "Hereditary",
-      "Alien",
-      "Halloween",
-      "A Nightmare on Elm Street",
-      "Get Out"
-    ]
-  },
-
-
-  {
-    id:"seed-scifi-films-top-7",
-
-    title:
-      "Top 7 Sci-Fi Films",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Interstellar",
-      "Blade Runner",
-      "The Matrix",
-      "Alien",
-      "Arrival",
-      "Star Wars: The Empire Strikes Back",
-      "2001: A Space Odyssey"
-    ]
-  },
-
-
-  {
-    id:"seed-action-films-top-7",
-
-    title:
-      "Top 7 Action Films",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Die Hard",
-      "The Dark Knight",
-      "Mad Max: Fury Road",
-      "Terminator 2",
-      "Gladiator",
-      "John Wick",
-      "Raiders of the Lost Ark"
-    ]
-  },
-
-
-  {
-    id:"seed-fantasy-films-top-7",
-
-    title:
-      "Top 7 Fantasy Films",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Lord of the Rings",
-      "Harry Potter and the Prisoner of Azkaban",
-      "Pan's Labyrinth",
-      "The Princess Bride",
-      "Spirited Away",
-      "The Green Knight",
-      "The Chronicles of Narnia"
-    ]
-  },
-
-
-  {
-    id:"seed-british-tv-top-7",
-
-    title:
-      "Top 7 British TV Shows",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Peaky Blinders",
-      "The Office UK",
-      "Black Mirror",
-      "Fleabag",
-      "Doctor Who",
-      "Only Fools and Horses",
-      "The Inbetweeners"
-    ]
-  },
-
-
-  {
-    id:"seed-tv-characters-top-7",
-
-    title:
-      "Top 7 TV Characters",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Walter White",
-      "Tony Soprano",
-      "Michael Scott",
-      "Sherlock Holmes",
-      "Jon Snow",
-      "Homer Simpson",
-      "Don Draper"
-    ]
-  },
-
-
-  {
-    id:"seed-film-villains-top-7",
-
-    title:
-      "Top 7 Movie Villains",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Joker",
-      "Darth Vader",
-      "Hannibal Lecter",
-      "Voldemort",
-      "Hans Landa",
-      "Thanos",
-      "Nurse Ratched"
-    ]
-  },
-
-
-  {
-    id:"seed-tv-finales-top-7",
-
-    title:
-      "Top 7 TV Finales",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Breaking Bad",
-      "The Sopranos",
-      "Six Feet Under",
-      "The Wire",
-      "Friends",
-      "Succession",
-      "The Good Place"
-    ]
-  },
-
-
-  {
-    id:"seed-movie-quotes-top-7",
-
-    title:
-      "Top 7 Movie Quotes",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "I'll make him an offer he can't refuse",
-      "May the Force be with you",
-      "Why so serious?",
-      "Here's looking at you, kid",
-      "You talking to me?",
-      "E.T. phone home",
-      "Life finds a way"
-    ]
-  },
-
-
-  {
-    id:"seed-movie-soundtracks-top-7",
-
-    title:
-      "Top 7 Movie Soundtracks",
-
-    category:
-      "Film & TV",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Lion King",
-      "Guardians of the Galaxy",
-      "Pulp Fiction",
-      "Interstellar",
-      "Star Wars",
-      "The Greatest Showman",
-      "Titanic"
-    ]
-  },
-    // ============================
+  // ============================
   // MUSIC
   // ============================
 
-
   {
-    id:"seed-albums-top-7",
-
-    title:
-      "Top 7 Albums Of All Time",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Thriller",
-      "The Dark Side of the Moon",
-      "Abbey Road",
-      "Rumours",
-      "Back to Black",
-      "Nevermind",
-      "OK Computer"
+    title: "Top 7 Music Venues in Islington",
+    category: "Music",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel",
+      "O2 Academy Islington",
+      "Islington Assembly Hall",
+      "The Grace",
+      "The Garage",
+      "Hope & Anchor",
+      "Electrowerkz"
     ]
   },
 
-
   {
-    id:"seed-songs-top-7",
-
-    title:
-      "Top 7 Songs Everyone Should Hear",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Bohemian Rhapsody",
-      "Imagine",
-      "Billie Jean",
-      "Smells Like Teen Spirit",
-      "Like a Rolling Stone",
-      "Hey Jude",
-      "Purple Rain"
+    title: "Top 7 Places for Live Music in Islington",
+    category: "Music",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel",
+      "O2 Academy Islington",
+      "Islington Assembly Hall",
+      "The Grace",
+      "The Garage",
+      "Hope & Anchor",
+      "Electrowerkz"
     ]
   },
 
-
   {
-    id:"seed-artists-top-7",
-
-    title:
-      "Top 7 Music Artists",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Beatles",
-      "Michael Jackson",
-      "David Bowie",
-      "Queen",
-      "Taylor Swift",
-      "Beyoncé",
-      "Elvis Presley"
+    title: "Top 7 Islington Music Nights",
+    category: "Music",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel gig",
+      "O2 Academy Islington gig",
+      "The Grace show",
+      "Hope & Anchor show",
+      "The Garage gig",
+      "Electrowerkz night",
+      "Local emerging-band night"
     ]
   },
 
-
   {
-    id:"seed-bands-top-7",
-
-    title:
-      "Top 7 Bands Of All Time",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Beatles",
-      "Queen",
-      "Led Zeppelin",
-      "Pink Floyd",
-      "Fleetwood Mac",
-      "Nirvana",
-      "Radiohead"
+    title: "Top 7 Islington Music Landmarks",
+    category: "Music",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel",
+      "O2 Academy Islington",
+      "Hope & Anchor",
+      "The Garage",
+      "Islington Assembly Hall",
+      "Electrowerkz",
+      "Upper Street music scene"
     ]
   },
 
-
   {
-    id:"seed-guitarists-top-7",
-
-    title:
-      "Top 7 Guitarists",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Jimi Hendrix",
-      "Eric Clapton",
-      "Jimmy Page",
-      "David Gilmour",
-      "Eddie Van Halen",
-      "Slash",
-      "Stevie Ray Vaughan"
-    ]
-  },
-
-
-  {
-    id:"seed-vocalists-top-7",
-
-    title:
-      "Top 7 Singers",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Freddie Mercury",
-      "Whitney Houston",
-      "Aretha Franklin",
-      "Michael Jackson",
-      "Adele",
-      "Elton John",
-      "Beyoncé"
-    ]
-  },
-
-
-  {
-    id:"seed-music-decades-top-7",
-
-    title:
-      "Top 7 Music Decades",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "1960s",
-      "1970s",
-      "1980s",
-      "1990s",
-      "2000s",
-      "2010s",
-      "1950s"
-    ]
-  },
-
-
-  {
-    id:"seed-festivals-top-7",
-
-    title:
-      "Top 7 Music Festivals",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Glastonbury",
-      "Coachella",
-      "Tomorrowland",
-      "Reading Festival",
-      "Burning Man",
-      "Download Festival",
-      "Primavera Sound"
-    ]
-  },
-
-
-  {
-    id:"seed-film-scores-top-7",
-
-    title:
-      "Top 7 Film Composers",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Hans Zimmer",
-      "John Williams",
-      "Ennio Morricone",
-      "Howard Shore",
-      "Danny Elfman",
-      "James Horner",
-      "Ramin Djawadi"
-    ]
-  },
-
-
-  {
-    id:"seed-concerts-top-7",
-
-    title:
-      "Top 7 Live Performances",
-
-    category:
-      "Music",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Queen Live Aid",
-      "Woodstock 1969",
-      "Nirvana MTV Unplugged",
-      "Beyoncé Coachella",
-      "Michael Jackson Motown 25",
-      "Daft Punk Grammy Performance",
-      "Adele Royal Albert Hall"
+    title: "Top 7 Islington Music Debates",
+    category: "Music",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel",
+      "O2 Academy Islington",
+      "The Grace",
+      "Hope & Anchor",
+      "The Garage",
+      "Islington Assembly Hall",
+      "Electrowerkz"
     ]
   },
 
@@ -830,486 +244,78 @@ export const seedRankings = [
   // SPORT
   // ============================
 
-
   {
-    id:"seed-footballers-top-7",
-
-    title:
-      "Top 7 Footballers Of All Time",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Lionel Messi",
-      "Diego Maradona",
-      "Pelé",
-      "Cristiano Ronaldo",
-      "Johan Cruyff",
-      "Zinedine Zidane",
-      "Ronaldinho"
+    title: "Top 7 Sporting Places in Islington",
+    category: "Sport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Emirates Stadium",
+      "Highbury Fields",
+      "Finsbury Park",
+      "Sobell Centre",
+      "Caledonian Park",
+      "Regent's Canal",
+      "Local football pitches"
     ]
   },
 
-
   {
-    id:"seed-premier-league-teams-top-7",
-
-    title:
-      "Top 7 Premier League Teams",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Manchester United 1998/99",
-      "Arsenal Invincibles",
-      "Manchester City 2017/18",
-      "Chelsea 2004/05",
-      "Liverpool 2019/20",
-      "Leicester City 2015/16",
-      "Blackburn Rovers 1994/95"
+    title: "Top 7 Islington Football Experiences",
+    category: "Sport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Arsenal match at Emirates Stadium",
+      "Emirates Stadium tour",
+      "Arsenal Museum",
+      "Highbury history walk",
+      "Watching football in a local pub",
+      "Five-a-side football",
+      "Arsenal matchday around Islington"
     ]
   },
 
-
   {
-    id:"seed-sports-moments-top-7",
-
-    title:
-      "Top 7 Sporting Moments",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Maradona 1986 World Cup",
-      "Usain Bolt 2008 Olympics",
-      "Michael Jordan Flu Game",
-      "England Cricket World Cup 2019",
-      "Rugby World Cup Final 2003",
-      "Tiger Woods Masters 2019",
-      "Leicester City Premier League Win"
+    title: "Top 7 Places to Get Active in Islington",
+    category: "Sport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Finsbury Park",
+      "Sobell Centre",
+      "Regent's Canal",
+      "Caledonian Park",
+      "Local tennis courts",
+      "Local football pitches"
     ]
   },
 
-
   {
-    id:"seed-football-stadiums-top-7",
-
-    title:
-      "Top 7 Football Stadiums",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Wembley",
-      "Camp Nou",
-      "Santiago Bernabéu",
-      "Anfield",
-      "San Siro",
-      "Old Trafford",
-      "Signal Iduna Park"
+    title: "Top 7 Islington Sporting Traditions",
+    category: "Sport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Arsenal matchday",
+      "Running Highbury Fields",
+      "Cycling the canal",
+      "Weekend football",
+      "Tennis in the parks",
+      "Swimming at Sobell",
+      "Walking the borough"
     ]
   },
 
-
   {
-    id:"seed-athletes-top-7",
-
-    title:
-      "Top 7 Athletes Ever",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Michael Jordan",
-      "Usain Bolt",
-      "Serena Williams",
-      "Muhammad Ali",
-      "Tiger Woods",
-      "Roger Federer",
-      "LeBron James"
-    ]
-  },
-
-
-  {
-    id:"seed-sports-films-top-7",
-
-    title:
-      "Top 7 Sports Films",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Rocky",
-      "Remember the Titans",
-      "Moneyball",
-      "Raging Bull",
-      "The Blind Side",
-      "Ford v Ferrari",
-      "Creed"
-    ]
-  },
-
-
-  {
-    id:"seed-football-clubs-top-7",
-
-    title:
-      "Top 7 Football Clubs",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Real Madrid",
-      "Barcelona",
-      "Manchester United",
-      "Liverpool",
-      "Bayern Munich",
-      "AC Milan",
-      "Manchester City"
-    ]
-  },
-
-
-  {
-    id:"seed-olympic-sports-top-7",
-
-    title:
-      "Top 7 Olympic Sports",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Athletics",
-      "Swimming",
-      "Gymnastics",
-      "Cycling",
-      "Boxing",
-      "Rowing",
-      "Tennis"
-    ]
-  },
-
-
-  {
-    id:"seed-sports-rivalries-top-7",
-
-    title:
-      "Top 7 Sports Rivalries",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Messi vs Ronaldo",
-      "Federer vs Nadal",
-      "Ali vs Frazier",
-      "Senna vs Prost",
-      "Celtics vs Lakers",
-      "India vs Pakistan Cricket",
-      "Liverpool vs Manchester United"
-    ]
-  },
-
-
-  {
-    id:"seed-extreme-sports-top-7",
-
-    title:
-      "Top 7 Extreme Sports",
-
-    category:
-      "Sport",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Skydiving",
-      "Surfing",
-      "Mountain Climbing",
-      "BMX",
-      "Snowboarding",
-      "Base Jumping",
-      "Formula 1"
-    ]
-  },
-    // ============================
-  // TRAVEL
-  // ============================
-
-
-  {
-    id:"seed-countries-top-7",
-
-    title:
-      "Top 7 Countries To Visit",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Italy",
-      "Japan",
-      "New Zealand",
-      "Australia",
-      "Greece",
-      "Thailand",
-      "Iceland"
-    ]
-  },
-
-
-  {
-    id:"seed-cities-top-7",
-
-    title:
-      "Top 7 Cities In The World",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "London",
-      "Tokyo",
-      "New York",
-      "Paris",
-      "Rome",
-      "Barcelona",
-      "Sydney"
-    ]
-  },
-
-
-  {
-    id:"seed-beaches-top-7",
-
-    title:
-      "Top 7 Beaches",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Whitehaven Beach",
-      "Bora Bora",
-      "Navagio Beach",
-      "Grace Bay",
-      "Anse Source d'Argent",
-      "Maya Bay",
-      "Bondi Beach"
-    ]
-  },
-
-
-  {
-    id:"seed-travel-experiences-top-7",
-
-    title:
-      "Top 7 Travel Experiences",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Safari",
-      "Northern Lights",
-      "Road Trip",
-      "Island Hopping",
-      "Mountain Trek",
-      "Scuba Diving",
-      "City Break"
-    ]
-  },
-
-
-  {
-    id:"seed-europe-cities-top-7",
-
-    title:
-      "Top 7 European Cities",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "London",
-      "Paris",
-      "Rome",
-      "Barcelona",
-      "Amsterdam",
-      "Prague",
-      "Vienna"
-    ]
-  },
-
-
-  {
-    id:"seed-travel-food-top-7",
-
-    title:
-      "Top 7 Food Destinations",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Italy",
-      "Japan",
-      "Thailand",
-      "Mexico",
-      "France",
-      "Spain",
-      "Greece"
-    ]
-  },
-
-
-  {
-    id:"seed-road-trips-top-7",
-
-    title:
-      "Top 7 Road Trips",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Route 66",
-      "Great Ocean Road",
-      "Amalfi Coast",
-      "Scottish Highlands",
-      "Pacific Coast Highway",
-      "Iceland Ring Road",
-      "Garden Route"
-    ]
-  },
-
-
-  {
-    id:"seed-landmarks-top-7",
-
-    title:
-      "Top 7 Landmarks",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Eiffel Tower",
-      "Great Wall of China",
-      "Machu Picchu",
-      "Taj Mahal",
-      "Colosseum",
-      "Sydney Opera House",
-      "Statue of Liberty"
-    ]
-  },
-
-
-  {
-    id:"seed-theme-parks-top-7",
-
-    title:
-      "Top 7 Theme Parks",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Disney World",
-      "Universal Studios",
-      "Disneyland Paris",
-      "Europa-Park",
-      "Alton Towers",
-      "Efteling",
-      "Legoland"
-    ]
-  },
-
-
-  {
-    id:"seed-adventure-travel-top-7",
-
-    title:
-      "Top 7 Adventure Trips",
-
-    category:
-      "Travel",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Climbing Everest Base Camp",
-      "Amazon Expedition",
-      "Antarctica Cruise",
-      "Desert Safari",
-      "Jungle Trek",
-      "Volcano Hiking",
-      "Polar Expedition"
+    title: "Top 7 Islington Sport Debates",
+    category: "Sport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Emirates Stadium",
+      "Highbury Fields",
+      "Finsbury Park",
+      "Sobell Centre",
+      "Regent's Canal",
+      "Caledonian Park",
+      "Five-a-side football"
     ]
   },
 
@@ -1318,366 +324,158 @@ export const seedRankings = [
   // GAMING
   // ============================
 
-
   {
-    id:"seed-video-games-top-7",
-
-    title:
-      "Top 7 Video Games Of All Time",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Minecraft",
-      "The Legend of Zelda: Ocarina of Time",
-      "Grand Theft Auto V",
-      "Super Mario Bros",
-      "The Witcher 3",
-      "Red Dead Redemption 2",
-      "Elden Ring"
+    title: "Top 7 Gaming Things to Do Around Islington",
+    category: "Gaming",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "clueQuest Angel",
+      "The Board Game Cafe",
+      "Arcade bars around Angel",
+      "Escape rooms",
+      "Tabletop gaming nights",
+      "Mario Kart tournament",
+      "Pub quiz"
     ]
   },
 
-
   {
-    id:"seed-console-games-top-7",
-
-    title:
-      "Top 7 Console Games",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Super Mario Bros",
-      "Halo",
-      "God of War",
-      "The Last of Us",
-      "Zelda: Breath of the Wild",
-      "Gran Turismo",
-      "Final Fantasy VII"
+    title: "Top 7 Games for an Islington Rainy Day",
+    category: "Gaming",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Codenames",
+      "Ticket to Ride",
+      "Carcassonne",
+      "Azul",
+      "Wingspan",
+      "Mario Kart",
+      "Cluedo"
     ]
   },
 
-
   {
-    id:"seed-gaming-franchises-top-7",
-
-    title:
-      "Top 7 Gaming Franchises",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Mario",
-      "Pokémon",
-      "Zelda",
-      "Minecraft",
-      "Call of Duty",
-      "Grand Theft Auto",
-      "Final Fantasy"
-    ]
-  },
-
-
-  {
-    id:"seed-retro-games-top-7",
-
-    title:
-      "Top 7 Retro Games",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Pac-Man",
-      "Tetris",
-      "Super Mario Bros",
-      "Sonic the Hedgehog",
-      "Street Fighter II",
-      "Doom",
-      "Space Invaders"
-    ]
-  },
-
-
-  {
-    id:"seed-gaming-characters-top-7",
-
-    title:
-      "Top 7 Gaming Characters",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Mario",
-      "Link",
-      "Pikachu",
-      "Master Chief",
-      "Lara Croft",
-      "Kratos",
-      "Geralt"
-    ]
-  },
-
-
-  {
-    id:"seed-pc-games-top-7",
-
-    title:
-      "Top 7 PC Games",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "World of Warcraft",
-      "Minecraft",
-      "Half-Life 2",
-      "The Sims",
-      "Counter-Strike",
-      "Civilization VI",
-      "Baldur's Gate 3"
-    ]
-  },
-
-
-  {
-    id:"seed-esports-top-7",
-
-    title:
-      "Top 7 Esports Games",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "League of Legends",
-      "Counter-Strike",
-      "Dota 2",
-      "Valorant",
-      "Fortnite",
-      "Overwatch",
-      "Rocket League"
-    ]
-  },
-
-
-  {
-    id:"seed-board-games-top-7",
-
-    title:
-      "Top 7 Board Games",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Chess",
+    title: "Top 7 Games to Argue About in Islington",
+    category: "Gaming",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "EA Sports FC",
+      "Mario Kart",
       "Monopoly",
       "Catan",
-      "Risk",
       "Cluedo",
-      "Scrabble",
-      "Ticket to Ride"
+      "Call of Duty",
+      "The Legend of Zelda"
     ]
   },
-
 
   {
-    id:"seed-mobile-games-top-7",
-
-    title:
-      "Top 7 Mobile Games",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Candy Crush",
-      "Pokémon GO",
-      "Clash of Clans",
-      "Among Us",
-      "Subway Surfers",
-      "Angry Birds",
-      "Monument Valley"
+    title: "Top 7 Gaming Experiences for Friends in Islington",
+    category: "Gaming",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Escape room",
+      "Board-game café session",
+      "Arcade night",
+      "Mario Kart tournament",
+      "Tabletop role-playing night",
+      "Pub quiz",
+      "Co-op console night"
     ]
   },
-
 
   {
-    id:"seed-gaming-moments-top-7",
-
-    title:
-      "Top 7 Gaming Moments",
-
-    category:
-      "Gaming",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "First Mario Jump",
-      "Minecraft First Night",
-      "Halo Campaign",
-      "Zelda Discovery",
-      "Pokémon First Catch",
-      "GTA Open World",
-      "Online Multiplayer Victory"
+    title: "Top 7 Games That Belong in Every Islington Flat",
+    category: "Gaming",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Codenames",
+      "Catan",
+      "Carcassonne",
+      "Azul",
+      "Monopoly",
+      "Mario Kart",
+      "Cluedo"
     ]
   },
-    // ============================
-  // BOOKS
+
+
+  // ============================
+  // TRAVEL
   // ============================
 
-
   {
-    id:"seed-books-alltime-top-7",
-
-    title:
-      "Top 7 Books Everyone Should Read",
-
-    category:
-      "Books",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "1984",
-      "To Kill a Mockingbird",
-      "The Lord of the Rings",
-      "Harry Potter",
-      "The Great Gatsby",
-      "Pride and Prejudice",
-      "The Hobbit"
+    title: "Top 7 Walks Around Islington",
+    category: "Travel",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Regent's Canal",
+      "Highbury Fields to Canonbury",
+      "Angel to Camden Passage",
+      "Upper Street to Highbury Corner",
+      "Barnsbury to Caledonian Road",
+      "Finsbury Park loop",
+      "Clerkenwell to Angel"
     ]
   },
 
-
   {
-    id:"seed-fiction-books-top-7",
-
-    title:
-      "Top 7 Fiction Books",
-
-    category:
-      "Books",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Count of Monte Cristo",
-      "The Hobbit",
-      "Dune",
-      "Jane Eyre",
-      "The Catcher in the Rye",
-      "Crime and Punishment",
-      "The Book Thief"
+    title: "Top 7 Places to Explore From Islington",
+    category: "Travel",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Camden",
+      "King's Cross",
+      "Hampstead",
+      "Shoreditch",
+      "Covent Garden",
+      "Spitalfields",
+      "Little Venice"
     ]
   },
 
-
   {
-    id:"seed-business-books-top-7",
-
-    title:
-      "Top 7 Business Books",
-
-    category:
-      "Books",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Good to Great",
-      "Atomic Habits",
-      "The Lean Startup",
-      "Think and Grow Rich",
-      "Zero to One",
-      "Shoe Dog",
-      "The Psychology of Money"
+    title: "Top 7 Islington Neighbourhoods to Explore",
+    category: "Travel",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Angel",
+      "Highbury",
+      "Canonbury",
+      "Barnsbury",
+      "Holloway",
+      "Archway",
+      "Clerkenwell"
     ]
   },
 
-
   {
-    id:"seed-self-development-books-top-7",
-
-    title:
-      "Top 7 Self Development Books",
-
-    category:
-      "Books",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Atomic Habits",
-      "How to Win Friends and Influence People",
-      "The 7 Habits of Highly Effective People",
-      "Deep Work",
-      "Mindset",
-      "The Power of Now",
-      "Can't Hurt Me"
+    title: "Top 7 Ways to Spend a Saturday in Islington",
+    category: "Travel",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Breakfast on Upper Street",
+      "Camden Passage",
+      "Regent's Canal walk",
+      "Lunch at Exmouth Market",
+      "Gallery visit",
+      "Almeida Theatre",
+      "Pub in the evening"
     ]
   },
 
-
   {
-    id:"seed-biographies-top-7",
-
-    title:
-      "Top 7 Biographies",
-
-    category:
-      "Books",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Steve Jobs",
-      "Elon Musk",
-      "Long Walk to Freedom",
-      "Becoming",
-      "The Diary of a Young Girl",
-      "Einstein",
-      "Churchill"
+    title: "Top 7 Day Trips From Islington",
+    category: "Travel",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Cambridge",
+      "Brighton",
+      "Oxford",
+      "St Albans",
+      "Richmond",
+      "Greenwich",
+      "Hampstead"
     ]
   },
 
@@ -1686,123 +484,78 @@ export const seedRankings = [
   // TECHNOLOGY
   // ============================
 
+  {
+    title: "Top 7 Technology Connections Around Islington",
+    category: "Technology",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Tech businesses around King's Cross",
+      "Business Design Centre",
+      "Tech meetups around Angel",
+      "Creative-tech studios",
+      "Digital businesses around Clerkenwell",
+      "Coal Drops Yard",
+      "London's wider tech ecosystem"
+    ]
+  },
 
   {
-    id:"seed-tech-companies-top-7",
+    title: "Top 7 Places for Tech Inspiration Around Islington",
+    category: "Technology",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Business Design Centre",
+      "King's Cross",
+      "Coal Drops Yard",
+      "Exmouth Market",
+      "Camden Passage",
+      "Clerkenwell",
+      "Upper Street"
+    ]
+  },
 
-    title:
-      "Top 7 Technology Companies",
+  {
+    title: "Top 7 Tech Questions for Islington",
+    category: "Technology",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Best coworking spot?",
+      "Best tech meetup?",
+      "Best coffee-and-laptop spot?",
+      "Best startup community?",
+      "Best creative-tech event?",
+      "Best independent tech shop?",
+      "Best place to work for an afternoon?"
+    ]
+  },
 
-    category:
-      "Technology",
+  {
+    title: "Top 7 Digital-Life Essentials for Islington",
+    category: "Technology",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Citymapper",
+      "Google Maps",
+      "Contactless transport",
+      "WhatsApp",
+      "Deliveroo",
+      "Uber",
+      "Eventbrite"
+    ]
+  },
 
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
+  {
+    title: "Top 7 Tech Brands for an Islington Flat",
+    category: "Technology",
+    description: "RANKD Team Islington edition.",
+    items: [
       "Apple",
-      "Microsoft",
+      "Sony",
+      "Nintendo",
       "Google",
       "Amazon",
-      "NVIDIA",
-      "OpenAI",
-      "Tesla"
-    ]
-  },
-
-
-  {
-    id:"seed-tech-products-top-7",
-
-    title:
-      "Top 7 Technology Products",
-
-    category:
-      "Technology",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "iPhone",
-      "MacBook",
-      "PlayStation",
-      "Google Search",
-      "AirPods",
-      "Kindle",
-      "Tesla Model S"
-    ]
-  },
-
-
-  {
-    id:"seed-inventions-top-7",
-
-    title:
-      "Top 7 Greatest Inventions",
-
-    category:
-      "Technology",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Internet",
-      "Electricity",
-      "Printing Press",
-      "Telephone",
-      "Computer",
-      "Automobile",
-      "Artificial Intelligence"
-    ]
-  },
-
-
-  {
-    id:"seed-apps-top-7",
-
-    title:
-      "Top 7 Apps Everyone Uses",
-
-    category:
-      "Technology",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Google Maps",
-      "WhatsApp",
-      "YouTube",
-      "Instagram",
-      "Spotify",
-      "ChatGPT",
-      "Amazon"
-    ]
-  },
-
-
-  {
-    id:"seed-ai-tools-top-7",
-
-    title:
-      "Top 7 AI Tools",
-
-    category:
-      "Technology",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "ChatGPT",
-      "Claude",
-      "Gemini",
-      "Midjourney",
-      "GitHub Copilot",
-      "Perplexity",
-      "Runway"
+      "Dyson",
+      "Samsung"
     ]
   },
 
@@ -1811,323 +564,158 @@ export const seedRankings = [
   // LIFESTYLE
   // ============================
 
-
   {
-    id:"seed-hobbies-top-7",
-
-    title:
-      "Top 7 Hobbies",
-
-    category:
-      "Lifestyle",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Reading",
-      "Cooking",
-      "Photography",
-      "Gaming",
-      "Travel",
-      "Fitness",
-      "Music"
+    title: "Top 7 Things to Do in Islington",
+    category: "Lifestyle",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Camden Passage",
+      "Regent's Canal",
+      "Highbury Fields",
+      "Almeida Theatre",
+      "Sadler's Wells",
+      "Union Chapel",
+      "Exmouth Market"
     ]
   },
 
-
   {
-    id:"seed-fitness-activities-top-7",
-
-    title:
-      "Top 7 Fitness Activities",
-
-    category:
-      "Lifestyle",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Walking",
-      "Weight Training",
-      "Running",
-      "Swimming",
-      "Cycling",
-      "Yoga",
-      "Hiking"
+    title: "Top 7 Date Ideas in Islington",
+    category: "Lifestyle",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Dinner on Upper Street",
+      "Canal walk",
+      "Almeida Theatre",
+      "Union Chapel gig",
+      "Camden Passage",
+      "Cocktails around Angel",
+      "Sunday brunch"
     ]
   },
 
-
   {
-    id:"seed-fashion-brands-top-7",
-
-    title:
-      "Top 7 Fashion Brands",
-
-    category:
-      "Lifestyle",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Nike",
-      "Adidas",
-      "Gucci",
-      "Levi's",
-      "Zara",
-      "Ralph Lauren",
-      "Uniqlo"
+    title: "Top 7 Ways to Spend a Sunday in Islington",
+    category: "Lifestyle",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Brunch",
+      "Camden Passage",
+      "Highbury Fields",
+      "Regent's Canal",
+      "Sunday roast",
+      "Gallery or museum",
+      "Pub"
     ]
   },
 
-
   {
-    id:"seed-cars-top-7",
-
-    title:
-      "Top 7 Cars",
-
-    category:
-      "Lifestyle",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Porsche 911",
-      "Tesla Model S",
-      "Ford Mustang",
-      "Range Rover",
-      "BMW M3",
-      "Mercedes G-Class",
-      "Toyota Land Cruiser"
+    title: "Top 7 Islington Hidden Gems",
+    category: "Lifestyle",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Culpeper Community Garden",
+      "Little Angel Theatre",
+      "Estorick Collection",
+      "London Canal Museum",
+      "Lonsdale Square",
+      "Canonbury Tower",
+      "Candid Arts Trust"
     ]
   },
 
-
   {
-    id:"seed-places-live-top-7",
-
-    title:
-      "Top 7 Places To Live",
-
-    category:
-      "Places",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "London",
-      "Sydney",
-      "Vancouver",
-      "Copenhagen",
-      "Tokyo",
-      "Barcelona",
-      "Melbourne"
-    ]
-  },
-
-
-  {
-    id:"seed-natural-wonders-top-7",
-
-    title:
-      "Top 7 Natural Wonders",
-
-    category:
-      "Places",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Grand Canyon",
-      "Great Barrier Reef",
-      "Amazon Rainforest",
-      "Mount Everest",
-      "Victoria Falls",
-      "Northern Lights",
-      "Galápagos Islands"
-    ]
-  },
-
-
-  {
-    id:"seed-hidden-gems-top-7",
-
-    title:
-      "Top 7 Hidden Gems",
-
-    category:
-      "Places",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Faroe Islands",
-      "Albania",
-      "Bhutan",
-      "Slovenia",
-      "Azores",
-      "Montenegro",
-      "Georgia"
-    ]
-  },
-
-
-  {
-    id:"seed-famous-buildings-top-7",
-
-    title:
-      "Top 7 Famous Buildings",
-
-    category:
-      "Places",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Burj Khalifa",
-      "Eiffel Tower",
-      "Sydney Opera House",
-      "Taj Mahal",
-      "Colosseum",
-      "Empire State Building",
-      "Sagrada Familia"
-    ]
-  },
-
-
-  {
-    id:"seed-theme-cities-top-7",
-
-    title:
-      "Top 7 Most Interesting Cities",
-
-    category:
-      "Places",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Tokyo",
-      "London",
-      "New York",
-      "Paris",
-      "Rome",
-      "Istanbul",
-      "Cape Town"
-    ]
-  },
-    // ============================
-  // ENTERTAINMENT
-  // ============================
-
-
-  {
-    id:"seed-comedians-top-7",
-
-    title:
-      "Top 7 Comedians",
-
-    category:
-      "Entertainment",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Richard Pryor",
-      "Robin Williams",
-      "Dave Chappelle",
-      "George Carlin",
-      "Eddie Murphy",
-      "Peter Kay",
-      "Chris Rock"
-    ]
-  },
-
-
-  {
-    id:"seed-podcasts-top-7",
-
-    title:
-      "Top 7 Podcasts",
-
-    category:
-      "Entertainment",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "The Joe Rogan Experience",
-      "Diary of a CEO",
-      "Serial",
-      "This American Life",
-      "The Daily",
-      "SmartLess",
-      "Stuff You Should Know"
+    title: "Top 7 Things That Make Islington Islington",
+    category: "Lifestyle",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street",
+      "Angel",
+      "Arsenal",
+      "Regent's Canal",
+      "Highbury Fields",
+      "Camden Passage",
+      "Theatres and pubs"
     ]
   },
 
 
   // ============================
-  // BUSINESS
+  // BOOKS
   // ============================
 
-
   {
-    id:"seed-entrepreneurs-top-7",
-
-    title:
-      "Top 7 Entrepreneurs",
-
-    category:
-      "Business",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Steve Jobs",
-      "Elon Musk",
-      "Jeff Bezos",
-      "Bill Gates",
-      "Richard Branson",
-      "Warren Buffett",
-      "Mark Zuckerberg"
+    title: "Top 7 Literary Places in Islington",
+    category: "Books",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Canonbury",
+      "Camden Passage",
+      "Clerkenwell Green",
+      "Highbury",
+      "Angel",
+      "Regent's Canal",
+      "Islington Green"
     ]
   },
 
+  {
+    title: "Top 7 Reading Spots in Islington",
+    category: "Books",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Regent's Canal",
+      "Culpeper Community Garden",
+      "Canonbury Square",
+      "Islington Green",
+      "Barnard Park",
+      "Islington Central Library"
+    ]
+  },
 
   {
-    id:"seed-startups-top-7",
+    title: "Top 7 London Books for an Islington Reader",
+    category: "Books",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "1984",
+      "Neverwhere",
+      "White Teeth",
+      "Brick Lane",
+      "The Night Watch",
+      "The Hitchhiker's Guide to the Galaxy",
+      "About a Boy"
+    ]
+  },
 
-    title:
-      "Top 7 Companies That Changed The World",
+  {
+    title: "Top 7 Writers Connected With Islington",
+    category: "Books",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "George Orwell",
+      "Douglas Adams",
+      "Samuel Johnson",
+      "Charles Lamb",
+      "William Blake",
+      "Evelyn Waugh",
+      "George Bernard Shaw"
+    ]
+  },
 
-    category:
-      "Business",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Apple",
-      "Microsoft",
-      "Google",
-      "Amazon",
-      "Netflix",
-      "Tesla",
-      "OpenAI"
+  {
+    title: "Top 7 Bookish Places Around Islington",
+    category: "Books",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Waterstones Islington",
+      "Islington Central Library",
+      "Finsbury Library",
+      "Camden Passage",
+      "Highbury Fields",
+      "Regent's Canal",
+      "Canonbury"
     ]
   },
 
@@ -2136,80 +724,398 @@ export const seedRankings = [
   // ART & DESIGN
   // ============================
 
-
   {
-    id:"seed-artists-top-7",
-
-    title:
-      "Top 7 Artists",
-
-    category:
-      "Art & Design",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Leonardo da Vinci",
-      "Vincent van Gogh",
-      "Pablo Picasso",
-      "Michelangelo",
-      "Claude Monet",
-      "Frida Kahlo",
-      "Salvador Dalí"
+    title: "Top 7 Art & Design Places in Islington",
+    category: "Art & Design",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Estorick Collection",
+      "Candid Arts Trust",
+      "Camden Passage",
+      "Islington Museum",
+      "Business Design Centre",
+      "Clerkenwell design district",
+      "Almeida Theatre"
     ]
   },
 
+  {
+    title: "Top 7 Islington Architecture Highlights",
+    category: "Art & Design",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel",
+      "Almeida Theatre",
+      "Islington Town Hall",
+      "Canonbury Tower",
+      "St Mary Islington",
+      "Georgian squares",
+      "Emirates Stadium"
+    ]
+  },
 
   {
-    id:"seed-designers-top-7",
+    title: "Top 7 Islington Design Details",
+    category: "Art & Design",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Camden Passage shopfronts",
+      "Georgian terraces",
+      "Union Chapel interiors",
+      "Highbury Square",
+      "Upper Street architecture",
+      "Clerkenwell workshops",
+      "Regent's Canal bridges"
+    ]
+  },
 
-    title:
-      "Top 7 Designers",
+  {
+    title: "Top 7 Art Days Out From Islington",
+    category: "Art & Design",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Estorick Collection",
+      "Barbican",
+      "Tate Modern",
+      "Design Museum",
+      "Victoria and Albert Museum",
+      "National Gallery",
+      "Whitechapel Gallery"
+    ]
+  },
 
-    category:
-      "Art & Design",
-
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Steve Jobs",
-      "Jony Ive",
-      "Dieter Rams",
-      "Coco Chanel",
-      "Virgil Abloh",
-      "Charles Eames",
-      "Zaha Hadid"
+  {
+    title: "Top 7 Islington Art Debates",
+    category: "Art & Design",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Estorick Collection",
+      "Candid Arts Trust",
+      "Camden Passage",
+      "Union Chapel",
+      "Almeida Theatre",
+      "Clerkenwell design district",
+      "Public art around Angel"
     ]
   },
 
 
   // ============================
-  // EDUCATION
+  // FASHION
   // ============================
 
+  {
+    title: "Top 7 Fashion Spots in Islington",
+    category: "Fashion",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street boutiques",
+      "Camden Passage",
+      "Independent shops around Angel",
+      "Vintage shops around Holloway Road",
+      "Independent boutiques around Highbury",
+      "Clerkenwell designers",
+      "Exmouth Market"
+    ]
+  },
 
   {
-    id:"seed-skills-top-7",
+    title: "Top 7 Vintage Shopping Stops in Islington",
+    category: "Fashion",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Camden Passage",
+      "Upper Street vintage shops",
+      "Angel charity shops",
+      "Holloway Road charity shops",
+      "Highbury second-hand shops",
+      "Independent market stalls",
+      "Clerkenwell vintage shops"
+    ]
+  },
 
-    title:
-      "Top 7 Skills To Learn",
+  {
+    title: "Top 7 Islington Style Spots",
+    category: "Fashion",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street",
+      "Camden Passage",
+      "Angel",
+      "Canonbury",
+      "Highbury",
+      "Clerkenwell",
+      "Exmouth Market"
+    ]
+  },
 
-    category:
-      "Education",
+  {
+    title: "Top 7 Fashion Brands for an Islington Wardrobe",
+    category: "Fashion",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "COS",
+      "Arket",
+      "Uniqlo",
+      "Levi's",
+      "Dr. Martens",
+      "Nike",
+      "Adidas"
+    ]
+  },
 
-    description:
-      "A RANKD Team starter ranking.",
+  {
+    title: "Top 7 Islington Fashion Debates",
+    category: "Fashion",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street boutiques",
+      "Camden Passage vintage",
+      "Charity-shop finds",
+      "Independent designers",
+      "Vintage denim",
+      "Sneaker culture",
+      "High Street staples"
+    ]
+  },
 
-    items:[
-      "Communication",
-      "Critical Thinking",
-      "Coding",
-      "Leadership",
-      "Writing",
-      "Financial Literacy",
-      "Creativity"
+
+  // ============================
+  // BEAUTY
+  // ============================
+
+  {
+    title: "Top 7 Beauty & Grooming Spots in Islington",
+    category: "Beauty",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street salons",
+      "Angel barbers",
+      "Highbury salons",
+      "Holloway Road barbers",
+      "Independent beauty studios",
+      "Camden Passage beauty shops",
+      "Colebrooke Row grooming spots"
+    ]
+  },
+
+  {
+    title: "Top 7 Barber Debates in Islington",
+    category: "Beauty",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Traditional barber",
+      "Modern barber",
+      "Independent neighbourhood barber",
+      "Angel barber",
+      "Highbury barber",
+      "Holloway Road barber",
+      "Upper Street barber"
+    ]
+  },
+
+  {
+    title: "Top 7 Self-Care Things to Do in Islington",
+    category: "Beauty",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Spa treatment",
+      "Haircut and blow-dry",
+      "Barber visit",
+      "Yoga class",
+      "Canal walk",
+      "Garden afternoon",
+      "Quiet coffee"
+    ]
+  },
+
+  {
+    title: "Top 7 Beauty Brands for an Islington Bathroom",
+    category: "Beauty",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Aesop",
+      "The Ordinary",
+      "CeraVe",
+      "La Roche-Posay",
+      "Glossier",
+      "Kiehl's",
+      "Neal's Yard Remedies"
+    ]
+  },
+
+  {
+    title: "Top 7 Places to Switch Off in Islington",
+    category: "Beauty",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Culpeper Community Garden",
+      "Regent's Canal",
+      "Angel café",
+      "Yoga studio",
+      "Massage treatment",
+      "Quiet pub garden"
+    ]
+  },
+
+
+  // ============================
+  // HEALTH & FITNESS
+  // ============================
+
+  {
+    title: "Top 7 Places to Exercise in Islington",
+    category: "Health & Fitness",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Finsbury Park",
+      "Sobell Centre",
+      "Regent's Canal",
+      "Caledonian Park",
+      "Local tennis courts",
+      "Local football pitches"
+    ]
+  },
+
+  {
+    title: "Top 7 Running Routes in Islington",
+    category: "Health & Fitness",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields loop",
+      "Regent's Canal",
+      "Finsbury Park loop",
+      "Highbury to Canonbury",
+      "Caledonian Park",
+      "Clerkenwell to Islington Green",
+      "Angel to Victoria Park"
+    ]
+  },
+
+  {
+    title: "Top 7 Ways to Stay Active in Islington",
+    category: "Health & Fitness",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Running",
+      "Cycling",
+      "Tennis",
+      "Swimming",
+      "Football",
+      "Walking",
+      "Gym training"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Fitness Debates",
+    category: "Health & Fitness",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Finsbury Park",
+      "Sobell Centre",
+      "Regent's Canal",
+      "Local gyms",
+      "Tennis courts",
+      "Five-a-side pitches"
+    ]
+  },
+
+  {
+    title: "Top 7 Wellbeing Escapes in Islington",
+    category: "Health & Fitness",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Culpeper Community Garden",
+      "Regent's Canal",
+      "Canonbury",
+      "Barnard Park",
+      "Spa treatment",
+      "Quiet café morning"
+    ]
+  },
+
+
+  // ============================
+  // BUSINESS
+  // ============================
+
+  {
+    title: "Top 7 Islington Business Hubs",
+    category: "Business",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street",
+      "Angel",
+      "Business Design Centre",
+      "Clerkenwell",
+      "King's Cross fringe",
+      "Holloway Road",
+      "Exmouth Market"
+    ]
+  },
+
+  {
+    title: "Top 7 Independent Businesses to Know in Islington",
+    category: "Business",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Trullo",
+      "The Tamil Prince",
+      "Union Chapel",
+      "Estorick Collection",
+      "The Albion",
+      "Camden Passage traders",
+      "Exmouth Market traders"
+    ]
+  },
+
+  {
+    title: "Top 7 Markets for Small Businesses in Islington",
+    category: "Business",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Camden Passage",
+      "Chapel Market",
+      "Exmouth Market",
+      "Islington Farmers' Market",
+      "Independent Upper Street shops",
+      "Local Christmas markets",
+      "Angel traders"
+    ]
+  },
+
+  {
+    title: "Top 7 Business Lessons from Islington",
+    category: "Business",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Independent beats generic",
+      "Local identity matters",
+      "Walkability creates trade",
+      "Culture drives footfall",
+      "Good food creates destination",
+      "Community creates loyalty",
+      "Distinctive places get remembered"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Business Debates",
+    category: "Business",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street",
+      "Angel",
+      "Business Design Centre",
+      "Camden Passage",
+      "Exmouth Market",
+      "Chapel Market",
+      "Clerkenwell"
     ]
   },
 
@@ -2218,51 +1124,398 @@ export const seedRankings = [
   // SCIENCE
   // ============================
 
+  {
+    title: "Top 7 Science Connections Around Islington",
+    category: "Science",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "City St George's",
+      "London Metropolitan University",
+      "Wellcome Collection",
+      "Francis Crick Institute",
+      "British Library",
+      "London Canal Museum",
+      "Postal Museum"
+    ]
+  },
 
   {
-    id:"seed-scientists-top-7",
+    title: "Top 7 Science & Technology Museums Near Islington",
+    category: "Science",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Science Museum",
+      "Wellcome Collection",
+      "Postal Museum",
+      "London Canal Museum",
+      "British Library",
+      "Grant Museum of Zoology",
+      "Museum of London Docklands"
+    ]
+  },
 
-    title:
-      "Top 7 Scientists",
+  {
+    title: "Top 7 Science Questions for Islington",
+    category: "Science",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "How was the canal engineered?",
+      "How does Mail Rail work?",
+      "Why does Highbury stay so green?",
+      "How did Angel get its name?",
+      "How do modern theatres work?",
+      "How does London's transport network work?",
+      "What wildlife survives in the borough?"
+    ]
+  },
 
-    category:
-      "Science",
+  {
+    title: "Top 7 Pieces of Infrastructure to Appreciate in Islington",
+    category: "Science",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Regent's Canal",
+      "Mail Rail",
+      "London Underground",
+      "Emirates Stadium engineering",
+      "Victorian water infrastructure",
+      "Theatre acoustics",
+      "Urban green-space design"
+    ]
+  },
 
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Albert Einstein",
-      "Isaac Newton",
-      "Charles Darwin",
-      "Marie Curie",
-      "Galileo Galilei",
-      "Stephen Hawking",
-      "Nikola Tesla"
+  {
+    title: "Top 7 Science Days Out From Islington",
+    category: "Science",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Science Museum",
+      "Wellcome Collection",
+      "Grant Museum of Zoology",
+      "Natural History Museum",
+      "Royal Observatory Greenwich",
+      "Kew Gardens",
+      "London Zoo"
     ]
   },
 
 
+  // ============================
+  // HISTORY
+  // ============================
+
   {
-    id:"seed-discoveries-top-7",
+    title: "Top 7 Historic Places in Islington",
+    category: "History",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Union Chapel",
+      "Canonbury Tower",
+      "Clerkenwell Green",
+      "St Mary Islington",
+      "London Canal Museum",
+      "Camden Passage",
+      "Highbury"
+    ]
+  },
 
-    title:
-      "Top 7 Scientific Discoveries",
+  {
+    title: "Top 7 Islington Historical Stories",
+    category: "History",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "The Regent's Canal",
+      "Arsenal at Highbury",
+      "The rise of Upper Street",
+      "Clerkenwell's radical history",
+      "Angel's coaching history",
+      "Islington's Georgian squares",
+      "Islington's Victorian expansion"
+    ]
+  },
 
-    category:
-      "Science",
+  {
+    title: "Top 7 Historic Corners of Islington",
+    category: "History",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Canonbury",
+      "Clerkenwell Green",
+      "Camden Passage",
+      "Upper Street",
+      "Lonsdale Square",
+      "St Mary Islington",
+      "Regent's Canal"
+    ]
+  },
 
-    description:
-      "A RANKD Team starter ranking.",
+  {
+    title: "Top 7 Historical Walks in Islington",
+    category: "History",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Canonbury history walk",
+      "Clerkenwell Green walk",
+      "Angel and Upper Street walk",
+      "Regent's Canal heritage walk",
+      "Arsenal history walk",
+      "Camden Passage walk",
+      "Georgian squares walk"
+    ]
+  },
 
-    items:[
-      "Theory of Relativity",
-      "Evolution",
-      "Penicillin",
-      "Electricity",
-      "DNA Structure",
-      "Gravity",
-      "Quantum Mechanics"
+  {
+    title: "Top 7 Islington History Debates",
+    category: "History",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Arsenal's old Highbury",
+      "Union Chapel",
+      "Canonbury Tower",
+      "Clerkenwell Green",
+      "Regent's Canal",
+      "Camden Passage",
+      "St Mary Islington"
+    ]
+  },
+
+
+  // ============================
+  // NATURE & ANIMALS
+  // ============================
+
+  {
+    title: "Top 7 Green Spaces in Islington",
+    category: "Nature & Animals",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Finsbury Park",
+      "Barnard Park",
+      "Culpeper Community Garden",
+      "Caledonian Park",
+      "Paradise Park",
+      "Spa Fields"
+    ]
+  },
+
+  {
+    title: "Top 7 Nature Walks in Islington",
+    category: "Nature & Animals",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Regent's Canal",
+      "Highbury Fields",
+      "Caledonian Park",
+      "Finsbury Park",
+      "Barnard Park",
+      "Culpeper Community Garden",
+      "Canonbury garden squares"
+    ]
+  },
+
+  {
+    title: "Top 7 Places to See Animals Around Islington",
+    category: "Nature & Animals",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Freightliners Farm",
+      "London Zoo",
+      "Regent's Canal wildlife",
+      "Finsbury Park birds",
+      "Highbury Fields wildlife",
+      "Caledonian Park wildlife",
+      "Local garden wildlife"
+    ]
+  },
+
+  {
+    title: "Top 7 Gardens to Notice in Islington",
+    category: "Nature & Animals",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Culpeper Community Garden",
+      "Highbury Fields",
+      "Lonsdale Square gardens",
+      "Canonbury garden squares",
+      "Barnard Park",
+      "Caledonian Park",
+      "Finsbury Park"
+    ]
+  },
+
+  {
+    title: "Top 7 Nature Debates for Islington",
+    category: "Nature & Animals",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Highbury Fields",
+      "Regent's Canal",
+      "Culpeper Community Garden",
+      "Finsbury Park",
+      "Barnard Park",
+      "Caledonian Park",
+      "Freightliners Farm"
+    ]
+  },
+
+
+  // ============================
+  // CARS & TRANSPORT
+  // ============================
+
+  {
+    title: "Top 7 Ways to Get Around Islington",
+    category: "Cars & Transport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Walking",
+      "London Underground",
+      "Cycling",
+      "Buses",
+      "Overground",
+      "Black cab",
+      "Ride-hailing"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Transport Hubs",
+    category: "Cars & Transport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Angel",
+      "Highbury & Islington",
+      "Finsbury Park",
+      "King's Cross St Pancras",
+      "Archway",
+      "Holloway Road",
+      "Caledonian Road & Barnsbury"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Journeys",
+    category: "Cars & Transport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Angel to King's Cross",
+      "Upper Street to Highbury",
+      "Regent's Canal cycle",
+      "Highbury to Finsbury Park",
+      "Angel to Oxford Circus",
+      "Islington to the West End",
+      "Clerkenwell to the City"
+    ]
+  },
+
+  {
+    title: "Top 7 Transport Things Islington Does Well",
+    category: "Cars & Transport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Tube access",
+      "Bus network",
+      "Cycling routes",
+      "Walkability",
+      "Rail connections",
+      "Canal towpath",
+      "Central London proximity"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Transport Debates",
+    category: "Cars & Transport",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Cycling vs driving",
+      "Tube vs bus",
+      "Angel vs Highbury & Islington",
+      "Canal vs road cycling",
+      "Walking vs public transport",
+      "Black cab vs ride-hailing",
+      "Car-free neighbourhoods"
+    ]
+  },
+
+
+  // ============================
+  // HOME & GARDEN
+  // ============================
+
+  {
+    title: "Top 7 Islington Neighbourhoods for Beautiful Homes",
+    category: "Home & Garden",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Canonbury",
+      "Barnsbury",
+      "Highbury",
+      "De Beauvoir Town",
+      "Islington Green",
+      "Lonsdale Square",
+      "Clerkenwell"
+    ]
+  },
+
+  {
+    title: "Top 7 Garden Spots in Islington",
+    category: "Home & Garden",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Culpeper Community Garden",
+      "Highbury Fields",
+      "Lonsdale Square",
+      "Canonbury garden squares",
+      "Barnard Park",
+      "Caledonian Park",
+      "Paradise Park"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Home & Design Ideas",
+    category: "Home & Garden",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Georgian terrace style",
+      "Victorian terrace style",
+      "Garden-square living",
+      "Canal-side living",
+      "Highbury apartment living",
+      "Clerkenwell loft style",
+      "Small-space London design"
+    ]
+  },
+
+  {
+    title: "Top 7 Places for Home Inspiration in Islington",
+    category: "Home & Garden",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Camden Passage",
+      "Upper Street",
+      "Clerkenwell design district",
+      "Business Design Centre",
+      "Independent interiors shops",
+      "Garden squares",
+      "Georgian terraces"
+    ]
+  },
+
+  {
+    title: "Top 7 Islington Home Debates",
+    category: "Home & Garden",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Canonbury vs Barnsbury",
+      "Highbury vs Angel",
+      "Garden vs terrace",
+      "Canal vs square",
+      "Georgian vs Victorian",
+      "Old building vs new-build",
+      "Upper Street vs quiet side street"
     ]
   },
 
@@ -2271,27 +1524,78 @@ export const seedRankings = [
   // GENERAL
   // ============================
 
+  {
+    title: "Top 7 Most Islington Things About Islington",
+    category: "General",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Upper Street",
+      "Arsenal",
+      "Regent's Canal",
+      "Highbury Fields",
+      "Camden Passage",
+      "Theatres",
+      "Proper pubs"
+    ]
+  },
 
   {
-    id:"seed-life-advice-top-7",
+    title: "Top 7 Places Every Islington Local Should Know",
+    category: "General",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Angel",
+      "Upper Street",
+      "Highbury Fields",
+      "Camden Passage",
+      "Regent's Canal",
+      "Exmouth Market",
+      "Islington Green"
+    ]
+  },
 
-    title:
-      "Top 7 Pieces Of Life Advice",
+  {
+    title: "Top 7 Things Islington Gets Right",
+    category: "General",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Walkability",
+      "Food",
+      "Theatre",
+      "Independent shops",
+      "Parks",
+      "Pubs",
+      "Public transport"
+    ]
+  },
 
-    category:
-      "General",
+  {
+    title: "Top 7 Islington Arguments That Will Never Be Settled",
+    category: "General",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Best pub",
+      "Best restaurant",
+      "Best neighbourhood",
+      "Best coffee",
+      "Best park",
+      "Best Arsenal era",
+      "Best Sunday activity"
+    ]
+  },
 
-    description:
-      "A RANKD Team starter ranking.",
-
-    items:[
-      "Be Kind",
-      "Stay Curious",
-      "Keep Learning",
-      "Take Risks",
-      "Value Relationships",
-      "Look After Your Health",
-      "Enjoy The Journey"
+  {
+    title: "Top 7 Reasons Islington Is Worth Arguing About",
+    category: "General",
+    description: "RANKD Team Islington edition.",
+    items: [
+      "Food",
+      "Pubs",
+      "Arsenal",
+      "Theatre",
+      "Architecture",
+      "Parks",
+      "Neighbourhoods"
     ]
   }
 
