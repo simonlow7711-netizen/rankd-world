@@ -46,12 +46,16 @@ type RankingCardProps = {
 
   ranking: Ranking
 
+  discoveryReason?: string
+
 }
 
 
 export default function RankingCard({
 
-  ranking
+  ranking,
+
+  discoveryReason
 
 }: RankingCardProps) {
 
@@ -284,6 +288,32 @@ export default function RankingCard({
         "
 
       >
+
+        {
+          discoveryReason && (
+
+            <p
+
+              className="
+                rankd-accent
+                uppercase
+                tracking-widest
+                text-[10px]
+                font-black
+                mb-3
+              "
+
+            >
+
+              {
+                discoveryReason
+              }
+
+            </p>
+
+          )
+        }
+
 
         <p
 
