@@ -1,41 +1,32 @@
 "use client"
 
-
 import {
   useEffect,
   useState
 } from "react"
 
-
 import {
   useRouter
 } from "next/navigation"
 
-
 import Link from "next/link"
-
 
 import {
   Ranking
 } from "@/types/ranking"
 
-
 import RankingResponse from "@/components/RankingResponse"
 
-
 import RankingEngagement from "@/components/RankingEngagement"
-
 
 import {
   getRankingEngagement,
   RankingEngagementData
 } from "@/utils/rankingEngagement"
 
-
 import {
   trackEvent
 } from "@/utils/analytics"
-
 
 import {
   formatRankingTitle
@@ -59,8 +50,6 @@ type RankingTheme = {
 
   accent: string
 
-  accentBackground: string
-
   muted: string
 
   border: string
@@ -70,8 +59,6 @@ type RankingTheme = {
   numberBackground: string
 
   numberText: string
-
-  decoration: string
 
   buttonPrimary: string
 
@@ -87,10 +74,6 @@ type RankingTheme = {
 
   item: string
 
-  listStyle: string
-
-  shape: "circle" | "square" | "line" | "corner" | "none"
-
 }
 
 
@@ -99,7 +82,7 @@ const themes: Record<string, RankingTheme> = {
   "Food & Drink": {
 
     card:
-      "bg-[#F1E4D1] shadow-[0_24px_70px_rgba(90,55,30,0.14)]",
+      "bg-[#F3E8D8]",
 
     text:
       "text-[#211A16]",
@@ -107,32 +90,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#D96B35]",
 
-    accentBackground:
-      "bg-[#D96B35]",
-
     muted:
       "text-[#6E5545]",
 
     border:
-      "border-[#8A5A3C]/20",
+      "border-[#211A16]/10",
 
     itemBorder:
-      "divide-[#8A5A3C]/15",
+      "divide-[#211A16]/10",
 
     numberBackground:
-      "bg-[#D96B35]",
+      "bg-[#211A16]",
 
     numberText:
-      "text-[#F7F1E7]",
-
-    decoration:
-      "text-[#D96B35]/[0.07]",
+      "text-[#F3E8D8]",
 
     buttonPrimary:
-      "bg-[#211A16] text-[#F7F1E7]",
+      "bg-[#211A16] text-[#F3E8D8]",
 
     buttonSecondary:
-      "bg-[#F7F1E7] border-[#211A16]",
+      "bg-transparent border-[#211A16]/30",
 
     buttonSecondaryText:
       "text-[#211A16]",
@@ -144,16 +121,10 @@ const themes: Record<string, RankingTheme> = {
       "MENU / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[0.9] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "rounded-xl",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -161,43 +132,37 @@ const themes: Record<string, RankingTheme> = {
   "Film & TV": {
 
     card:
-      "bg-[#111111] shadow-[0_25px_80px_rgba(0,0,0,0.28)]",
+      "bg-[#ECEAE5]",
 
     text:
-      "text-[#F7F4EE]",
+      "text-[#151515]",
 
     accent:
       "text-[#FF6B35]",
 
-    accentBackground:
-      "bg-[#FF6B35]",
-
     muted:
-      "text-white/55",
+      "text-[#686560]",
 
     border:
-      "border-white/15",
+      "border-[#151515]/10",
 
     itemBorder:
-      "divide-white/10",
+      "divide-[#151515]/10",
 
     numberBackground:
-      "bg-transparent",
+      "bg-[#151515]",
 
     numberText:
-      "text-[#FF6B35]",
-
-    decoration:
-      "text-white/[0.025]",
+      "text-[#ECEAE5]",
 
     buttonPrimary:
-      "bg-[#F7F4EE] text-[#111111]",
+      "bg-[#151515] text-[#ECEAE5]",
 
     buttonSecondary:
-      "bg-transparent border-white/60",
+      "bg-transparent border-[#151515]/30",
 
     buttonSecondaryText:
-      "text-[#F7F4EE]",
+      "text-[#151515]",
 
     categoryLabel:
       "Film & TV",
@@ -206,16 +171,10 @@ const themes: Record<string, RankingTheme> = {
       "FRAME / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.86] tracking-[-0.055em]",
+      "text-3xl md:text-4xl leading-[0.86] tracking-[-0.05em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "uppercase",
-
-    shape:
-      "line"
+      "text-base md:text-lg"
 
   },
 
@@ -223,43 +182,37 @@ const themes: Record<string, RankingTheme> = {
   "Music": {
 
     card:
-      "bg-[#25152F] shadow-[0_25px_70px_rgba(50,20,65,0.2)]",
+      "bg-[#EAE3EC]",
 
     text:
-      "text-[#F7EFF8]",
-
-    accent:
-      "text-[#E7A8FF]",
-
-    accentBackground:
-      "bg-[#E7A8FF]",
-
-    muted:
-      "text-[#C8B7CC]",
-
-    border:
-      "border-[#E7A8FF]/20",
-
-    itemBorder:
-      "divide-[#E7A8FF]/15",
-
-    numberBackground:
-      "bg-[#E7A8FF]",
-
-    numberText:
       "text-[#25152F]",
 
-    decoration:
-      "text-[#E7A8FF]/[0.04]",
+    accent:
+      "text-[#A95BCB]",
+
+    muted:
+      "text-[#685C6D]",
+
+    border:
+      "border-[#25152F]/10",
+
+    itemBorder:
+      "divide-[#25152F]/10",
+
+    numberBackground:
+      "bg-[#25152F]",
+
+    numberText:
+      "text-[#EAE3EC]",
 
     buttonPrimary:
-      "bg-[#E7A8FF] text-[#25152F]",
+      "bg-[#25152F] text-[#EAE3EC]",
 
     buttonSecondary:
-      "bg-transparent border-[#E7A8FF]",
+      "bg-transparent border-[#25152F]/30",
 
     buttonSecondaryText:
-      "text-[#F7EFF8]",
+      "text-[#25152F]",
 
     categoryLabel:
       "Music",
@@ -268,16 +221,10 @@ const themes: Record<string, RankingTheme> = {
       "SIDE A / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.82] tracking-[-0.06em]",
+      "text-3xl md:text-4xl leading-[0.82] tracking-[-0.05em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "rounded-full",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -285,7 +232,7 @@ const themes: Record<string, RankingTheme> = {
   "Sport": {
 
     card:
-      "bg-[#E9ECE7] shadow-[0_20px_55px_rgba(30,45,30,0.14)]",
+      "bg-[#E7EBE5]",
 
     text:
       "text-[#101510]",
@@ -293,14 +240,11 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#E54B2F]",
 
-    accentBackground:
-      "bg-[#101510]",
-
     muted:
       "text-[#586058]",
 
     border:
-      "border-[#101510]/15",
+      "border-[#101510]/10",
 
     itemBorder:
       "divide-[#101510]/10",
@@ -309,19 +253,16 @@ const themes: Record<string, RankingTheme> = {
       "bg-[#101510]",
 
     numberText:
-      "text-[#E9ECE7]",
-
-    decoration:
-      "text-[#E54B2F]/[0.05]",
+      "text-[#E7EBE5]",
 
     buttonPrimary:
       "bg-[#101510] text-white",
 
     buttonSecondary:
-      "bg-[#E54B2F] border-[#E54B2F]",
+      "bg-transparent border-[#101510]/30",
 
     buttonSecondaryText:
-      "text-white",
+      "text-[#101510]",
 
     categoryLabel:
       "Sport",
@@ -330,16 +271,10 @@ const themes: Record<string, RankingTheme> = {
       "MATCH / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.78] tracking-[-0.065em] uppercase",
+      "text-3xl md:text-4xl leading-[0.78] tracking-[-0.06em] uppercase",
 
     item:
-      "text-lg md:text-xl uppercase",
-
-    listStyle:
-      "skew",
-
-    shape:
-      "line"
+      "text-base md:text-lg uppercase"
 
   },
 
@@ -347,43 +282,37 @@ const themes: Record<string, RankingTheme> = {
   "Gaming": {
 
     card:
-      "bg-[#0E1416] shadow-[0_25px_75px_rgba(0,0,0,0.3)]",
+      "bg-[#E7ECE9]",
 
     text:
-      "text-[#EAF5EE]",
-
-    accent:
-      "text-[#72F36A]",
-
-    accentBackground:
-      "bg-[#72F36A]",
-
-    muted:
-      "text-[#8DA098]",
-
-    border:
-      "border-[#72F36A]/20",
-
-    itemBorder:
-      "divide-[#72F36A]/10",
-
-    numberBackground:
-      "bg-[#72F36A]",
-
-    numberText:
       "text-[#0E1416]",
 
-    decoration:
-      "text-[#72F36A]/[0.035]",
+    accent:
+      "text-[#39A932]",
+
+    muted:
+      "text-[#59645F]",
+
+    border:
+      "border-[#0E1416]/10",
+
+    itemBorder:
+      "divide-[#0E1416]/10",
+
+    numberBackground:
+      "bg-[#0E1416]",
+
+    numberText:
+      "text-[#E7ECE9]",
 
     buttonPrimary:
-      "bg-[#72F36A] text-[#0E1416]",
+      "bg-[#0E1416] text-[#E7ECE9]",
 
     buttonSecondary:
-      "bg-transparent border-[#72F36A]",
+      "bg-transparent border-[#0E1416]/30",
 
     buttonSecondaryText:
-      "text-[#EAF5EE]",
+      "text-[#0E1416]",
 
     categoryLabel:
       "Gaming",
@@ -392,16 +321,10 @@ const themes: Record<string, RankingTheme> = {
       "PLAYER 1 / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.9] tracking-[-0.045em]",
+      "text-3xl md:text-4xl leading-[0.9] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "square",
-
-    shape:
-      "square"
+      "text-base md:text-lg"
 
   },
 
@@ -409,7 +332,7 @@ const themes: Record<string, RankingTheme> = {
   "Travel": {
 
     card:
-      "bg-[#D9EEE9] shadow-[0_25px_65px_rgba(25,90,80,0.12)]",
+      "bg-[#E0ECE8]",
 
     text:
       "text-[#123B36]",
@@ -417,14 +340,11 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#087D71]",
 
-    accentBackground:
-      "bg-[#087D71]",
-
     muted:
       "text-[#58736F]",
 
     border:
-      "border-[#123B36]/15",
+      "border-[#123B36]/10",
 
     itemBorder:
       "divide-[#123B36]/10",
@@ -433,19 +353,16 @@ const themes: Record<string, RankingTheme> = {
       "bg-[#123B36]",
 
     numberText:
-      "text-[#D9EEE9]",
-
-    decoration:
-      "text-[#087D71]/[0.05]",
+      "text-[#E0ECE8]",
 
     buttonPrimary:
       "bg-[#123B36] text-white",
 
     buttonSecondary:
-      "bg-[#087D71] border-[#087D71]",
+      "bg-transparent border-[#123B36]/30",
 
     buttonSecondaryText:
-      "text-white",
+      "text-[#123B36]",
 
     categoryLabel:
       "Travel",
@@ -454,16 +371,10 @@ const themes: Record<string, RankingTheme> = {
       "FIELD NOTES / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.88] tracking-[-0.045em]",
+      "text-3xl md:text-4xl leading-[0.88] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "bordered",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -471,7 +382,7 @@ const themes: Record<string, RankingTheme> = {
   "Technology": {
 
     card:
-      "bg-[#ECEDEA] shadow-[0_20px_60px_rgba(20,25,30,0.12)]",
+      "bg-[#E9EBE9]",
 
     text:
       "text-[#111820]",
@@ -479,32 +390,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#315AE8]",
 
-    accentBackground:
-      "bg-[#315AE8]",
-
     muted:
       "text-[#69737C]",
 
     border:
-      "border-[#111820]/15",
+      "border-[#111820]/10",
 
     itemBorder:
       "divide-[#111820]/10",
 
     numberBackground:
-      "bg-transparent",
+      "bg-[#111820]",
 
     numberText:
-      "text-[#315AE8]",
-
-    decoration:
-      "text-[#315AE8]/[0.035]",
+      "text-[#E9EBE9]",
 
     buttonPrimary:
       "bg-[#111820] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#111820]",
+      "bg-transparent border-[#111820]/30",
 
     buttonSecondaryText:
       "text-[#111820]",
@@ -516,16 +421,10 @@ const themes: Record<string, RankingTheme> = {
       "SYSTEM / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.9] tracking-[-0.055em]",
+      "text-3xl md:text-4xl leading-[0.9] tracking-[-0.05em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "numbered",
-
-    shape:
-      "square"
+      "text-base md:text-lg"
 
   },
 
@@ -533,7 +432,7 @@ const themes: Record<string, RankingTheme> = {
   "Lifestyle": {
 
     card:
-      "bg-[#EFE8DC] shadow-[0_25px_65px_rgba(80,65,45,0.12)]",
+      "bg-[#EEE8DE]",
 
     text:
       "text-[#29241E]",
@@ -541,14 +440,11 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#A45D3E]",
 
-    accentBackground:
-      "bg-[#A45D3E]",
-
     muted:
       "text-[#766E64]",
 
     border:
-      "border-[#29241E]/15",
+      "border-[#29241E]/10",
 
     itemBorder:
       "divide-[#29241E]/10",
@@ -557,16 +453,13 @@ const themes: Record<string, RankingTheme> = {
       "bg-[#29241E]",
 
     numberText:
-      "text-[#EFE8DC]",
-
-    decoration:
-      "text-[#A45D3E]/[0.04]",
+      "text-[#EEE8DE]",
 
     buttonPrimary:
       "bg-[#29241E] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#29241E]",
+      "bg-transparent border-[#29241E]/30",
 
     buttonSecondaryText:
       "text-[#29241E]",
@@ -578,16 +471,10 @@ const themes: Record<string, RankingTheme> = {
       "EDIT / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "minimal",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -595,7 +482,7 @@ const themes: Record<string, RankingTheme> = {
   "Books": {
 
     card:
-      "bg-[#F3EDE0] shadow-[0_20px_55px_rgba(65,50,35,0.1)]",
+      "bg-[#F1EBDD]",
 
     text:
       "text-[#30251D]",
@@ -603,32 +490,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#9B493D]",
 
-    accentBackground:
-      "bg-[#9B493D]",
-
     muted:
       "text-[#75695E]",
 
     border:
-      "border-[#30251D]/15",
+      "border-[#30251D]/10",
 
     itemBorder:
       "divide-[#30251D]/10",
 
     numberBackground:
-      "bg-transparent",
+      "bg-[#30251D]",
 
     numberText:
-      "text-[#9B493D]",
-
-    decoration:
-      "text-[#9B493D]/[0.035]",
+      "text-[#F1EBDD]",
 
     buttonPrimary:
       "bg-[#30251D] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#30251D]",
+      "bg-transparent border-[#30251D]/30",
 
     buttonSecondaryText:
       "text-[#30251D]",
@@ -640,16 +521,10 @@ const themes: Record<string, RankingTheme> = {
       "PUBLISHING / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.94] tracking-[-0.025em]",
+      "text-3xl md:text-4xl leading-[0.94] tracking-[-0.025em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "literary",
-
-    shape:
-      "line"
+      "text-base md:text-lg"
 
   },
 
@@ -657,43 +532,37 @@ const themes: Record<string, RankingTheme> = {
   "Art & Design": {
 
     card:
-      "bg-[#151515] shadow-[0_25px_75px_rgba(0,0,0,0.2)]",
+      "bg-[#E9E6DF]",
 
     text:
-      "text-[#F5F1EA]",
-
-    accent:
-      "text-[#F2C14E]",
-
-    accentBackground:
-      "bg-[#F2C14E]",
-
-    muted:
-      "text-[#A8A39B]",
-
-    border:
-      "border-white/15",
-
-    itemBorder:
-      "divide-white/10",
-
-    numberBackground:
-      "bg-[#F2C14E]",
-
-    numberText:
       "text-[#151515]",
 
-    decoration:
-      "text-[#F2C14E]/[0.025]",
+    accent:
+      "text-[#B58B18]",
+
+    muted:
+      "text-[#68645C]",
+
+    border:
+      "border-[#151515]/10",
+
+    itemBorder:
+      "divide-[#151515]/10",
+
+    numberBackground:
+      "bg-[#151515]",
+
+    numberText:
+      "text-[#E9E6DF]",
 
     buttonPrimary:
-      "bg-[#F2C14E] text-[#151515]",
+      "bg-[#151515] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#F2C14E]",
+      "bg-transparent border-[#151515]/30",
 
     buttonSecondaryText:
-      "text-[#F5F1EA]",
+      "text-[#151515]",
 
     categoryLabel:
       "Art & Design",
@@ -702,16 +571,10 @@ const themes: Record<string, RankingTheme> = {
       "CATALOGUE / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.82] tracking-[-0.07em]",
+      "text-3xl md:text-4xl leading-[0.82] tracking-[-0.06em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "gallery",
-
-    shape:
-      "square"
+      "text-base md:text-lg"
 
   },
 
@@ -719,7 +582,7 @@ const themes: Record<string, RankingTheme> = {
   "Fashion": {
 
     card:
-      "bg-[#E9DFE7] shadow-[0_25px_70px_rgba(80,45,70,0.14)]",
+      "bg-[#ECE3E9]",
 
     text:
       "text-[#231B22]",
@@ -727,14 +590,11 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#A52F68]",
 
-    accentBackground:
-      "bg-[#A52F68]",
-
     muted:
       "text-[#786773]",
 
     border:
-      "border-[#231B22]/15",
+      "border-[#231B22]/10",
 
     itemBorder:
       "divide-[#231B22]/10",
@@ -743,19 +603,16 @@ const themes: Record<string, RankingTheme> = {
       "bg-[#231B22]",
 
     numberText:
-      "text-[#E9DFE7]",
-
-    decoration:
-      "text-[#A52F68]/[0.045]",
+      "text-[#ECE3E9]",
 
     buttonPrimary:
       "bg-[#231B22] text-white",
 
     buttonSecondary:
-      "bg-[#A52F68] border-[#A52F68]",
+      "bg-transparent border-[#231B22]/30",
 
     buttonSecondaryText:
-      "text-white",
+      "text-[#231B22]",
 
     categoryLabel:
       "Fashion",
@@ -764,16 +621,10 @@ const themes: Record<string, RankingTheme> = {
       "COLLECTION / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.78] tracking-[-0.07em] uppercase",
+      "text-3xl md:text-4xl leading-[0.78] tracking-[-0.06em] uppercase",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "editorial",
-
-    shape:
-      "line"
+      "text-base md:text-lg"
 
   },
 
@@ -781,7 +632,7 @@ const themes: Record<string, RankingTheme> = {
   "Beauty": {
 
     card:
-      "bg-[#F4E2E1] shadow-[0_25px_65px_rgba(110,55,60,0.12)]",
+      "bg-[#F1E5E3]",
 
     text:
       "text-[#2C1C1F]",
@@ -789,32 +640,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#C34E68]",
 
-    accentBackground:
-      "bg-[#C34E68]",
-
     muted:
       "text-[#856B70]",
 
     border:
-      "border-[#6F454A]/15",
+      "border-[#2C1C1F]/10",
 
     itemBorder:
-      "divide-[#6F454A]/10",
+      "divide-[#2C1C1F]/10",
 
     numberBackground:
-      "bg-[#C34E68]",
+      "bg-[#2C1C1F]",
 
     numberText:
-      "text-white",
-
-    decoration:
-      "text-[#C34E68]/[0.045]",
+      "text-[#F1E5E3]",
 
     buttonPrimary:
       "bg-[#2C1C1F] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#2C1C1F]",
+      "bg-transparent border-[#2C1C1F]/30",
 
     buttonSecondaryText:
       "text-[#2C1C1F]",
@@ -826,16 +671,10 @@ const themes: Record<string, RankingTheme> = {
       "EDIT / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.88] tracking-[-0.045em]",
+      "text-3xl md:text-4xl leading-[0.88] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "soft",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -843,7 +682,7 @@ const themes: Record<string, RankingTheme> = {
   "Health & Fitness": {
 
     card:
-      "bg-[#E2F0E5] shadow-[0_20px_60px_rgba(40,90,55,0.12)]",
+      "bg-[#E4EEE6]",
 
     text:
       "text-[#17251B]",
@@ -851,35 +690,29 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#16824D]",
 
-    accentBackground:
-      "bg-[#16824D]",
-
     muted:
       "text-[#607467]",
 
     border:
-      "border-[#244A35]/15",
+      "border-[#17251B]/10",
 
     itemBorder:
-      "divide-[#244A35]/10",
+      "divide-[#17251B]/10",
 
     numberBackground:
-      "bg-[#16824D]",
+      "bg-[#17251B]",
 
     numberText:
-      "text-white",
-
-    decoration:
-      "text-[#16824D]/[0.045]",
+      "text-[#E4EEE6]",
 
     buttonPrimary:
       "bg-[#17251B] text-white",
 
     buttonSecondary:
-      "bg-[#16824D] border-[#16824D]",
+      "bg-transparent border-[#17251B]/30",
 
     buttonSecondaryText:
-      "text-white",
+      "text-[#17251B]",
 
     categoryLabel:
       "Health & Fitness",
@@ -888,16 +721,10 @@ const themes: Record<string, RankingTheme> = {
       "ENERGY / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.86] tracking-[-0.055em]",
+      "text-3xl md:text-4xl leading-[0.86] tracking-[-0.05em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "strong",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -905,7 +732,7 @@ const themes: Record<string, RankingTheme> = {
   "Business": {
 
     card:
-      "bg-[#E4E9EF] shadow-[0_20px_60px_rgba(35,55,75,0.12)]",
+      "bg-[#E5E9EE]",
 
     text:
       "text-[#14202B]",
@@ -913,14 +740,11 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#245A91]",
 
-    accentBackground:
-      "bg-[#245A91]",
-
     muted:
       "text-[#64717D]",
 
     border:
-      "border-[#14202B]/15",
+      "border-[#14202B]/10",
 
     itemBorder:
       "divide-[#14202B]/10",
@@ -929,16 +753,13 @@ const themes: Record<string, RankingTheme> = {
       "bg-[#14202B]",
 
     numberText:
-      "text-[#E4E9EF]",
-
-    decoration:
-      "text-[#245A91]/[0.04]",
+      "text-[#E5E9EE]",
 
     buttonPrimary:
       "bg-[#14202B] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#14202B]",
+      "bg-transparent border-[#14202B]/30",
 
     buttonSecondaryText:
       "text-[#14202B]",
@@ -950,16 +771,10 @@ const themes: Record<string, RankingTheme> = {
       "BRIEFING / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.94] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[0.94] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "financial",
-
-    shape:
-      "square"
+      "text-base md:text-lg"
 
   },
 
@@ -967,7 +782,7 @@ const themes: Record<string, RankingTheme> = {
   "Science": {
 
     card:
-      "bg-[#DDECEF] shadow-[0_20px_60px_rgba(35,80,90,0.12)]",
+      "bg-[#E0EAEC]",
 
     text:
       "text-[#14272C]",
@@ -975,32 +790,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#157D8C]",
 
-    accentBackground:
-      "bg-[#157D8C]",
-
     muted:
       "text-[#61767C]",
 
     border:
-      "border-[#29525A]/15",
+      "border-[#14272C]/10",
 
     itemBorder:
-      "divide-[#29525A]/10",
+      "divide-[#14272C]/10",
 
     numberBackground:
-      "bg-transparent",
+      "bg-[#14272C]",
 
     numberText:
-      "text-[#157D8C]",
-
-    decoration:
-      "text-[#157D8C]/[0.04]",
+      "text-[#E0EAEC]",
 
     buttonPrimary:
       "bg-[#14272C] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#157D8C]",
+      "bg-transparent border-[#14272C]/30",
 
     buttonSecondaryText:
       "text-[#14272C]",
@@ -1012,16 +821,10 @@ const themes: Record<string, RankingTheme> = {
       "FIELD NOTES / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.92] tracking-[-0.045em]",
+      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "scientific",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -1029,7 +832,7 @@ const themes: Record<string, RankingTheme> = {
   "History": {
 
     card:
-      "bg-[#E8DDC8] shadow-[0_20px_60px_rgba(75,55,35,0.12)]",
+      "bg-[#E9E0CF]",
 
     text:
       "text-[#2D2419]",
@@ -1037,32 +840,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#86502E]",
 
-    accentBackground:
-      "bg-[#86502E]",
-
     muted:
       "text-[#766A5B]",
 
     border:
-      "border-[#574735]/15",
+      "border-[#2D2419]/10",
 
     itemBorder:
-      "divide-[#574735]/10",
+      "divide-[#2D2419]/10",
 
     numberBackground:
-      "bg-[#86502E]",
+      "bg-[#2D2419]",
 
     numberText:
-      "text-[#E8DDC8]",
-
-    decoration:
-      "text-[#86502E]/[0.045]",
+      "text-[#E9E0CF]",
 
     buttonPrimary:
       "bg-[#2D2419] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#2D2419]",
+      "bg-transparent border-[#2D2419]/30",
 
     buttonSecondaryText:
       "text-[#2D2419]",
@@ -1074,16 +871,10 @@ const themes: Record<string, RankingTheme> = {
       "ARCHIVE / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.94] tracking-[-0.035em]",
+      "text-3xl md:text-4xl leading-[0.94] tracking-[-0.035em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "archival",
-
-    shape:
-      "line"
+      "text-base md:text-lg"
 
   },
 
@@ -1091,7 +882,7 @@ const themes: Record<string, RankingTheme> = {
   "Nature & Animals": {
 
     card:
-      "bg-[#DDE9D8] shadow-[0_25px_65px_rgba(40,80,40,0.12)]",
+      "bg-[#E0E9DC]",
 
     text:
       "text-[#172418]",
@@ -1099,32 +890,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#4C7D3F]",
 
-    accentBackground:
-      "bg-[#4C7D3F]",
-
     muted:
       "text-[#62715E]",
 
     border:
-      "border-[#31482E]/15",
+      "border-[#172418]/10",
 
     itemBorder:
-      "divide-[#31482E]/10",
+      "divide-[#172418]/10",
 
     numberBackground:
-      "bg-[#4C7D3F]",
+      "bg-[#172418]",
 
     numberText:
-      "text-white",
-
-    decoration:
-      "text-[#4C7D3F]/[0.045]",
+      "text-[#E0E9DC]",
 
     buttonPrimary:
       "bg-[#172418] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#4C7D3F]",
+      "bg-transparent border-[#172418]/30",
 
     buttonSecondaryText:
       "text-[#172418]",
@@ -1136,16 +921,10 @@ const themes: Record<string, RankingTheme> = {
       "FIELD GUIDE / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.88] tracking-[-0.05em]",
+      "text-3xl md:text-4xl leading-[0.88] tracking-[-0.045em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "organic",
-
-    shape:
-      "circle"
+      "text-base md:text-lg"
 
   },
 
@@ -1153,7 +932,7 @@ const themes: Record<string, RankingTheme> = {
   "Cars & Transport": {
 
     card:
-      "bg-[#DCE1E5] shadow-[0_25px_70px_rgba(30,40,50,0.14)]",
+      "bg-[#E2E5E7]",
 
     text:
       "text-[#141B20]",
@@ -1161,35 +940,29 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#C63D2E]",
 
-    accentBackground:
-      "bg-[#141B20]",
-
     muted:
       "text-[#68737B]",
 
     border:
-      "border-[#141B20]/15",
+      "border-[#141B20]/10",
 
     itemBorder:
       "divide-[#141B20]/10",
 
     numberBackground:
-      "bg-[#C63D2E]",
+      "bg-[#141B20]",
 
     numberText:
-      "text-white",
-
-    decoration:
-      "text-[#C63D2E]/[0.045]",
+      "text-[#E2E5E7]",
 
     buttonPrimary:
       "bg-[#141B20] text-white",
 
     buttonSecondary:
-      "bg-[#C63D2E] border-[#C63D2E]",
+      "bg-transparent border-[#141B20]/30",
 
     buttonSecondaryText:
-      "text-white",
+      "text-[#141B20]",
 
     categoryLabel:
       "Cars & Transport",
@@ -1198,16 +971,10 @@ const themes: Record<string, RankingTheme> = {
       "ROAD / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.8] tracking-[-0.065em] uppercase",
+      "text-3xl md:text-4xl leading-[0.8] tracking-[-0.055em] uppercase",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "automotive",
-
-    shape:
-      "line"
+      "text-base md:text-lg"
 
   },
 
@@ -1215,7 +982,7 @@ const themes: Record<string, RankingTheme> = {
   "Home & Garden": {
 
     card:
-      "bg-[#E8E5D7] shadow-[0_25px_65px_rgba(65,60,45,0.11)]",
+      "bg-[#E9E7DD]",
 
     text:
       "text-[#25251E]",
@@ -1223,32 +990,26 @@ const themes: Record<string, RankingTheme> = {
     accent:
       "text-[#6E7C45]",
 
-    accentBackground:
-      "bg-[#6E7C45]",
-
     muted:
       "text-[#707064]",
 
     border:
-      "border-[#4F503E]/15",
+      "border-[#25251E]/10",
 
     itemBorder:
-      "divide-[#4F503E]/10",
+      "divide-[#25251E]/10",
 
     numberBackground:
-      "bg-[#6E7C45]",
+      "bg-[#25251E]",
 
     numberText:
-      "text-white",
-
-    decoration:
-      "text-[#6E7C45]/[0.045]",
+      "text-[#E9E7DD]",
 
     buttonPrimary:
       "bg-[#25251E] text-white",
 
     buttonSecondary:
-      "bg-transparent border-[#6E7C45]",
+      "bg-transparent border-[#25251E]/30",
 
     buttonSecondaryText:
       "text-[#25251E]",
@@ -1260,16 +1021,10 @@ const themes: Record<string, RankingTheme> = {
       "LIVING / 07",
 
     title:
-      "text-4xl md:text-5xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     item:
-      "text-lg md:text-xl",
-
-    listStyle:
-      "interior",
-
-    shape:
-      "square"
+      "text-base md:text-lg"
 
   },
 
@@ -1277,40 +1032,34 @@ const themes: Record<string, RankingTheme> = {
   "General": {
 
     card:
-      "rankd-card",
+      "bg-[#F7F4EE]",
 
     text:
       "text-black",
 
     accent:
-      "rankd-accent",
-
-    accentBackground:
-      "bg-black",
+      "text-[#FF6B35]",
 
     muted:
-      "rankd-muted",
+      "text-black/50",
 
     border:
       "border-black/10",
 
     itemBorder:
-      "divide-black/5",
+      "divide-black/10",
 
     numberBackground:
-      "bg-transparent",
+      "bg-black",
 
     numberText:
-      "rankd-accent",
-
-    decoration:
-      "text-black/[0.02]",
+      "text-[#F7F4EE]",
 
     buttonPrimary:
       "bg-black text-white",
 
     buttonSecondary:
-      "bg-white border-black",
+      "bg-transparent border-black/30",
 
     buttonSecondaryText:
       "text-black",
@@ -1319,19 +1068,13 @@ const themes: Record<string, RankingTheme> = {
       "General",
 
     secondaryLabel:
-      "Top 7",
+      "TOP 7",
 
     title:
-      "text-3xl leading-tight",
+      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     item:
-      "text-lg",
-
-    listStyle:
-      "minimal",
-
-    shape:
-      "none"
+      "text-base md:text-lg"
 
   }
 
@@ -1400,9 +1143,7 @@ export default function RankingCard({
 
       const data =
         await getRankingEngagement(
-
           ranking.id
-
         )
 
 
@@ -1447,11 +1188,6 @@ export default function RankingCard({
     getTheme(
       ranking.category
     )
-
-
-  const isGeneral =
-    !ranking.category ||
-    ranking.category === "General"
 
 
   function handleRankd() {
@@ -1577,111 +1313,47 @@ export default function RankingCard({
     <article
 
       className={`
+        group
         relative
         overflow-hidden
         h-full
-        p-8
-        rounded-[2rem]
-        transition
+        p-7
+        md:p-8
+        rounded-[28px]
+        border
         ${theme.card}
         ${theme.text}
+        ${theme.border}
+        transition-all
+        duration-300
+        hover:-translate-y-1
+        hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]
       `}
 
     >
 
-      {
-        !isGeneral && (
+      <div
 
-          <div
+        className="
+          pointer-events-none
+          absolute
+          right-5
+          top-3
+          z-0
+          select-none
+          text-[8rem]
+          md:text-[9rem]
+          leading-none
+          font-black
+          tracking-[-0.1em]
+          text-[#FF6B35]/[0.08]
+        "
 
-            className={`
-              pointer-events-none
-              absolute
-              -right-12
-              -top-20
-              text-[18rem]
-              leading-none
-              font-black
-              select-none
-              ${theme.decoration}
-            `}
+      >
 
-          >
+        7
 
-            7
-
-          </div>
-
-        )
-      }
-
-
-      {
-        theme.shape === "circle" && (
-
-          <div
-
-            className={`
-              pointer-events-none
-              absolute
-              -left-20
-              -bottom-20
-              h-56
-              w-56
-              rounded-full
-              opacity-30
-              ${theme.accentBackground}
-            `}
-
-          />
-
-        )
-      }
-
-
-      {
-        theme.shape === "square" && (
-
-          <div
-
-            className={`
-              pointer-events-none
-              absolute
-              right-[-45px]
-              bottom-[-45px]
-              h-40
-              w-40
-              rotate-12
-              opacity-10
-              ${theme.accentBackground}
-            `}
-
-          />
-
-        )
-      }
-
-
-      {
-        theme.shape === "line" && (
-
-          <div
-
-            className={`
-              pointer-events-none
-              absolute
-              right-8
-              top-8
-              h-32
-              w-px
-              opacity-30
-              ${theme.accentBackground}
-            `}
-
-          />
-
-        )
-      }
+      </div>
 
 
       <Link
@@ -1694,8 +1366,6 @@ export default function RankingCard({
           relative
           z-10
           block
-          hover:-translate-y-1
-          transition
         "
 
       >
@@ -1742,32 +1412,30 @@ export default function RankingCard({
 
           <p
 
-            className={`
-              ${theme.accent}
+            className="
+              text-[#FF6B35]
               uppercase
               tracking-[0.25em]
               text-[10px]
               font-black
-            `}
+            "
 
           >
 
-            {
-              theme.categoryLabel
-            }
+            RANKD
 
           </p>
 
 
           <span
 
-            className="
+            className={`
+              ${theme.accent}
               text-[9px]
               uppercase
               tracking-[0.2em]
               font-black
-              opacity-60
-            "
+            `}
 
           >
 
@@ -1780,10 +1448,30 @@ export default function RankingCard({
         </div>
 
 
+        <p
+
+          className={`
+            mt-5
+            ${theme.accent}
+            uppercase
+            tracking-[0.2em]
+            text-[9px]
+            font-black
+          `}
+
+        >
+
+          {
+            theme.categoryLabel
+          }
+
+        </p>
+
+
         <h3
 
           className={`
-            mt-7
+            mt-3
             font-black
             max-w-full
             overflow-hidden
@@ -1830,6 +1518,7 @@ export default function RankingCard({
 
           className={`
             mt-8
+            pt-6
             border-t
             ${theme.border}
           `}
@@ -1839,169 +1528,47 @@ export default function RankingCard({
           <div
 
             className="
-              pt-5
+              flex
+              items-center
+              justify-between
+              gap-4
+              mb-4
             "
 
           >
 
-            <div
-
-              className="
-                flex
-                items-center
-                justify-between
-                gap-4
-                mb-4
-              "
-
-            >
-
-              <p
-
-                className={`
-                  ${theme.accent}
-                  uppercase
-                  tracking-[0.25em]
-                  text-[10px]
-                  font-black
-                `}
-
-              >
-
-                Top 7
-
-              </p>
-
-
-              <span
-
-                className="
-                  text-[9px]
-                  uppercase
-                  tracking-[0.2em]
-                  font-black
-                  opacity-40
-                "
-
-              >
-
-                In order
-
-              </span>
-
-            </div>
-
-
-            <div
+            <p
 
               className={`
-                divide-y
-                ${theme.itemBorder}
+                ${theme.accent}
+                uppercase
+                tracking-[0.25em]
+                text-[10px]
+                font-black
               `}
 
             >
 
-              {
-                sortedItems.map(
+              TOP 7
 
-                  item => (
-
-                    <div
-
-                      key={
-                        `${ranking.id}-${item.position}`
-                      }
-
-                      className="
-                        flex
-                        items-center
-                        gap-4
-                        py-4
-                      "
-
-                    >
-
-                      {
-                        theme.numberBackground ===
-                        "bg-transparent" ? (
-
-                          <span
-
-                            className={`
-                              w-9
-                              shrink-0
-                              text-sm
-                              font-black
-                              ${theme.numberText}
-                            `}
-
-                          >
-
-                            {
-                              String(
-                                item.position
-                              ).padStart(
-                                2,
-                                "0"
-                              )
-                            }
-
-                          </span>
-
-                        ) : (
-
-                          <span
-
-                            className={`
-                              flex
-                              h-8
-                              w-8
-                              shrink-0
-                              items-center
-                              justify-center
-                              rounded-full
-                              text-xs
-                              font-black
-                              ${theme.numberBackground}
-                              ${theme.numberText}
-                            `}
-
-                          >
-
-                            {
-                              item.position
-                            }
-
-                          </span>
-
-                        )
-                      }
+            </p>
 
 
-                      <span
+            <span
 
-                        className={`
-                          font-black
-                          leading-tight
-                          ${theme.item}
-                        `}
+              className="
+                text-[9px]
+                uppercase
+                tracking-[0.2em]
+                font-black
+                opacity-40
+              "
 
-                      >
+            >
 
-                        {
-                          item.name
-                        }
+              In order
 
-                      </span>
-
-                    </div>
-
-                  )
-
-                )
-              }
-
-            </div>
+            </span>
 
           </div>
 
@@ -2009,7 +1576,88 @@ export default function RankingCard({
           <div
 
             className={`
-              mt-6
+              divide-y
+              ${theme.itemBorder}
+            `}
+
+          >
+
+            {
+              sortedItems.map(
+
+                item => (
+
+                  <div
+
+                    key={
+                      `${ranking.id}-${item.position}`
+                    }
+
+                    className="
+                      flex
+                      items-center
+                      gap-4
+                      py-3.5
+                    "
+
+                  >
+
+                    <span
+
+                      className={`
+                        flex
+                        h-8
+                        w-8
+                        shrink-0
+                        items-center
+                        justify-center
+                        rounded-full
+                        text-[11px]
+                        font-black
+                        ${theme.numberBackground}
+                        ${theme.numberText}
+                      `}
+
+                    >
+
+                      {
+                        item.position
+                      }
+
+                    </span>
+
+
+                    <span
+
+                      className={`
+                        min-w-0
+                        font-black
+                        leading-tight
+                        ${theme.item}
+                      `}
+
+                    >
+
+                      {
+                        item.name
+                      }
+
+                    </span>
+
+                  </div>
+
+                )
+
+              )
+            }
+
+          </div>
+
+
+          <div
+
+            className={`
+              mt-5
               pt-5
               border-t
               ${theme.border}
@@ -2045,7 +1693,7 @@ export default function RankingCard({
         className={`
           relative
           z-10
-          mt-8
+          mt-7
           pt-6
           border-t
           ${theme.border}
@@ -2070,7 +1718,9 @@ export default function RankingCard({
 
                   className="
                     font-black
-                    text-xl
+                    text-lg
+                    md:text-xl
+                    tracking-[-0.02em]
                   "
 
                 >
@@ -2123,7 +1773,8 @@ export default function RankingCard({
                     py-5
                     text-center
                     hover:-translate-y-1
-                    transition
+                    transition-all
+                    duration-200
                     ${theme.buttonPrimary}
                   `}
 
@@ -2133,7 +1784,8 @@ export default function RankingCard({
 
                     className="
                       block
-                      text-xl
+                      text-lg
+                      md:text-xl
                       font-black
                     "
 
@@ -2177,7 +1829,8 @@ export default function RankingCard({
                     text-center
                     border-2
                     hover:-translate-y-1
-                    transition
+                    transition-all
+                    duration-200
                     ${theme.buttonSecondary}
                     ${theme.buttonSecondaryText}
                   `}
@@ -2188,7 +1841,8 @@ export default function RankingCard({
 
                     className="
                       block
-                      text-xl
+                      text-lg
+                      md:text-xl
                       font-black
                     "
 

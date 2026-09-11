@@ -4,7 +4,6 @@ import type {
 
 import Link from "next/link"
 
-
 import {
   categories
 } from "@/utils/categories"
@@ -87,16 +86,13 @@ export const metadata: Metadata = {
 
 type CategoryTheme = {
 
-  card: string
+  background: string
   text: string
   accent: string
-  accentBackground: string
   muted: string
   border: string
-  decoration: string
   title: string
   secondaryLabel: string
-  shape: "circle" | "square" | "line" | "none"
 
 }
 
@@ -105,8 +101,8 @@ const categoryThemes: Record<string, CategoryTheme> = {
 
   "Food & Drink": {
 
-    card:
-      "bg-[#F1E4D1]",
+    background:
+      "bg-[#F3E8D8]",
 
     text:
       "text-[#211A16]",
@@ -114,104 +110,74 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#D96B35]",
 
-    accentBackground:
-      "bg-[#D96B35]",
-
     muted:
       "text-[#6E5545]",
 
     border:
-      "border-[#8A5A3C]/20",
-
-    decoration:
-      "text-[#D96B35]/[0.07]",
+      "border-[#211A16]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.9] tracking-[-0.04em]",
 
     secondaryLabel:
-      "MENU / 07",
-
-    shape:
-      "circle"
+      "MENU / 07"
 
   },
 
-
   "Film & TV": {
 
-    card:
-      "bg-[#111111]",
+    background:
+      "bg-[#ECEAE5]",
 
     text:
-      "text-[#F7F4EE]",
+      "text-[#151515]",
 
     accent:
       "text-[#FF6B35]",
 
-    accentBackground:
-      "bg-[#FF6B35]",
-
     muted:
-      "text-white/55",
+      "text-[#686560]",
 
     border:
-      "border-white/15",
-
-    decoration:
-      "text-white/[0.025]",
+      "border-[#151515]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.86] tracking-[-0.05em]",
 
     secondaryLabel:
-      "FRAME / 07",
-
-    shape:
-      "line"
+      "FRAME / 07"
 
   },
 
-
   "Music": {
 
-    card:
-      "bg-[#25152F]",
+    background:
+      "bg-[#EAE3EC]",
 
     text:
-      "text-[#F7EFF8]",
+      "text-[#25152F]",
 
     accent:
-      "text-[#E7A8FF]",
-
-    accentBackground:
-      "bg-[#E7A8FF]",
+      "text-[#A95BCB]",
 
     muted:
-      "text-[#C8B7CC]",
+      "text-[#685C6D]",
 
     border:
-      "border-[#E7A8FF]/20",
-
-    decoration:
-      "text-[#E7A8FF]/[0.04]",
+      "border-[#25152F]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.82] tracking-[-0.05em]",
 
     secondaryLabel:
-      "SIDE A / 07",
-
-    shape:
-      "circle"
+      "SIDE A / 07"
 
   },
 
-
   "Sport": {
 
-    card:
-      "bg-[#E9ECE7]",
+    background:
+      "bg-[#E7EBE5]",
 
     text:
       "text-[#101510]",
@@ -219,69 +185,49 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#E54B2F]",
 
-    accentBackground:
-      "bg-[#101510]",
-
     muted:
       "text-[#586058]",
 
     border:
-      "border-[#101510]/15",
-
-    decoration:
-      "text-[#E54B2F]/[0.05]",
+      "border-[#101510]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.78] tracking-[-0.06em] uppercase",
 
     secondaryLabel:
-      "MATCH / 07",
-
-    shape:
-      "line"
+      "MATCH / 07"
 
   },
 
-
   "Gaming": {
 
-    card:
-      "bg-[#0E1416]",
+    background:
+      "bg-[#E7ECE9]",
 
     text:
-      "text-[#EAF5EE]",
+      "text-[#0E1416]",
 
     accent:
-      "text-[#72F36A]",
-
-    accentBackground:
-      "bg-[#72F36A]",
+      "text-[#39A932]",
 
     muted:
-      "text-[#8DA098]",
+      "text-[#59645F]",
 
     border:
-      "border-[#72F36A]/20",
-
-    decoration:
-      "text-[#72F36A]/[0.035]",
+      "border-[#0E1416]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.9] tracking-[-0.04em]",
 
     secondaryLabel:
-      "PLAYER 1 / 07",
-
-    shape:
-      "square"
+      "PLAYER 1 / 07"
 
   },
 
-
   "Travel": {
 
-    card:
-      "bg-[#D9EEE9]",
+    background:
+      "bg-[#E0ECE8]",
 
     text:
       "text-[#123B36]",
@@ -289,34 +235,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#087D71]",
 
-    accentBackground:
-      "bg-[#087D71]",
-
     muted:
       "text-[#58736F]",
 
     border:
-      "border-[#123B36]/15",
-
-    decoration:
-      "text-[#087D71]/[0.05]",
+      "border-[#123B36]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.88] tracking-[-0.04em]",
 
     secondaryLabel:
-      "FIELD NOTES / 07",
-
-    shape:
-      "circle"
+      "FIELD NOTES / 07"
 
   },
 
-
   "Technology": {
 
-    card:
-      "bg-[#ECEDEA]",
+    background:
+      "bg-[#E9EBE9]",
 
     text:
       "text-[#111820]",
@@ -324,34 +260,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#315AE8]",
 
-    accentBackground:
-      "bg-[#315AE8]",
-
     muted:
       "text-[#69737C]",
 
     border:
-      "border-[#111820]/15",
-
-    decoration:
-      "text-[#315AE8]/[0.035]",
+      "border-[#111820]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.9] tracking-[-0.05em]",
 
     secondaryLabel:
-      "SYSTEM / 07",
-
-    shape:
-      "square"
+      "SYSTEM / 07"
 
   },
 
-
   "Lifestyle": {
 
-    card:
-      "bg-[#EFE8DC]",
+    background:
+      "bg-[#EEE8DE]",
 
     text:
       "text-[#29241E]",
@@ -359,34 +285,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#A45D3E]",
 
-    accentBackground:
-      "bg-[#A45D3E]",
-
     muted:
       "text-[#766E64]",
 
     border:
-      "border-[#29241E]/15",
-
-    decoration:
-      "text-[#A45D3E]/[0.04]",
+      "border-[#29241E]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     secondaryLabel:
-      "EDIT / 07",
-
-    shape:
-      "circle"
+      "EDIT / 07"
 
   },
 
-
   "Books": {
 
-    card:
-      "bg-[#F3EDE0]",
+    background:
+      "bg-[#F1EBDD]",
 
     text:
       "text-[#30251D]",
@@ -394,69 +310,49 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#9B493D]",
 
-    accentBackground:
-      "bg-[#9B493D]",
-
     muted:
       "text-[#75695E]",
 
     border:
-      "border-[#30251D]/15",
-
-    decoration:
-      "text-[#9B493D]/[0.035]",
+      "border-[#30251D]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.94] tracking-[-0.025em]",
 
     secondaryLabel:
-      "PUBLISHING / 07",
-
-    shape:
-      "line"
+      "PUBLISHING / 07"
 
   },
 
-
   "Art & Design": {
 
-    card:
-      "bg-[#151515]",
+    background:
+      "bg-[#E9E6DF]",
 
     text:
-      "text-[#F5F1EA]",
+      "text-[#151515]",
 
     accent:
-      "text-[#F2C14E]",
-
-    accentBackground:
-      "bg-[#F2C14E]",
+      "text-[#B58B18]",
 
     muted:
-      "text-[#A8A39B]",
+      "text-[#68645C]",
 
     border:
-      "border-white/15",
-
-    decoration:
-      "text-[#F2C14E]/[0.025]",
+      "border-[#151515]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.82] tracking-[-0.06em]",
 
     secondaryLabel:
-      "CATALOGUE / 07",
-
-    shape:
-      "square"
+      "CATALOGUE / 07"
 
   },
 
-
   "Fashion": {
 
-    card:
-      "bg-[#E9DFE7]",
+    background:
+      "bg-[#ECE3E9]",
 
     text:
       "text-[#231B22]",
@@ -464,34 +360,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#A52F68]",
 
-    accentBackground:
-      "bg-[#A52F68]",
-
     muted:
       "text-[#786773]",
 
     border:
-      "border-[#231B22]/15",
-
-    decoration:
-      "text-[#A52F68]/[0.045]",
+      "border-[#231B22]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.78] tracking-[-0.06em] uppercase",
 
     secondaryLabel:
-      "COLLECTION / 07",
-
-    shape:
-      "line"
+      "COLLECTION / 07"
 
   },
 
-
   "Beauty": {
 
-    card:
-      "bg-[#F4E2E1]",
+    background:
+      "bg-[#F1E5E3]",
 
     text:
       "text-[#2C1C1F]",
@@ -499,34 +385,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#C34E68]",
 
-    accentBackground:
-      "bg-[#C34E68]",
-
     muted:
       "text-[#856B70]",
 
     border:
-      "border-[#6F454A]/15",
-
-    decoration:
-      "text-[#C34E68]/[0.045]",
+      "border-[#2C1C1F]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.88] tracking-[-0.04em]",
 
     secondaryLabel:
-      "EDIT / 07",
-
-    shape:
-      "circle"
+      "EDIT / 07"
 
   },
 
-
   "Health & Fitness": {
 
-    card:
-      "bg-[#E2F0E5]",
+    background:
+      "bg-[#E4EEE6]",
 
     text:
       "text-[#17251B]",
@@ -534,34 +410,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#16824D]",
 
-    accentBackground:
-      "bg-[#16824D]",
-
     muted:
       "text-[#607467]",
 
     border:
-      "border-[#244A35]/15",
-
-    decoration:
-      "text-[#16824D]/[0.045]",
+      "border-[#17251B]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.86] tracking-[-0.05em]",
 
     secondaryLabel:
-      "ENERGY / 07",
-
-    shape:
-      "circle"
+      "ENERGY / 07"
 
   },
 
-
   "Business": {
 
-    card:
-      "bg-[#E4E9EF]",
+    background:
+      "bg-[#E5E9EE]",
 
     text:
       "text-[#14202B]",
@@ -569,34 +435,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#245A91]",
 
-    accentBackground:
-      "bg-[#245A91]",
-
     muted:
       "text-[#64717D]",
 
     border:
-      "border-[#14202B]/15",
-
-    decoration:
-      "text-[#245A91]/[0.04]",
+      "border-[#14202B]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.94] tracking-[-0.04em]",
 
     secondaryLabel:
-      "BRIEFING / 07",
-
-    shape:
-      "square"
+      "BRIEFING / 07"
 
   },
 
-
   "Science": {
 
-    card:
-      "bg-[#DDECEF]",
+    background:
+      "bg-[#E0EAEC]",
 
     text:
       "text-[#14272C]",
@@ -604,34 +460,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#157D8C]",
 
-    accentBackground:
-      "bg-[#157D8C]",
-
     muted:
       "text-[#61767C]",
 
     border:
-      "border-[#29525A]/15",
-
-    decoration:
-      "text-[#157D8C]/[0.04]",
+      "border-[#14272C]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     secondaryLabel:
-      "FIELD NOTES / 07",
-
-    shape:
-      "circle"
+      "FIELD NOTES / 07"
 
   },
 
-
   "History": {
 
-    card:
-      "bg-[#E8DDC8]",
+    background:
+      "bg-[#E9E0CF]",
 
     text:
       "text-[#2D2419]",
@@ -639,34 +485,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#86502E]",
 
-    accentBackground:
-      "bg-[#86502E]",
-
     muted:
       "text-[#766A5B]",
 
     border:
-      "border-[#574735]/15",
-
-    decoration:
-      "text-[#86502E]/[0.045]",
+      "border-[#2D2419]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.94] tracking-[-0.035em]",
 
     secondaryLabel:
-      "ARCHIVE / 07",
-
-    shape:
-      "line"
+      "ARCHIVE / 07"
 
   },
 
-
   "Nature & Animals": {
 
-    card:
-      "bg-[#DDE9D8]",
+    background:
+      "bg-[#E0E9DC]",
 
     text:
       "text-[#172418]",
@@ -674,34 +510,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#4C7D3F]",
 
-    accentBackground:
-      "bg-[#4C7D3F]",
-
     muted:
       "text-[#62715E]",
 
     border:
-      "border-[#31482E]/15",
-
-    decoration:
-      "text-[#4C7D3F]/[0.045]",
+      "border-[#172418]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.88] tracking-[-0.045em]",
 
     secondaryLabel:
-      "FIELD GUIDE / 07",
-
-    shape:
-      "circle"
+      "FIELD GUIDE / 07"
 
   },
 
-
   "Cars & Transport": {
 
-    card:
-      "bg-[#DCE1E5]",
+    background:
+      "bg-[#E2E5E7]",
 
     text:
       "text-[#141B20]",
@@ -709,34 +535,24 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#C63D2E]",
 
-    accentBackground:
-      "bg-[#141B20]",
-
     muted:
       "text-[#68737B]",
 
     border:
-      "border-[#141B20]/15",
-
-    decoration:
-      "text-[#C63D2E]/[0.045]",
+      "border-[#141B20]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.8] tracking-[-0.055em] uppercase",
 
     secondaryLabel:
-      "ROAD / 07",
-
-    shape:
-      "line"
+      "ROAD / 07"
 
   },
 
-
   "Home & Garden": {
 
-    card:
-      "bg-[#E8E5D7]",
+    background:
+      "bg-[#E9E7DD]",
 
     text:
       "text-[#25251E]",
@@ -744,33 +560,23 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#6E7C45]",
 
-    accentBackground:
-      "bg-[#6E7C45]",
-
     muted:
       "text-[#707064]",
 
     border:
-      "border-[#4F503E]/15",
-
-    decoration:
-      "text-[#6E7C45]/[0.045]",
+      "border-[#25251E]/10",
 
     title:
       "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
 
     secondaryLabel:
-      "LIVING / 07",
-
-    shape:
-      "square"
+      "LIVING / 07"
 
   },
 
-
   "General": {
 
-    card:
+    background:
       "bg-[#F7F4EE]",
 
     text:
@@ -779,26 +585,17 @@ const categoryThemes: Record<string, CategoryTheme> = {
     accent:
       "text-[#FF6B35]",
 
-    accentBackground:
-      "bg-black",
-
     muted:
       "text-black/50",
 
     border:
       "border-black/10",
 
-    decoration:
-      "text-black/[0.02]",
-
     title:
       "text-3xl md:text-4xl leading-tight",
 
     secondaryLabel:
-      "TOP 7",
-
-    shape:
-      "none"
+      "TOP 7"
 
   }
 
@@ -865,7 +662,6 @@ export default function CategoriesPage() {
           "en-GB"
 
       },
-
 
       {
 
@@ -968,21 +764,6 @@ export default function CategoriesPage() {
             "
           >
 
-            <p
-              className="
-                rankd-accent
-                uppercase
-                tracking-[0.3em]
-                text-sm
-                font-black
-              "
-            >
-
-              Explore RANKD
-
-            </p>
-
-
             <div
               className="
                 flex
@@ -993,6 +774,21 @@ export default function CategoriesPage() {
             >
 
               <div>
+
+                <p
+                  className="
+                    rankd-accent
+                    uppercase
+                    tracking-[0.3em]
+                    text-sm
+                    font-black
+                  "
+                >
+
+                  Explore RANKD
+
+                </p>
+
 
                 <h1
                   className="
@@ -1038,7 +834,7 @@ export default function CategoriesPage() {
                   leading-none
                   font-black
                   tracking-[-0.1em]
-                  text-[#FF6B35]/[0.08]
+                  text-[#FF6B35]/[0.1]
                   select-none
                 "
               >
@@ -1112,90 +908,35 @@ export default function CategoriesPage() {
                           transition-all
                           duration-300
                           hover:-translate-y-1
-                          hover:shadow-[0_24px_60px_rgba(0,0,0,0.12)]
-                          ${theme.card}
+                          hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]
+                          ${theme.background}
                           ${theme.text}
                           ${theme.border}
                         `}
                       >
 
                         <div
-                          className={`
+                          className="
                             absolute
-                            -right-8
-                            -top-12
-                            text-[11rem]
-                            md:text-[13rem]
+                            right-5
+                            top-3
+                            text-[8rem]
+                            md:text-[9rem]
                             leading-none
                             font-black
+                            tracking-[-0.1em]
+                            text-[#FF6B35]/[0.08]
                             select-none
                             pointer-events-none
-                            ${theme.decoration}
-                          `}
+                            transition-transform
+                            duration-500
+                            group-hover:scale-110
+                          "
                         >
 
                           7
 
                         </div>
-
-
-                        {
-                          theme.shape === "circle" && (
-
-                            <div
-                              className={`
-                                absolute
-                                -bottom-16
-                                -left-16
-                                h-40
-                                w-40
-                                rounded-full
-                                opacity-10
-                                ${theme.accentBackground}
-                              `}
-                            />
-
-                          )
-                        }
-
-
-                        {
-                          theme.shape === "square" && (
-
-                            <div
-                              className={`
-                                absolute
-                                -bottom-10
-                                -right-10
-                                h-28
-                                w-28
-                                rotate-12
-                                opacity-10
-                                ${theme.accentBackground}
-                              `}
-                            />
-
-                          )
-                        }
-
-
-                        {
-                          theme.shape === "line" && (
-
-                            <div
-                              className={`
-                                absolute
-                                right-8
-                                top-8
-                                h-24
-                                w-px
-                                opacity-30
-                                ${theme.accentBackground}
-                              `}
-                            />
-
-                          )
-                        }
 
 
                         <div
@@ -1208,25 +949,57 @@ export default function CategoriesPage() {
                           <div
                             className="
                               flex
-                              items-start
+                              items-center
                               justify-between
                               gap-4
                             "
                           >
 
                             <span
-                              className={`
-                                text-xs
+                              className="
+                                inline-flex
+                                items-center
+                                gap-2
+                                text-[11px]
                                 uppercase
-                                tracking-[0.22em]
+                                tracking-[0.2em]
                                 font-black
-                                ${theme.accent}
-                              `}
+                              "
                             >
 
-                              {
-                                theme.secondaryLabel
-                              }
+                              <span
+                                className="
+                                  text-[#FF6B35]
+                                "
+                              >
+
+                                RANKD
+
+                              </span>
+
+
+                              <span
+                                className="
+                                  opacity-30
+                                "
+                              >
+
+                                /
+
+                              </span>
+
+
+                              <span
+                                className={`
+                                  ${theme.accent}
+                                `}
+                              >
+
+                                {
+                                  theme.secondaryLabel
+                                }
+
+                              </span>
 
                             </span>
 
@@ -1299,17 +1072,20 @@ export default function CategoriesPage() {
                               items-center
                               justify-between
                               gap-4
+                              border-t
+                              border-black/10
+                              pt-5
                             "
                           >
 
                             <span
-                              className={`
-                                text-xs
+                              className="
+                                text-[11px]
                                 uppercase
                                 tracking-[0.18em]
                                 font-black
-                                ${theme.accent}
-                              `}
+                                text-[#FF6B35]
+                              "
                             >
 
                               Explore rankings
@@ -1319,14 +1095,15 @@ export default function CategoriesPage() {
 
                             <span
                               className={`
-                                text-xs
+                                text-[11px]
+                                uppercase
+                                tracking-[0.18em]
                                 font-black
-                                opacity-40
                                 ${theme.muted}
                               `}
                             >
 
-                              TOP 7
+                              Top 7
 
                             </span>
 
