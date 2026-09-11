@@ -1,88 +1,47 @@
 "use client"
 
-
 import {
   useEffect,
   useState
 } from "react"
 
-
 import {
   useRouter
 } from "next/navigation"
 
-
 import Link from "next/link"
-
 
 import {
   trackEvent
 } from "@/utils/analytics"
 
-
 import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
-
 
 import {
   supabase
 } from "@/utils/supabase"
 
-
-import {
-  getStoredUserId
-} from "@/utils/currentUser"
-
-
 import ConversationTree from "@/components/ConversationTree"
-
-
-import TasteInsightCard from "@/components/TasteInsightCard"
-
 
 import RankingResponse from "@/components/RankingResponse"
 
-
 import RankingEngagement from "@/components/RankingEngagement"
-
 
 import {
   getRankingEngagement,
   RankingEngagementData
 } from "@/utils/rankingEngagement"
 
-
 import {
   buildConversationTree,
   ConversationNode
 } from "@/utils/conversationTree"
 
-
-import {
-  generateTasteInsight
-} from "@/utils/tasteInsights"
-
-
-import {
-  generateTasteGraphSignal
-} from "@/utils/tasteGraphSignal"
-
-
-import {
-  generateTasteIdentity
-} from "@/utils/tasteIdentity"
-
-
-import {
-  buildTasteGraph
-} from "@/utils/tasteGraph"
-
-
 import {
   Ranking
 } from "@/types/ranking"
-
 
 import {
   formatRankingTitle
@@ -90,31 +49,21 @@ import {
 
 
 type RankClientProps = {
-
   id:string
-
   initialRanking?:Ranking
-
 }
 
 
 type PerspectiveRanking = {
-
   id:string
-
   title:string
-
   parentId:string | null
-
   rootId:string | null
-
   createdAt:string | null
-
 }
 
 
 type ShareMethod =
-
   | "clipboard"
   | "whatsapp"
   | "x"
@@ -124,13 +73,9 @@ type ShareMethod =
 
 
 export default function RankClient({
-
   id,
-
   initialRanking
-
 }:RankClientProps) {
-
 
   const router =
     useRouter()
@@ -175,30 +120,13 @@ export default function RankClient({
 
 
   const [
-    tasteGraph,
-    setTasteGraph
-  ] =
-    useState<
-      ReturnType<
-        typeof buildTasteGraph
-      > | null
-    >(
-      null
-    )
-
-
-  const [
     engagement,
     setEngagement
   ] =
     useState<RankingEngagementData>({
-
       views:0,
-
       rankd:0,
-
       rerankd:0
-
     })
 
 
@@ -234,11 +162,7 @@ export default function RankClient({
 
   useEffect(() => {
 
-    if (!id) {
-
-      return
-
-    }
+    if (!id) return
 
 
     async function load() {
@@ -249,15 +173,10 @@ export default function RankClient({
 
 
       trackEvent(
-
         "ranking_viewed",
-
         {
-
           rankingId:id
-
         }
-
       )
 
 
@@ -294,9 +213,7 @@ export default function RankClient({
 
       const rankingEngagement =
         await getRankingEngagement(
-
           currentRanking.id
-
         )
 
 
@@ -340,139 +257,13 @@ export default function RankClient({
       )
 
 
-      const storedUserId =
-        getStoredUserId()
-
-
-      if (storedUserId) {
-
-        try {
-
-          const {
-
-            data:userRankingRows,
-
-            error:userRankingError
-
-          } =
-            await supabase
-
-              .from("rankings")
-
-              .select(
-                "id"
-              )
-
-              .eq(
-                "user_id",
-                storedUserId
-              )
-
-
-          if (userRankingError) {
-
-            console.error(
-
-              "TASTE GRAPH RANKING LOAD ERROR",
-
-              userRankingError
-
-            )
-
-          }
-          else if (
-
-            userRankingRows &&
-
-            userRankingRows.length > 0
-
-          ) {
-
-            const userRankings =
-
-              (
-
-                await Promise.all(
-
-                  userRankingRows.map(
-
-                    row =>
-                      getSupabaseRanking(
-                        row.id
-                      )
-
-                  )
-
-                )
-
-              )
-
-                .filter(
-
-                  (
-                    userRanking
-                  ):userRanking is Ranking =>
-
-                    userRanking !== null
-
-                )
-
-
-            if (
-
-              userRankings.length > 0
-
-            ) {
-
-              const graph =
-                buildTasteGraph(
-
-                  storedUserId,
-
-                  userRankings
-
-                )
-
-
-              setTasteGraph(
-                graph
-              )
-
-            }
-
-          }
-
-        }
-        catch (
-          tasteGraphError
-        ) {
-
-          console.error(
-
-            "TASTE GRAPH LOAD ERROR",
-
-            tasteGraphError
-
-          )
-
-        }
-
-      }
-
-
       const {
-
         data:conversationRankings,
-
         error:conversationError
-
       } =
         await supabase
-
           .from("rankings")
-
           .select(
-
             `
               id,
               title,
@@ -481,157 +272,97 @@ export default function RankClient({
               user_id,
               created_at
             `
-
           )
-
           .eq(
-
             "root_id",
-
             rootId
-
           )
-
           .order(
-
             "created_at",
-
             {
-
               ascending:true
-
             }
-
           )
 
 
       if (conversationError) {
 
         console.error(
-
           "CONVERSATION LOAD ERROR",
-
           conversationError
-
         )
 
       }
 
 
       const conversationItems:
-
         Omit<
           ConversationNode,
           "children"
         >[] =
-
         (
-
           conversationRankings ??
           []
-
         )
-
           .map(
-
             (item:any) => ({
-
-              id:
-                item.id,
-
-              title:
-                item.title,
-
+              id:item.id,
+              title:item.title,
               parentId:
                 item.parent_id ??
                 null,
-
               rootId:
                 item.root_id ??
                 rootId,
-
               createdAt:
                 item.created_at ??
                 undefined
-
             })
-
           )
 
 
       const hasOriginal =
         conversationItems.some(
-
           item =>
             item.id ===
             rootRanking.id
-
         )
 
 
       if (!hasOriginal) {
 
-        conversationItems.unshift(
-
-          {
-
-            id:
-              rootRanking.id,
-
-            title:
-              rootRanking.title,
-
-            parentId:
-              null,
-
-            rootId:
-              rootId,
-
-            createdAt:
-              rootRanking.createdAt
-
-          }
-
-        )
+        conversationItems.unshift({
+          id:rootRanking.id,
+          title:rootRanking.title,
+          parentId:null,
+          rootId:rootId,
+          createdAt:
+            rootRanking.createdAt
+        })
 
       }
 
 
       const hasCurrent =
         conversationItems.some(
-
           item =>
             item.id ===
             currentRanking.id
-
         )
 
 
       if (!hasCurrent) {
 
-        conversationItems.push(
-
-          {
-
-            id:
-              currentRanking.id,
-
-            title:
-              currentRanking.title,
-
-            parentId:
-              currentRanking.parentId ??
-              rootRanking.id,
-
-            rootId:
-              rootId,
-
-            createdAt:
-              currentRanking.createdAt
-
-          }
-
-        )
+        conversationItems.push({
+          id:currentRanking.id,
+          title:currentRanking.title,
+          parentId:
+            currentRanking.parentId ??
+            rootRanking.id,
+          rootId:rootId,
+          createdAt:
+            currentRanking.createdAt
+        })
 
       }
 
@@ -641,17 +372,12 @@ export default function RankClient({
 
 
       if (
-
         parentId &&
-
         !conversationItems.some(
-
           item =>
             item.id ===
             parentId
-
         )
-
       ) {
 
         const fetchedParent =
@@ -662,30 +388,18 @@ export default function RankClient({
 
         if (fetchedParent) {
 
-          conversationItems.push(
-
-            {
-
-              id:
-                fetchedParent.id,
-
-              title:
-                fetchedParent.title,
-
-              parentId:
-                fetchedParent.parentId ??
-                null,
-
-              rootId:
-                fetchedParent.rootId ??
-                rootId,
-
-              createdAt:
-                fetchedParent.createdAt
-
-            }
-
-          )
+          conversationItems.push({
+            id:fetchedParent.id,
+            title:fetchedParent.title,
+            parentId:
+              fetchedParent.parentId ??
+              null,
+            rootId:
+              fetchedParent.rootId ??
+              rootId,
+            createdAt:
+              fetchedParent.createdAt
+          })
 
         }
 
@@ -694,9 +408,7 @@ export default function RankClient({
 
       const tree =
         buildConversationTree(
-
           conversationItems
-
         )
 
 
@@ -707,39 +419,22 @@ export default function RankClient({
 
       const perspectiveItems:
         PerspectiveRanking[] =
-
         conversationItems
-
           .filter(
-
             item =>
               item.id !==
               rootRanking.id
-
           )
-
           .map(
-
             item => ({
-
-              id:
-                item.id,
-
-              title:
-                item.title,
-
-              parentId:
-                item.parentId,
-
-              rootId:
-                item.rootId,
-
+              id:item.id,
+              title:item.title,
+              parentId:item.parentId,
+              rootId:item.rootId,
               createdAt:
                 item.createdAt ??
                 null
-
             })
-
           )
 
 
@@ -755,17 +450,15 @@ export default function RankClient({
 
     load()
 
-
-  }, [id, initialRanking])
+  }, [
+    id,
+    initialRanking
+  ])
 
 
   async function copyRankingLink() {
 
-    if (!ranking) {
-
-      return false
-
-    }
+    if (!ranking) return
 
 
     const shareUrl =
@@ -837,35 +530,30 @@ export default function RankClient({
 
 
       trackEvent(
-
         "ranking_shared",
-
         {
-
           rankingId:
             ranking.id,
-
           method:
             "clipboard"
-
         }
-
       )
 
 
-      setShareComplete(true)
+      setShareComplete(
+        true
+      )
 
 
       window.setTimeout(
-
         () => {
 
-          setShareComplete(false)
+          setShareComplete(
+            false
+          )
 
         },
-
         2000
-
       )
 
 
@@ -875,13 +563,9 @@ export default function RankClient({
     catch (copyError) {
 
       console.error(
-
         "RANKD COPY LINK ERROR",
-
         copyError
-
       )
-
 
       return false
 
@@ -894,14 +578,18 @@ export default function RankClient({
     method:ShareMethod
   ) {
 
-    if (!ranking || sharing) {
-
+    if (
+      !ranking ||
+      sharing
+    ) {
       return
-
     }
 
 
-    if (method === "clipboard") {
+    if (
+      method ===
+      "clipboard"
+    ) {
 
       copyRankingLink()
 
@@ -936,7 +624,8 @@ export default function RankClient({
       )
 
 
-    let destination = ""
+    let destination =
+      ""
 
 
     switch (method) {
@@ -977,9 +666,7 @@ export default function RankClient({
 
         destination =
           `mailto:?subject=${encodeURIComponent(
-
             `${shareTitle} — RANKD`
-
           )}&body=${encodedText}%0A%0A${encodedUrl}`
 
         break
@@ -987,55 +674,45 @@ export default function RankClient({
     }
 
 
-    if (!destination) {
-
-      return
-
-    }
+    if (!destination) return
 
 
     trackEvent(
-
       "ranking_shared",
-
       {
-
         rankingId:
           ranking.id,
-
         method
-
       }
-
     )
 
 
-    setSharing(true)
+    setSharing(
+      true
+    )
 
 
     window.open(
-
       destination,
-
       "_blank",
       "noopener,noreferrer"
-
     )
 
 
-    setShareOpen(false)
+    setShareOpen(
+      false
+    )
 
 
     window.setTimeout(
-
       () => {
 
-        setSharing(false)
+        setSharing(
+          false
+        )
 
       },
-
       500
-
     )
 
   }
@@ -1043,82 +720,51 @@ export default function RankClient({
 
   function rankIt() {
 
-    if (!ranking) {
-
-      return
-
-    }
+    if (!ranking) return
 
 
     trackEvent(
-
       "ranking_rerank_started",
-
       {
-
         rankingId:
           ranking.id
-
       }
-
     )
 
 
     const items =
-
       [...ranking.items]
-
         .sort(
-
           (a,b) =>
-
             a.position -
             b.position
-
         )
-
         .map(
-
           item =>
             item.name
-
         )
-
         .join("|")
 
 
     const rootId =
-
       ranking.rootId ??
       ranking.id
 
 
     router.push(
-
       `/create?title=${encodeURIComponent(
-
         originalRanking?.title ??
         ranking.title
-
       )}&category=${encodeURIComponent(
-
         originalRanking?.category ??
         ranking.category
-
       )}&items=${encodeURIComponent(
-
         items
-
       )}&parentId=${encodeURIComponent(
-
         ranking.id
-
       )}&rootId=${encodeURIComponent(
-
         rootId
-
       )}`
-
     )
 
   }
@@ -1126,38 +772,25 @@ export default function RankClient({
 
   function handleRankd() {
 
-    if (!ranking) {
-
-      return
-
-    }
+    if (!ranking) return
 
 
     trackEvent(
-
       "ranking_rankd",
-
       {
-
         rankingId:
           ranking.id
-
       }
-
     )
 
 
     setEngagement(
-
       current => ({
-
         ...current,
-
         rankd:
-          current.rankd + 1
-
+          current.rankd +
+          1
       })
-
     )
 
   }
@@ -1173,9 +806,7 @@ export default function RankClient({
   if (!ranking) {
 
     return (
-
       <main
-
         className="
           min-h-screen
           bg-[#F7F4EE]
@@ -1183,47 +814,37 @@ export default function RankClient({
           px-6
           py-20
         "
-
       >
 
         <div
-
           className="
             max-w-6xl
             mx-auto
             text-center
           "
-
         >
 
           <h1
-
             className="
               text-4xl
               font-black
             "
-
           >
-
             Ranking not found
-
           </h1>
 
         </div>
 
       </main>
-
     )
 
   }
 
 
   const isPerspective =
-
     originalRanking !== null &&
-
     originalRanking.id !==
-    ranking.id
+      ranking.id
 
 
   const displayRanking =
@@ -1242,66 +863,25 @@ export default function RankClient({
 
 
   const sortedOriginalItems =
-
     [...displayRanking.items]
-
       .sort(
-
         (a,b) =>
-
           a.position -
           b.position
-
       )
 
 
   const sortedPerspectiveItems =
-
     [...ranking.items]
-
       .sort(
-
         (a,b) =>
-
           a.position -
           b.position
-
-      )
-
-
-  const tasteInsight =
-    generateTasteInsight(
-      ranking
-    )
-
-
-  const tasteSignal =
-    generateTasteGraphSignal(
-      ranking
-    )
-
-
-  const tasteIdentity =
-
-    tasteGraph
-
-      ?
-
-      generateTasteIdentity(
-        tasteGraph
-      )
-
-      :
-
-      generateTasteIdentity(
-        tasteSignal
       )
 
 
   return (
-
     <main
-
       className="
         min-h-screen
         bg-[#F7F4EE]
@@ -1309,31 +889,24 @@ export default function RankClient({
         px-6
         py-12
       "
-
     >
 
       <div
-
         className="
           max-w-6xl
           mx-auto
         "
-
       >
 
         {
           isPerspective && (
-
             <div
-
               className="
                 mb-10
               "
-
             >
 
               <div
-
                 className="
                   flex
                   flex-col
@@ -1342,13 +915,11 @@ export default function RankClient({
                   md:justify-between
                   gap-4
                 "
-
               >
 
                 <div>
 
                   <p
-
                     className="
                       rankd-accent
                       uppercase
@@ -1356,16 +927,12 @@ export default function RankClient({
                       text-sm
                       font-black
                     "
-
                   >
-
                     Different perspective
-
                   </p>
 
 
                   <h2
-
                     className="
                       text-4xl
                       md:text-5xl
@@ -1373,7 +940,6 @@ export default function RankClient({
                       leading-tight
                       mt-2
                     "
-
                   >
 
                     {
@@ -1390,80 +956,62 @@ export default function RankClient({
 
 
                 <Link
-
                   href={
                     `/rank/${originalRanking?.id}`
                   }
-
                   className="
                     rankd-button
                     whitespace-nowrap
                     inline-block
                   "
-
                 >
-
                   View original RANKD →
-
                 </Link>
 
               </div>
 
             </div>
-
           )
         }
 
 
         {
           conversationTree.length > 0 && (
-
             <div
-
               className="
                 mb-10
               "
-
             >
 
               <ConversationTree
-
                 nodes={
                   conversationTree
                 }
-
                 currentId={
                   ranking.id
                 }
-
               />
 
             </div>
-
           )
         }
 
 
         <div
-
           className="
             grid
             lg:grid-cols-3
             gap-10
           "
-
         >
 
           <section
-
             className="
               lg:col-span-2
             "
-
           >
 
             <p
-
               className="
                 rankd-accent
                 uppercase
@@ -1471,7 +1019,6 @@ export default function RankClient({
                 text-sm
                 font-black
               "
-
             >
 
               {
@@ -1483,7 +1030,6 @@ export default function RankClient({
 
 
             <h1
-
               className="
                 text-6xl
                 md:text-8xl
@@ -1491,19 +1037,14 @@ export default function RankClient({
                 leading-none
                 mt-6
               "
-
             >
-
               {displayTitle}
-
             </h1>
 
 
             {
               displayDescription && (
-
                 <p
-
                   className="
                     mt-8
                     text-xl
@@ -1512,25 +1053,19 @@ export default function RankClient({
                     leading-relaxed
                     max-w-3xl
                   "
-
                 >
-
                   {displayDescription}
-
                 </p>
-
               )
             }
 
 
             <p
-
               className="
                 mt-6
                 rankd-muted
                 text-lg
               "
-
             >
 
               Ranked by{" "}
@@ -1545,49 +1080,40 @@ export default function RankClient({
 
 
             <div
-
               className="
                 mt-5
               "
-
             >
 
               <RankingEngagement
-
                 views={
                   engagement.views
                 }
-
                 rankd={
                   engagement.rankd
                 }
-
                 rerankd={
                   engagement.rerankd
                 }
-
               />
 
             </div>
 
 
             <div
-
               className="
                 mt-6
                 relative
               "
-
             >
 
               <button
-
                 type="button"
-
                 onClick={() => {
 
                   setShareOpen(
-                    current => !current
+                    current =>
+                      !current
                   )
 
                   setShareComplete(
@@ -1595,7 +1121,6 @@ export default function RankClient({
                   )
 
                 }}
-
                 className="
                   rankd-button
                   inline-flex
@@ -1603,19 +1128,14 @@ export default function RankClient({
                   justify-center
                   gap-2
                 "
-
               >
-
                 Share RANKD
-
               </button>
 
 
               {
                 shareOpen && (
-
                   <div
-
                     className="
                       absolute
                       z-30
@@ -1631,58 +1151,45 @@ export default function RankClient({
                       p-5
                       shadow-xl
                     "
-
                   >
 
                     <div
-
                       className="
                         flex
                         items-center
                         justify-between
                         gap-4
                       "
-
                     >
 
                       <div>
 
                         <p
-
                           className="
                             text-lg
                             font-black
                           "
-
                         >
-
                           Share this RANKD
-
                         </p>
 
 
                         <p
-
                           className="
                             mt-1
                             text-sm
                             rankd-muted
                           "
-
                         >
-
                           Choose where you want
                           to share it.
-
                         </p>
 
                       </div>
 
 
                       <button
-
                         type="button"
-
                         onClick={() => {
 
                           setShareOpen(
@@ -1694,7 +1201,6 @@ export default function RankClient({
                           )
 
                         }}
-
                         className="
                           h-9
                           w-9
@@ -1704,43 +1210,33 @@ export default function RankClient({
                           hover:bg-black/[0.1]
                           transition
                         "
-
                         aria-label="Close sharing options"
-
                       >
-
                         ×
-
                       </button>
 
                     </div>
 
 
                     <div
-
                       className="
                         mt-5
                         grid
                         grid-cols-2
                         gap-3
                       "
-
                     >
 
                       <button
-
                         type="button"
-
                         onClick={() =>
                           shareRanking(
                             "clipboard"
                           )
                         }
-
                         disabled={
                           sharing
                         }
-
                         className="
                           rounded-2xl
                           border
@@ -1754,7 +1250,6 @@ export default function RankClient({
                           transition
                           disabled:opacity-50
                         "
-
                       >
 
                         <span
@@ -1763,9 +1258,7 @@ export default function RankClient({
                             text-xl
                           "
                         >
-
                           🔗
-
                         </span>
 
 
@@ -1788,19 +1281,15 @@ export default function RankClient({
 
 
                       <button
-
                         type="button"
-
                         onClick={() =>
                           shareRanking(
                             "whatsapp"
                           )
                         }
-
                         disabled={
                           sharing
                         }
-
                         className="
                           rounded-2xl
                           border
@@ -1814,7 +1303,6 @@ export default function RankClient({
                           transition
                           disabled:opacity-50
                         "
-
                       >
 
                         <span
@@ -1823,9 +1311,7 @@ export default function RankClient({
                             text-xl
                           "
                         >
-
                           💬
-
                         </span>
 
 
@@ -1835,28 +1321,22 @@ export default function RankClient({
                             block
                           "
                         >
-
                           WhatsApp
-
                         </span>
 
                       </button>
 
 
                       <button
-
                         type="button"
-
                         onClick={() =>
                           shareRanking(
                             "x"
                           )
                         }
-
                         disabled={
                           sharing
                         }
-
                         className="
                           rounded-2xl
                           border
@@ -1870,7 +1350,6 @@ export default function RankClient({
                           transition
                           disabled:opacity-50
                         "
-
                       >
 
                         <span
@@ -1879,9 +1358,7 @@ export default function RankClient({
                             text-xl
                           "
                         >
-
                           𝕏
-
                         </span>
 
 
@@ -1891,28 +1368,22 @@ export default function RankClient({
                             block
                           "
                         >
-
                           X
-
                         </span>
 
                       </button>
 
 
                       <button
-
                         type="button"
-
                         onClick={() =>
                           shareRanking(
                             "facebook"
                           )
                         }
-
                         disabled={
                           sharing
                         }
-
                         className="
                           rounded-2xl
                           border
@@ -1926,7 +1397,6 @@ export default function RankClient({
                           transition
                           disabled:opacity-50
                         "
-
                       >
 
                         <span
@@ -1935,9 +1405,7 @@ export default function RankClient({
                             text-xl
                           "
                         >
-
                           f
-
                         </span>
 
 
@@ -1946,30 +1414,23 @@ export default function RankClient({
                             mt-1
                             block
                           "
-
                         >
-
                           Facebook
-
                         </span>
 
                       </button>
 
 
                       <button
-
                         type="button"
-
                         onClick={() =>
                           shareRanking(
                             "messages"
                           )
                         }
-
                         disabled={
                           sharing
                         }
-
                         className="
                           rounded-2xl
                           border
@@ -1983,7 +1444,6 @@ export default function RankClient({
                           transition
                           disabled:opacity-50
                         "
-
                       >
 
                         <span
@@ -1992,9 +1452,7 @@ export default function RankClient({
                             text-xl
                           "
                         >
-
                           💬
-
                         </span>
 
 
@@ -2003,30 +1461,23 @@ export default function RankClient({
                             mt-1
                             block
                           "
-
                         >
-
                           Messages
-
                         </span>
 
                       </button>
 
 
                       <button
-
                         type="button"
-
                         onClick={() =>
                           shareRanking(
                             "email"
                           )
                         }
-
                         disabled={
                           sharing
                         }
-
                         className="
                           rounded-2xl
                           border
@@ -2040,7 +1491,6 @@ export default function RankClient({
                           transition
                           disabled:opacity-50
                         "
-
                       >
 
                         <span
@@ -2049,9 +1499,7 @@ export default function RankClient({
                             text-xl
                           "
                         >
-
                           ✉
-
                         </span>
 
 
@@ -2060,11 +1508,8 @@ export default function RankClient({
                             mt-1
                             block
                           "
-
                         >
-
                           Email
-
                         </span>
 
                       </button>
@@ -2072,7 +1517,6 @@ export default function RankClient({
                     </div>
 
                   </div>
-
                 )
 
               }
@@ -2081,25 +1525,20 @@ export default function RankClient({
 
 
             <div
-
               className="
                 mt-10
                 space-y-4
               "
-
             >
 
               {
                 sortedOriginalItems.map(
-
                   item => (
 
                     <div
-
                       key={
                         `original-${item.position}`
                       }
-
                       className="
                         rankd-card
                         p-6
@@ -2107,42 +1546,32 @@ export default function RankClient({
                         items-center
                         gap-6
                       "
-
                     >
 
                       <div
-
                         className="
                           text-4xl
                           font-black
                           rankd-accent
                         "
-
                       >
-
                         #{item.position}
-
                       </div>
 
 
                       <div
-
                         className="
                           text-2xl
                           md:text-3xl
                           font-black
                         "
-
                       >
-
                         {item.name}
-
                       </div>
 
                     </div>
 
                   )
-
                 )
               }
 
@@ -2153,18 +1582,15 @@ export default function RankClient({
               isPerspective && (
 
                 <div
-
                   className="
                     mt-14
                     pt-12
                     border-t
                     border-black/10
                   "
-
                 >
 
                   <p
-
                     className="
                       rankd-accent
                       uppercase
@@ -2172,23 +1598,18 @@ export default function RankClient({
                       text-sm
                       font-black
                     "
-
                   >
-
                     This perspective
-
                   </p>
 
 
                   <h3
-
                     className="
                       text-3xl
                       md:text-4xl
                       font-black
                       mt-3
                     "
-
                   >
 
                     {
@@ -2203,25 +1624,20 @@ export default function RankClient({
 
 
                   <div
-
                     className="
                       mt-8
                       space-y-4
                     "
-
                   >
 
                     {
                       sortedPerspectiveItems.map(
-
                         item => (
 
                           <div
-
                             key={
                               `perspective-${item.position}`
                             }
-
                             className="
                               rounded-3xl
                               border
@@ -2232,41 +1648,31 @@ export default function RankClient({
                               items-center
                               gap-6
                             "
-
                           >
 
                             <div
-
                               className="
                                 text-4xl
                                 font-black
                                 rankd-accent
                               "
-
                             >
-
                               #{item.position}
-
                             </div>
 
 
                             <div
-
                               className="
                                 text-2xl
                                 font-black
                               "
-
                             >
-
                               {item.name}
-
                             </div>
 
                           </div>
 
                         )
-
                       )
                     }
 
@@ -2279,66 +1685,31 @@ export default function RankClient({
 
 
             <RankingResponse
-
               onRankd={
                 handleRankd
               }
-
               onRerankd={
                 rankIt
               }
-
             />
-
-
-            <div
-
-              className="
-                mt-12
-              "
-
-            >
-
-              <TasteInsightCard
-
-                insight={
-                  tasteInsight
-                }
-
-                signal={
-                  tasteSignal
-                }
-
-                identity={
-                  tasteIdentity
-                }
-
-              />
-
-            </div>
 
           </section>
 
 
           <aside
-
             className="
               space-y-6
             "
-
           >
 
             <div
-
               className="
                 rankd-card
                 p-8
               "
-
             >
 
               <p
-
                 className="
                   rankd-accent
                   uppercase
@@ -2346,46 +1717,35 @@ export default function RankClient({
                   text-sm
                   font-black
                 "
-
               >
-
                 {perspectives.length}
-
               </p>
 
 
               <h2
-
                 className="
                   text-3xl
                   font-black
                   mt-1
                 "
-
               >
-
                 Perspectives
-
               </h2>
 
 
               <p
-
                 className="
                   mt-4
                   rankd-muted
                 "
-
               >
 
                 {
                   perspectives.length === 0
-
                     ? `
                       Be the first person
                       to rank this differently.
                     `
-
                     : `
                       ${
                         perspectives.length
@@ -2403,36 +1763,28 @@ export default function RankClient({
 
 
               <div
-
                 className="
                   mt-6
                   space-y-3
                 "
-
               >
 
                 {
                   perspectives
-
                     .slice(
                       0,
                       7
                     )
-
                     .map(
-
                       perspective => (
 
                         <Link
-
                           key={
                             perspective.id
                           }
-
                           href={
                             `/rank/${perspective.id}`
                           }
-
                           className="
                             block
                             w-full
@@ -2445,23 +1797,18 @@ export default function RankClient({
                             border-black/5
                             hover:bg-black/[0.07]
                           "
-
                         >
 
                           <p
-
                             className="
                               font-black
                             "
-
                           >
 
                             {
                               perspective.id ===
                               ranking.id
-
                                 ? "Current perspective"
-
                                 : "Different perspective"
                             }
 
@@ -2469,25 +1816,19 @@ export default function RankClient({
 
 
                           <p
-
                             className="
                               mt-1
                               text-sm
                               rankd-muted
                             "
-
                           >
-
                             View this perspective →
-
                           </p>
 
                         </Link>
 
                       )
-
                     )
-
                 }
 
               </div>
@@ -2497,26 +1838,20 @@ export default function RankClient({
                 perspectives.length > 7 && (
 
                   <p
-
                     className="
                       mt-5
                       text-sm
                       font-bold
                       rankd-muted
                     "
-
                   >
 
                     +
-
                     {" "}
-
                     {
                       perspectives.length - 7
                     }
-
                     {" "}
-
                     more perspectives
 
                   </p>
@@ -2528,9 +1863,7 @@ export default function RankClient({
 
 
             <Link
-
               href="/explore"
-
               className="
                 block
                 rankd-card
@@ -2538,35 +1871,26 @@ export default function RankClient({
                 hover:-translate-y-1
                 transition
               "
-
             >
 
               <h2
-
                 className="
                   text-2xl
                   font-black
                 "
-
               >
-
                 Find another debate →
-
               </h2>
 
 
               <p
-
                 className="
                   mt-3
                   rankd-muted
                 "
-
               >
-
                 Discover more opinions
                 worth ranking differently.
-
               </p>
 
             </Link>
@@ -2578,7 +1902,6 @@ export default function RankClient({
       </div>
 
     </main>
-
   )
 
 }

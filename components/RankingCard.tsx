@@ -20,12 +20,6 @@ import {
 } from "@/types/ranking"
 
 
-import RankdExplanation from "@/components/RankdExplanation"
-
-
-import DiscoveryReason from "@/components/DiscoveryReason"
-
-
 import RankingResponse from "@/components/RankingResponse"
 
 
@@ -85,11 +79,11 @@ export default function RankingCard({
   ] =
     useState<RankingEngagementData>({
 
-      views:0,
+      views: 0,
 
-      rankd:0,
+      rankd: 0,
 
-      rerankd:0
+      rerankd: 0
 
     })
 
@@ -707,24 +701,6 @@ export default function RankingCard({
         }
 
       </div>
-
-
-      <RankdExplanation
-
-        ranking={
-          ranking
-        }
-
-      />
-
-
-      <DiscoveryReason
-
-        ranking={
-          ranking
-        }
-
-      />
 
     </article>
 
