@@ -1,23 +1,37 @@
 "use client"
 
+
 import {
   useEffect,
   useState
 } from "react"
 
+
 import {
   useRouter
 } from "next/navigation"
 
+
 import Link from "next/link"
+
 
 import {
   supabase
 } from "@/utils/supabase"
 
+
 import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
+
+
+import RankingEngagement from "@/components/RankingEngagement"
+
+
+import {
+  getRankingEngagement,
+  RankingEngagementData
+} from "@/utils/rankingEngagement"
 
 
 
@@ -49,6 +63,8 @@ type Ranking = {
 
   created_at:string | null
 
+  engagement:RankingEngagementData
+
 }
 
 
@@ -61,22 +77,28 @@ type Ranking = {
 export default function ProfilePage(){
 
 
+  const router =
+    useRouter()
 
-  const router = useRouter()
 
-
-
-  const [profile,setProfile] =
+  const [
+    profile,
+    setProfile
+  ] =
     useState<Profile | null>(null)
 
 
-
-  const [rankings,setRankings] =
+  const [
+    rankings,
+    setRankings
+  ] =
     useState<Ranking[]>([])
 
 
-
-  const [loading,setLoading] =
+  const [
+    loading,
+    setLoading
+  ] =
     useState(true)
 
 
@@ -93,14 +115,15 @@ export default function ProfilePage(){
     async function loadProfile(){
 
 
-
       const {
+
         data:{
           user
+
         }
 
-      } = await supabase.auth.getUser()
-
+      } =
+        await supabase.auth.getUser()
 
 
 
@@ -109,7 +132,10 @@ export default function ProfilePage(){
       if(!user){
 
 
-        router.push("/onboarding")
+        router.push(
+          "/onboarding"
+        )
+
 
         return
 
@@ -119,40 +145,41 @@ export default function ProfilePage(){
 
 
 
-
-
-
-
       const {
+
         data:profileData,
         error:profileError
 
-      } = await supabase
+      } =
+        await supabase
 
-        .from("profiles")
+          .from("profiles")
 
-        .select(
-          "id,username,display_name"
+          .select(
+            "id,username,display_name"
+          )
+
+          .eq(
+            "id",
+            user.id
+          )
+
+          .single()
+
+
+
+
+
+      if(
+        profileError ||
+        !profileData
+      ){
+
+
+        router.push(
+          "/onboarding"
         )
 
-        .eq(
-          "id",
-          user.id
-        )
-
-        .single()
-
-
-
-
-
-
-
-
-      if(profileError || !profileData){
-
-
-        router.push("/onboarding")
 
         return
 
@@ -162,69 +189,95 @@ export default function ProfilePage(){
 
 
 
-
-
-
-      setProfile(profileData)
-
-
-
-
-
-
-
-
-
-      const {
-        data:rankingData
-
-      } = await supabase
-
-        .from("rankings")
-
-        .select(
-          `
-          id,
-          title,
-          category,
-          description,
-          views,
-          created_at
-          `
-        )
-
-        .eq(
-          "user_id",
-          user.id
-        )
-
-        .order(
-          "created_at",
-          {
-            ascending:false
-          }
-        )
-
-
-
-
-
-
-
-
-      setRankings(
-
-        rankingData ?? []
-
+      setProfile(
+        profileData
       )
 
 
 
 
 
-      setLoading(false)
+      const {
+
+        data:rankingData
+
+      } =
+        await supabase
+
+          .from("rankings")
+
+          .select(
+            `
+            id,
+            title,
+            category,
+            description,
+            views,
+            created_at
+            `
+          )
+
+          .eq(
+            "user_id",
+            user.id
+          )
+
+          .order(
+            "created_at",
+            {
+              ascending:false
+            }
+          )
 
 
+
+
+
+      const rankingsWithEngagement =
+        await Promise.all(
+
+          (
+            rankingData ??
+            []
+          ).map(
+
+            async ranking => {
+
+              const engagement =
+                await getRankingEngagement(
+                  ranking.id
+                )
+
+
+              return {
+
+                ...ranking,
+
+                engagement
+
+              }
+
+            }
+
+          )
+
+        )
+
+
+
+
+
+      setRankings(
+        rankingsWithEngagement
+      )
+
+
+
+
+
+      setLoading(
+        false
+      )
 
     }
 
@@ -235,11 +288,9 @@ export default function ProfilePage(){
     loadProfile()
 
 
-
-  },[router])
-
-
-
+  },[
+    router
+  ])
 
 
 
@@ -254,14 +305,16 @@ export default function ProfilePage(){
 
     return (
 
-      <main className="
-        min-h-screen
-        bg-[#F7F4EE]
-        flex
-        items-center
-        justify-center
-        font-black
-      ">
+      <main
+        className="
+          min-h-screen
+          bg-[#F7F4EE]
+          flex
+          items-center
+          justify-center
+          font-black
+        "
+      >
 
         Loading your opinions...
 
@@ -270,9 +323,6 @@ export default function ProfilePage(){
     )
 
   }
-
-
-
 
 
 
@@ -294,42 +344,61 @@ export default function ProfilePage(){
 
   return (
 
-    <main className="
-      min-h-screen
-      bg-[#F7F4EE]
-      text-black
-      px-6
-      py-12
-    ">
+    <main
+      className="
+        min-h-screen
+        bg-[#F7F4EE]
+        text-black
+        px-6
+        py-12
+      "
+    >
 
 
-      <div className="
-        max-w-6xl
-        mx-auto
-      ">
+      <div
+        className="
+          max-w-6xl
+          mx-auto
+        "
+      >
+
+
+        <section
+          className="
+            rankd-card
+            p-10
+            md:p-14
+            text-center
+          "
+        >
+
+
+          <p
+            className="
+              text-sm
+              font-black
+              uppercase
+              tracking-[0.2em]
+              text-black/40
+            "
+          >
+
+            Your RANKD identity
+
+          </p>
 
 
 
 
 
-
-
-
-
-        <section className="
-          rankd-card
-          p-10
-          md:p-14
-          text-center
-        ">
-
-
-
-          <div className="
-            text-7xl
-            font-black
-            opacity-10
-          ">
+          <div
+            className="
+              text-7xl
+              font-black
+              opacity-10
+              mt-4
+            "
+          >
 
             7
 
@@ -339,13 +408,14 @@ export default function ProfilePage(){
 
 
 
-
-          <h1 className="
-            text-5xl
-            md:text-7xl
-            font-black
-            -mt-10
-          ">
+          <h1
+            className="
+              text-5xl
+              md:text-7xl
+              font-black
+              -mt-10
+            "
+          >
 
             {profile.display_name}
 
@@ -355,13 +425,13 @@ export default function ProfilePage(){
 
 
 
-
-
-          <p className="
-            mt-4
-            text-xl
-            text-gray-500
-          ">
+          <p
+            className="
+              mt-4
+              text-xl
+              text-gray-500
+            "
+          >
 
             @{profile.username}
 
@@ -371,36 +441,59 @@ export default function ProfilePage(){
 
 
 
+          <p
+            className="
+              mt-6
+              max-w-xl
+              mx-auto
+              text-lg
+              md:text-xl
+              font-bold
+              leading-relaxed
+            "
+          >
+
+            Your rankings.
+            Your taste.
+            Your RANKD.
+
+          </p>
 
 
 
-          <div className="
-            mt-10
-            flex
-            justify-center
-            gap-6
-            flex-wrap
-          ">
 
 
+          <div
+            className="
+              mt-10
+              flex
+              justify-center
+              gap-6
+              flex-wrap
+            "
+          >
 
 
             <div>
 
-              <p className="
-                text-4xl
-                font-black
-              ">
+              <p
+                className="
+                  text-4xl
+                  font-black
+                "
+              >
 
                 {rankings.length}
 
               </p>
 
 
-              <p className="
-                text-gray-500
-                font-bold
-              ">
+              <p
+                className="
+                  text-gray-500
+                  font-bold
+                "
+              >
 
                 RANKDs
 
@@ -409,64 +502,65 @@ export default function ProfilePage(){
             </div>
 
 
-
-
-
-            <div>
-
-              <p className="
-                text-4xl
-                font-black
-              ">
-
-                {rankings.reduce(
-                  (total,item)=>
-                  total+(item.views ?? 0),
-                  0
-                )}
-
-              </p>
-
-
-              <p className="
-                text-gray-500
-                font-bold
-              ">
-
-                Views
-
-              </p>
-
-            </div>
-
-
-
           </div>
 
 
 
 
 
-
-
-
-          <Link
-
-            href="/create"
-
+          <div
             className="
-              inline-block
               mt-10
-              rankd-button
+              flex
+              justify-center
+              items-center
+              gap-4
+              flex-wrap
             "
-
           >
 
-            Create another Top 7 →
 
-          </Link>
+            <Link
+
+              href="/onboarding"
+
+              className="
+                inline-block
+                rankd-button
+              "
+
+            >
+
+              Edit identity
+
+            </Link>
 
 
+            <Link
+
+              href="/create"
+
+              className="
+                inline-block
+                px-8
+                py-4
+                rounded-full
+                border
+                border-black
+                font-black
+                hover:bg-black
+                hover:text-white
+                transition
+              "
+
+            >
+
+              Create another Top 7 →
+
+            </Link>
+
+
+          </div>
 
 
         </section>
@@ -479,16 +573,20 @@ export default function ProfilePage(){
 
 
 
-        <section className="
-          mt-16
-        ">
+        <section
+          className="
+            mt-16
+          "
+        >
 
 
-          <h2 className="
-            text-4xl
-            font-black
-            mb-8
-          ">
+          <h2
+            className="
+              text-4xl
+              font-black
+              mb-8
+            "
+          >
 
             Your opinions
 
@@ -501,94 +599,26 @@ export default function ProfilePage(){
 
 
 
-          {rankings.length === 0 && (
+          {
+            rankings.length === 0 && (
 
-
-            <div className="
-              rankd-card
-              p-10
-              text-center
-            ">
-
-
-              <p className="
-                text-xl
-                font-bold
-              ">
-
-                You haven't created your first RANKD yet.
-
-              </p>
-
-
-
-              <Link
-
-                href="/create"
-
-                className="
-                  inline-block
-                  mt-6
-                  rankd-button
-                "
-
-              >
-
-                Create your first →
-
-              </Link>
-
-
-            </div>
-
-
-          )}
-
-
-
-
-
-
-
-
-
-          <div className="
-            grid
-            md:grid-cols-2
-            gap-8
-          ">
-
-
-
-            {rankings.map((ranking)=>(
-
-
-              <Link
-
-                key={ranking.id}
-
-                href={`/rank/${ranking.id}`}
-
+              <div
                 className="
                   rankd-card
-                  p-8
-                  hover:-translate-y-1
-                  transition
+                  p-10
+                  text-center
                 "
-
               >
 
 
+                <p
+                  className="
+                    text-xl
+                    font-bold
+                  "
+                >
 
-                <p className="
-                  rankd-accent
-                  font-black
-                  uppercase
-                  tracking-wide
-                  text-sm
-                ">
-
-                  #{ranking.category ?? "General"}
+                  You haven't created your first RANKD yet.
 
                 </p>
 
@@ -596,53 +626,152 @@ export default function ProfilePage(){
 
 
 
-                <h3 className="
-                  text-3xl
-                  font-black
-                  mt-4
-                ">
+                <Link
 
-                  {formatRankingTitle(
+                  href="/create"
 
-                    ranking.title
+                  className="
+                    inline-block
+                    mt-6
+                    rankd-button
+                  "
 
-                  )}
+                >
 
-                </h3>
+                  Create your first →
+
+                </Link>
 
 
+              </div>
 
-
-
-                <p className="
-                  mt-6
-                  text-gray-500
-                ">
-
-                  {ranking.views ?? 0} people viewed this opinion
-
-                </p>
+            )
+          }
 
 
 
 
 
-                <p className="
-                  mt-6
-                  font-black
-                ">
-
-                  View conversation →
-
-                </p>
 
 
 
 
-              </Link>
+          <div
+            className="
+              grid
+              md:grid-cols-2
+              gap-8
+            "
+          >
 
 
-            ))}
+            {
+              rankings.map(
+                ranking => (
+
+                  <Link
+
+                    key={
+                      ranking.id
+                    }
+
+                    href={
+                      `/rank/${ranking.id}`
+                    }
+
+                    className="
+                      rankd-card
+                      p-8
+                      hover:-translate-y-1
+                      transition
+                    "
+
+                  >
+
+
+                    <p
+                      className="
+                        rankd-accent
+                        font-black
+                        uppercase
+                        tracking-wide
+                        text-sm
+                      "
+                    >
+
+                      #{ranking.category ?? "General"}
+
+                    </p>
+
+
+
+
+
+                    <h3
+                      className="
+                        text-3xl
+                        font-black
+                        mt-4
+                      "
+                    >
+
+                      {
+                        formatRankingTitle(
+                          ranking.title
+                        )
+                      }
+
+                    </h3>
+
+
+
+
+
+                    <div
+                      className="
+                        mt-6
+                      "
+                    >
+
+                      <RankingEngagement
+
+                        views={
+                          ranking.engagement.views
+                        }
+
+                        rankd={
+                          ranking.engagement.rankd
+                        }
+
+                        rerankd={
+                          ranking.engagement.rerankd
+                        }
+
+                      />
+
+                    </div>
+
+
+
+
+
+                    <p
+                      className="
+                        mt-6
+                        font-black
+                      "
+                    >
+
+                      View conversation →
+
+                    </p>
+
+
+                  </Link>
+
+                )
+              )
+            }
 
 
           </div>
@@ -651,16 +780,11 @@ export default function ProfilePage(){
         </section>
 
 
-
-
-
-
       </div>
 
 
     </main>
 
   )
-
 
 }

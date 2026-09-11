@@ -1,31 +1,55 @@
 "use client"
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
 
-import { supabase } from "@/utils/supabase"
+import {
+  useState
+} from "react"
+
+
+import {
+  useRouter
+} from "next/navigation"
+
+
+import {
+  supabase
+} from "@/utils/supabase"
+
 
 
 
 export default function OnboardingPage(){
 
 
-  const router = useRouter()
+  const router =
+    useRouter()
 
 
-  const [displayName,setDisplayName] =
+  const [
+    displayName,
+    setDisplayName
+  ] =
     useState("")
 
 
-  const [username,setUsername] =
+  const [
+    username,
+    setUsername
+  ] =
     useState("")
 
 
-  const [message,setMessage] =
+  const [
+    message,
+    setMessage
+  ] =
     useState("")
 
 
-  const [loading,setLoading] =
+  const [
+    loading,
+    setLoading
+  ] =
     useState(false)
 
 
@@ -38,7 +62,6 @@ export default function OnboardingPage(){
     setMessage("")
 
 
-
     const cleanUsername =
       username
         .toLowerCase()
@@ -49,14 +72,14 @@ export default function OnboardingPage(){
 
 
 
-    if(!displayName.trim()){
-
+    if(
+      !displayName.trim()
+    ){
 
       setMessage(
         "Please add your name"
       )
 
-
       return
 
     }
@@ -65,18 +88,17 @@ export default function OnboardingPage(){
 
 
 
-    if(cleanUsername.length < 3){
-
+    if(
+      cleanUsername.length < 3
+    ){
 
       setMessage(
         "Username must be at least 3 characters"
       )
 
-
       return
 
     }
-
 
 
 
@@ -88,10 +110,11 @@ export default function OnboardingPage(){
 
 
 
-
     /*
-      Get existing user.
-      If none exists, create anonymous account.
+      Get the current authenticated user.
+
+      If no user exists, create the anonymous
+      Supabase identity that will own this profile.
     */
 
 
@@ -102,8 +125,8 @@ export default function OnboardingPage(){
 
       }
 
-    } = await supabase.auth.getUser()
-
+    } =
+      await supabase.auth.getUser()
 
 
 
@@ -112,14 +135,13 @@ export default function OnboardingPage(){
     if(!user){
 
 
-
       const {
 
         data,
         error
 
-      } = await supabase.auth.signInAnonymously()
-
+      } =
+        await supabase.auth.signInAnonymously()
 
 
 
@@ -149,14 +171,11 @@ export default function OnboardingPage(){
 
 
 
-      user = data.user
 
-
+      user =
+        data.user
 
     }
-
-
-
 
 
 
@@ -181,11 +200,65 @@ export default function OnboardingPage(){
 
 
 
+    /*
+      Check whether this authenticated user
+      already has a profile.
+    */
+
+
+    const {
+
+      data:currentProfile,
+      error:currentProfileError
+
+    } =
+      await supabase
+
+        .from("profiles")
+
+        .select(
+          "id,username,display_name"
+        )
+
+        .eq(
+          "id",
+          user.id
+        )
+
+        .maybeSingle()
+
+
+
+
+
+    if(currentProfileError){
+
+
+      console.error(
+        "CURRENT PROFILE ERROR:",
+        currentProfileError
+      )
+
+
+      setMessage(
+        currentProfileError.message
+      )
+
+
+      setLoading(false)
+
+
+      return
+
+    }
+
+
 
 
 
     /*
-      Check username availability
+      Check whether the requested username
+      belongs to somebody else.
     */
 
 
@@ -194,19 +267,21 @@ export default function OnboardingPage(){
       data:existing,
       error:existingError
 
-    } = await supabase
+    } =
+      await supabase
 
-      .from("profiles")
+        .from("profiles")
 
-      .select("id")
+        .select(
+          "id"
+        )
 
-      .eq(
-        "username",
-        cleanUsername
-      )
+        .eq(
+          "username",
+          cleanUsername
+        )
 
-      .maybeSingle()
-
+        .maybeSingle()
 
 
 
@@ -236,10 +311,10 @@ export default function OnboardingPage(){
 
 
 
-
-
-
-    if(existing){
+    if(
+      existing &&
+      existing.id !== user.id
+    ){
 
 
       setMessage(
@@ -258,11 +333,12 @@ export default function OnboardingPage(){
 
 
 
-
-
-
     /*
-      Create profile
+      Claim or update the current RANKD identity.
+
+      The profile ID remains the Supabase Auth user ID.
+      Existing rankings therefore remain owned by the
+      same identity.
     */
 
 
@@ -270,22 +346,21 @@ export default function OnboardingPage(){
 
       error
 
-    } = await supabase
+    } =
+      await supabase
 
-      .from("profiles")
+        .from("profiles")
 
-      .upsert({
+        .upsert({
 
-        id:user.id,
+          id:user.id,
 
-        username:cleanUsername,
+          username:cleanUsername,
 
-        display_name:
-          displayName.trim()
+          display_name:
+            displayName.trim()
 
-      })
-
-
+        })
 
 
 
@@ -316,11 +391,9 @@ export default function OnboardingPage(){
 
 
 
-
-
-
-    router.push("/explore")
-
+    router.push(
+      "/explore"
+    )
 
   }
 
@@ -328,33 +401,35 @@ export default function OnboardingPage(){
 
 
 
-
-
-
-
   return (
 
-    <main className="
-      min-h-screen
-      bg-black
-      text-white
-      px-6
-      py-20
-    ">
+    <main
+      className="
+        min-h-screen
+        bg-black
+        text-white
+        px-6
+        py-20
+      "
+    >
 
 
-      <div className="
-        max-w-xl
-        mx-auto
-      ">
+      <div
+        className="
+          max-w-xl
+          mx-auto
+        "
+      >
 
 
-        <h1 className="
-          text-5xl
-          font-black
-        ">
+        <h1
+          className="
+            text-5xl
+            font-black
+          "
+        >
 
-          Create your RANKD identity
+          Claim your RANKD identity
 
         </h1>
 
@@ -362,15 +437,17 @@ export default function OnboardingPage(){
 
 
 
-        <p className="
-          mt-4
-          text-gray-400
-        ">
+        <p
+          className="
+            mt-4
+            text-gray-400
+          "
+        >
 
+          Choose your name and username.
           Your rankings become your taste profile.
 
         </p>
-
 
 
 
@@ -391,15 +468,18 @@ export default function OnboardingPage(){
 
           placeholder="Display name"
 
-          value={displayName}
+          value={
+            displayName
+          }
 
           onChange={
-            e=>setDisplayName(e.target.value)
+            e =>
+              setDisplayName(
+                e.target.value
+              )
           }
 
         />
-
-
 
 
 
@@ -420,10 +500,15 @@ export default function OnboardingPage(){
 
           placeholder="Username"
 
-          value={username}
+          value={
+            username
+          }
 
           onChange={
-            e=>setUsername(e.target.value)
+            e =>
+              setUsername(
+                e.target.value
+              )
           }
 
         />
@@ -432,25 +517,23 @@ export default function OnboardingPage(){
 
 
 
+        {
+          message && (
 
+            <p
+              className="
+                mt-6
+                text-gray-300
+                font-bold
+              "
+            >
 
+              {message}
 
-        {message && (
+            </p>
 
-          <p className="
-            mt-6
-            text-gray-300
-            font-bold
-          ">
-
-            {message}
-
-          </p>
-
-        )}
-
-
-
+          )
+        }
 
 
 
@@ -458,9 +541,13 @@ export default function OnboardingPage(){
 
         <button
 
-          onClick={createProfile}
+          onClick={
+            createProfile
+          }
 
-          disabled={loading}
+          disabled={
+            loading
+          }
 
           className="
             mt-8
@@ -474,17 +561,13 @@ export default function OnboardingPage(){
 
         >
 
-          {loading
-            ? "Creating..."
-            : "Create Identity →"
+          {
+            loading
+              ? "Claiming..."
+              : "Claim Identity →"
           }
 
-
         </button>
-
-
-
-
 
 
       </div>
@@ -493,6 +576,5 @@ export default function OnboardingPage(){
     </main>
 
   )
-
 
 }
