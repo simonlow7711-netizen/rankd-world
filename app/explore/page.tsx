@@ -17,8 +17,13 @@ import DailyRankd from "@/components/DailyRankd"
 
 
 import {
-  getTrendingRankings
-} from "@/utils/rankingMetrics"
+  getRecentRankingAnalytics
+} from "@/utils/rankingEngagement"
+
+
+import {
+  calculateTrendingScores
+} from "@/utils/trendingScore"
 
 
 const SITE_URL =
@@ -121,10 +126,55 @@ export default async function ExplorePage() {
       )
 
 
-  const trendingRankings =
-    getTrendingRankings(
-      allRankings
+  const rankingIds =
+    allRankings.map(
+
+      ranking =>
+
+        ranking.id
+
     )
+
+
+  const recentEvents =
+    await getRecentRankingAnalytics(
+
+      rankingIds
+
+    )
+
+
+  const trendingRankings =
+    calculateTrendingScores(
+
+      allRankings,
+
+      recentEvents
+
+    )
+
+      .sort(
+
+        (a, b) =>
+
+          b.trendingScore -
+
+          a.trendingScore
+
+      )
+
+      .slice(
+        0,
+        3
+      )
+
+      .map(
+
+        item =>
+
+          item.ranking
+
+      )
 
 
   return (
@@ -384,32 +434,25 @@ export default async function ExplorePage() {
                 >
 
                   {
-                    trendingRankings
+                    trendingRankings.map(
 
-                      .slice(
-                        0,
-                        3
-                      )
+                      ranking => (
 
-                      .map(
+                        <RankingCard
 
-                        ranking => (
+                          key={
+                            ranking.id
+                          }
 
-                          <RankingCard
+                          ranking={
+                            ranking
+                          }
 
-                            key={
-                              ranking.id
-                            }
-
-                            ranking={
-                              ranking
-                            }
-
-                          />
-
-                        )
+                        />
 
                       )
+
+                    )
                   }
 
                 </div>

@@ -135,75 +135,109 @@ export async function getRecentRankingAnalytics(
   }
 
 
-  const {
+  const cutoff =
+    new Date(
 
-    data,
-
-    error
-
-  } =
-    await supabase
-
-      .from("analytics_events")
-
-      .select(
-        `
-        ranking_id,
-        event_name,
-        created_at
-        `
+      Date.now()
+      -
+      (
+        72
+        *
+        60
+        *
+        60
+        *
+        1000
       )
 
-      .in(
-        "ranking_id",
-        rankingIds
-      )
-
-      .in(
-        "event_name",
-        [
-          "ranking_viewed",
-          "ranking_rankd",
-          "ranking_rerank_started"
-        ]
-      )
-
-      .gte(
-        "created_at",
-        new Date(
-          Date.now()
-          -
-          (
-            72
-            *
-            60
-            *
-            60
-            *
-            1000
-          )
-        ).toISOString()
-      )
+    ).toISOString()
 
 
-  if(
-    error
+  const BATCH_SIZE =
+    50
+
+
+  const allEvents:any[] = []
+
+
+  for(
+    let i = 0;
+    i < rankingIds.length;
+    i += BATCH_SIZE
   ){
 
-    console.error(
+    const batch =
+      rankingIds.slice(
 
-      "Recent ranking analytics load error:",
+        i,
+        i + BATCH_SIZE
+
+      )
+
+
+    const {
+
+      data,
 
       error
 
+    } =
+      await supabase
+
+        .from("analytics_events")
+
+        .select(
+          `
+          ranking_id,
+          event_name,
+          created_at
+          `
+        )
+
+        .in(
+          "ranking_id",
+          batch
+        )
+
+        .in(
+          "event_name",
+          [
+            "ranking_viewed",
+            "ranking_rankd",
+            "ranking_rerank_started"
+          ]
+        )
+
+        .gte(
+          "created_at",
+          cutoff
+        )
+
+
+    if(
+      error
+    ){
+
+      console.error(
+
+        "Recent ranking analytics load error:",
+
+        error
+
+      )
+
+      continue
+
+    }
+
+
+    allEvents.push(
+      ...(data ?? [])
     )
-
-
-    return []
 
   }
 
 
-  return data ?? []
+  return allEvents
 
 }
