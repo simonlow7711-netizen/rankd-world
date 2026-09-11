@@ -1,15 +1,12 @@
 "use client"
 
-
 import {
   useCallback,
   useEffect,
   useState
 } from "react"
 
-
 import Link from "next/link"
-
 
 import {
   Bell,
@@ -19,11 +16,9 @@ import {
   User
 } from "lucide-react"
 
-
 import {
   supabase
 } from "@/utils/supabase"
-
 
 import {
   getUnreadNotificationCount
@@ -83,11 +78,8 @@ export default function Navbar() {
         ) {
 
           console.error(
-
             "LOAD NOTIFICATION COUNT ERROR",
-
             error
-
           )
 
         }
@@ -214,9 +206,7 @@ export default function Navbar() {
                 ) {
 
                   console.error(
-
                     "NOTIFICATION REALTIME CHANNEL ERROR"
-
                   )
 
                 }
@@ -232,11 +222,8 @@ export default function Navbar() {
       ) {
 
         console.error(
-
           "INITIALISE NOTIFICATIONS ERROR",
-
           error
-
         )
 
       }
@@ -269,20 +256,14 @@ export default function Navbar() {
 
 
     document.addEventListener(
-
       "visibilitychange",
-
       handleVisibilityChange
-
     )
 
 
     window.addEventListener(
-
       "focus",
-
       handleWindowFocus
-
     )
 
 
@@ -293,20 +274,14 @@ export default function Navbar() {
 
 
       document.removeEventListener(
-
         "visibilitychange",
-
         handleVisibilityChange
-
       )
 
 
       window.removeEventListener(
-
         "focus",
-
         handleWindowFocus
-
       )
 
 
@@ -323,9 +298,7 @@ export default function Navbar() {
     }
 
   }, [
-
     loadUnreadCount
-
   ])
 
 
@@ -337,24 +310,21 @@ export default function Navbar() {
         top-0
         z-50
         w-full
+        border-b
+        border-black/[0.06]
+        bg-[#F7F4EE]/95
         px-4
-        md:px-8
-        py-4
-        bg-[#F7F4EE]/90
+        py-3
         backdrop-blur-md
+        md:px-8
+        md:py-4
       "
     >
 
       <div
         className="
-          max-w-7xl
           mx-auto
-          bg-white
-          rounded-full
-          px-5
-          md:px-7
-          py-3
-          shadow-sm
+          max-w-7xl
         "
       >
 
@@ -362,8 +332,7 @@ export default function Navbar() {
           className="
             flex
             items-center
-            justify-center
-            md:justify-between
+            justify-between
             gap-6
           "
         >
@@ -371,43 +340,54 @@ export default function Navbar() {
           <Link
             href="/"
             className="
+              group
+              relative
               flex
-              flex-col
-              items-center
-              md:items-start
+              h-12
               shrink-0
-              leading-none
+              items-center
+              justify-center
+              px-1
             "
           >
 
             <span
               className="
-                text-2xl
-                md:text-3xl
+                pointer-events-none
+                absolute
+                left-1/2
+                top-1/2
+                -translate-x-1/2
+                -translate-y-1/2
+                select-none
+                text-[5rem]
                 font-black
-                tracking-tight
+                leading-none
+                tracking-[-0.16em]
+                text-[#FF6B35]/[0.14]
+                transition
+                group-hover:text-[#FF6B35]/[0.19]
+                md:text-[5.5rem]
               "
+              aria-hidden="true"
             >
-
-              RANKD
-
+              7
             </span>
 
 
             <span
               className="
-                mt-1
-                text-[9px]
-                md:text-[10px]
-                font-bold
-                tracking-tight
-                text-black/50
-                whitespace-nowrap
+                relative
+                z-10
+                text-2xl
+                font-black
+                leading-none
+                tracking-[-0.065em]
+                text-black
+                md:text-3xl
               "
             >
-
-              The world's Top 7 everything.
-
+              RANKD
             </span>
 
           </Link>
@@ -416,61 +396,69 @@ export default function Navbar() {
           <div
             className="
               hidden
-              md:flex
               items-center
-              gap-6
-              font-bold
+              gap-1
+              md:flex
             "
           >
 
             <Link
               href="/explore"
               className="
-                px-2
-                py-2
-                hover:opacity-60
+                rounded-full
+                px-4
+                py-2.5
+                text-sm
+                font-black
+                text-black/75
                 transition
+                hover:bg-black/[0.04]
+                hover:text-[#FF6B35]
               "
             >
-
               Explore
-
             </Link>
 
 
             <Link
               href="/categories"
               className="
-                px-2
-                py-2
-                hover:opacity-60
+                rounded-full
+                px-4
+                py-2.5
+                text-sm
+                font-black
+                text-black/75
                 transition
+                hover:bg-black/[0.04]
+                hover:text-[#FF6B35]
               "
             >
-
               Categories
-
             </Link>
 
 
             <Link
               href="/create"
               className="
+                ml-2
                 inline-flex
                 items-center
                 gap-2
                 rounded-full
                 bg-black
-                text-white
                 px-5
-                py-3
-                hover:opacity-80
+                py-2.5
+                text-sm
+                font-black
+                text-white
                 transition
+                hover:bg-[#FF6B35]
               "
             >
 
               <Plus
-                size={18}
+                size={16}
                 strokeWidth={3}
                 aria-hidden="true"
               />
@@ -483,19 +471,25 @@ export default function Navbar() {
             <Link
               href="/profile"
               className="
+                ml-1
                 inline-flex
                 items-center
                 gap-2
-                px-2
-                py-2
-                hover:opacity-60
+                rounded-full
+                px-4
+                py-2.5
+                text-sm
+                font-black
+                text-black/75
                 transition
+                hover:bg-black/[0.04]
+                hover:text-[#FF6B35]
               "
             >
 
               <User
-                size={18}
-                strokeWidth={2}
+                size={17}
+                strokeWidth={2.5}
                 aria-hidden="true"
               />
 
@@ -508,14 +502,17 @@ export default function Navbar() {
               href="/notifications"
               className="
                 relative
+                ml-1
                 flex
+                h-10
+                w-10
                 items-center
                 justify-center
-                w-10
-                h-10
                 rounded-full
-                hover:bg-black/5
+                text-black/70
                 transition
+                hover:bg-black/[0.04]
+                hover:text-[#FF6B35]
               "
               aria-label={
                 unreadCount > 0
@@ -525,8 +522,8 @@ export default function Navbar() {
             >
 
               <Bell
-                size={20}
-                strokeWidth={2}
+                size={19}
+                strokeWidth={2.25}
                 aria-hidden="true"
               />
 
@@ -537,19 +534,19 @@ export default function Navbar() {
                   <span
                     className="
                       absolute
-                      -top-1
                       -right-1
-                      min-w-5
-                      h-5
-                      px-1
-                      rounded-full
-                      bg-black
-                      text-white
-                      text-[10px]
-                      font-black
+                      -top-1
                       flex
+                      min-h-5
+                      min-w-5
                       items-center
                       justify-center
+                      rounded-full
+                      bg-[#FF6B35]
+                      px-1
+                      text-[10px]
+                      font-black
+                      text-white
                     "
                   >
 
@@ -573,14 +570,14 @@ export default function Navbar() {
 
         <div
           className="
-            md:hidden
-            mt-4
-            pt-3
-            border-t
-            border-black/10
+            mt-3
             grid
             grid-cols-5
             items-center
+            border-t
+            border-black/[0.06]
+            pt-2
+            md:hidden
           "
         >
 
@@ -588,21 +585,24 @@ export default function Navbar() {
             href="/explore"
             className="
               flex
+              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              min-h-12
-              text-[11px]
-              font-bold
-              hover:opacity-60
+              rounded-2xl
+              text-[10px]
+              font-black
+              text-black/65
               transition
+              hover:bg-black/[0.04]
+              hover:text-[#FF6B35]
             "
           >
 
             <Compass
-              size={20}
-              strokeWidth={2}
+              size={19}
+              strokeWidth={2.25}
               aria-hidden="true"
             />
 
@@ -617,21 +617,24 @@ export default function Navbar() {
             href="/categories"
             className="
               flex
+              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              min-h-12
-              text-[11px]
-              font-bold
-              hover:opacity-60
+              rounded-2xl
+              text-[10px]
+              font-black
+              text-black/65
               transition
+              hover:bg-black/[0.04]
+              hover:text-[#FF6B35]
             "
           >
 
             <Grid2X2
-              size={20}
-              strokeWidth={2}
+              size={19}
+              strokeWidth={2.25}
               aria-hidden="true"
             />
 
@@ -646,29 +649,33 @@ export default function Navbar() {
             href="/create"
             className="
               flex
+              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              min-h-12
-              text-[11px]
-              font-bold
-              hover:opacity-60
+              rounded-2xl
+              text-[10px]
+              font-black
+              text-black/65
               transition
+              hover:text-[#FF6B35]
             "
             aria-label="Create a RANKD"
           >
 
             <span
               className="
-                w-8
-                h-8
-                rounded-full
-                bg-black
-                text-white
                 flex
+                h-9
+                w-9
                 items-center
                 justify-center
+                rounded-[12px]
+                bg-black
+                text-white
+                transition
+                hover:bg-[#FF6B35]
               "
             >
 
@@ -693,15 +700,18 @@ export default function Navbar() {
             className="
               relative
               flex
+              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              min-h-12
-              text-[11px]
-              font-bold
-              hover:opacity-60
+              rounded-2xl
+              text-[10px]
+              font-black
+              text-black/65
               transition
+              hover:bg-black/[0.04]
+              hover:text-[#FF6B35]
             "
             aria-label={
               unreadCount > 0
@@ -720,8 +730,8 @@ export default function Navbar() {
             >
 
               <Bell
-                size={20}
-                strokeWidth={2}
+                size={19}
+                strokeWidth={2.25}
                 aria-hidden="true"
               />
 
@@ -732,19 +742,19 @@ export default function Navbar() {
                   <span
                     className="
                       absolute
-                      -top-2
                       -right-3
-                      min-w-5
-                      h-5
-                      px-1
-                      rounded-full
-                      bg-black
-                      text-white
-                      text-[10px]
-                      font-black
+                      -top-2
                       flex
+                      min-h-5
+                      min-w-5
                       items-center
                       justify-center
+                      rounded-full
+                      bg-[#FF6B35]
+                      px-1
+                      text-[10px]
+                      font-black
+                      text-white
                     "
                   >
 
@@ -773,22 +783,25 @@ export default function Navbar() {
             href="/profile"
             className="
               flex
+              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              min-h-12
-              text-[11px]
-              font-bold
-              hover:opacity-60
+              rounded-2xl
+              text-[10px]
+              font-black
+              text-black/65
               transition
+              hover:bg-black/[0.04]
+              hover:text-[#FF6B35]
             "
             aria-label="Profile"
           >
 
             <User
-              size={20}
-              strokeWidth={2}
+              size={19}
+              strokeWidth={2.25}
               aria-hidden="true"
             />
 
