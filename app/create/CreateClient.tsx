@@ -1198,7 +1198,8 @@ export default function CreateClient() {
             "
           >
 
-            Your choices help build your personal taste graph.
+            Make your choices. We'll remember
+            what you like.
 
           </p>
 
@@ -1238,9 +1239,7 @@ export default function CreateClient() {
                   "
                 >
 
-                  Adjust the ranking to challenge
-                  the recommendation and improve
-                  your Taste Graph.
+                  Adjust the ranking to make it yours.
 
                 </p>
 
@@ -1514,7 +1513,7 @@ export default function CreateClient() {
                 "
               >
 
-                {error}
+                {error }
 
               </div>
 
@@ -1546,11 +1545,7 @@ export default function CreateClient() {
 
                 ? "Creating..."
 
-                : recommendationId
-
-                  ? "Create RANKD & Improve My Taste Graph"
-
-                  : "Create RANKD"
+                : "Create RANKD"
             }
 
           </button>

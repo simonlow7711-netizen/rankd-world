@@ -3,20 +3,23 @@ import Link from "next/link"
 import RankingCard from "@/components/RankingCard"
 
 import {
-  getAllRankings
-} from "@/utils/supabaseRankings"
+  Ranking
+} from "@/types/ranking"
 
 
-export default async function RANKDFeed() {
+type Props = {
+  rankings: Ranking[]
+}
 
 
-  const data =
-    await getAllRankings()
+export default function RANKDFeed({
+  rankings
+}: Props) {
 
 
   const latestRankings =
 
-    (data ?? [])
+    [...rankings]
 
       .sort(
 

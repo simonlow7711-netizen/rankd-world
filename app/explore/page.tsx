@@ -13,54 +13,12 @@ import {
 import RankingCard from "@/components/RankingCard"
 
 
-import TasteRecommendationCard from "@/components/TasteRecommendationCard"
-
-
 import DailyRankd from "@/components/DailyRankd"
-
-
-import PerspectiveCard from "@/components/PerspectiveCard"
-
-
-import TasteMatchCard from "@/components/TasteMatchCard"
-
-
-import ChallengeCard from "@/components/ChallengeCard"
 
 
 import {
   getTrendingRankings
 } from "@/utils/rankingMetrics"
-
-
-import {
-  getPerspectiveGaps
-} from "@/utils/perspectiveMetrics"
-
-
-import {
-  getDiscoverableUsers
-} from "@/utils/userDiscovery"
-
-
-import {
-  calculateChallenge
-} from "@/utils/challengeTaste"
-
-
-import {
-  getCurrentUserId
-} from "@/utils/currentUserServer"
-
-
-import {
-  getTasteGraph
-} from "@/utils/tasteGraphServer"
-
-
-import {
-  getTasteRecommendedRankings
-} from "@/utils/tasteRecommendations"
 
 
 const SITE_URL =
@@ -136,32 +94,8 @@ export const metadata: Metadata = {
 
 export default async function ExplorePage() {
 
-
   const allRankings =
     await getAllRankings()
-
-
-  const currentUserId =
-    await getCurrentUserId()
-
-
-  const tasteGraph =
-    currentUserId
-      ? await getTasteGraph(
-          currentUserId
-        )
-      : null
-
-
-  const recommendedRankings =
-    tasteGraph &&
-    currentUserId
-      ? getTasteRecommendedRankings(
-          tasteGraph,
-          allRankings,
-          currentUserId
-        )
-      : []
 
 
   const latestRankings =
@@ -189,26 +123,6 @@ export default async function ExplorePage() {
 
   const trendingRankings =
     getTrendingRankings(
-      allRankings
-    )
-
-
-  const perspectiveGaps =
-    getPerspectiveGaps(
-      allRankings
-    )
-
-
-  const discoverableUsers =
-    await getDiscoverableUsers(
-      currentUserId ?? "",
-      allRankings
-    )
-
-
-  const challenge =
-    calculateChallenge(
-      allRankings,
       allRankings
     )
 
@@ -314,7 +228,7 @@ export default async function ExplorePage() {
               "
             >
 
-              Personalised
+              Community
 
             </p>
 
@@ -327,7 +241,7 @@ export default async function ExplorePage() {
               "
             >
 
-              Picked for your taste
+              Latest RANKDs
 
             </h2>
 
@@ -335,7 +249,7 @@ export default async function ExplorePage() {
 
 
           {
-            recommendedRankings.length > 0
+            latestRankings.length > 0
 
               ? (
 
@@ -348,34 +262,25 @@ export default async function ExplorePage() {
                 >
 
                   {
-                    recommendedRankings
+                    latestRankings.map(
 
-                      .slice(
-                        0,
-                        3
-                      )
+                      ranking => (
 
-                      .map(
+                        <RankingCard
 
-                        recommendation => (
+                          key={
+                            ranking.id
+                          }
 
-                          <TasteRecommendationCard
+                          ranking={
+                            ranking
+                          }
 
-                            key={
-                              recommendation
-                                .ranking
-                                .id
-                            }
-
-                            recommendation={
-                              recommendation
-                            }
-
-                          />
-
-                        )
+                        />
 
                       )
+
+                    )
                   }
 
                 </div>
@@ -398,8 +303,20 @@ export default async function ExplorePage() {
                     "
                   >
 
-                    Create more RANKDs to unlock
-                    personalised discoveries.
+                    No RANKDs yet.
+
+                  </p>
+
+
+                  <p
+                    className="
+                      mt-2
+                      rankd-muted
+                    "
+                  >
+
+                    Be the first person to create
+                    a Top 7.
 
                   </p>
 
@@ -433,7 +350,7 @@ export default async function ExplorePage() {
               "
             >
 
-              Community
+              What's happening
 
             </p>
 
@@ -446,208 +363,56 @@ export default async function ExplorePage() {
               "
             >
 
-              Latest RANKDs
+              Trending debates
 
             </h2>
 
           </div>
 
 
-          <div
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-          >
-
-            {
-              latestRankings.map(
-
-                ranking => (
-
-                  <RankingCard
-
-                    key={
-                      ranking.id
-                    }
-
-                    ranking={
-                      ranking
-                    }
-
-                  />
-
-                )
-
-              )
-            }
-
-          </div>
-
-        </section>
-
-
-        <section
-          className="
-            mb-20
-          "
-        >
-
-          <h2
-            className="
-              text-5xl
-              font-black
-              mb-10
-            "
-          >
-
-            🔥 Trending debates
-
-          </h2>
-
-
-          <div
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-          >
-
-            {
-              trendingRankings
-
-                .slice(
-                  0,
-                  3
-                )
-
-                .map(
-
-                  ranking => (
-
-                    <RankingCard
-
-                      key={
-                        ranking.id
-                      }
-
-                      ranking={
-                        ranking
-                      }
-
-                    />
-
-                  )
-
-                )
-            }
-
-          </div>
-
-        </section>
-
-
-        <section
-          className="
-            mb-20
-          "
-        >
-
-          <h2
-            className="
-              text-5xl
-              font-black
-              mb-10
-            "
-          >
-
-            Different perspectives
-
-          </h2>
-
-
-          <div
-            className="
-              grid
-              md:grid-cols-3
-              gap-8
-            "
-          >
-
-            {
-              perspectiveGaps
-
-                .slice(
-                  0,
-                  3
-                )
-
-                .map(
-
-                  (
-                    gap,
-                    index
-                  ) => (
-
-                    <PerspectiveCard
-
-                      key={
-                        index
-                      }
-
-                      perspective={
-                        gap
-                      }
-
-                    />
-
-                  )
-
-                )
-            }
-
-          </div>
-
-        </section>
-
-
-        <section
-          className="
-            mb-20
-          "
-        >
-
-          <h2
-            className="
-              text-5xl
-              font-black
-              mb-10
-            "
-          >
-
-            Your Taste Match
-
-          </h2>
-
-
           {
-            discoverableUsers.length > 0
+            trendingRankings.length > 0
 
               ? (
 
-                <TasteMatchCard
+                <div
+                  className="
+                    grid
+                    md:grid-cols-3
+                    gap-8
+                  "
+                >
 
-                  person={
-                    discoverableUsers[0]
+                  {
+                    trendingRankings
+
+                      .slice(
+                        0,
+                        3
+                      )
+
+                      .map(
+
+                        ranking => (
+
+                          <RankingCard
+
+                            key={
+                              ranking.id
+                            }
+
+                            ranking={
+                              ranking
+                            }
+
+                          />
+
+                        )
+
+                      )
                   }
 
-                  rankings={
-                    allRankings
-                  }
-
-                />
+                </div>
 
               )
 
@@ -667,50 +432,14 @@ export default async function ExplorePage() {
                     "
                   >
 
-                    Create more RANKDs to discover
-                    your taste matches.
+                    Trending debates
+                    will appear here.
 
                   </p>
 
                 </div>
 
               )
-          }
-
-        </section>
-
-
-        <section
-          className="
-            mb-20
-          "
-        >
-
-          <h2
-            className="
-              text-5xl
-              font-black
-              mb-10
-            "
-          >
-
-            Challenge your opinion
-
-          </h2>
-
-
-          {
-            allRankings?.[0] && (
-
-              <ChallengeCard
-
-                ranking={
-                  allRankings[0]
-                }
-
-              />
-
-            )
           }
 
         </section>

@@ -1,15 +1,9 @@
 import EntryExperience from "@/components/EntryExperience"
-
 import DailyRankd from "@/components/DailyRankd"
-
 import RANKDFeed from "@/components/RANKDFeed"
-
 import Trending from "@/components/Trending"
-
 import WhyRankd from "@/components/WhyRankd"
-
 import Categories from "@/components/Categories"
-
 import Footer from "@/components/Footer"
 
 import {
@@ -57,7 +51,13 @@ export default async function HomePage() {
         <DailyRankd />
 
 
-        <RANKDFeed />
+        <RANKDFeed
+
+          rankings={
+            rankings
+          }
+
+        />
 
 
         <Trending />
