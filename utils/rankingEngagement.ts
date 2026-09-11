@@ -118,3 +118,92 @@ export async function getRankingEngagement(
   }
 
 }
+
+
+export async function getRecentRankingAnalytics(
+
+  rankingIds:string[]
+
+){
+
+  if(
+    rankingIds.length === 0
+  ){
+
+    return []
+
+  }
+
+
+  const {
+
+    data,
+
+    error
+
+  } =
+    await supabase
+
+      .from("analytics_events")
+
+      .select(
+        `
+        ranking_id,
+        event_name,
+        created_at
+        `
+      )
+
+      .in(
+        "ranking_id",
+        rankingIds
+      )
+
+      .in(
+        "event_name",
+        [
+          "ranking_viewed",
+          "ranking_rankd",
+          "ranking_rerank_started"
+        ]
+      )
+
+      .gte(
+        "created_at",
+        new Date(
+          Date.now()
+          -
+          (
+            72
+            *
+            60
+            *
+            60
+            *
+            1000
+          )
+        ).toISOString()
+      )
+
+
+  if(
+    error
+  ){
+
+    console.error(
+
+      "Recent ranking analytics load error:",
+
+      error
+
+    )
+
+
+    return []
+
+  }
+
+
+  return data ?? []
+
+}

@@ -3,20 +3,34 @@
 
 import Link from "next/link"
 
+
 import {
   useEffect,
   useState
 } from "react"
 
+
 import RankingCard from "@/components/RankingCard"
+
 
 import {
   Ranking
 } from "@/types/ranking"
 
+
 import {
   getAllRankings
 } from "@/utils/supabaseRankings"
+
+
+import {
+  getRecentRankingAnalytics
+} from "@/utils/rankingEngagement"
+
+
+import {
+  calculateTrendingScores
+} from "@/utils/trendingScore"
 
 
 
@@ -25,14 +39,18 @@ import {
 export default function Trending(){
 
 
-  const [rankings,setRankings] =
-
+  const [
+    rankings,
+    setRankings
+  ] =
     useState<Ranking[]>([])
 
 
 
-  const [loading,setLoading] =
-
+  const [
+    loading,
+    setLoading
+  ] =
     useState(true)
 
 
@@ -48,7 +66,7 @@ export default function Trending(){
     async function loadRankings(){
 
 
-      try {
+      try{
 
 
         const data =
@@ -59,19 +77,51 @@ export default function Trending(){
 
 
 
-        const trendingRankings =
+        const rankingIds =
 
-          (data ?? [])
+          data.map(
+
+            ranking =>
+
+              ranking.id
+
+          )
+
+
+
+
+
+        const events =
+
+          await getRecentRankingAnalytics(
+
+            rankingIds
+
+          )
+
+
+
+
+
+        const trending =
+
+          calculateTrendingScores(
+
+            data,
+
+            events
+
+          )
 
             .sort(
 
               (a,b)=>
 
-                (b.signals?.rankdScore ?? 0)
+                b.trendingScore
 
                 -
 
-                (a.signals?.rankdScore ?? 0)
+                a.trendingScore
 
             )
 
@@ -83,13 +133,21 @@ export default function Trending(){
 
             )
 
+            .map(
+
+              item =>
+
+                item.ranking
+
+            )
+
 
 
 
 
         setRankings(
 
-          trendingRankings
+          trending
 
         )
 
@@ -97,7 +155,7 @@ export default function Trending(){
       }
 
 
-      catch(error){
+      catch{
 
 
         setRankings([])
@@ -106,7 +164,7 @@ export default function Trending(){
       }
 
 
-      finally {
+      finally{
 
 
         setLoading(false)
@@ -122,7 +180,6 @@ export default function Trending(){
 
 
     loadRankings()
-
 
 
   },[])
@@ -288,19 +345,21 @@ export default function Trending(){
           ">
 
 
-            {rankings.map(ranking=>(
+            {rankings.map(
 
+              ranking=>(
 
-              <RankingCard
+                <RankingCard
 
-                key={ranking.id}
+                  key={ranking.id}
 
-                ranking={ranking}
+                  ranking={ranking}
 
-              />
+                />
 
+              )
 
-            ))}
+            )}
 
 
 
