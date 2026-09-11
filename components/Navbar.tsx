@@ -26,317 +26,152 @@ import {
 
 
 export default function Navbar() {
+  const [unreadCount, setUnreadCount] = useState(0)
 
-  const [
-    unreadCount,
-    setUnreadCount
-  ] = useState(0)
-
-
-  const loadUnreadCount =
-    useCallback(
-
-      async () => {
-
-        try {
-
-          const {
-            data: {
-              user
-            }
-          } =
-            await supabase.auth.getUser()
-
-
-          if (
-            !user
-          ) {
-
-            setUnreadCount(
-              0
-            )
-
-            return
-
-          }
-
-
-          const count =
-            await getUnreadNotificationCount(
-              user.id
-            )
-
-
-          setUnreadCount(
-            count
-          )
-
-        }
-
-        catch (
-          error
-        ) {
-
-          console.error(
-            "LOAD NOTIFICATION COUNT ERROR",
-            error
-          )
-
-        }
-
-      },
-
-      []
-
-    )
-
-
-  useEffect(() => {
-
-    let mounted =
-      true
-
-
-    let notificationChannel:
-      ReturnType<
-        typeof supabase.channel
-      > |
-      null =
-        null
-
-
-    async function initialiseNotifications() {
-
+  const refreshUnreadCount = useCallback(
+    async () => {
       try {
-
         const {
           data: {
             user
           }
-        } =
-          await supabase.auth.getUser()
+        } = await supabase.auth.getUser()
 
-
-        if (
-          !user
-        ) {
-
-          if (
-            mounted
-          ) {
-
-            setUnreadCount(
-              0
-            )
-
-          }
-
+        if (!user) {
+          setUnreadCount(0)
           return
-
         }
 
+        const count = await getUnreadNotificationCount(user.id)
 
-        const count =
-          await getUnreadNotificationCount(
-            user.id
-          )
+        setUnreadCount(count)
+      } catch {
+        setUnreadCount(0)
+      }
+    },
+    []
+  )
 
+  useEffect(
+    () => {
+      refreshUnreadCount()
 
-        if (
-          mounted
-        ) {
-
-          setUnreadCount(
-            count
-          )
-
+      const handleVisibilityChange = () => {
+        if (document.visibilityState === "visible") {
+          refreshUnreadCount()
         }
-
-
-        notificationChannel =
-          supabase
-
-            .channel(
-              `notifications-${user.id}`
-            )
-
-            .on(
-
-              "postgres_changes",
-
-              {
-                event:
-                  "*",
-
-                schema:
-                  "public",
-
-                table:
-                  "notifications",
-
-                filter:
-                  `recipient_user_id=eq.${user.id}`
-
-              },
-
-              async () => {
-
-                if (
-                  !mounted
-                ) {
-
-                  return
-
-                }
-
-
-                await loadUnreadCount()
-
-              }
-
-            )
-
-            .subscribe(
-
-              status => {
-
-                if (
-                  status ===
-                  "CHANNEL_ERROR"
-                ) {
-
-                  console.error(
-                    "NOTIFICATION REALTIME CHANNEL ERROR"
-                  )
-
-                }
-
-              }
-
-            )
-
       }
 
-      catch (
-        error
-      ) {
-
-        console.error(
-          "INITIALISE NOTIFICATIONS ERROR",
-          error
-        )
-
+      const handleFocus = () => {
+        refreshUnreadCount()
       }
 
-    }
-
-
-    initialiseNotifications()
-
-
-    function handleVisibilityChange() {
-
-      if (
-        document.visibilityState ===
-        "visible"
-      ) {
-
-        loadUnreadCount()
-
-      }
-
-    }
-
-
-    function handleWindowFocus() {
-
-      loadUnreadCount()
-
-    }
-
-
-    document.addEventListener(
-      "visibilitychange",
-      handleVisibilityChange
-    )
-
-
-    window.addEventListener(
-      "focus",
-      handleWindowFocus
-    )
-
-
-    return () => {
-
-      mounted =
-        false
-
-
-      document.removeEventListener(
+      document.addEventListener(
         "visibilitychange",
         handleVisibilityChange
       )
 
-
-      window.removeEventListener(
+      window.addEventListener(
         "focus",
-        handleWindowFocus
+        handleFocus
       )
 
-
-      if (
-        notificationChannel
-      ) {
-
-        supabase.removeChannel(
-          notificationChannel
+      return () => {
+        document.removeEventListener(
+          "visibilitychange",
+          handleVisibilityChange
         )
 
+        window.removeEventListener(
+          "focus",
+          handleFocus
+        )
+      }
+    },
+    [
+      refreshUnreadCount
+    ]
+  )
+
+  useEffect(
+    () => {
+      let channel:
+        ReturnType<typeof supabase.channel> | null = null
+
+      const setupRealtime = async () => {
+        const {
+          data: {
+            user
+          }
+        } = await supabase.auth.getUser()
+
+        if (!user) {
+          return
+        }
+
+        channel = supabase
+          .channel(
+            `notifications-${user.id}`
+          )
+          .on(
+            "postgres_changes",
+            {
+              event: "*",
+              schema: "public",
+              table: "notifications",
+              filter: `user_id=eq.${user.id}`
+            },
+            () => {
+              refreshUnreadCount()
+            }
+          )
+          .subscribe()
       }
 
-    }
+      setupRealtime()
 
-  }, [
-    loadUnreadCount
-  ])
-
+      return () => {
+        if (channel) {
+          supabase.removeChannel(channel)
+        }
+      }
+    },
+    [
+      refreshUnreadCount
+    ]
+  )
 
   return (
-
-    <nav
+    <header
       className="
         sticky
         top-0
         z-50
-        w-full
         border-b
         border-black/[0.06]
         bg-[#F7F4EE]/95
-        px-4
-        py-3
         backdrop-blur-md
-        md:px-8
-        md:py-4
       "
     >
-
       <div
         className="
+          relative
           mx-auto
+          w-full
           max-w-7xl
+          px-4
+          py-3
+          md:px-6
         "
       >
-
         <div
           className="
-            flex
+            hidden
             items-center
             justify-between
-            gap-6
+            md:flex
           "
         >
-
           <Link
             href="/"
             className="
@@ -350,7 +185,6 @@ export default function Navbar() {
               px-1
             "
           >
-
             <span
               className="
                 pointer-events-none
@@ -374,7 +208,6 @@ export default function Navbar() {
               7
             </span>
 
-
             <span
               className="
                 relative
@@ -389,434 +222,428 @@ export default function Navbar() {
             >
               RANKD
             </span>
-
           </Link>
 
-
-          <div
+          <nav
             className="
-              hidden
+              flex
               items-center
               gap-1
-              md:flex
             "
           >
-
             <Link
-              href="/explore"
+              href="/"
               className="
+                flex
+                items-center
+                gap-2
                 rounded-full
                 px-4
                 py-2.5
                 text-sm
-                font-black
-                text-black/75
+                font-semibold
+                text-black/70
                 transition
-                hover:bg-black/[0.04]
-                hover:text-[#FF6B35]
+                hover:bg-black/[0.05]
+                hover:text-black
               "
             >
-              Explore
-            </Link>
+              <Compass
+                className="h-4 w-4"
+              />
 
+              <span>
+                Explore
+              </span>
+            </Link>
 
             <Link
               href="/categories"
               className="
+                flex
+                items-center
+                gap-2
                 rounded-full
                 px-4
                 py-2.5
                 text-sm
-                font-black
-                text-black/75
+                font-semibold
+                text-black/70
                 transition
-                hover:bg-black/[0.04]
-                hover:text-[#FF6B35]
+                hover:bg-black/[0.05]
+                hover:text-black
               "
             >
-              Categories
-            </Link>
+              <Grid2X2
+                className="h-4 w-4"
+              />
 
+              <span>
+                Categories
+              </span>
+            </Link>
 
             <Link
               href="/create"
               className="
-                ml-2
-                inline-flex
+                ml-1
+                flex
                 items-center
                 gap-2
                 rounded-full
                 bg-black
-                px-5
+                px-4
                 py-2.5
                 text-sm
-                font-black
+                font-semibold
                 text-white
                 transition
-                hover:bg-[#FF6B35]
+                hover:bg-black/85
               "
             >
-
               <Plus
-                size={16}
-                strokeWidth={3}
-                aria-hidden="true"
+                className="h-4 w-4"
               />
 
-              Create
-
+              <span>
+                Create
+              </span>
             </Link>
-
 
             <Link
               href="/profile"
               className="
-                ml-1
-                inline-flex
+                flex
                 items-center
                 gap-2
                 rounded-full
                 px-4
                 py-2.5
                 text-sm
-                font-black
-                text-black/75
+                font-semibold
+                text-black/70
                 transition
-                hover:bg-black/[0.04]
-                hover:text-[#FF6B35]
+                hover:bg-black/[0.05]
+                hover:text-black
               "
             >
-
               <User
-                size={17}
-                strokeWidth={2.5}
-                aria-hidden="true"
+                className="h-4 w-4"
               />
 
-              Profile
-
+              <span>
+                Profile
+              </span>
             </Link>
-
 
             <Link
               href="/notifications"
               className="
                 relative
-                ml-1
                 flex
-                h-10
-                w-10
                 items-center
-                justify-center
+                gap-2
                 rounded-full
+                px-4
+                py-2.5
+                text-sm
+                font-semibold
                 text-black/70
                 transition
-                hover:bg-black/[0.04]
-                hover:text-[#FF6B35]
+                hover:bg-black/[0.05]
+                hover:text-black
               "
-              aria-label={
-                unreadCount > 0
-                  ? `Notifications, ${unreadCount} unread`
-                  : "Notifications"
-              }
             >
-
               <Bell
-                size={19}
-                strokeWidth={2.25}
-                aria-hidden="true"
+                className="h-4 w-4"
               />
 
+              <span>
+                Notifications
+              </span>
 
-              {
-                unreadCount > 0 && (
-
-                  <span
-                    className="
-                      absolute
-                      -right-1
-                      -top-1
-                      flex
-                      min-h-5
-                      min-w-5
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#FF6B35]
-                      px-1
-                      text-[10px]
-                      font-black
-                      text-white
-                    "
-                  >
-
-                    {
-                      unreadCount > 99
-                        ? "99+"
-                        : unreadCount
-                    }
-
-                  </span>
-
-                )
-              }
-
+              {unreadCount > 0 && (
+                <span
+                  className="
+                    flex
+                    min-w-5
+                    items-center
+                    justify-center
+                    rounded-full
+                    bg-[#FF6B35]
+                    px-1.5
+                    py-0.5
+                    text-[10px]
+                    font-bold
+                    leading-none
+                    text-white
+                  "
+                >
+                  {unreadCount > 99
+                    ? "99+"
+                    : unreadCount}
+                </span>
+              )}
             </Link>
-
-          </div>
-
+          </nav>
         </div>
-
 
         <div
           className="
-            mt-3
-            grid
-            grid-cols-5
+            relative
+            flex
+            min-h-12
             items-center
-            border-t
-            border-black/[0.06]
-            pt-2
+            justify-center
             md:hidden
           "
         >
-
           <Link
-            href="/explore"
+            href="/"
+            className="
+              group
+              absolute
+              left-1/2
+              top-1/2
+              flex
+              h-12
+              w-fit
+              -translate-x-1/2
+              -translate-y-1/2
+              items-center
+              justify-center
+              px-1
+            "
+          >
+            <span
+              className="
+                pointer-events-none
+                absolute
+                left-1/2
+                top-1/2
+                -translate-x-1/2
+                -translate-y-1/2
+                select-none
+                text-[5rem]
+                font-black
+                leading-none
+                tracking-[-0.16em]
+                text-[#FF6B35]/[0.14]
+                transition
+                group-hover:text-[#FF6B35]/[0.19]
+              "
+              aria-hidden="true"
+            >
+              7
+            </span>
+
+            <span
+              className="
+                relative
+                z-10
+                text-2xl
+                font-black
+                leading-none
+                tracking-[-0.065em]
+                text-black
+              "
+            >
+              RANKD
+            </span>
+          </Link>
+        </div>
+
+        <nav
+          className="
+            grid
+            grid-cols-5
+            items-center
+            gap-1
+            border-t
+            border-black/[0.06]
+            pt-3
+            md:hidden
+          "
+        >
+          <Link
+            href="/"
             className="
               flex
-              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              rounded-2xl
-              text-[10px]
-              font-black
-              text-black/65
+              rounded-xl
+              py-2
+              text-black/60
               transition
               hover:bg-black/[0.04]
-              hover:text-[#FF6B35]
+              hover:text-black
             "
           >
-
             <Compass
-              size={19}
-              strokeWidth={2.25}
-              aria-hidden="true"
+              className="h-5 w-5"
             />
 
-            <span>
+            <span
+              className="
+                text-[10px]
+                font-semibold
+              "
+            >
               Explore
             </span>
-
           </Link>
-
 
           <Link
             href="/categories"
             className="
               flex
-              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              rounded-2xl
-              text-[10px]
-              font-black
-              text-black/65
+              rounded-xl
+              py-2
+              text-black/60
               transition
               hover:bg-black/[0.04]
-              hover:text-[#FF6B35]
+              hover:text-black
             "
           >
-
             <Grid2X2
-              size={19}
-              strokeWidth={2.25}
-              aria-hidden="true"
+              className="h-5 w-5"
             />
 
-            <span>
+            <span
+              className="
+                text-[10px]
+                font-semibold
+              "
+            >
               Categories
             </span>
-
           </Link>
-
 
           <Link
             href="/create"
             className="
               flex
-              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              rounded-2xl
-              text-[10px]
-              font-black
-              text-black/65
+              rounded-xl
+              bg-black
+              py-2
+              text-white
               transition
-              hover:text-[#FF6B35]
+              hover:bg-black/85
             "
-            aria-label="Create a RANKD"
           >
+            <Plus
+              className="h-5 w-5"
+            />
 
             <span
               className="
-                flex
-                h-9
-                w-9
-                items-center
-                justify-center
-                rounded-[12px]
-                bg-black
-                text-white
-                transition
-                hover:bg-[#FF6B35]
+                text-[10px]
+                font-semibold
               "
             >
-
-              <Plus
-                size={20}
-                strokeWidth={3}
-                aria-hidden="true"
-              />
-
-            </span>
-
-
-            <span>
               Create
             </span>
-
           </Link>
-
 
           <Link
             href="/notifications"
             className="
               relative
               flex
-              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              rounded-2xl
-              text-[10px]
-              font-black
-              text-black/65
+              rounded-xl
+              py-2
+              text-black/60
               transition
               hover:bg-black/[0.04]
-              hover:text-[#FF6B35]
+              hover:text-black
             "
-            aria-label={
-              unreadCount > 0
-                ? `Notifications, ${unreadCount} unread`
-                : "Notifications"
-            }
           >
+            <Bell
+              className="h-5 w-5"
+            />
 
             <span
               className="
-                relative
-                flex
-                items-center
-                justify-center
+                text-[10px]
+                font-semibold
               "
             >
-
-              <Bell
-                size={19}
-                strokeWidth={2.25}
-                aria-hidden="true"
-              />
-
-
-              {
-                unreadCount > 0 && (
-
-                  <span
-                    className="
-                      absolute
-                      -right-3
-                      -top-2
-                      flex
-                      min-h-5
-                      min-w-5
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-[#FF6B35]
-                      px-1
-                      text-[10px]
-                      font-black
-                      text-white
-                    "
-                  >
-
-                    {
-                      unreadCount > 99
-                        ? "99+"
-                        : unreadCount
-                    }
-
-                  </span>
-
-                )
-              }
-
-            </span>
-
-
-            <span>
               Notifications
             </span>
 
+            {unreadCount > 0 && (
+              <span
+                className="
+                  absolute
+                  right-1/2
+                  top-0.5
+                  flex
+                  min-w-4
+                  translate-x-5
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-[#FF6B35]
+                  px-1
+                  py-0.5
+                  text-[9px]
+                  font-bold
+                  leading-none
+                  text-white
+                "
+              >
+                {unreadCount > 99
+                  ? "99+"
+                  : unreadCount}
+              </span>
+            )}
           </Link>
-
 
           <Link
             href="/profile"
             className="
               flex
-              min-h-11
               flex-col
               items-center
               justify-center
               gap-1
-              rounded-2xl
-              text-[10px]
-              font-black
-              text-black/65
+              rounded-xl
+              py-2
+              text-black/60
               transition
               hover:bg-black/[0.04]
-              hover:text-[#FF6B35]
+              hover:text-black
             "
-            aria-label="Profile"
           >
-
             <User
-              size={19}
-              strokeWidth={2.25}
-              aria-hidden="true"
+              className="h-5 w-5"
             />
 
-            <span>
+            <span
+              className="
+                text-[10px]
+                font-semibold
+              "
+            >
               Profile
             </span>
-
           </Link>
-
-        </div>
-
+        </nav>
       </div>
-
-    </nav>
-
+    </header>
   )
-
 }
