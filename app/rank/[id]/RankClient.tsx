@@ -50,7 +50,7 @@ import {
 
 type RankClientProps = {
   id:string
-  initialRanking?:Ranking
+  initialRanking:Ranking
 }
 
 
@@ -75,7 +75,7 @@ type ShareMethod =
 export default function RankClient({
   id,
   initialRanking
-}:RankClientProps) {
+}:RankClientProps){
 
   const router =
     useRouter()
@@ -86,8 +86,7 @@ export default function RankClient({
     setRanking
   ] =
     useState<Ranking | null>(
-      initialRanking ??
-      null
+      initialRanking
     )
 
 
@@ -96,8 +95,7 @@ export default function RankClient({
     setOriginalRanking
   ] =
     useState<Ranking | null>(
-      initialRanking ??
-      null
+      initialRanking
     )
 
 
@@ -134,9 +132,7 @@ export default function RankClient({
     loading,
     setLoading
   ] =
-    useState(
-      !initialRanking
-    )
+    useState(false)
 
 
   const [
@@ -162,48 +158,24 @@ export default function RankClient({
 
   useEffect(() => {
 
-    if (!id) return
+    if(!id){
+      return
+    }
 
 
-    async function load() {
+    async function load(){
 
-      setLoading(
-        !initialRanking
-      )
+      const currentRanking:Ranking =
+        initialRanking
 
 
       trackEvent(
         "ranking_viewed",
         {
-          rankingId:id
+          rankingId:
+            currentRanking.id
         }
       )
-
-
-      let currentRanking =
-        initialRanking ??
-        null
-
-
-      if (!currentRanking) {
-
-        currentRanking =
-          await getSupabaseRanking(
-            id
-          )
-
-      }
-
-
-      if (!currentRanking) {
-
-        setRanking(null)
-
-        setLoading(false)
-
-        return
-
-      }
 
 
       setRanking(
@@ -227,14 +199,14 @@ export default function RankClient({
         currentRanking.id
 
 
-      let rootRanking =
+      let rootRanking:Ranking =
         currentRanking
 
 
-      if (
+      if(
         rootId !==
         currentRanking.id
-      ) {
+      ){
 
         const fetchedRoot =
           await getSupabaseRanking(
@@ -242,7 +214,7 @@ export default function RankClient({
           )
 
 
-        if (fetchedRoot) {
+        if(fetchedRoot){
 
           rootRanking =
             fetchedRoot
@@ -262,7 +234,9 @@ export default function RankClient({
         error:conversationError
       } =
         await supabase
+
           .from("rankings")
+
           .select(
             `
               id,
@@ -273,10 +247,12 @@ export default function RankClient({
               created_at
             `
           )
+
           .eq(
             "root_id",
             rootId
           )
+
           .order(
             "created_at",
             {
@@ -285,7 +261,7 @@ export default function RankClient({
           )
 
 
-      if (conversationError) {
+      if(conversationError){
 
         console.error(
           "CONVERSATION LOAD ERROR",
@@ -306,14 +282,20 @@ export default function RankClient({
         )
           .map(
             (item:any) => ({
-              id:item.id,
-              title:item.title,
+              id:
+                item.id,
+
+              title:
+                item.title,
+
               parentId:
                 item.parent_id ??
                 null,
+
               rootId:
                 item.root_id ??
                 rootId,
+
               createdAt:
                 item.created_at ??
                 undefined
@@ -329,16 +311,26 @@ export default function RankClient({
         )
 
 
-      if (!hasOriginal) {
+      if(!hasOriginal){
 
-        conversationItems.unshift({
-          id:rootRanking.id,
-          title:rootRanking.title,
-          parentId:null,
-          rootId:rootId,
-          createdAt:
-            rootRanking.createdAt
-        })
+        conversationItems.unshift(
+          {
+            id:
+              rootRanking.id,
+
+            title:
+              rootRanking.title,
+
+            parentId:
+              null,
+
+            rootId:
+              rootId,
+
+            createdAt:
+              rootRanking.createdAt
+          }
+        )
 
       }
 
@@ -351,18 +343,27 @@ export default function RankClient({
         )
 
 
-      if (!hasCurrent) {
+      if(!hasCurrent){
 
-        conversationItems.push({
-          id:currentRanking.id,
-          title:currentRanking.title,
-          parentId:
-            currentRanking.parentId ??
-            rootRanking.id,
-          rootId:rootId,
-          createdAt:
-            currentRanking.createdAt
-        })
+        conversationItems.push(
+          {
+            id:
+              currentRanking.id,
+
+            title:
+              currentRanking.title,
+
+            parentId:
+              currentRanking.parentId ??
+              rootRanking.id,
+
+            rootId:
+              rootId,
+
+            createdAt:
+              currentRanking.createdAt
+          }
+        )
 
       }
 
@@ -371,14 +372,14 @@ export default function RankClient({
         currentRanking.parentId
 
 
-      if (
+      if(
         parentId &&
         !conversationItems.some(
           item =>
             item.id ===
             parentId
         )
-      ) {
+      ){
 
         const fetchedParent =
           await getSupabaseRanking(
@@ -386,20 +387,28 @@ export default function RankClient({
           )
 
 
-        if (fetchedParent) {
+        if(fetchedParent){
 
-          conversationItems.push({
-            id:fetchedParent.id,
-            title:fetchedParent.title,
-            parentId:
-              fetchedParent.parentId ??
-              null,
-            rootId:
-              fetchedParent.rootId ??
-              rootId,
-            createdAt:
-              fetchedParent.createdAt
-          })
+          conversationItems.push(
+            {
+              id:
+                fetchedParent.id,
+
+              title:
+                fetchedParent.title,
+
+              parentId:
+                fetchedParent.parentId ??
+                null,
+
+              rootId:
+                fetchedParent.rootId ??
+                rootId,
+
+              createdAt:
+                fetchedParent.createdAt
+            }
+          )
 
         }
 
@@ -420,17 +429,27 @@ export default function RankClient({
       const perspectiveItems:
         PerspectiveRanking[] =
         conversationItems
+
           .filter(
             item =>
               item.id !==
               rootRanking.id
           )
+
           .map(
             item => ({
-              id:item.id,
-              title:item.title,
-              parentId:item.parentId,
-              rootId:item.rootId,
+              id:
+                item.id,
+
+              title:
+                item.title,
+
+              parentId:
+                item.parentId,
+
+              rootId:
+                item.rootId,
+
               createdAt:
                 item.createdAt ??
                 null
@@ -443,41 +462,130 @@ export default function RankClient({
       )
 
 
-      setLoading(false)
+      setLoading(
+        false
+      )
 
     }
 
 
     load()
 
-  }, [
+  },[
     id,
     initialRanking
   ])
 
 
-  async function copyRankingLink() {
+  function rankIt(){
 
-    if (!ranking) return
+    if(!ranking){
+      return
+    }
+
+
+    trackEvent(
+      "ranking_rerank_started",
+      {
+        rankingId:
+          ranking.id
+      }
+    )
+
+
+    const items =
+      [...ranking.items]
+
+        .sort(
+          (a,b) =>
+            a.position -
+            b.position
+        )
+
+        .map(
+          item =>
+            item.name
+        )
+
+        .join("|")
+
+
+    const rootId =
+      ranking.rootId ??
+      ranking.id
+
+
+    router.push(
+      `/create?title=${encodeURIComponent(
+        originalRanking?.title ??
+        ranking.title
+      )}&category=${encodeURIComponent(
+        originalRanking?.category ??
+        ranking.category
+      )}&items=${encodeURIComponent(
+        items
+      )}&parentId=${encodeURIComponent(
+        ranking.id
+      )}&rootId=${encodeURIComponent(
+        rootId
+      )}`
+    )
+
+  }
+
+
+  function handleRankd(){
+
+    if(!ranking){
+      return
+    }
+
+
+    trackEvent(
+      "ranking_rankd",
+      {
+        rankingId:
+          ranking.id
+      }
+    )
+
+
+    setEngagement(
+      current => ({
+        ...current,
+
+        rankd:
+          current.rankd + 1
+      })
+    )
+
+  }
+
+
+  async function copyRankingLink(){
+
+    if(!ranking){
+      return false
+    }
 
 
     const shareUrl =
       `${window.location.origin}/rank/${ranking.id}`
 
 
-    try {
+    try{
 
-      if (
+      if(
         navigator.clipboard &&
         window.isSecureContext
-      ) {
+      ){
 
         await navigator.clipboard.writeText(
           shareUrl
         )
 
       }
-      else {
+      else{
 
         const textarea =
           document.createElement(
@@ -518,7 +626,7 @@ export default function RankClient({
         )
 
 
-        if (!copied) {
+        if(!copied){
 
           throw new Error(
             "Unable to copy link"
@@ -534,6 +642,7 @@ export default function RankClient({
         {
           rankingId:
             ranking.id,
+
           method:
             "clipboard"
         }
@@ -560,12 +669,13 @@ export default function RankClient({
       return true
 
     }
-    catch (copyError) {
+    catch(error){
 
       console.error(
         "RANKD COPY LINK ERROR",
-        copyError
+        error
       )
+
 
       return false
 
@@ -576,20 +686,22 @@ export default function RankClient({
 
   function shareRanking(
     method:ShareMethod
-  ) {
+  ){
 
-    if (
+    if(
       !ranking ||
       sharing
-    ) {
+    ){
+
       return
+
     }
 
 
-    if (
+    if(
       method ===
       "clipboard"
-    ) {
+    ){
 
       copyRankingLink()
 
@@ -624,11 +736,10 @@ export default function RankClient({
       )
 
 
-    let destination =
-      ""
+    let destination = ""
 
 
-    switch (method) {
+    switch(method){
 
       case "whatsapp":
 
@@ -674,7 +785,9 @@ export default function RankClient({
     }
 
 
-    if (!destination) return
+    if(!destination){
+      return
+    }
 
 
     trackEvent(
@@ -682,6 +795,7 @@ export default function RankClient({
       {
         rankingId:
           ranking.id,
+
         method
       }
     )
@@ -718,94 +832,17 @@ export default function RankClient({
   }
 
 
-  function rankIt() {
-
-    if (!ranking) return
-
-
-    trackEvent(
-      "ranking_rerank_started",
-      {
-        rankingId:
-          ranking.id
-      }
-    )
-
-
-    const items =
-      [...ranking.items]
-        .sort(
-          (a,b) =>
-            a.position -
-            b.position
-        )
-        .map(
-          item =>
-            item.name
-        )
-        .join("|")
-
-
-    const rootId =
-      ranking.rootId ??
-      ranking.id
-
-
-    router.push(
-      `/create?title=${encodeURIComponent(
-        originalRanking?.title ??
-        ranking.title
-      )}&category=${encodeURIComponent(
-        originalRanking?.category ??
-        ranking.category
-      )}&items=${encodeURIComponent(
-        items
-      )}&parentId=${encodeURIComponent(
-        ranking.id
-      )}&rootId=${encodeURIComponent(
-        rootId
-      )}`
-    )
-
-  }
-
-
-  function handleRankd() {
-
-    if (!ranking) return
-
-
-    trackEvent(
-      "ranking_rankd",
-      {
-        rankingId:
-          ranking.id
-      }
-    )
-
-
-    setEngagement(
-      current => ({
-        ...current,
-        rankd:
-          current.rankd +
-          1
-      })
-    )
-
-  }
-
-
-  if (loading) {
+  if(loading){
 
     return null
 
   }
 
 
-  if (!ranking) {
+  if(!ranking){
 
     return (
+
       <main
         className="
           min-h-screen
@@ -836,6 +873,7 @@ export default function RankClient({
         </div>
 
       </main>
+
     )
 
   }
@@ -844,7 +882,7 @@ export default function RankClient({
   const isPerspective =
     originalRanking !== null &&
     originalRanking.id !==
-      ranking.id
+    ranking.id
 
 
   const displayRanking =
@@ -880,7 +918,15 @@ export default function RankClient({
       )
 
 
+  const creatorName =
+    ranking.creatorDisplayName ||
+    ranking.creatorUsername ||
+    ranking.creator ||
+    "Anonymous"
+
+
   return (
+
     <main
       className="
         min-h-screen
@@ -900,6 +946,7 @@ export default function RankClient({
 
         {
           isPerspective && (
+
             <div
               className="
                 mb-10
@@ -941,15 +988,10 @@ export default function RankClient({
                       mt-2
                     "
                   >
-
                     {
-                      ranking.creatorDisplayName ||
-                      ranking.creator ||
-                      "RANKD user"
+                      creatorName
                     }{" "}
-
                     ranked this differently.
-
                   </h2>
 
                 </div>
@@ -971,12 +1013,14 @@ export default function RankClient({
               </div>
 
             </div>
+
           )
         }
 
 
         {
           conversationTree.length > 0 && (
+
             <div
               className="
                 mb-10
@@ -993,6 +1037,7 @@ export default function RankClient({
               />
 
             </div>
+
           )
         }
 
@@ -1020,12 +1065,10 @@ export default function RankClient({
                 font-black
               "
             >
-
               {
                 displayRanking.category ||
                 "General"
               }
-
             </p>
 
 
@@ -1044,6 +1087,7 @@ export default function RankClient({
 
             {
               displayDescription && (
+
                 <p
                   className="
                     mt-8
@@ -1056,6 +1100,7 @@ export default function RankClient({
                 >
                   {displayDescription}
                 </p>
+
               )
             }
 
@@ -1067,15 +1112,13 @@ export default function RankClient({
                 text-lg
               "
             >
-
               Ranked by{" "}
-
               {
                 displayRanking.creatorDisplayName ||
+                displayRanking.creatorUsername ||
                 displayRanking.creator ||
                 "RANKD user"
               }
-
             </p>
 
 
@@ -1135,6 +1178,7 @@ export default function RankClient({
 
               {
                 shareOpen && (
+
                   <div
                     className="
                       absolute
@@ -1172,7 +1216,6 @@ export default function RankClient({
                         >
                           Share this RANKD
                         </p>
-
 
                         <p
                           className="
@@ -1251,7 +1294,6 @@ export default function RankClient({
                           disabled:opacity-50
                         "
                       >
-
                         <span
                           className="
                             block
@@ -1261,22 +1303,18 @@ export default function RankClient({
                           🔗
                         </span>
 
-
                         <span
                           className="
                             mt-1
                             block
                           "
                         >
-
                           {
                             shareComplete
                               ? "Link copied ✓"
                               : "Copy link"
                           }
-
                         </span>
-
                       </button>
 
 
@@ -1304,7 +1342,6 @@ export default function RankClient({
                           disabled:opacity-50
                         "
                       >
-
                         <span
                           className="
                             block
@@ -1314,7 +1351,6 @@ export default function RankClient({
                           💬
                         </span>
 
-
                         <span
                           className="
                             mt-1
@@ -1323,7 +1359,6 @@ export default function RankClient({
                         >
                           WhatsApp
                         </span>
-
                       </button>
 
 
@@ -1351,7 +1386,6 @@ export default function RankClient({
                           disabled:opacity-50
                         "
                       >
-
                         <span
                           className="
                             block
@@ -1361,7 +1395,6 @@ export default function RankClient({
                           𝕏
                         </span>
 
-
                         <span
                           className="
                             mt-1
@@ -1370,7 +1403,6 @@ export default function RankClient({
                         >
                           X
                         </span>
-
                       </button>
 
 
@@ -1398,7 +1430,6 @@ export default function RankClient({
                           disabled:opacity-50
                         "
                       >
-
                         <span
                           className="
                             block
@@ -1408,7 +1439,6 @@ export default function RankClient({
                           f
                         </span>
 
-
                         <span
                           className="
                             mt-1
@@ -1417,7 +1447,6 @@ export default function RankClient({
                         >
                           Facebook
                         </span>
-
                       </button>
 
 
@@ -1445,7 +1474,6 @@ export default function RankClient({
                           disabled:opacity-50
                         "
                       >
-
                         <span
                           className="
                             block
@@ -1455,7 +1483,6 @@ export default function RankClient({
                           💬
                         </span>
 
-
                         <span
                           className="
                             mt-1
@@ -1464,7 +1491,6 @@ export default function RankClient({
                         >
                           Messages
                         </span>
-
                       </button>
 
 
@@ -1492,7 +1518,6 @@ export default function RankClient({
                           disabled:opacity-50
                         "
                       >
-
                         <span
                           className="
                             block
@@ -1502,7 +1527,6 @@ export default function RankClient({
                           ✉
                         </span>
 
-
                         <span
                           className="
                             mt-1
@@ -1511,14 +1535,13 @@ export default function RankClient({
                         >
                           Email
                         </span>
-
                       </button>
 
                     </div>
 
                   </div>
-                )
 
+                )
               }
 
             </div>
@@ -1578,6 +1601,24 @@ export default function RankClient({
             </div>
 
 
+            <div
+              className="
+                mt-8
+              "
+            >
+
+              <RankingResponse
+                onRankd={
+                  handleRankd
+                }
+                onRerankd={
+                  rankIt
+                }
+              />
+
+            </div>
+
+
             {
               isPerspective && (
 
@@ -1611,15 +1652,10 @@ export default function RankClient({
                       mt-3
                     "
                   >
-
                     {
-                      ranking.creatorDisplayName ||
-                      ranking.creator ||
-                      "RANKD user"
+                      creatorName
                     }{" "}
-
                     would rank it differently.
-
                   </h3>
 
 
@@ -1683,16 +1719,6 @@ export default function RankClient({
               )
             }
 
-
-            <RankingResponse
-              onRankd={
-                handleRankd
-              }
-              onRerankd={
-                rankIt
-              }
-            />
-
           </section>
 
 
@@ -1739,17 +1765,11 @@ export default function RankClient({
                   rankd-muted
                 "
               >
-
                 {
                   perspectives.length === 0
-                    ? `
-                      Be the first person
-                      to rank this differently.
-                    `
+                    ? "Be the first person to rank this differently."
                     : `
-                      ${
-                        perspectives.length
-                      }
+                      ${perspectives.length}
                       ${
                         perspectives.length === 1
                           ? "person has"
@@ -1758,7 +1778,6 @@ export default function RankClient({
                       added a different perspective.
                     `
                 }
-
               </p>
 
 
@@ -1804,14 +1823,12 @@ export default function RankClient({
                               font-black
                             "
                           >
-
                             {
                               perspective.id ===
                               ranking.id
                                 ? "Current perspective"
                                 : "Different perspective"
                             }
-
                           </p>
 
 
@@ -1845,7 +1862,6 @@ export default function RankClient({
                       rankd-muted
                     "
                   >
-
                     +
                     {" "}
                     {
@@ -1853,7 +1869,6 @@ export default function RankClient({
                     }
                     {" "}
                     more perspectives
-
                   </p>
 
                 )
@@ -1902,6 +1917,7 @@ export default function RankClient({
       </div>
 
     </main>
+
   )
 
 }
