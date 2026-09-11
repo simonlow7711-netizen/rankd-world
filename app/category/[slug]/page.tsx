@@ -203,6 +203,7 @@ export default async function CategoryPage(
 
   const {
     slug
+
   } =
     await params
 
@@ -258,29 +259,6 @@ export default async function CategoryPage(
           ).getTime()
 
       )
-
-
-  console.log(
-
-    "CATEGORY RANKINGS",
-
-    category,
-
-    rankings.map(
-
-      ranking => ({
-
-        title:
-          ranking.title,
-
-        items:
-          ranking.items?.length ?? 0
-
-      })
-
-    )
-
-  )
 
 
   const categoryUrl =
@@ -418,14 +396,12 @@ export default async function CategoryPage(
             max-w-7xl
             mx-auto
           "
-
         >
 
           <header
             className="
               mb-16
             "
-
           >
 
             <p
@@ -436,7 +412,6 @@ export default async function CategoryPage(
                 text-sm
                 font-black
               "
-
             >
 
               Category
@@ -451,14 +426,12 @@ export default async function CategoryPage(
                 gap-4
                 mt-4
               "
-
             >
 
               <span
                 className="
                   text-6xl
                 "
-
               >
 
                 {
@@ -476,7 +449,6 @@ export default async function CategoryPage(
                     md:text-7xl
                     font-black
                   "
-
                 >
 
                   {category}
@@ -491,7 +463,6 @@ export default async function CategoryPage(
                     text-gray-500
                     max-w-2xl
                   "
-
                 >
 
                   {
@@ -518,7 +489,6 @@ export default async function CategoryPage(
                     md:grid-cols-3
                     gap-8
                   "
-
                 >
 
                   {
@@ -621,7 +591,6 @@ export default async function CategoryPage(
                       rounded-full
                       font-black
                     "
-
                   >
 
                     Create the first RANKD →
@@ -644,7 +613,6 @@ export default async function CategoryPage(
                 className="
                   mt-20
                 "
-
               >
 
                 <div
@@ -656,7 +624,6 @@ export default async function CategoryPage(
                     py-14
                     text-center
                   "
-
                 >
 
                   <h2
@@ -665,7 +632,6 @@ export default async function CategoryPage(
                       md:text-5xl
                       font-black
                     "
-
                   >
 
                     Have a different opinion?
@@ -678,7 +644,6 @@ export default async function CategoryPage(
                       mt-4
                       text-gray-300
                     "
-
                   >
 
                     Create your own Top 7 in{" "}
@@ -705,7 +670,6 @@ export default async function CategoryPage(
                       rounded-full
                       font-black
                     "
-
                   >
 
                     Create a RANKD →

@@ -2,6 +2,7 @@
 
 
 import {
+  useEffect,
   useState
 } from "react"
 
@@ -16,9 +17,7 @@ import {
 } from "@/utils/supabase"
 
 
-
-
-export default function OnboardingPage(){
+export default function OnboardingPage() {
 
 
   const router =
@@ -53,10 +52,99 @@ export default function OnboardingPage(){
     useState(false)
 
 
+  const [
+    loadingProfile,
+    setLoadingProfile
+  ] =
+    useState(true)
 
 
+  useEffect(() => {
 
-  async function createProfile(){
+
+    async function loadProfile() {
+
+
+      const {
+        data: {
+          user
+        }
+      } =
+        await supabase.auth.getUser()
+
+
+      if (!user) {
+
+        setLoadingProfile(false)
+
+        return
+
+      }
+
+
+      const {
+        data: profile,
+        error
+      } =
+        await supabase
+
+          .from("profiles")
+
+          .select(
+            "username,display_name"
+          )
+
+          .eq(
+            "id",
+            user.id
+          )
+
+          .maybeSingle()
+
+
+      if (error) {
+
+        console.error(
+          "PROFILE LOAD ERROR:",
+          error
+        )
+
+        setMessage(
+          error.message
+        )
+
+        setLoadingProfile(false)
+
+        return
+
+      }
+
+
+      if (profile) {
+
+        setDisplayName(
+          profile.display_name ?? ""
+        )
+
+        setUsername(
+          profile.username ?? ""
+        )
+
+      }
+
+
+      setLoadingProfile(false)
+
+    }
+
+
+    loadProfile()
+
+
+  }, [])
+
+
+  async function createProfile() {
 
 
     setMessage("")
@@ -66,15 +154,15 @@ export default function OnboardingPage(){
       username
         .toLowerCase()
         .trim()
-        .replace(/[^a-z0-9]/g,"")
+        .replace(
+          /[^a-z0-9]/g,
+          ""
+        )
 
 
-
-
-
-    if(
+    if (
       !displayName.trim()
-    ){
+    ) {
 
       setMessage(
         "Please add your name"
@@ -85,12 +173,9 @@ export default function OnboardingPage(){
     }
 
 
-
-
-
-    if(
+    if (
       cleanUsername.length < 3
-    ){
+    ) {
 
       setMessage(
         "Username must be at least 3 characters"
@@ -101,13 +186,7 @@ export default function OnboardingPage(){
     }
 
 
-
-
-
     setLoading(true)
-
-
-
 
 
     /*
@@ -120,7 +199,7 @@ export default function OnboardingPage(){
 
     let {
 
-      data:{
+      data: {
         user
 
       }
@@ -129,10 +208,7 @@ export default function OnboardingPage(){
       await supabase.auth.getUser()
 
 
-
-
-
-    if(!user){
+    if (!user) {
 
 
       const {
@@ -144,10 +220,7 @@ export default function OnboardingPage(){
         await supabase.auth.signInAnonymously()
 
 
-
-
-
-      if(error){
+      if (error) {
 
 
         console.error(
@@ -169,19 +242,13 @@ export default function OnboardingPage(){
       }
 
 
-
-
-
       user =
         data.user
 
     }
 
 
-
-
-
-    if(!user){
+    if (!user) {
 
 
       setMessage(
@@ -197,9 +264,6 @@ export default function OnboardingPage(){
     }
 
 
-
-
-
     /*
       Check whether this authenticated user
       already has a profile.
@@ -208,8 +272,8 @@ export default function OnboardingPage(){
 
     const {
 
-      data:currentProfile,
-      error:currentProfileError
+      data: currentProfile,
+      error: currentProfileError
 
     } =
       await supabase
@@ -228,10 +292,7 @@ export default function OnboardingPage(){
         .maybeSingle()
 
 
-
-
-
-    if(currentProfileError){
+    if (currentProfileError) {
 
 
       console.error(
@@ -253,9 +314,6 @@ export default function OnboardingPage(){
     }
 
 
-
-
-
     /*
       Check whether the requested username
       belongs to somebody else.
@@ -264,8 +322,8 @@ export default function OnboardingPage(){
 
     const {
 
-      data:existing,
-      error:existingError
+      data: existing,
+      error: existingError
 
     } =
       await supabase
@@ -284,10 +342,7 @@ export default function OnboardingPage(){
         .maybeSingle()
 
 
-
-
-
-    if(existingError){
+    if (existingError) {
 
 
       console.error(
@@ -308,13 +363,10 @@ export default function OnboardingPage(){
     }
 
 
-
-
-
-    if(
+    if (
       existing &&
       existing.id !== user.id
-    ){
+    ) {
 
 
       setMessage(
@@ -328,9 +380,6 @@ export default function OnboardingPage(){
       return
 
     }
-
-
-
 
 
     /*
@@ -353,9 +402,9 @@ export default function OnboardingPage(){
 
         .upsert({
 
-          id:user.id,
+          id: user.id,
 
-          username:cleanUsername,
+          username: cleanUsername,
 
           display_name:
             displayName.trim()
@@ -363,10 +412,7 @@ export default function OnboardingPage(){
         })
 
 
-
-
-
-    if(error){
+    if (error) {
 
 
       console.error(
@@ -388,17 +434,11 @@ export default function OnboardingPage(){
     }
 
 
-
-
-
     router.push(
       "/explore"
     )
 
   }
-
-
-
 
 
   return (
@@ -413,14 +453,12 @@ export default function OnboardingPage(){
       "
     >
 
-
       <div
         className="
           max-w-xl
           mx-auto
         "
       >
-
 
         <h1
           className="
@@ -434,9 +472,6 @@ export default function OnboardingPage(){
         </h1>
 
 
-
-
-
         <p
           className="
             mt-4
@@ -448,9 +483,6 @@ export default function OnboardingPage(){
           Your rankings become your taste profile.
 
         </p>
-
-
-
 
 
         <input
@@ -479,10 +511,11 @@ export default function OnboardingPage(){
               )
           }
 
+          disabled={
+            loadingProfile
+          }
+
         />
-
-
-
 
 
         <input
@@ -511,10 +544,11 @@ export default function OnboardingPage(){
               )
           }
 
+          disabled={
+            loadingProfile
+          }
+
         />
-
-
-
 
 
         {
@@ -536,9 +570,6 @@ export default function OnboardingPage(){
         }
 
 
-
-
-
         <button
 
           onClick={
@@ -546,7 +577,8 @@ export default function OnboardingPage(){
           }
 
           disabled={
-            loading
+            loading ||
+            loadingProfile
           }
 
           className="
@@ -557,8 +589,8 @@ export default function OnboardingPage(){
             py-4
             rounded-full
             font-black
+            disabled:opacity-50
           "
-
         >
 
           {
@@ -569,9 +601,7 @@ export default function OnboardingPage(){
 
         </button>
 
-
       </div>
-
 
     </main>
 

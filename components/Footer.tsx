@@ -1,64 +1,72 @@
 import Link from "next/link"
 
 
-export default function Footer(){
-
+export default function Footer() {
 
   return (
 
-    <footer className="
-      bg-black
-      text-white
-      px-6
-      py-20
-    ">
+    <footer
+      className="
+        bg-black
+        text-white
+        px-6
+        py-20
+      "
+    >
 
+      <div
+        className="
+          max-w-6xl
+          mx-auto
+        "
+      >
 
-      <div className="
-        max-w-6xl
-        mx-auto
-      ">
+        <div
+          className="
+            rounded-[40px]
+            bg-zinc-900
+            p-10
+            md:p-14
+            text-center
+          "
+        >
 
-
-        <div className="
-          rounded-[40px]
-          bg-zinc-900
-          p-10
-          md:p-14
-          text-center
-        ">
-
-
-          <div className="
-            text-7xl
-            font-black
-            opacity-20
-          ">
+          <div
+            className="
+              text-7xl
+              font-black
+              opacity-20
+            "
+          >
 
             7
 
           </div>
 
 
-          <h2 className="
-            text-4xl
-            md:text-6xl
-            font-black
-            -mt-8
-          ">
+          <h2
+            className="
+              text-4xl
+              md:text-6xl
+              font-black
+              -mt-8
+            "
+          >
 
             Everyone has a ranking.
 
           </h2>
 
 
-          <p className="
-            mt-5
-            text-gray-400
-            text-lg
-            max-w-xl
-            mx-auto
-          ">
+          <p
+            className="
+              mt-5
+              text-gray-400
+              text-lg
+              max-w-xl
+              mx-auto
+            "
+          >
 
             Discover opinions.
             Create your Top 7.
@@ -86,59 +94,62 @@ export default function Footer(){
 
           >
 
-            Create Your RANKD →
+            Create your RANKD →
 
           </Link>
-
 
         </div>
 
 
-        <div className="
-          mt-16
-          flex
-          flex-col
-          md:flex-row
-          justify-between
-          gap-8
-          items-center
-        ">
-
+        <div
+          className="
+            mt-16
+            flex
+            flex-col
+            md:flex-row
+            justify-between
+            gap-8
+            items-center
+          "
+        >
 
           <div>
 
-
-            <h3 className="
-              text-4xl
-              font-black
-            ">
+            <h3
+              className="
+                text-4xl
+                font-black
+              "
+            >
 
               RANKD
 
             </h3>
 
 
-            <p className="
-              mt-2
-              text-gray-500
-            ">
+            <p
+              className="
+                mt-2
+                text-gray-500
+              "
+            >
 
               The world's Top 7 everything.
 
             </p>
 
-
           </div>
 
 
-          <div className="
-            flex
-            flex-wrap
-            justify-center
-            gap-8
-            font-bold
-          ">
-
+          <div
+            className="
+              flex
+              flex-wrap
+              justify-center
+              gap-8
+              font-bold
+            "
+          >
 
             <Link
 
@@ -158,7 +169,7 @@ export default function Footer(){
 
             <Link
 
-              href="/create"
+              href="/categories"
 
               className="
                 hover:text-orange-400
@@ -167,7 +178,7 @@ export default function Footer(){
 
             >
 
-              Create
+              Categories
 
             </Link>
 
@@ -203,31 +214,29 @@ export default function Footer(){
 
             </Link>
 
-
           </div>
-
 
         </div>
 
 
-        <div className="
-          mt-12
-          pt-8
-          border-t
-          border-white/10
-          text-center
-          text-gray-500
-          text-sm
-        ">
+        <div
+          className="
+            mt-12
+            pt-8
+            border-t
+            border-white/10
+            text-center
+            text-gray-500
+            text-sm
+          "
+        >
 
           © {new Date().getFullYear()} RANKD.
           Built around human opinions.
 
         </div>
 
-
       </div>
-
 
     </footer>
 
