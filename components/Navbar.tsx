@@ -418,7 +418,7 @@ export default function Navbar() {
               hidden
               md:flex
               items-center
-              gap-7
+              gap-6
               font-bold
             "
           >
@@ -426,6 +426,8 @@ export default function Navbar() {
             <Link
               href="/explore"
               className="
+                px-2
+                py-2
                 hover:opacity-60
                 transition
               "
@@ -437,21 +439,10 @@ export default function Navbar() {
 
 
             <Link
-              href="/create"
-              className="
-                hover:opacity-60
-                transition
-              "
-            >
-
-              Create
-
-            </Link>
-
-
-            <Link
               href="/categories"
               className="
+                px-2
+                py-2
                 hover:opacity-60
                 transition
               "
@@ -463,12 +454,50 @@ export default function Navbar() {
 
 
             <Link
+              href="/create"
+              className="
+                inline-flex
+                items-center
+                gap-2
+                rounded-full
+                bg-black
+                text-white
+                px-5
+                py-3
+                hover:opacity-80
+                transition
+              "
+            >
+
+              <Plus
+                size={18}
+                strokeWidth={3}
+                aria-hidden="true"
+              />
+
+              Create
+
+            </Link>
+
+
+            <Link
               href="/profile"
               className="
+                inline-flex
+                items-center
+                gap-2
+                px-2
+                py-2
                 hover:opacity-60
                 transition
               "
             >
+
+              <User
+                size={18}
+                strokeWidth={2}
+                aria-hidden="true"
+              />
 
               Profile
 
