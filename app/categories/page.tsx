@@ -4,6 +4,7 @@ import type {
 
 import Link from "next/link"
 
+
 import {
   categories
 } from "@/utils/categories"
@@ -214,7 +215,8 @@ export default function CategoriesPage() {
           bg-[#F7F4EE]
           text-black
           px-6
-          py-20
+          py-16
+          md:py-20
         "
       >
 
@@ -228,7 +230,8 @@ export default function CategoriesPage() {
           <header
             className="
               max-w-4xl
-              mb-16
+              mb-12
+              md:mb-16
             "
           >
 
@@ -264,7 +267,7 @@ export default function CategoriesPage() {
 
             <p
               className="
-                mt-6
+                mt-5
                 text-xl
                 md:text-2xl
                 text-gray-500
@@ -379,7 +382,7 @@ export default function CategoriesPage() {
 
                         <h2
                           className="
-                            mt-8
+                            mt-7
                             text-2xl
                             md:text-3xl
                             font-black
@@ -432,98 +435,6 @@ export default function CategoriesPage() {
 
                 )
               }
-
-            </div>
-
-          </section>
-
-
-          <section
-            className="
-              mt-20
-            "
-          >
-
-            <div
-              className="
-                bg-black
-                text-white
-                rounded-[40px]
-                px-8
-                py-14
-                md:px-16
-                text-center
-              "
-            >
-
-              <p
-                className="
-                  rankd-accent
-                  uppercase
-                  tracking-[0.3em]
-                  text-sm
-                  font-black
-                "
-              >
-
-                Your opinion matters
-
-              </p>
-
-
-              <h2
-                className="
-                  mt-4
-                  text-4xl
-                  md:text-5xl
-                  font-black
-                "
-              >
-
-                Can't find your
-                perfect Top 7?
-
-              </h2>
-
-
-              <p
-                className="
-                  mt-4
-                  text-gray-300
-                  max-w-2xl
-                  mx-auto
-                "
-              >
-
-                Create your own RANKD,
-                put your choices in order,
-                and see how the world ranks it.
-
-              </p>
-
-
-              <Link
-
-                href="/create"
-
-                className="
-                  inline-block
-                  mt-8
-                  bg-white
-                  text-black
-                  px-8
-                  py-4
-                  rounded-full
-                  font-black
-                  transition
-                  duration-300
-                  hover:scale-105
-                "
-              >
-
-                Create a RANKD →
-
-              </Link>
 
             </div>
 
