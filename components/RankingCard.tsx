@@ -182,37 +182,37 @@ const themes: Record<string, RankingTheme> = {
   "Music": {
 
     card:
-      "bg-[#EAE3EC]",
+      "bg-[#E9E3DE]",
 
     text:
-      "text-[#25152F]",
+      "text-[#211A1A]",
 
     accent:
-      "text-[#A95BCB]",
+      "text-[#C43D35]",
 
     muted:
-      "text-[#685C6D]",
+      "text-[#746562]",
 
     border:
-      "border-[#25152F]/10",
+      "border-[#211A1A]/10",
 
     itemBorder:
-      "divide-[#25152F]/10",
+      "divide-[#211A1A]/10",
 
     numberBackground:
-      "bg-[#25152F]",
+      "bg-[#211A1A]",
 
     numberText:
-      "text-[#EAE3EC]",
+      "text-[#E9E3DE]",
 
     buttonPrimary:
-      "bg-[#25152F] text-[#EAE3EC]",
+      "bg-[#211A1A] text-[#E9E3DE]",
 
     buttonSecondary:
-      "bg-transparent border-[#25152F]/30",
+      "bg-transparent border-[#211A1A]/30",
 
     buttonSecondaryText:
-      "text-[#25152F]",
+      "text-[#211A1A]",
 
     categoryLabel:
       "Music",

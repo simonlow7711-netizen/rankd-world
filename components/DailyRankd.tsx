@@ -42,11 +42,11 @@ const categoryThemes: Record<
   },
 
   "Music": {
-    bg: "#EAE3EC",
-    text: "#25152F",
-    accent: "#A95BCB",
-    muted: "#685C6D",
-    border: "#25152F/10",
+    bg: "#E9E3DE",
+    text: "#211A1A",
+    accent: "#C43D35",
+    muted: "#746562",
+    border: "#211A1A/10",
     label: "SIDE A / 07"
   },
 

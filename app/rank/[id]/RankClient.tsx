@@ -143,19 +143,19 @@ const categoryThemes:Record<
   "Music": {
 
     background:
-      "bg-[#EAE3EC]",
+      "bg-[#E9E3DE]",
 
     text:
-      "text-[#25152F]",
+      "text-[#211A1A]",
 
     accent:
-      "text-[#A95BCB]",
+      "text-[#C43D35]",
 
     muted:
-      "text-[#685C6D]",
+      "text-[#746562]",
 
     border:
-      "border-[#25152F]/10",
+      "border-[#211A1A]/10",
 
     title:
       "leading-[0.82] tracking-[-0.06em]",
