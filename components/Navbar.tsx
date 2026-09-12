@@ -164,6 +164,7 @@ export default function Navbar() {
           md:px-6
         "
       >
+
         <div
           className="
             hidden
@@ -172,6 +173,7 @@ export default function Navbar() {
             md:flex
           "
         >
+
           <Link
             href="/"
             className="
@@ -185,6 +187,7 @@ export default function Navbar() {
               px-1
             "
           >
+
             <span
               className="
                 pointer-events-none
@@ -222,7 +225,9 @@ export default function Navbar() {
             >
               RANKD
             </span>
+
           </Link>
+
 
           <nav
             className="
@@ -231,8 +236,9 @@ export default function Navbar() {
               gap-1
             "
           >
+
             <Link
-              href="/"
+              href="/explore"
               className="
                 flex
                 items-center
@@ -248,6 +254,7 @@ export default function Navbar() {
                 hover:text-black
               "
             >
+
               <Compass
                 className="h-4 w-4"
               />
@@ -255,7 +262,9 @@ export default function Navbar() {
               <span>
                 Explore
               </span>
+
             </Link>
+
 
             <Link
               href="/categories"
@@ -274,6 +283,7 @@ export default function Navbar() {
                 hover:text-black
               "
             >
+
               <Grid2X2
                 className="h-4 w-4"
               />
@@ -281,7 +291,9 @@ export default function Navbar() {
               <span>
                 Categories
               </span>
+
             </Link>
+
 
             <Link
               href="/create"
@@ -301,6 +313,7 @@ export default function Navbar() {
                 hover:bg-black/85
               "
             >
+
               <Plus
                 className="h-4 w-4"
               />
@@ -308,7 +321,9 @@ export default function Navbar() {
               <span>
                 Create
               </span>
+
             </Link>
+
 
             <Link
               href="/profile"
@@ -327,6 +342,7 @@ export default function Navbar() {
                 hover:text-black
               "
             >
+
               <User
                 className="h-4 w-4"
               />
@@ -334,7 +350,9 @@ export default function Navbar() {
               <span>
                 Profile
               </span>
+
             </Link>
+
 
             <Link
               href="/notifications"
@@ -354,6 +372,7 @@ export default function Navbar() {
                 hover:text-black
               "
             >
+
               <Bell
                 className="h-4 w-4"
               />
@@ -384,9 +403,13 @@ export default function Navbar() {
                     : unreadCount}
                 </span>
               )}
+
             </Link>
+
           </nav>
+
         </div>
+
 
         <div
           className="
@@ -398,6 +421,7 @@ export default function Navbar() {
             md:hidden
           "
         >
+
           <Link
             href="/"
             className="
@@ -415,6 +439,7 @@ export default function Navbar() {
               px-1
             "
           >
+
             <span
               className="
                 pointer-events-none
@@ -450,8 +475,11 @@ export default function Navbar() {
             >
               RANKD
             </span>
+
           </Link>
+
         </div>
+
 
         <nav
           className="
@@ -465,8 +493,9 @@ export default function Navbar() {
             md:hidden
           "
         >
+
           <Link
-            href="/"
+            href="/explore"
             className="
               flex
               flex-col
@@ -481,6 +510,7 @@ export default function Navbar() {
               hover:text-black
             "
           >
+
             <Compass
               className="h-5 w-5"
             />
@@ -493,7 +523,9 @@ export default function Navbar() {
             >
               Explore
             </span>
+
           </Link>
+
 
           <Link
             href="/categories"
@@ -511,6 +543,7 @@ export default function Navbar() {
               hover:text-black
             "
           >
+
             <Grid2X2
               className="h-5 w-5"
             />
@@ -523,7 +556,9 @@ export default function Navbar() {
             >
               Categories
             </span>
+
           </Link>
+
 
           <Link
             href="/create"
@@ -541,6 +576,7 @@ export default function Navbar() {
               hover:bg-black/85
             "
           >
+
             <Plus
               className="h-5 w-5"
             />
@@ -553,7 +589,9 @@ export default function Navbar() {
             >
               Create
             </span>
+
           </Link>
+
 
           <Link
             href="/notifications"
@@ -572,6 +610,7 @@ export default function Navbar() {
               hover:text-black
             "
           >
+
             <Bell
               className="h-5 w-5"
             />
@@ -611,7 +650,9 @@ export default function Navbar() {
                   : unreadCount}
               </span>
             )}
+
           </Link>
+
 
           <Link
             href="/profile"
@@ -629,6 +670,7 @@ export default function Navbar() {
               hover:text-black
             "
           >
+
             <User
               className="h-5 w-5"
             />
@@ -641,8 +683,11 @@ export default function Navbar() {
             >
               Profile
             </span>
+
           </Link>
+
         </nav>
+
       </div>
     </header>
   )
