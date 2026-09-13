@@ -297,6 +297,15 @@ export default function EntryExperience({
     )
 
 
+  const [
+    topItemRevealed,
+    setTopItemRevealed
+  ] =
+    useState(
+      false
+    )
+
+
   useEffect(() => {
 
     if (
@@ -550,6 +559,15 @@ export default function EntryExperience({
   }
 
 
+  function handleRevealTopItem() {
+
+    setTopItemRevealed(
+      true
+    )
+
+  }
+
+
   function viewNextRanking() {
 
     if (
@@ -605,6 +623,11 @@ export default function EntryExperience({
 
     setResponse(
       null
+    )
+
+
+    setTopItemRevealed(
+      false
     )
 
 
@@ -981,72 +1004,253 @@ export default function EntryExperience({
 
                     {
                       sortedItems.map(
-                        item => (
+                        item => {
 
-                          <div
-                            key={
-                              `${ranking.id}-${item.position}`
-                            }
-                            className="
-                              flex
-                              items-center
-                              gap-5
-                              border-b
-                              py-5
-                              md:gap-8
-                              md:py-6
-                            "
-                            style={{
-                              borderColor:
-                                `${theme.border}1A`
-                            }}
-                          >
+                          const isTopItem =
+                            item.position === 1
+
+
+                          if (
+                            isTopItem
+                          ) {
+
+                            return (
+
+                              <div
+                                key={
+                                  `${ranking.id}-${item.position}`
+                                }
+                                className="
+                                  relative
+                                  overflow-hidden
+                                  border-b
+                                  transition-all
+                                  duration-300
+                                "
+                                style={{
+                                  borderColor:
+                                    topItemRevealed
+                                      ? `${theme.border}1A`
+                                      : theme.accent,
+
+                                  borderWidth:
+                                    topItemRevealed
+                                      ? undefined
+                                      : "2px",
+
+                                  borderRadius:
+                                    topItemRevealed
+                                      ? undefined
+                                      : "20px",
+
+                                  backgroundColor:
+                                    topItemRevealed
+                                      ? "transparent"
+                                      : `${theme.accent}0A`
+                                }}
+                              >
+
+                                <div
+                                  className="
+                                    flex
+                                    items-center
+                                    gap-5
+                                    py-5
+                                    md:gap-8
+                                    md:py-6
+                                  "
+                                >
+
+                                  <div
+                                    className="
+                                      w-10
+                                      shrink-0
+                                      text-2xl
+                                      font-black
+                                      leading-none
+                                      tracking-[-0.04em]
+                                      md:w-16
+                                      md:text-4xl
+                                    "
+                                    style={{
+                                      color:
+                                        theme.accent
+                                    }}
+                                  >
+                                    01
+                                  </div>
+
+
+                                  <div
+                                    className="
+                                      flex-1
+                                      text-xl
+                                      font-black
+                                      leading-tight
+                                      tracking-[-0.025em]
+                                      md:text-3xl
+                                    "
+                                  >
+                                    {
+                                      item.name
+                                    }
+                                  </div>
+
+                                </div>
+
+
+                                {
+                                  !topItemRevealed && (
+
+                                    <button
+                                      type="button"
+                                      onClick={
+                                        handleRevealTopItem
+                                      }
+                                      className="
+                                        absolute
+                                        inset-0
+                                        flex
+                                        items-center
+                                        justify-center
+                                        rounded-[18px]
+                                        px-6
+                                        text-center
+                                        transition
+                                        hover:bg-black/[0.03]
+                                      "
+                                      style={{
+                                        backgroundColor:
+                                          theme.bg
+                                      }}
+                                      aria-label="Reveal the number one ranked item"
+                                    >
+
+                                      <div
+                                        className="
+                                          flex
+                                          flex-col
+                                          items-center
+                                          justify-center
+                                        "
+                                      >
+
+                                        <p
+                                          className="
+                                            text-lg
+                                            font-black
+                                            leading-tight
+                                            tracking-[-0.03em]
+                                            md:text-2xl
+                                          "
+                                          style={{
+                                            color:
+                                              theme.text
+                                          }}
+                                        >
+                                          Would you have
+                                          RANKD this #1?
+                                        </p>
+
+
+                                        <span
+                                          className="
+                                            mt-3
+                                            text-xs
+                                            font-black
+                                            uppercase
+                                            tracking-[0.22em]
+                                          "
+                                          style={{
+                                            color:
+                                              theme.accent
+                                          }}
+                                        >
+                                          Click to reveal →
+                                        </span>
+
+                                      </div>
+
+                                    </button>
+
+                                  )
+                                }
+
+                              </div>
+
+                            )
+
+                          }
+
+
+                          return (
 
                             <div
+                              key={
+                                `${ranking.id}-${item.position}`
+                              }
                               className="
-                                w-10
-                                shrink-0
-                                text-2xl
-                                font-black
-                                leading-none
-                                tracking-[-0.04em]
-                                md:w-16
-                                md:text-4xl
+                                flex
+                                items-center
+                                gap-5
+                                border-b
+                                py-5
+                                md:gap-8
+                                md:py-6
                               "
                               style={{
-                                color:
-                                  theme.accent
+                                borderColor:
+                                  `${theme.border}1A`
                               }}
                             >
-                              {
-                                String(
-                                  item.position
-                                ).padStart(
-                                  2,
-                                  "0"
-                                )
-                              }
+
+                              <div
+                                className="
+                                  w-10
+                                  shrink-0
+                                  text-2xl
+                                  font-black
+                                  leading-none
+                                  tracking-[-0.04em]
+                                  md:w-16
+                                  md:text-4xl
+                                "
+                                style={{
+                                  color:
+                                    theme.accent
+                                }}
+                              >
+                                {
+                                  String(
+                                    item.position
+                                  ).padStart(
+                                    2,
+                                    "0"
+                                  )
+                                }
+                              </div>
+
+
+                              <div
+                                className="
+                                  flex-1
+                                  text-xl
+                                  font-black
+                                  leading-tight
+                                  tracking-[-0.025em]
+                                  md:text-3xl
+                                "
+                              >
+                                {
+                                  item.name
+                                }
+                              </div>
+
                             </div>
 
+                          )
 
-                            <div
-                              className="
-                                flex-1
-                                text-xl
-                                font-black
-                                leading-tight
-                                tracking-[-0.025em]
-                                md:text-3xl
-                              "
-                            >
-                              {
-                                item.name
-                              }
-                            </div>
-
-                          </div>
-
-                        )
+                        }
                       )
                     }
 
