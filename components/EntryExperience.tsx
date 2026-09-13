@@ -1145,8 +1145,8 @@ export default function EntryExperience({
 
                                         <p
                                           className="
-                                            max-w-full
-                                            text-lg
+                                            whitespace-nowrap
+                                            text-base
                                             font-black
                                             leading-tight
                                             tracking-[-0.03em]
@@ -1157,8 +1157,7 @@ export default function EntryExperience({
                                               theme.text
                                           }}
                                         >
-                                          Would you have
-                                          RANKD this #1?
+                                          Would you have RANKD this #1?
                                         </p>
 
 
