@@ -1085,6 +1085,7 @@ export default function EntryExperience({
                                     className="
                                       min-w-0
                                       flex-1
+                                      truncate
                                       text-xl
                                       font-black
                                       leading-tight
