@@ -150,13 +150,10 @@ export default function RankingResponse({
 
 
             <button
-
               type="button"
-
               onClick={
                 onRerankd
               }
-
               className="
                 group
                 mt-5
@@ -170,7 +167,6 @@ export default function RankingResponse({
                 transition
                 hover:gap-5
               "
-
             >
 
               <span
@@ -272,13 +268,10 @@ export default function RankingResponse({
 
 
           <button
-
             type="button"
-
             onClick={
               onRerankd
             }
-
             className="
               group
               mt-9
@@ -293,7 +286,6 @@ export default function RankingResponse({
               hover:gap-5
               md:text-2xl
             "
-
           >
 
             <span
@@ -396,26 +388,23 @@ export default function RankingResponse({
         className="
           mt-10
           grid
+          grid-cols-2
           border-y
           border-black/10
-          md:grid-cols-2
         "
       >
 
         <button
-
           type="button"
-
           onClick={
             handleRankd
           }
-
           className="
             group
             relative
             text-left
             py-7
-            pr-8
+            pr-4
             transition
             md:py-9
             md:border-r
@@ -423,7 +412,6 @@ export default function RankingResponse({
             md:pr-10
             hover:bg-[#FF6B35]/[0.035]
           "
-
         >
 
           <span
@@ -444,7 +432,7 @@ export default function RankingResponse({
             className="
               mt-2
               block
-              text-4xl
+              text-3xl
               font-black
               leading-none
               tracking-[-0.06em]
@@ -460,7 +448,7 @@ export default function RankingResponse({
             className="
               mt-3
               block
-              text-sm
+              text-xs
               font-bold
               text-black/50
               md:text-base
@@ -476,11 +464,12 @@ export default function RankingResponse({
               inline-flex
               items-center
               gap-2
-              text-sm
+              text-xs
               font-black
               text-black
               transition
               group-hover:gap-4
+              md:text-sm
             "
           >
             That's my ranking
@@ -499,28 +488,24 @@ export default function RankingResponse({
 
 
         <button
-
           type="button"
-
           onClick={
             handleRerankd
           }
-
           className="
             group
             relative
             text-left
-            border-t
+            border-l
             border-black/10
             py-7
-            pl-0
+            pl-4
             transition
-            md:border-t-0
+            md:border-l-0
             md:py-9
             md:pl-10
             hover:bg-black/[0.025]
           "
-
         >
 
           <span
@@ -541,7 +526,7 @@ export default function RankingResponse({
             className="
               mt-2
               block
-              text-4xl
+              text-3xl
               font-black
               leading-none
               tracking-[-0.06em]
@@ -557,7 +542,7 @@ export default function RankingResponse({
             className="
               mt-3
               block
-              text-sm
+              text-xs
               font-bold
               text-black/50
               md:text-base
@@ -573,11 +558,12 @@ export default function RankingResponse({
               inline-flex
               items-center
               gap-2
-              text-sm
+              text-xs
               font-black
               text-black
               transition
               group-hover:gap-4
+              md:text-sm
             "
           >
             Make it mine

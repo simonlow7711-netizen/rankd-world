@@ -121,7 +121,7 @@ const themes: Record<string, RankingTheme> = {
       "MENU / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.9] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -171,7 +171,7 @@ const themes: Record<string, RankingTheme> = {
       "FRAME / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.86] tracking-[-0.05em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.05em]",
 
     item:
       "text-base md:text-lg"
@@ -221,7 +221,7 @@ const themes: Record<string, RankingTheme> = {
       "SIDE A / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.82] tracking-[-0.05em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.05em]",
 
     item:
       "text-base md:text-lg"
@@ -271,7 +271,7 @@ const themes: Record<string, RankingTheme> = {
       "MATCH / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.78] tracking-[-0.06em] uppercase",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em] uppercase",
 
     item:
       "text-base md:text-lg uppercase"
@@ -321,7 +321,7 @@ const themes: Record<string, RankingTheme> = {
       "PLAYER 1 / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.9] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -371,7 +371,7 @@ const themes: Record<string, RankingTheme> = {
       "FIELD NOTES / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.88] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -421,7 +421,7 @@ const themes: Record<string, RankingTheme> = {
       "SYSTEM / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.9] tracking-[-0.05em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.05em]",
 
     item:
       "text-base md:text-lg"
@@ -471,7 +471,7 @@ const themes: Record<string, RankingTheme> = {
       "EDIT / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -521,7 +521,7 @@ const themes: Record<string, RankingTheme> = {
       "PUBLISHING / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.94] tracking-[-0.025em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.025em]",
 
     item:
       "text-base md:text-lg"
@@ -571,7 +571,7 @@ const themes: Record<string, RankingTheme> = {
       "CATALOGUE / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.82] tracking-[-0.06em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em]",
 
     item:
       "text-base md:text-lg"
@@ -621,7 +621,7 @@ const themes: Record<string, RankingTheme> = {
       "COLLECTION / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.78] tracking-[-0.06em] uppercase",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em] uppercase",
 
     item:
       "text-base md:text-lg"
@@ -671,7 +671,7 @@ const themes: Record<string, RankingTheme> = {
       "EDIT / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.88] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -721,7 +721,7 @@ const themes: Record<string, RankingTheme> = {
       "ENERGY / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.86] tracking-[-0.05em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.05em]",
 
     item:
       "text-base md:text-lg"
@@ -771,7 +771,7 @@ const themes: Record<string, RankingTheme> = {
       "BRIEFING / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.94] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -821,7 +821,7 @@ const themes: Record<string, RankingTheme> = {
       "FIELD NOTES / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -871,7 +871,7 @@ const themes: Record<string, RankingTheme> = {
       "ARCHIVE / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.94] tracking-[-0.035em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.035em]",
 
     item:
       "text-base md:text-lg"
@@ -921,7 +921,7 @@ const themes: Record<string, RankingTheme> = {
       "FIELD GUIDE / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.88] tracking-[-0.045em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.045em]",
 
     item:
       "text-base md:text-lg"
@@ -971,7 +971,7 @@ const themes: Record<string, RankingTheme> = {
       "ROAD / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.8] tracking-[-0.055em] uppercase",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.055em] uppercase",
 
     item:
       "text-base md:text-lg"
@@ -1021,7 +1021,7 @@ const themes: Record<string, RankingTheme> = {
       "LIVING / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
@@ -1071,7 +1071,7 @@ const themes: Record<string, RankingTheme> = {
       "TOP 7",
 
     title:
-      "text-3xl md:text-4xl leading-[0.92] tracking-[-0.04em]",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.04em]",
 
     item:
       "text-base md:text-lg"
