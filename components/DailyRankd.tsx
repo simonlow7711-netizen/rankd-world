@@ -217,7 +217,7 @@ function getTheme(
 
 export default function DailyRankd({
   category = "Film & TV",
-  title = "Top 7 films everyone should watch?",
+  title = "Top 7 films everyone should watch",
   description = "Thousands of possible answers. One question.",
   href
 }: DailyRankdProps) {
