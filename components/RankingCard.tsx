@@ -1733,11 +1733,11 @@ export default function RankingCard({
 
                 <p
 
-                  className={`
+                  className="
                     mt-2
                     text-sm
-                    ${theme.muted}
-                  `}
+                    text-black/45
+                  "
 
                 >
 
@@ -1751,10 +1751,11 @@ export default function RankingCard({
               <div
 
                 className="
-                  mt-5
+                  mt-7
                   grid
                   grid-cols-2
-                  gap-3
+                  border-y
+                  border-black/10
                 "
 
               >
@@ -1767,16 +1768,19 @@ export default function RankingCard({
                     handleRankd
                   }
 
-                  className={`
-                    rounded-2xl
-                    px-4
-                    py-5
-                    text-center
-                    hover:-translate-y-1
-                    transition-all
-                    duration-200
-                    ${theme.buttonPrimary}
-                  `}
+                  aria-label="RANKD this ranking"
+
+                  className="
+                    group/reaction
+                    relative
+                    py-6
+                    pr-5
+                    text-left
+                    transition
+                    hover:-translate-y-0.5
+                    active:scale-[0.99]
+                    md:py-7
+                  "
 
                 >
 
@@ -1784,9 +1788,31 @@ export default function RankingCard({
 
                     className="
                       block
-                      text-lg
-                      md:text-xl
+                      text-[10px]
                       font-black
+                      uppercase
+                      tracking-[0.25em]
+                      text-black/45
+                    "
+
+                  >
+
+                    KEEP IT
+
+                  </span>
+
+
+                  <span
+
+                    className="
+                      mt-2
+                      block
+                      text-2xl
+                      font-black
+                      leading-none
+                      tracking-[-0.05em]
+                      text-[#FF6B35]
+                      md:text-3xl
                     "
 
                   >
@@ -1799,15 +1825,48 @@ export default function RankingCard({
                   <span
 
                     className="
+                      mt-3
                       block
-                      mt-1
                       text-xs
-                      opacity-60
+                      font-bold
+                      text-black/45
                     "
 
                   >
 
-                    I'd keep this
+                    I'd keep this ranking
+
+                  </span>
+
+
+                  <span
+
+                    className="
+                      mt-5
+                      block
+                      text-sm
+                      font-black
+                      text-black
+                    "
+
+                  >
+
+                    That's my ranking
+
+                    <span
+
+                      className="
+                        ml-1
+                        text-[#FF6B35]
+                        transition
+                        group-hover/reaction:translate-x-1
+                      "
+
+                    >
+
+                      →
+
+                    </span>
 
                   </span>
 
@@ -1822,18 +1881,21 @@ export default function RankingCard({
                     handleRerankd
                   }
 
-                  className={`
-                    rounded-2xl
-                    px-4
-                    py-5
-                    text-center
-                    border-2
-                    hover:-translate-y-1
-                    transition-all
-                    duration-200
-                    ${theme.buttonSecondary}
-                    ${theme.buttonSecondaryText}
-                  `}
+                  aria-label="RE-RANKD this ranking"
+
+                  className="
+                    group/reaction
+                    relative
+                    border-l
+                    border-black/10
+                    py-6
+                    pl-5
+                    text-left
+                    transition
+                    hover:-translate-y-0.5
+                    active:scale-[0.99]
+                    md:py-7
+                  "
 
                 >
 
@@ -1841,9 +1903,31 @@ export default function RankingCard({
 
                     className="
                       block
-                      text-lg
-                      md:text-xl
+                      text-[10px]
                       font-black
+                      uppercase
+                      tracking-[0.25em]
+                      text-black/45
+                    "
+
+                  >
+
+                    CHANGE IT
+
+                  </span>
+
+
+                  <span
+
+                    className="
+                      mt-2
+                      block
+                      text-2xl
+                      font-black
+                      leading-none
+                      tracking-[-0.05em]
+                      text-black
+                      md:text-3xl
                     "
 
                   >
@@ -1856,15 +1940,48 @@ export default function RankingCard({
                   <span
 
                     className="
+                      mt-3
                       block
-                      mt-1
                       text-xs
-                      opacity-60
+                      font-bold
+                      text-black/45
                     "
 
                   >
 
-                    I'd change it
+                    I'd change the order
+
+                  </span>
+
+
+                  <span
+
+                    className="
+                      mt-5
+                      block
+                      text-sm
+                      font-black
+                      text-black
+                    "
+
+                  >
+
+                    Make it mine
+
+                    <span
+
+                      className="
+                        ml-1
+                        text-[#FF6B35]
+                        transition
+                        group-hover/reaction:translate-x-1
+                      "
+
+                    >
+
+                      →
+
+                    </span>
 
                   </span>
 
