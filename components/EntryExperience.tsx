@@ -1083,6 +1083,7 @@ export default function EntryExperience({
 
                                   <div
                                     className="
+                                      min-w-0
                                       flex-1
                                       text-xl
                                       font-black
@@ -1111,13 +1112,16 @@ export default function EntryExperience({
                                         absolute
                                         inset-0
                                         flex
+                                        w-full
+                                        max-w-full
                                         items-center
                                         justify-center
                                         rounded-[18px]
-                                        px-6
+                                        px-4
                                         text-center
                                         transition
                                         hover:bg-black/[0.03]
+                                        md:px-6
                                       "
                                       style={{
                                         backgroundColor:
@@ -1128,6 +1132,9 @@ export default function EntryExperience({
 
                                       <div
                                         className="
+                                          w-full
+                                          max-w-full
+                                          min-w-0
                                           flex
                                           flex-col
                                           items-center
@@ -1137,6 +1144,7 @@ export default function EntryExperience({
 
                                         <p
                                           className="
+                                            max-w-full
                                             text-lg
                                             font-black
                                             leading-tight
@@ -1156,6 +1164,7 @@ export default function EntryExperience({
                                         <span
                                           className="
                                             mt-3
+                                            max-w-full
                                             text-xs
                                             font-black
                                             uppercase
@@ -1233,6 +1242,7 @@ export default function EntryExperience({
 
                               <div
                                 className="
+                                  min-w-0
                                   flex-1
                                   text-xl
                                   font-black
