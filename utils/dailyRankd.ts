@@ -1,17 +1,10 @@
 export type DailyRankd = {
+  title: string
 
-  title:string
-
-  category:string
-
+  category: string
 }
 
-
-
-
-
-export const dailyRankds:DailyRankd[] = [
-
+export const dailyRankds: DailyRankd[] = [
   {
     title:
       "Top 7 Films Everyone Should Watch",
@@ -19,7 +12,6 @@ export const dailyRankds:DailyRankd[] = [
     category:
       "Film & TV"
   },
-
 
   {
     title:
@@ -29,7 +21,6 @@ export const dailyRankds:DailyRankd[] = [
       "Food & Drink"
   },
 
-
   {
     title:
       "Top 7 Cities To Visit",
@@ -37,7 +28,6 @@ export const dailyRankds:DailyRankd[] = [
     category:
       "Travel"
   },
-
 
   {
     title:
@@ -47,7 +37,6 @@ export const dailyRankds:DailyRankd[] = [
       "Music"
   },
 
-
   {
     title:
       "Top 7 Athletes Ever",
@@ -55,7 +44,6 @@ export const dailyRankds:DailyRankd[] = [
     category:
       "Sport"
   },
-
 
   {
     title:
@@ -65,7 +53,6 @@ export const dailyRankds:DailyRankd[] = [
       "Technology"
   },
 
-
   {
     title:
       "Top 7 Things That Make You Happy",
@@ -73,44 +60,67 @@ export const dailyRankds:DailyRankd[] = [
     category:
       "Lifestyle"
   }
-
 ]
 
+export function getDailyRankd(): DailyRankd {
+  const now = new Date()
 
+  const londonDate = new Intl.DateTimeFormat(
+    "en-GB",
+    {
+      timeZone:
+        "Europe/London",
 
+      year:
+        "numeric",
 
+      month:
+        "2-digit",
 
-export function getDailyRankd(){
+      day:
+        "2-digit"
+    }
+  ).formatToParts(now)
 
-  const dayNumber =
+  const year = Number(
+    londonDate.find(
+      part =>
+        part.type === "year"
+    )?.value
+  )
 
-    Math.floor(
+  const month = Number(
+    londonDate.find(
+      part =>
+        part.type === "month"
+    )?.value
+  )
 
-      Date.now()
+  const day = Number(
+    londonDate.find(
+      part =>
+        part.type === "day"
+    )?.value
+  )
 
-      /
+  const londonMidnight = Date.UTC(
+    year,
+    month - 1,
+    day
+  )
 
+  const epochDay = Math.floor(
+    londonMidnight /
       (
-
         1000 *
-
         60 *
-
         60 *
-
         24
-
       )
-
-    )
-
+  )
 
   return dailyRankds[
-
-    dayNumber %
-
-    dailyRankds.length
-
+    epochDay %
+      dailyRankds.length
   ]
-
 }
