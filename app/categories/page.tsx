@@ -363,17 +363,18 @@ export default function CategoriesPage() {
           mx-auto
           max-w-7xl
           px-5
-          py-12
+          py-10
           md:px-8
-          md:py-20
+          md:py-14
         "
       >
 
         <section
           className="
             relative
-            mb-16
+            mb-12
             overflow-hidden
+            md:mb-14
           "
         >
 
@@ -382,17 +383,17 @@ export default function CategoriesPage() {
               pointer-events-none
               absolute
               -right-8
-              -top-20
+              -top-16
               select-none
-              text-[18rem]
+              text-[16rem]
               font-black
               leading-none
               tracking-[-0.16em]
               text-[#FF6B35]
               opacity-[0.055]
               md:-right-16
-              md:-top-32
-              md:text-[28rem]
+              md:-top-28
+              md:text-[25rem]
             "
             aria-hidden="true"
           >
@@ -410,10 +411,10 @@ export default function CategoriesPage() {
 
             <p
               className="
-                text-sm
+                text-xs
                 font-black
                 uppercase
-                tracking-[0.3em]
+                tracking-[0.24em]
                 text-[#FF6B35]
               "
             >
@@ -423,10 +424,10 @@ export default function CategoriesPage() {
 
             <h1
               className="
-                mt-5
+                mt-4
                 text-5xl
                 font-black
-                leading-[0.85]
+                leading-[0.9]
                 tracking-[-0.06em]
                 md:text-7xl
               "
@@ -439,12 +440,12 @@ export default function CategoriesPage() {
 
             <p
               className="
-                mt-7
-                max-w-3xl
-                text-xl
+                mt-5
+                max-w-2xl
+                text-lg
                 leading-relaxed
                 text-black/55
-                md:text-2xl
+                md:text-xl
               "
             >
               Explore rankings by category.
@@ -460,9 +461,10 @@ export default function CategoriesPage() {
         <section
           className="
             grid
-            gap-5
+            gap-4
             md:grid-cols-2
             lg:grid-cols-3
+            md:gap-5
           "
         >
 
@@ -488,20 +490,22 @@ export default function CategoriesPage() {
                     overflow-hidden
                     rounded-[28px]
                     border
-                    p-7
+                    p-6
                     transition
                     duration-300
                     hover:-translate-y-1
-                    hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]
-                    md:p-8
+                    hover:shadow-[0_20px_50px_rgba(0,0,0,0.08)]
+                    md:p-7
                   "
                   style={{
                     backgroundColor:
                       theme.bg,
+
                     color:
                       theme.text,
+
                     borderColor:
-                      "rgba(0,0,0,0.10)"
+                      "rgba(0,0,0,0.06)"
                   }}
                 >
 
@@ -535,43 +539,33 @@ export default function CategoriesPage() {
                     "
                   >
 
-                    <div
+                    <p
                       className="
-                        flex
-                        items-center
-                        justify-between
+                        text-[11px]
+                        font-black
+                        uppercase
+                        tracking-[0.2em]
                       "
+                      style={{
+                        color:
+                          theme.accent
+                      }}
                     >
-
-                      <p
-                        className="
-                          text-xs
-                          font-black
-                          uppercase
-                          tracking-[0.24em]
-                        "
-                        style={{
-                          color:
-                            theme.accent
-                        }}
-                      >
-                        RANKD
-                        {" / "}
-                        {theme.label}
-                      </p>
-
-                    </div>
+                      RANKD
+                      {" / "}
+                      {theme.label}
+                    </p>
 
 
                     <h2
                       className="
-                        mt-8
-                        max-w-[90%]
+                        mt-7
+                        max-w-[92%]
                         text-3xl
                         font-black
                         leading-[0.95]
                         tracking-[-0.045em]
-                        md:text-4xl
+                        md:text-[2.15rem]
                       "
                     >
                       {category.name}
@@ -580,9 +574,9 @@ export default function CategoriesPage() {
 
                     <p
                       className="
-                        mt-5
+                        mt-4
                         max-w-md
-                        text-base
+                        text-[15px]
                         leading-relaxed
                       "
                       style={{
@@ -596,26 +590,34 @@ export default function CategoriesPage() {
 
                     <div
                       className="
-                        mt-8
+                        mt-7
                         flex
                         items-center
                         justify-between
                         border-t
-                        pt-5
-                        text-xs
+                        pt-4
+                        text-[11px]
                         font-black
                         uppercase
-                        tracking-[0.18em]
+                        tracking-[0.16em]
                       "
                       style={{
                         borderColor:
-                          "rgba(0,0,0,0.10)"
+                          "rgba(0,0,0,0.07)"
                       }}
                     >
 
-                      <span>
+                      <span
+                        className="
+                          opacity-70
+                          transition
+                          duration-300
+                          group-hover:opacity-100
+                        "
+                      >
                         Explore rankings
                       </span>
+
 
                       <span
                         className="
