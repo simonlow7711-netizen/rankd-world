@@ -1,6 +1,11 @@
 import Link from "next/link"
 
 
+import {
+  getDailyRankd
+} from "@/utils/dailyRankd"
+
+
 type DailyRankdProps = {
   category?: string
   title?: string
@@ -208,29 +213,53 @@ const categoryThemes: Record<
 function getTheme(
   category: string
 ) {
+
   return (
     categoryThemes[category] ??
     categoryThemes["General"]
   )
+
 }
 
 
 export default function DailyRankd({
-  category = "Film & TV",
-  title = "Top 7 films everyone should watch",
-  description = "Thousands of possible answers. One question.",
+  category,
+  title,
+  description,
   href
 }: DailyRankdProps) {
 
+  const dailyRankd =
+    getDailyRankd()
+
+
+  const activeCategory =
+    category ??
+    dailyRankd.category
+
+
+  const activeTitle =
+    title ??
+    dailyRankd.title
+
+
+  const activeDescription =
+    description ??
+    "Thousands of possible answers. One question."
+
+
   const theme =
-    getTheme(category)
+    getTheme(
+      activeCategory
+    )
+
 
   const createHref =
     href ??
     `/create?title=${encodeURIComponent(
-      title
+      activeTitle
     )}&category=${encodeURIComponent(
-      category
+      activeCategory
     )}`
 
 
@@ -362,6 +391,7 @@ export default function DailyRankd({
                   RANKD OF THE DAY
                 </p>
 
+
                 <p
                   className="
                     mt-2
@@ -426,7 +456,7 @@ export default function DailyRankd({
                   lg:text-8xl
                 "
               >
-                {title}
+                {activeTitle}
               </h2>
 
 
@@ -472,8 +502,9 @@ export default function DailyRankd({
                         theme.muted
                     }}
                   >
-                    {description}
+                    {activeDescription}
                   </p>
+
 
                   <p
                     className="
@@ -513,6 +544,7 @@ export default function DailyRankd({
                   <span>
                     Rank it
                   </span>
+
 
                   <span
                     className="
@@ -557,8 +589,9 @@ export default function DailyRankd({
             >
 
               <span>
-                {category}
+                {activeCategory}
               </span>
+
 
               <span>
                 Would you rank it differently?

@@ -162,12 +162,10 @@ export default async function ExplorePage() {
           a.trendingScore
 
       )
-
       .slice(
         0,
         3
       )
-
       .map(
 
         item =>
@@ -184,116 +182,157 @@ export default async function ExplorePage() {
         min-h-screen
         bg-[#F7F4EE]
         text-black
-        px-6
-        py-12
       "
     >
 
       <div
         className="
-          max-w-7xl
           mx-auto
+          max-w-7xl
+          px-6
         "
       >
 
         <section
           className="
-            mb-16
-            text-center
+            border-b
+            border-black/10
+            py-12
+            md:py-16
           "
         >
 
-          <p
+          <div
             className="
-              rankd-accent
-              uppercase
-              tracking-[0.3em]
-              text-sm
-              font-black
+              max-w-3xl
             "
           >
 
-            Discover
-
-          </p>
-
-
-          <h1
-            className="
-              text-6xl
-              md:text-8xl
-              font-black
-              mt-5
-              leading-none
-            "
-          >
-
-            Explore
-            <br />
-            RANKD
-
-          </h1>
+            <p
+              className="
+                text-xs
+                font-black
+                uppercase
+                tracking-[0.3em]
+                rankd-accent
+              "
+            >
+              DISCOVER
+            </p>
 
 
-          <p
-            className="
-              mt-6
-              text-xl
-              rankd-muted
-              max-w-xl
-              mx-auto
-            "
-          >
+            <h1
+              className="
+                mt-3
+                text-4xl
+                font-black
+                leading-none
+                tracking-[-0.045em]
+                md:text-6xl
+              "
+            >
+              Explore RANKD.
+            </h1>
 
-            Discover the Top 7 opinions
-            shaping conversations.
 
-          </p>
+            <p
+              className="
+                mt-4
+                max-w-xl
+                text-base
+                leading-relaxed
+                text-black/50
+                md:text-lg
+              "
+            >
+              Discover the Top 7 opinions
+              shaping conversations.
+            </p>
+
+          </div>
 
         </section>
 
 
-        <DailyRankd />
+        <section
+          className="
+            border-b
+            border-black/10
+            py-8
+            md:py-10
+          "
+        >
+
+          <DailyRankd />
+
+        </section>
 
 
         <section
           className="
-            mb-20
+            border-b
+            border-black/10
+            py-16
+            md:py-24
           "
         >
 
           <div
             className="
               mb-10
+              flex
+              flex-col
+              gap-6
+              md:mb-12
+              md:flex-row
+              md:items-end
+              md:justify-between
             "
           >
 
-            <p
-              className="
-                rankd-accent
-                uppercase
-                tracking-widest
-                text-sm
-                font-black
-              "
-            >
+            <div>
 
-              Community
+              <p
+                className="
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.3em]
+                  rankd-accent
+                "
+              >
+                COMMUNITY
+              </p>
 
-            </p>
+
+              <h2
+                className="
+                  mt-3
+                  text-4xl
+                  font-black
+                  leading-none
+                  tracking-[-0.045em]
+                  md:text-6xl
+                "
+              >
+                Latest RANKDs.
+              </h2>
 
 
-            <h2
-              className="
-                text-5xl
-                font-black
-                mt-3
-              "
-            >
+              <p
+                className="
+                  mt-4
+                  max-w-xl
+                  text-base
+                  leading-relaxed
+                  text-black/50
+                  md:text-lg
+                "
+              >
+                Fresh perspectives from the RANKD community.
+              </p>
 
-              Latest RANKDs
-
-            </h2>
+            </div>
 
           </div>
 
@@ -306,8 +345,9 @@ export default async function ExplorePage() {
                 <div
                   className="
                     grid
+                    gap-6
                     md:grid-cols-3
-                    gap-8
+                    md:gap-8
                   "
                 >
 
@@ -341,7 +381,9 @@ export default async function ExplorePage() {
 
                 <div
                   className="
-                    rankd-card
+                    border
+                    border-black/10
+                    bg-white/30
                     p-8
                   "
                 >
@@ -352,22 +394,18 @@ export default async function ExplorePage() {
                       font-black
                     "
                   >
-
                     No RANKDs yet.
-
                   </p>
 
 
                   <p
                     className="
                       mt-2
-                      rankd-muted
+                      text-black/50
                     "
                   >
-
                     Be the first person to create
                     a Top 7.
-
                   </p>
 
                 </div>
@@ -380,42 +418,69 @@ export default async function ExplorePage() {
 
         <section
           className="
-            mb-20
+            border-b
+            border-black/10
+            py-16
+            md:py-24
           "
         >
 
           <div
             className="
               mb-10
+              flex
+              flex-col
+              gap-6
+              md:mb-12
+              md:flex-row
+              md:items-end
+              md:justify-between
             "
           >
 
-            <p
-              className="
-                rankd-accent
-                uppercase
-                tracking-widest
-                text-sm
-                font-black
-              "
-            >
+            <div>
 
-              What's happening
+              <p
+                className="
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.3em]
+                  rankd-accent
+                "
+              >
+                WHAT'S HAPPENING
+              </p>
 
-            </p>
+
+              <h2
+                className="
+                  mt-3
+                  text-4xl
+                  font-black
+                  leading-none
+                  tracking-[-0.045em]
+                  md:text-6xl
+                "
+              >
+                Trending debates.
+              </h2>
 
 
-            <h2
-              className="
-                text-5xl
-                font-black
-                mt-3
-              "
-            >
+              <p
+                className="
+                  mt-4
+                  max-w-xl
+                  text-base
+                  leading-relaxed
+                  text-black/50
+                  md:text-lg
+                "
+              >
+                The rankings generating the most interesting opinions.
+              </p>
 
-              Trending debates
-
-            </h2>
+            </div>
 
           </div>
 
@@ -428,8 +493,9 @@ export default async function ExplorePage() {
                 <div
                   className="
                     grid
+                    gap-6
                     md:grid-cols-3
-                    gap-8
+                    md:gap-8
                   "
                 >
 
@@ -463,7 +529,9 @@ export default async function ExplorePage() {
 
                 <div
                   className="
-                    rankd-card
+                    border
+                    border-black/10
+                    bg-white/30
                     p-8
                   "
                 >
@@ -474,10 +542,8 @@ export default async function ExplorePage() {
                       font-black
                     "
                   >
-
                     Trending debates
                     will appear here.
-
                   </p>
 
                 </div>
@@ -488,46 +554,115 @@ export default async function ExplorePage() {
         </section>
 
 
-        <Link
-
-          href="/create"
-
+        <section
           className="
-            block
-            bg-black
-            text-white
-            rounded-[40px]
-            p-12
-            text-center
+            py-20
+            md:py-28
           "
-
         >
 
-          <h2
+          <div
             className="
-              text-5xl
-              font-black
+              flex
+              flex-col
+              gap-8
+              md:flex-row
+              md:items-end
+              md:justify-between
             "
           >
 
-            Create your own RANKD
+            <div>
 
-          </h2>
+              <p
+                className="
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.3em]
+                  rankd-accent
+                "
+              >
+                YOUR TURN
+              </p>
 
 
-          <p
-            className="
-              mt-4
-              text-lg
-              opacity-80
-            "
-          >
+              <h2
+                className="
+                  mt-4
+                  max-w-3xl
+                  text-4xl
+                  font-black
+                  leading-[0.95]
+                  tracking-[-0.045em]
+                  md:text-6xl
+                "
+              >
+                Have a different
+                <br className="hidden md:block" />
+                perspective?
+              </h2>
 
-            Add your perspective to the world.
 
-          </p>
+              <p
+                className="
+                  mt-5
+                  max-w-xl
+                  text-lg
+                  leading-relaxed
+                  text-black/50
+                "
+              >
+                Create your own Top 7
+                and add your perspective to the world.
+              </p>
 
-        </Link>
+            </div>
+
+
+            <Link
+              href="/create"
+              className="
+                inline-flex
+                shrink-0
+                items-center
+                gap-3
+                self-start
+                rounded-full
+                border
+                border-black
+                bg-black
+                px-7
+                py-4
+                text-sm
+                font-black
+                text-white
+                transition
+                hover:bg-[#FF6B35]
+                hover:text-black
+                md:self-end
+              "
+            >
+
+              <span>
+                Create your RANKD
+              </span>
+
+
+              <span
+                className="
+                  text-lg
+                  leading-none
+                "
+              >
+                →
+              </span>
+
+            </Link>
+
+          </div>
+
+        </section>
 
       </div>
 
