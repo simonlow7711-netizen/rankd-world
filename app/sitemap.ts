@@ -126,6 +126,28 @@ export default async function sitemap(): Promise<
       )
 
 
+  const locationUrls = [
+
+    {
+
+      url:
+        `${SITE_URL}/location/poblacion`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
+    }
+
+  ]
+
+
   return [
 
     {
@@ -183,6 +205,9 @@ export default async function sitemap(): Promise<
 
 
     ...categoryUrls,
+
+
+    ...locationUrls,
 
 
     ...rankingUrls
