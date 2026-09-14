@@ -1,16 +1,13 @@
 "use client"
 
-
 import {
   useEffect,
   useState
 } from "react"
 
-
 import {
   useRouter
 } from "next/navigation"
-
 
 import {
   supabase
@@ -18,7 +15,6 @@ import {
 
 
 export default function OnboardingPage() {
-
 
   const router =
     useRouter()
@@ -61,9 +57,7 @@ export default function OnboardingPage() {
 
   useEffect(() => {
 
-
     async function loadProfile() {
-
 
       const {
         data: {
@@ -87,18 +81,14 @@ export default function OnboardingPage() {
         error
       } =
         await supabase
-
           .from("profiles")
-
           .select(
             "username,display_name"
           )
-
           .eq(
             "id",
             user.id
           )
-
           .maybeSingle()
 
 
@@ -140,12 +130,10 @@ export default function OnboardingPage() {
 
     loadProfile()
 
-
   }, [])
 
 
   async function createProfile() {
-
 
     setMessage("")
 
@@ -198,44 +186,34 @@ export default function OnboardingPage() {
 
 
     let {
-
       data: {
         user
-
       }
-
     } =
       await supabase.auth.getUser()
 
 
     if (!user) {
 
-
       const {
-
         data,
         error
-
       } =
         await supabase.auth.signInAnonymously()
 
 
       if (error) {
 
-
         console.error(
           "AUTH ERROR:",
           error
         )
 
-
         setMessage(
           error.message
         )
 
-
         setLoading(false)
-
 
         return
 
@@ -250,14 +228,11 @@ export default function OnboardingPage() {
 
     if (!user) {
 
-
       setMessage(
         "Unable to create account"
       )
 
-
       setLoading(false)
-
 
       return
 
@@ -271,43 +246,33 @@ export default function OnboardingPage() {
 
 
     const {
-
       data: currentProfile,
       error: currentProfileError
-
     } =
       await supabase
-
         .from("profiles")
-
         .select(
           "id,username,display_name"
         )
-
         .eq(
           "id",
           user.id
         )
-
         .maybeSingle()
 
 
     if (currentProfileError) {
-
 
       console.error(
         "CURRENT PROFILE ERROR:",
         currentProfileError
       )
 
-
       setMessage(
         currentProfileError.message
       )
 
-
       setLoading(false)
-
 
       return
 
@@ -321,42 +286,32 @@ export default function OnboardingPage() {
 
 
     const {
-
       data: existing,
       error: existingError
-
     } =
       await supabase
-
         .from("profiles")
-
         .select(
           "id"
         )
-
         .eq(
           "username",
           cleanUsername
         )
-
         .maybeSingle()
 
 
     if (existingError) {
 
-
       console.error(
         existingError
       )
-
 
       setMessage(
         existingError.message
       )
 
-
       setLoading(false)
-
 
       return
 
@@ -368,14 +323,11 @@ export default function OnboardingPage() {
       existing.id !== user.id
     ) {
 
-
       setMessage(
         "Username already taken"
       )
 
-
       setLoading(false)
-
 
       return
 
@@ -392,14 +344,10 @@ export default function OnboardingPage() {
 
 
     const {
-
       error
-
     } =
       await supabase
-
         .from("profiles")
-
         .upsert({
 
           id: user.id,
@@ -414,20 +362,16 @@ export default function OnboardingPage() {
 
     if (error) {
 
-
       console.error(
         "PROFILE ERROR:",
         error
       )
 
-
       setMessage(
         error.message
       )
 
-
       setLoading(false)
-
 
       return
 
@@ -446,160 +390,354 @@ export default function OnboardingPage() {
     <main
       className="
         min-h-screen
-        bg-black
-        text-white
+        bg-[#F7F4EE]
+        text-black
         px-6
-        py-20
+        py-10
+        md:py-16
       "
     >
 
       <div
         className="
-          max-w-xl
           mx-auto
+          flex
+          min-h-[calc(100vh-5rem)]
+          max-w-4xl
+          items-center
+          justify-center
+          md:min-h-[calc(100vh-8rem)]
         "
       >
 
-        <h1
+        <section
           className="
-            text-5xl
-            font-black
+            relative
+            w-full
+            overflow-hidden
+            rounded-[28px]
+            border
+            border-black/[0.06]
+            bg-white/30
+            px-7
+            py-9
+            md:px-12
+            md:py-12
           "
         >
 
-          Claim your RANKD identity
-
-        </h1>
-
-
-        <p
-          className="
-            mt-4
-            text-gray-400
-          "
-        >
-
-          Choose your name and username.
-          Your rankings become your taste profile.
-
-        </p>
-
-
-        <input
-
-          className="
-            mt-10
-            w-full
-            p-4
-            rounded-xl
-            bg-white
-            text-black
-            placeholder-gray-500
-            outline-none
-          "
-
-          placeholder="Display name"
-
-          value={
-            displayName
-          }
-
-          onChange={
-            e =>
-              setDisplayName(
-                e.target.value
-              )
-          }
-
-          disabled={
-            loadingProfile
-          }
-
-        />
+          <div
+            className="
+              pointer-events-none
+              absolute
+              -right-8
+              -top-12
+              select-none
+              text-[12rem]
+              font-black
+              leading-none
+              tracking-[-0.15em]
+              text-[#FF6B35]/[0.07]
+              md:-right-2
+              md:-top-16
+              md:text-[18rem]
+            "
+            aria-hidden="true"
+          >
+            7
+          </div>
 
 
-        <input
+          <div
+            className="
+              relative
+              z-10
+              mx-auto
+              max-w-2xl
+            "
+          >
 
-          className="
-            mt-4
-            w-full
-            p-4
-            rounded-xl
-            bg-white
-            text-black
-            placeholder-gray-500
-            outline-none
-          "
-
-          placeholder="Username"
-
-          value={
-            username
-          }
-
-          onChange={
-            e =>
-              setUsername(
-                e.target.value
-              )
-          }
-
-          disabled={
-            loadingProfile
-          }
-
-        />
+            <p
+              className="
+                text-xs
+                font-black
+                uppercase
+                tracking-[0.2em]
+                text-black/40
+              "
+            >
+              RANKD / IDENTITY
+            </p>
 
 
-        {
-          message && (
+            <h1
+              className="
+                mt-5
+                max-w-2xl
+                text-5xl
+                font-black
+                leading-[0.94]
+                tracking-[-0.055em]
+                md:text-7xl
+              "
+            >
+              Claim your
+              <br />
+              RANKD identity.
+            </h1>
+
 
             <p
               className="
                 mt-6
-                text-gray-300
+                max-w-xl
+                text-lg
                 font-bold
+                leading-relaxed
+                tracking-[-0.02em]
+                text-black/60
+                md:text-xl
+              "
+            >
+              Choose the name that will own your rankings.
+              Claim the identity behind your taste.
+            </p>
+
+
+            <div
+              className="
+                mt-10
+                space-y-4
               "
             >
 
-              {message}
+              <div>
 
-            </p>
+                <label
+                  htmlFor="display-name"
+                  className="
+                    mb-2
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.16em]
+                    text-black/45
+                  "
+                >
+                  Display name
+                </label>
 
-          )
-        }
+
+                <input
+                  id="display-name"
+                  className="
+                    w-full
+                    rounded-2xl
+                    border
+                    border-black/[0.08]
+                    bg-[#F7F4EE]
+                    px-5
+                    py-4
+                    text-lg
+                    font-bold
+                    text-black
+                    outline-none
+                    transition
+                    placeholder:text-black/25
+                    focus:border-black/25
+                    focus:bg-white
+                  "
+                  placeholder="Your name"
+                  value={
+                    displayName
+                  }
+                  onChange={
+                    e =>
+                      setDisplayName(
+                        e.target.value
+                      )
+                  }
+                  disabled={
+                    loadingProfile
+                  }
+                />
+
+              </div>
 
 
-        <button
+              <div>
 
-          onClick={
-            createProfile
-          }
+                <label
+                  htmlFor="username"
+                  className="
+                    mb-2
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.16em]
+                    text-black/45
+                  "
+                >
+                  Username
+                </label>
 
-          disabled={
-            loading ||
-            loadingProfile
-          }
 
-          className="
-            mt-8
-            bg-white
-            text-black
-            px-8
-            py-4
-            rounded-full
-            font-black
-            disabled:opacity-50
-          "
-        >
+                <div
+                  className="
+                    flex
+                    items-center
+                    rounded-2xl
+                    border
+                    border-black/[0.08]
+                    bg-[#F7F4EE]
+                    px-5
+                    transition
+                    focus-within:border-black/25
+                    focus-within:bg-white
+                  "
+                >
 
-          {
-            loading
-              ? "Claiming..."
-              : "Claim Identity →"
-          }
+                  <span
+                    className="
+                      text-lg
+                      font-black
+                      text-black/30
+                    "
+                  >
+                    @
+                  </span>
 
-        </button>
+
+                  <input
+                    id="username"
+                    className="
+                      min-w-0
+                      flex-1
+                      bg-transparent
+                      px-2
+                      py-4
+                      text-lg
+                      font-bold
+                      text-black
+                      outline-none
+                      placeholder:text-black/25
+                    "
+                    placeholder="username"
+                    value={
+                      username
+                    }
+                    onChange={
+                      e =>
+                        setUsername(
+                          e.target.value
+                        )
+                    }
+                    disabled={
+                      loadingProfile
+                    }
+                  />
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {
+              message && (
+
+                <div
+                  className="
+                    mt-5
+                    rounded-2xl
+                    border
+                    border-[#FF6B35]/20
+                    bg-[#FF6B35]/[0.08]
+                    px-5
+                    py-4
+                  "
+                >
+
+                  <p
+                    className="
+                      text-sm
+                      font-black
+                      text-black/70
+                    "
+                  >
+                    {message}
+                  </p>
+
+                </div>
+
+              )
+            }
+
+
+            <div
+              className="
+                mt-8
+                flex
+                flex-wrap
+                items-center
+                gap-4
+              "
+            >
+
+              <button
+                onClick={
+                  createProfile
+                }
+                disabled={
+                  loading ||
+                  loadingProfile
+                }
+                className="
+                  inline-flex
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-black
+                  px-8
+                  py-4
+                  text-sm
+                  font-black
+                  text-white
+                  transition
+                  hover:bg-[#FF6B35]
+                  hover:text-black
+                  disabled:cursor-not-allowed
+                  disabled:opacity-40
+                "
+              >
+
+                {
+                  loading
+                    ? "Claiming..."
+                    : "Claim Identity →"
+                }
+
+              </button>
+
+
+              <p
+                className="
+                  text-xs
+                  font-bold
+                  text-black/35
+                "
+              >
+                Your rankings stay yours.
+              </p>
+
+            </div>
+
+          </div>
+
+        </section>
 
       </div>
 
