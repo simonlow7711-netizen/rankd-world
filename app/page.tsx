@@ -1,5 +1,4 @@
 import EntryExperience from "@/components/EntryExperience"
-import DailyRankd from "@/components/DailyRankd"
 import RANKDFeed from "@/components/RANKDFeed"
 import Trending from "@/components/Trending"
 import WhyRankd from "@/components/WhyRankd"
@@ -42,14 +41,11 @@ export default async function HomePage() {
 
       <div
         className="
-          max-w-7xl
           mx-auto
+          max-w-7xl
           px-6
         "
       >
-
-        <DailyRankd />
-
 
         <RANKDFeed
 

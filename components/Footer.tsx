@@ -7,232 +7,201 @@ export default function Footer() {
 
     <footer
       className="
-        bg-black
-        text-white
+        bg-[#F7F4EE]
         px-6
-        py-20
+        pb-10
+        pt-20
+        text-black
+        md:pt-24
       "
     >
 
       <div
         className="
-          max-w-6xl
           mx-auto
+          max-w-7xl
         "
       >
 
         <div
           className="
-            rounded-[40px]
-            bg-zinc-900
-            p-10
-            md:p-14
-            text-center
+            border-t
+            border-black/10
+            pt-12
+            md:pt-16
           "
         >
 
           <div
             className="
-              text-7xl
-              font-black
-              opacity-20
+              grid
+              gap-12
+              md:grid-cols-[1fr_auto]
+              md:items-start
             "
           >
 
-            7
+            <div>
+
+              <Link
+                href="/"
+                className="
+                  group
+                  relative
+                  flex
+                  h-14
+                  w-fit
+                  items-center
+                  justify-center
+                  px-1
+                "
+              >
+
+                <span
+                  className="
+                    pointer-events-none
+                    absolute
+                    left-1/2
+                    top-1/2
+                    -translate-x-1/2
+                    -translate-y-1/2
+                    select-none
+                    text-[5rem]
+                    font-black
+                    leading-none
+                    tracking-[-0.16em]
+                    text-[#FF6B35]/[0.14]
+                    transition
+                    group-hover:text-[#FF6B35]/[0.19]
+                    md:text-[5.5rem]
+                  "
+                  aria-hidden="true"
+                >
+                  7
+                </span>
+
+
+                <span
+                  className="
+                    relative
+                    z-10
+                    text-2xl
+                    font-black
+                    leading-none
+                    tracking-[-0.065em]
+                    text-black
+                    md:text-3xl
+                  "
+                >
+                  RANKD
+                </span>
+
+              </Link>
+
+
+              <p
+                className="
+                  mt-4
+                  max-w-sm
+                  text-sm
+                  leading-relaxed
+                  text-black/45
+                "
+              >
+                The world's Top 7 everything.
+              </p>
+
+            </div>
+
+
+            <nav
+              className="
+                grid
+                grid-cols-2
+                gap-x-12
+                gap-y-4
+                text-sm
+                font-black
+                md:grid-cols-4
+                md:gap-x-8
+              "
+            >
+
+              <Link
+                href="/explore"
+                className="
+                  transition
+                  hover:text-[#FF6B35]
+                "
+              >
+                Explore
+              </Link>
+
+
+              <Link
+                href="/categories"
+                className="
+                  transition
+                  hover:text-[#FF6B35]
+                "
+              >
+                Categories
+              </Link>
+
+
+              <Link
+                href="/profile"
+                className="
+                  transition
+                  hover:text-[#FF6B35]
+                "
+              >
+                Profile
+              </Link>
+
+
+              <Link
+                href="/contact"
+                className="
+                  transition
+                  hover:text-[#FF6B35]
+                "
+              >
+                Contact
+              </Link>
+
+            </nav>
 
           </div>
 
 
-          <h2
+          <div
             className="
-              text-4xl
-              md:text-6xl
-              font-black
-              -mt-8
+              mt-16
+              flex
+              flex-col
+              gap-3
+              border-t
+              border-black/10
+              pt-6
+              text-xs
+              text-black/35
+              md:flex-row
+              md:items-center
+              md:justify-between
             "
           >
 
-            Everyone has a ranking.
-
-          </h2>
-
-
-          <p
-            className="
-              mt-5
-              text-gray-400
-              text-lg
-              max-w-xl
-              mx-auto
-            "
-          >
-
-            Discover opinions.
-            Create your Top 7.
-            See where your perspective differs.
-
-          </p>
+            <p>
+              © {new Date().getFullYear()} RANKD.
+            </p>
 
 
-          <Link
-
-            href="/create"
-
-            className="
-              inline-block
-              mt-8
-              bg-white
-              text-black
-              px-8
-              py-4
-              rounded-full
-              font-black
-              hover:-translate-y-1
-              transition
-            "
-
-          >
-
-            Create your RANKD →
-
-          </Link>
-
-        </div>
-
-
-        <div
-          className="
-            mt-16
-            flex
-            flex-col
-            md:flex-row
-            justify-between
-            gap-8
-            items-center
-          "
-        >
-
-          <div>
-
-            <h3
-              className="
-                text-4xl
-                font-black
-              "
-            >
-
-              RANKD
-
-            </h3>
-
-
-            <p
-              className="
-                mt-2
-                text-gray-500
-              "
-            >
-
-              The world's Top 7 everything.
-
+            <p>
+              Built around human opinions.
             </p>
 
           </div>
-
-
-          <div
-            className="
-              flex
-              flex-wrap
-              justify-center
-              gap-8
-              font-bold
-            "
-          >
-
-            <Link
-
-              href="/explore"
-
-              className="
-                hover:text-orange-400
-                transition
-              "
-
-            >
-
-              Explore
-
-            </Link>
-
-
-            <Link
-
-              href="/categories"
-
-              className="
-                hover:text-orange-400
-                transition
-              "
-
-            >
-
-              Categories
-
-            </Link>
-
-
-            <Link
-
-              href="/profile"
-
-              className="
-                hover:text-orange-400
-                transition
-              "
-
-            >
-
-              Profile
-
-            </Link>
-
-
-            <Link
-
-              href="/contact"
-
-              className="
-                hover:text-orange-400
-                transition
-              "
-
-            >
-
-              Contact RANKD
-
-            </Link>
-
-          </div>
-
-        </div>
-
-
-        <div
-          className="
-            mt-12
-            pt-8
-            border-t
-            border-white/10
-            text-center
-            text-gray-500
-            text-sm
-          "
-        >
-
-          © {new Date().getFullYear()} RANKD.
-          Built around human opinions.
 
         </div>
 
