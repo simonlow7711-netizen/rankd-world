@@ -94,7 +94,7 @@ export async function generateMetadata(
   return {
 
     title:
-      `${title} | RANKD`,
+      `Top 7 ${title} | RANKD`,
 
     description:
       description,
@@ -115,7 +115,7 @@ export async function generateMetadata(
         rankingUrl,
 
       title:
-        `${title} | RANKD`,
+        `Top 7 ${title} | RANKD`,
 
       description:
         description,
@@ -140,7 +140,7 @@ export async function generateMetadata(
             630,
 
           alt:
-            `${title} | RANKD`
+            `Top 7 ${title} | RANKD`
 
         }
 
@@ -154,7 +154,7 @@ export async function generateMetadata(
         "summary_large_image",
 
       title:
-        `${title} | RANKD`,
+        `Top 7 ${title} | RANKD`,
 
       description:
         description,
@@ -292,7 +292,7 @@ export default async function RankPage(
           rankingUrl,
 
         name:
-          `${title} | RANKD`,
+          `Top 7 ${title} | RANKD`,
 
         description:
           description,
@@ -326,7 +326,7 @@ export default async function RankPage(
           `${rankingUrl}/#ranking`,
 
         name:
-          title,
+          `Top 7 ${title}`,
 
         description:
           description,
