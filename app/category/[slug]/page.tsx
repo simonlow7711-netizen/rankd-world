@@ -395,7 +395,7 @@ export async function generateMetadata(
   return {
 
     title:
-      `${category} Rankings | RANKD`,
+      `Top 7 ${category} Rankings | RANKD`,
 
     description,
 
@@ -418,7 +418,7 @@ export async function generateMetadata(
         "RANKD",
 
       title:
-        `${category} Rankings | RANKD`,
+        `Top 7 ${category} Rankings | RANKD`,
 
       description,
 
@@ -433,7 +433,7 @@ export async function generateMetadata(
         "summary_large_image",
 
       title:
-        `${category} Rankings | RANKD`,
+        `Top 7 ${category} Rankings | RANKD`,
 
       description
 
@@ -551,7 +551,7 @@ export default async function CategoryPage(
           categoryUrl,
 
         name:
-          `${category} Rankings | RANKD`,
+          `Top 7 ${category} Rankings | RANKD`,
 
         description:
           metadata.description,
