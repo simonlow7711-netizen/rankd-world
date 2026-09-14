@@ -814,7 +814,6 @@ export default function EntryExperience({
                   overflow-hidden
                   rounded-[32px]
                   border
-                  shadow-[0_24px_70px_rgba(0,0,0,0.08)]
                   md:rounded-[40px]
                 "
                 style={{
@@ -825,26 +824,9 @@ export default function EntryExperience({
                     theme.text,
 
                   borderColor:
-                    `${theme.border}1A`
+                    theme.border
                 }}
               >
-
-                <div
-                  className="
-                    absolute
-                    bottom-0
-                    left-0
-                    top-0
-                    w-1.5
-                    md:w-2
-                  "
-                  style={{
-                    backgroundColor:
-                      theme.accent
-                  }}
-                  aria-hidden="true"
-                />
-
 
                 <div
                   className="
