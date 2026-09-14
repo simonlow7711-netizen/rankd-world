@@ -4,114 +4,48 @@ import {
 
 
 export type Notification = {
-
-  id: string
-
-  recipientUserId: string
-
-  actorUserId: string
-
-  type: string
-
-  rankingId: string | null
-
-  remixRankingId: string | null
-
-  read: boolean
-
-  createdAt: string
-
+  id:string
+  recipientUserId:string
+  actorUserId:string
+  type:string
+  rankingId:string | null
+  remixRankingId:string | null
+  read:boolean
+  createdAt:string
 }
 
 
-type CreateRemixNotificationParams = {
-
-  recipientUserId: string
-
-  actorUserId: string
-
-  originalRankingId: string
-
-  remixRankingId: string
-
+type CreateRankNotificationParams = {
+  recipientUserId:string
+  actorUserId:string
+  rankingId:string
 }
 
 
-function mapNotification(
-  row: any
-): Notification {
-
-  return {
-
-    id:
-      row.id,
-
-    recipientUserId:
-      row.recipient_user_id,
-
-    actorUserId:
-      row.actor_user_id,
-
-    type:
-      row.type,
-
-    rankingId:
-      row.ranking_id ??
-      null,
-
-    remixRankingId:
-      row.remix_ranking_id ??
-      null,
-
-    read:
-      row.read ??
-      false,
-
-    createdAt:
-      row.created_at
-
-  }
-
-}
-
-
-export async function createRemixNotification(
-
+export async function createRankNotification(
   {
     recipientUserId,
-
     actorUserId,
-
-    originalRankingId,
-
-    remixRankingId
-
-  }: CreateRemixNotificationParams
-
+    rankingId
+  }:CreateRankNotificationParams
 ) {
 
-  if (
+  if(
     !recipientUserId
     ||
     !actorUserId
     ||
-    !originalRankingId
-    ||
-    !remixRankingId
-  ) {
-
+    !rankingId
+  ){
     return
-
   }
 
 
-  if (
+  if(
     recipientUserId ===
     actorUserId
-  ) {
-
+  ){
     return
-
   }
 
 
@@ -119,13 +53,86 @@ export async function createRemixNotification(
     error
   } =
     await supabase
-
-      .from(
-        "notifications"
-      )
-
+      .from("notifications")
       .insert({
+        recipient_user_id:
+          recipientUserId,
 
+        actor_user_id:
+          actorUserId,
+
+        type:
+          "rank",
+
+        ranking_id:
+          rankingId,
+
+        remix_ranking_id:
+          null
+      })
+
+
+  if(error){
+
+    if(
+      error.code ===
+      "23505"
+    ){
+      return
+    }
+
+
+    throw error
+
+  }
+
+}
+
+
+type CreateRemixNotificationParams = {
+  recipientUserId:string
+  actorUserId:string
+  originalRankingId:string
+  remixRankingId:string
+}
+
+
+export async function createRemixNotification(
+  {
+    recipientUserId,
+    actorUserId,
+    originalRankingId,
+    remixRankingId
+  }:CreateRemixNotificationParams
+) {
+
+  if(
+    !recipientUserId
+    ||
+    !actorUserId
+    ||
+    !originalRankingId
+    ||
+    !remixRankingId
+  ){
+    return
+  }
+
+
+  if(
+    recipientUserId ===
+    actorUserId
+  ){
+    return
+  }
+
+
+  const {
+    error
+  } =
+    await supabase
+      .from("notifications")
+      .insert({
         recipient_user_id:
           recipientUserId,
 
@@ -140,21 +147,16 @@ export async function createRemixNotification(
 
         remix_ranking_id:
           remixRankingId
-
       })
 
 
-  if (
-    error
-  ) {
+  if(error){
 
-    if (
+    if(
       error.code ===
       "23505"
-    ) {
-
+    ){
       return
-
     }
 
 
@@ -166,15 +168,11 @@ export async function createRemixNotification(
 
 
 export async function getNotifications(
-  userId: string
-): Promise<Notification[]> {
+  userId:string
+):Promise<Notification[]> {
 
-  if (
-    !userId
-  ) {
-
+  if(!userId){
     return []
-
   }
 
 
@@ -183,11 +181,7 @@ export async function getNotifications(
     error
   } =
     await supabase
-
-      .from(
-        "notifications"
-      )
-
+      .from("notifications")
       .select(
         `
           id,
@@ -200,54 +194,63 @@ export async function getNotifications(
           created_at
         `
       )
-
       .eq(
         "recipient_user_id",
         userId
       )
-
       .order(
         "created_at",
         {
-          ascending:
-            false
+          ascending:false
         }
       )
 
 
-  if (
-    error
-  ) {
-
+  if(error){
     throw error
-
   }
 
 
   return (
-
     data ??
     []
-
   ).map(
+    row => ({
+      id:
+        row.id,
 
-    mapNotification
+      recipientUserId:
+        row.recipient_user_id,
 
+      actorUserId:
+        row.actor_user_id,
+
+      type:
+        row.type,
+
+      rankingId:
+        row.ranking_id,
+
+      remixRankingId:
+        row.remix_ranking_id,
+
+      read:
+        row.read,
+
+      createdAt:
+        row.created_at
+    })
   )
 
 }
 
 
 export async function getUnreadNotificationCount(
-  userId: string
-): Promise<number> {
+  userId:string
+):Promise<number> {
 
-  if (
-    !userId
-  ) {
-
+  if(!userId){
     return 0
-
   }
 
 
@@ -256,38 +259,26 @@ export async function getUnreadNotificationCount(
     error
   } =
     await supabase
-
-      .from(
-        "notifications"
-      )
-
+      .from("notifications")
       .select(
         "id",
         {
-          count:
-            "exact",
-          head:
-            true
+          count:"exact",
+          head:true
         }
       )
-
       .eq(
         "recipient_user_id",
         userId
       )
-
       .eq(
         "read",
         false
       )
 
 
-  if (
-    error
-  ) {
-
+  if(error){
     throw error
-
   }
 
 
@@ -300,15 +291,24 @@ export async function getUnreadNotificationCount(
 
 
 export async function markNotificationAsRead(
-  notificationId: string
+  notificationId:string
 ) {
 
-  if (
-    !notificationId
-  ) {
-
+  if(!notificationId){
     return
+  }
 
+
+  const {
+    data:{
+      user
+    }
+  } =
+    await supabase.auth.getUser()
+
+
+  if(!user){
+    return
   }
 
 
@@ -316,45 +316,51 @@ export async function markNotificationAsRead(
     error
   } =
     await supabase
-
-      .from(
-        "notifications"
-      )
-
+      .from("notifications")
       .update({
-
-        read:
-          true
-
+        read:true
       })
-
       .eq(
         "id",
         notificationId
       )
+      .eq(
+        "recipient_user_id",
+        user.id
+      )
 
 
-  if (
-    error
-  ) {
-
+  if(error){
     throw error
-
   }
 
 }
 
 
 export async function markAllNotificationsAsRead(
-  userId: string
+  userId:string
 ) {
 
-  if (
-    !userId
-  ) {
-
+  if(!userId){
     return
+  }
 
+
+  const {
+    data:{
+      user
+    }
+  } =
+    await supabase.auth.getUser()
+
+
+  if(
+    !user
+    ||
+    user.id !==
+    userId
+  ){
+    return
   }
 
 
@@ -362,35 +368,22 @@ export async function markAllNotificationsAsRead(
     error
   } =
     await supabase
-
-      .from(
-        "notifications"
-      )
-
+      .from("notifications")
       .update({
-
-        read:
-          true
-
+        read:true
       })
-
       .eq(
         "recipient_user_id",
         userId
       )
-
       .eq(
         "read",
         false
       )
 
 
-  if (
-    error
-  ) {
-
+  if(error){
     throw error
-
   }
 
 }

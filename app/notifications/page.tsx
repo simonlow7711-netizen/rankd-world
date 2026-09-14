@@ -229,10 +229,11 @@ export default async function NotificationsPage() {
     <main
       className="
         min-h-screen
+        bg-[#F7F4EE]
         px-4
-        py-12
+        py-10
         md:px-8
-        md:py-16
+        md:py-14
       "
     >
 
@@ -245,101 +246,155 @@ export default async function NotificationsPage() {
 
         <div
           className="
-            flex
-            items-start
-            justify-between
-            gap-6
-            mb-10
+            relative
+            overflow-hidden
+            rounded-[28px]
+            border
+            border-black/10
+            bg-white/30
+            px-6
+            py-8
+            md:px-10
+            md:py-10
           "
         >
 
-          <div>
+          <div
+            className="
+              pointer-events-none
+              absolute
+              right-[-1rem]
+              top-[-2.5rem]
+              select-none
+              text-[11rem]
+              font-black
+              leading-none
+              tracking-[-0.12em]
+              text-[#FF6B35]/[0.10]
+              md:right-4
+              md:top-[-3.5rem]
+              md:text-[14rem]
+            "
+            aria-hidden="true"
+          >
 
-            <p
-              className="
-                rankd-accent
-                uppercase
-                tracking-widest
-                text-sm
-                font-black
-              "
-            >
-
-              Activity
-
-            </p>
-
-
-            <h1
-              className="
-                mt-3
-                text-4xl
-                md:text-5xl
-                font-black
-              "
-            >
-
-              Notifications
-
-            </h1>
-
-
-            <p
-              className="
-                mt-3
-                opacity-70
-                max-w-xl
-              "
-            >
-
-              See when someone remixes one of
-              your RANKDs.
-
-            </p>
+            7
 
           </div>
 
 
-          {
-            notifications.length > 0 && (
+          <div
+            className="
+              relative
+              z-10
+              flex
+              flex-col
+              gap-8
+              md:flex-row
+              md:items-end
+              md:justify-between
+            "
+          >
 
-              <form
-                action={
-                  async () => {
+            <div>
 
-                    "use server"
-
-
-                    await markAllServerNotificationsAsRead(
-                      user.id
-                    )
-
-                  }
-                }
+              <p
+                className="
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.22em]
+                  text-[#FF6B35]
+                "
               >
 
-                <button
-                  type="submit"
-                  className="
-                    rounded-xl
-                    border
-                    px-4
-                    py-3
-                    text-sm
-                    font-black
-                    hover:opacity-70
-                    transition
-                  "
+                RANKD / ACTIVITY
+
+              </p>
+
+
+              <h1
+                className="
+                  mt-3
+                  text-4xl
+                  font-black
+                  leading-[0.95]
+                  tracking-[-0.05em]
+                  text-black
+                  md:text-6xl
+                "
+              >
+
+                Notifications.
+
+              </h1>
+
+
+              <p
+                className="
+                  mt-4
+                  max-w-xl
+                  text-sm
+                  leading-relaxed
+                  text-black/60
+                  md:text-base
+                "
+              >
+
+                See when someone ranks or remixes one of
+                your RANKDs.
+
+              </p>
+
+            </div>
+
+
+            {
+              notifications.length > 0 && (
+
+                <form
+                  action={
+                    async () => {
+
+                      "use server"
+
+
+                      await markAllServerNotificationsAsRead(
+                        user.id
+                      )
+
+                    }
+                  }
                 >
 
-                  Mark all as read
+                  <button
+                    type="submit"
+                    className="
+                      inline-flex
+                      items-center
+                      justify-center
+                      rounded-full
+                      bg-black
+                      px-5
+                      py-3
+                      text-sm
+                      font-black
+                      text-white
+                      transition
+                      hover:bg-[#FF6B35]
+                    "
+                  >
 
-                </button>
+                    Mark all as read
 
-              </form>
+                  </button>
 
-            )
-          }
+                </form>
+
+              )
+            }
+
+          </div>
 
         </div>
 
@@ -349,7 +404,13 @@ export default async function NotificationsPage() {
 
             <div
               className="
-                rankd-card
+                relative
+                mt-6
+                overflow-hidden
+                rounded-[28px]
+                border
+                border-black/10
+                bg-white/40
                 p-8
                 md:p-10
               "
@@ -357,39 +418,77 @@ export default async function NotificationsPage() {
 
               <div
                 className="
-                  text-4xl
+                  pointer-events-none
+                  absolute
+                  right-5
+                  top-2
+                  select-none
+                  text-8xl
+                  font-black
+                  leading-none
+                  tracking-[-0.12em]
+                  text-[#FF6B35]/[0.08]
                 "
+                aria-hidden="true"
               >
 
-                🔔
+                7
 
               </div>
 
 
-              <h2
+              <div
                 className="
-                  mt-4
-                  text-2xl
-                  font-black
+                  relative
+                  z-10
                 "
               >
 
-                No notifications yet.
+                <p
+                  className="
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.2em]
+                    text-[#FF6B35]
+                  "
+                >
 
-              </h2>
+                  Nothing yet
+
+                </p>
 
 
-              <p
-                className="
-                  mt-3
-                  opacity-70
-                "
-              >
+                <h2
+                  className="
+                    mt-3
+                    text-2xl
+                    font-black
+                    tracking-[-0.03em]
+                    text-black
+                  "
+                >
 
-                When someone remixes one of your
-                RANKDs, you will see it here.
+                  No notifications yet.
 
-              </p>
+                </h2>
+
+
+                <p
+                  className="
+                    mt-3
+                    max-w-lg
+                    leading-relaxed
+                    text-black/60
+                  "
+                >
+
+                  When someone ranks or remixes one of
+                  your RANKDs, you will see it here.
+
+                </p>
+
+              </div>
 
             </div>
 
@@ -397,7 +496,8 @@ export default async function NotificationsPage() {
 
             <div
               className="
-                space-y-5
+                mt-6
+                space-y-4
               "
             >
 
@@ -411,13 +511,15 @@ export default async function NotificationsPage() {
                         notification.id
                       }
                       className={`
-                        rankd-card
-                        p-6
-                        md:p-8
+                        overflow-hidden
+                        rounded-[28px]
+                        border
+                        bg-white/50
+                        transition
                         ${
                           notification.read
-                            ? ""
-                            : "ring-2 ring-black/10"
+                            ? "border-black/10"
+                            : "border-[#FF6B35]/30 bg-white/70"
                         }
                       `}
                     >
@@ -426,40 +528,84 @@ export default async function NotificationsPage() {
                         notification.type ===
                         "remix" ? (
 
-                          <>
+                          <div
+                            className="
+                              p-6
+                              md:p-8
+                            "
+                          >
 
                             <div
                               className="
                                 flex
                                 items-start
                                 justify-between
-                                gap-4
+                                gap-5
                               "
                             >
 
                               <div>
 
-                                <p
+                                <div
                                   className="
-                                    text-sm
-                                    font-black
-                                    uppercase
-                                    tracking-widest
-                                    rankd-accent
+                                    flex
+                                    items-center
+                                    gap-3
                                   "
                                 >
 
-                                  Remix
+                                  <p
+                                    className="
+                                      text-xs
+                                      font-black
+                                      uppercase
+                                      tracking-[0.2em]
+                                      text-[#FF6B35]
+                                    "
+                                  >
 
-                                </p>
+                                    Remix
+
+                                  </p>
+
+
+                                  {
+                                    !notification.read && (
+
+                                      <span
+                                        className="
+                                          rounded-full
+                                          bg-[#FF6B35]
+                                          px-2.5
+                                          py-1
+                                          text-[10px]
+                                          font-black
+                                          uppercase
+                                          tracking-[0.14em]
+                                          text-white
+                                        "
+                                      >
+
+                                        New
+
+                                      </span>
+
+                                    )
+                                  }
+
+                                </div>
 
 
                                 <h2
                                   className="
-                                    mt-2
+                                    mt-3
+                                    max-w-2xl
                                     text-xl
-                                    md:text-2xl
                                     font-black
+                                    leading-tight
+                                    tracking-[-0.03em]
+                                    text-black
+                                    md:text-2xl
                                   "
                                 >
 
@@ -473,28 +619,24 @@ export default async function NotificationsPage() {
                               </div>
 
 
-                              {
-                                !notification.read && (
+                              <span
+                                className="
+                                  hidden
+                                  shrink-0
+                                  select-none
+                                  text-5xl
+                                  font-black
+                                  leading-none
+                                  tracking-[-0.1em]
+                                  text-[#FF6B35]/20
+                                  md:block
+                                "
+                                aria-hidden="true"
+                              >
 
-                                  <span
-                                    className="
-                                      shrink-0
-                                      rounded-full
-                                      bg-black
-                                      px-3
-                                      py-1
-                                      text-xs
-                                      font-black
-                                      text-white
-                                    "
-                                  >
+                                7
 
-                                    NEW
-
-                                  </span>
-
-                                )
-                              }
+                              </span>
 
                             </div>
 
@@ -504,20 +646,23 @@ export default async function NotificationsPage() {
 
                                 <div
                                   className="
-                                    mt-6
-                                    rounded-2xl
+                                    mt-7
+                                    rounded-[22px]
                                     border
+                                    border-black/10
+                                    bg-[#F7F4EE]/70
                                     p-5
+                                    md:p-6
                                   "
                                 >
 
                                   <p
                                     className="
-                                      text-xs
+                                      text-[10px]
                                       font-black
                                       uppercase
-                                      tracking-widest
-                                      opacity-50
+                                      tracking-[0.18em]
+                                      text-black/45
                                     "
                                   >
 
@@ -530,6 +675,9 @@ export default async function NotificationsPage() {
                                     className="
                                       mt-2
                                       font-black
+                                      leading-tight
+                                      tracking-[-0.02em]
+                                      text-black
                                     "
                                   >
 
@@ -546,12 +694,17 @@ export default async function NotificationsPage() {
                                           `/rank/${notification.originalRankingId}`
                                         }
                                         className="
-                                          inline-block
                                           mt-3
+                                          inline-flex
                                           text-sm
                                           font-black
+                                          text-black
                                           underline
+                                          decoration-[#FF6B35]
+                                          decoration-2
                                           underline-offset-4
+                                          transition
+                                          hover:text-[#FF6B35]
                                         "
                                       >
 
@@ -573,39 +726,78 @@ export default async function NotificationsPage() {
 
                                 <div
                                   className="
-                                    mt-4
-                                    rounded-2xl
+                                    mt-3
+                                    rounded-[22px]
                                     border
+                                    border-[#FF6B35]/20
+                                    bg-[#FF6B35]/[0.05]
                                     p-5
+                                    md:p-6
                                   "
                                 >
 
-                                  <p
+                                  <div
                                     className="
-                                      text-xs
-                                      font-black
-                                      uppercase
-                                      tracking-widest
-                                      opacity-50
+                                      flex
+                                      items-start
+                                      justify-between
+                                      gap-4
                                     "
                                   >
 
-                                    Their remix
+                                    <div>
 
-                                  </p>
+                                      <p
+                                        className="
+                                          text-[10px]
+                                          font-black
+                                          uppercase
+                                          tracking-[0.18em]
+                                          text-[#FF6B35]
+                                        "
+                                      >
+
+                                        Their remix
+
+                                      </p>
 
 
-                                  <p
-                                    className="
-                                      mt-2
-                                      text-lg
-                                      font-black
-                                    "
-                                  >
+                                      <p
+                                        className="
+                                          mt-2
+                                          text-lg
+                                          font-black
+                                          leading-tight
+                                          tracking-[-0.02em]
+                                          text-black
+                                          md:text-xl
+                                        "
+                                      >
 
-                                    {notification.remixRankingTitle}
+                                        {notification.remixRankingTitle}
 
-                                  </p>
+                                      </p>
+
+                                    </div>
+
+
+                                    <span
+                                      className="
+                                        select-none
+                                        text-4xl
+                                        font-black
+                                        leading-none
+                                        tracking-[-0.1em]
+                                        text-[#FF6B35]/15
+                                      "
+                                      aria-hidden="true"
+                                    >
+
+                                      07
+
+                                    </span>
+
+                                  </div>
 
 
                                   {
@@ -616,15 +808,19 @@ export default async function NotificationsPage() {
                                           `/rank/${notification.remixRankingId}`
                                         }
                                         className="
+                                          mt-5
                                           inline-flex
                                           items-center
                                           justify-center
-                                          mt-4
-                                          rounded-xl
+                                          rounded-full
+                                          bg-black
                                           px-5
                                           py-3
-                                          rankd-primary
+                                          text-sm
                                           font-black
+                                          text-white
+                                          transition
+                                          hover:bg-[#FF6B35]
                                         "
                                       >
 
@@ -651,15 +847,19 @@ export default async function NotificationsPage() {
                                     `/rank/${notification.remixRankingId}`
                                   }
                                   className="
+                                    mt-6
                                     inline-flex
                                     items-center
                                     justify-center
-                                    mt-6
-                                    rounded-xl
+                                    rounded-full
+                                    bg-black
                                     px-5
                                     py-3
-                                    rankd-primary
+                                    text-sm
                                     font-black
+                                    text-white
+                                    transition
+                                    hover:bg-[#FF6B35]
                                   "
                                 >
 
@@ -673,17 +873,26 @@ export default async function NotificationsPage() {
 
                             <div
                               className="
-                                mt-5
+                                mt-6
                                 flex
-                                items-center
-                                justify-between
-                                gap-4
+                                flex-col
+                                gap-3
+                                border-t
+                                border-black/10
+                                pt-4
                                 text-xs
-                                opacity-50
+                                text-black/45
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
                               "
                             >
 
-                              <span>
+                              <span
+                                className="
+                                  font-medium
+                                "
+                              >
 
                                 {
                                   formatNotificationDate(
@@ -716,7 +925,9 @@ export default async function NotificationsPage() {
                                       type="submit"
                                       className="
                                         font-black
-                                        hover:opacity-70
+                                        text-black
+                                        transition
+                                        hover:text-[#FF6B35]
                                       "
                                     >
 
@@ -731,15 +942,310 @@ export default async function NotificationsPage() {
 
                             </div>
 
-                          </>
+                          </div>
+
+                        ) : notification.type ===
+                        "rank" ? (
+
+                          <div
+                            className="
+                              p-6
+                              md:p-8
+                            "
+                          >
+
+                            <div
+                              className="
+                                flex
+                                items-start
+                                justify-between
+                                gap-5
+                              "
+                            >
+
+                              <div>
+
+                                <div
+                                  className="
+                                    flex
+                                    items-center
+                                    gap-3
+                                  "
+                                >
+
+                                  <p
+                                    className="
+                                      text-xs
+                                      font-black
+                                      uppercase
+                                      tracking-[0.2em]
+                                      text-[#FF6B35]
+                                    "
+                                  >
+
+                                    RANKD
+
+                                  </p>
+
+
+                                  {
+                                    !notification.read && (
+
+                                      <span
+                                        className="
+                                          rounded-full
+                                          bg-[#FF6B35]
+                                          px-2.5
+                                          py-1
+                                          text-[10px]
+                                          font-black
+                                          uppercase
+                                          tracking-[0.14em]
+                                          text-white
+                                        "
+                                      >
+
+                                        New
+
+                                      </span>
+
+                                    )
+                                  }
+
+                                </div>
+
+
+                                <h2
+                                  className="
+                                    mt-3
+                                    max-w-2xl
+                                    text-xl
+                                    font-black
+                                    leading-tight
+                                    tracking-[-0.03em]
+                                    text-black
+                                    md:text-2xl
+                                  "
+                                >
+
+                                  {notification.actorName}
+
+                                  {" "}
+                                  ranked your RANKD.
+
+                                </h2>
+
+                              </div>
+
+
+                              <span
+                                className="
+                                  hidden
+                                  shrink-0
+                                  select-none
+                                  text-5xl
+                                  font-black
+                                  leading-none
+                                  tracking-[-0.1em]
+                                  text-[#FF6B35]/20
+                                  md:block
+                                "
+                                aria-hidden="true"
+                              >
+
+                                7
+
+                              </span>
+
+                            </div>
+
+
+                            {
+                              notification.originalRankingTitle && (
+
+                                <div
+                                  className="
+                                    mt-7
+                                    rounded-[22px]
+                                    border
+                                    border-black/10
+                                    bg-[#F7F4EE]/70
+                                    p-5
+                                    md:p-6
+                                  "
+                                >
+
+                                  <p
+                                    className="
+                                      text-[10px]
+                                      font-black
+                                      uppercase
+                                      tracking-[0.18em]
+                                      text-black/45
+                                    "
+                                  >
+
+                                    Your RANKD
+
+                                  </p>
+
+
+                                  <p
+                                    className="
+                                      mt-2
+                                      font-black
+                                      leading-tight
+                                      tracking-[-0.02em]
+                                      text-black
+                                    "
+                                  >
+
+                                    {notification.originalRankingTitle}
+
+                                  </p>
+
+
+                                  {
+                                    notification.originalRankingId && (
+
+                                      <Link
+                                        href={
+                                          `/rank/${notification.originalRankingId}`
+                                        }
+                                        className="
+                                          mt-4
+                                          inline-flex
+                                          items-center
+                                          justify-center
+                                          rounded-full
+                                          bg-black
+                                          px-5
+                                          py-3
+                                          text-sm
+                                          font-black
+                                          text-white
+                                          transition
+                                          hover:bg-[#FF6B35]
+                                        "
+                                      >
+
+                                        View RANKD →
+
+                                      </Link>
+
+                                    )
+                                  }
+
+                                </div>
+
+                              )
+                            }
+
+
+                            <div
+                              className="
+                                mt-6
+                                flex
+                                flex-col
+                                gap-3
+                                border-t
+                                border-black/10
+                                pt-4
+                                text-xs
+                                text-black/45
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
+                              "
+                            >
+
+                              <span
+                                className="
+                                  font-medium
+                                "
+                              >
+
+                                {
+                                  formatNotificationDate(
+                                    notification.createdAt
+                                  )
+                                }
+
+                              </span>
+
+
+                              {
+                                !notification.read && (
+
+                                  <form
+                                    action={
+                                      async () => {
+
+                                        "use server"
+
+
+                                        await markServerNotificationAsRead(
+                                          notification.id
+                                        )
+
+                                      }
+                                    }
+                                  >
+
+                                    <button
+                                      type="submit"
+                                      className="
+                                        font-black
+                                        text-black
+                                        transition
+                                        hover:text-[#FF6B35]
+                                      "
+                                    >
+
+                                      Mark as read
+
+                                    </button>
+
+                                  </form>
+
+                                )
+                              }
+
+                            </div>
+
+                          </div>
 
                         ) : (
 
-                          <div>
+                          <div
+                            className="
+                              p-6
+                              md:p-8
+                            "
+                          >
 
                             <p
                               className="
-                                font-bold
+                                text-xs
+                                font-black
+                                uppercase
+                                tracking-[0.2em]
+                                text-[#FF6B35]
+                              "
+                            >
+
+                              Activity
+
+                            </p>
+
+
+                            <p
+                              className="
+                                mt-3
+                                text-lg
+                                font-black
+                                tracking-[-0.02em]
+                                text-black
                               "
                             >
 
@@ -750,9 +1256,9 @@ export default async function NotificationsPage() {
 
                             <p
                               className="
-                                mt-2
-                                text-sm
-                                opacity-60
+                                mt-3
+                                text-xs
+                                text-black/45
                               "
                             >
 

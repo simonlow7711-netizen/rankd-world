@@ -23,6 +23,10 @@ import {
   supabase
 } from "@/utils/supabase"
 
+import {
+  createRankNotification
+} from "@/utils/notifications"
+
 import ConversationTree from "@/components/ConversationTree"
 
 import RankingResponse from "@/components/RankingResponse"
@@ -767,9 +771,7 @@ export default function RankClient({
         error:conversationError
       } =
         await supabase
-
           .from("rankings")
-
           .select(
             `
               id,
@@ -780,12 +782,10 @@ export default function RankClient({
               created_at
             `
           )
-
           .eq(
             "root_id",
             rootId
           )
-
           .order(
             "created_at",
             {
@@ -962,13 +962,11 @@ export default function RankClient({
       const perspectiveItems:
         PerspectiveRanking[] =
         conversationItems
-
           .filter(
             item =>
               item.id !==
               rootRanking.id
           )
-
           .map(
             item => ({
               id:
@@ -1028,18 +1026,15 @@ export default function RankClient({
 
     const items =
       [...ranking.items]
-
         .sort(
           (a,b) =>
             a.position -
             b.position
         )
-
         .map(
           item =>
             item.name
         )
-
         .join("|")
 
 
@@ -1067,7 +1062,7 @@ export default function RankClient({
   }
 
 
-  function handleRankd(){
+  async function handleRankd(){
 
     if(!ranking){
       return
@@ -1091,6 +1086,62 @@ export default function RankClient({
           current.rankd + 1
       })
     )
+
+
+    try {
+
+      const {
+        data:{
+          user
+        }
+      } =
+        await supabase.auth.getUser()
+
+
+      if(!user){
+        return
+      }
+
+
+      const currentRanking =
+        await getSupabaseRanking(
+          ranking.id
+        )
+
+
+      const creatorId =
+        currentRanking?.creatorId
+
+
+      if(
+        creatorId
+        &&
+        creatorId !==
+        user.id
+      ){
+
+        await createRankNotification({
+          recipientUserId:
+            creatorId,
+
+          actorUserId:
+            user.id,
+
+          rankingId:
+            ranking.id
+        })
+
+      }
+
+    }
+    catch(notificationError){
+
+      console.error(
+        "RANK NOTIFICATION ERROR",
+        notificationError
+      )
+
+    }
 
   }
 
@@ -1418,6 +1469,7 @@ export default function RankClient({
               RANKD / 07
             </p>
 
+
             <h1
               className="
                 mt-5
@@ -1592,6 +1644,7 @@ export default function RankClient({
                       RANKD
                     </span>
 
+
                     <span
                       className="
                         opacity-30
@@ -1599,6 +1652,7 @@ export default function RankClient({
                     >
                       /
                     </span>
+
 
                     <span
                       className={theme.accent}
@@ -2078,6 +2132,7 @@ export default function RankClient({
                             🔗
                           </span>
 
+
                           <span
                             className="
                               mt-1
@@ -2128,6 +2183,7 @@ export default function RankClient({
                             💬
                           </span>
 
+
                           <span
                             className="
                               mt-1
@@ -2173,6 +2229,7 @@ export default function RankClient({
                           >
                             𝕏
                           </span>
+
 
                           <span
                             className="
@@ -2220,6 +2277,7 @@ export default function RankClient({
                             f
                           </span>
 
+
                           <span
                             className="
                               mt-1
@@ -2266,6 +2324,7 @@ export default function RankClient({
                             💬
                           </span>
 
+
                           <span
                             className="
                               mt-1
@@ -2311,6 +2370,7 @@ export default function RankClient({
                           >
                             ✉
                           </span>
+
 
                           <span
                             className="
