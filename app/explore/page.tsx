@@ -258,8 +258,8 @@ export default async function ExplorePage() {
           className="
             border-b
             border-black/10
-            py-8
-            md:py-10
+            py-2
+            md:py-4
           "
         >
 

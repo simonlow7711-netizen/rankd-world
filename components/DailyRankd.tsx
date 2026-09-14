@@ -267,9 +267,9 @@ export default function DailyRankd({
     <section
       className="
         px-5
-        py-14
+        py-8
         md:px-8
-        md:py-20
+        md:py-10
       "
     >
 
@@ -286,7 +286,7 @@ export default function DailyRankd({
             relative
             overflow-hidden
             rounded-[32px]
-            border
+            border-2
             p-7
             shadow-[0_24px_70px_rgba(0,0,0,0.10)]
             transition
@@ -303,7 +303,7 @@ export default function DailyRankd({
             color:
               theme.text,
             borderColor:
-              "rgba(0,0,0,0.10)"
+              theme.accent
           }}
         >
 
@@ -331,23 +331,6 @@ export default function DailyRankd({
           >
             7
           </div>
-
-
-          <div
-            className="
-              absolute
-              bottom-0
-              left-0
-              top-0
-              w-1.5
-              md:w-2
-            "
-            style={{
-              backgroundColor:
-                theme.accent
-            }}
-            aria-hidden="true"
-          />
 
 
           <div
