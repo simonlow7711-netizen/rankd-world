@@ -56,6 +56,12 @@ type RankingRow = {
 
   root_id: string | null
 
+  location_name: string | null
+
+  location_city: string | null
+
+  location_country: string | null
+
 }
 
 
@@ -439,6 +445,35 @@ function mapRanking(
 
       row.root_id ??
       null
+
+  }
+
+
+  if (
+
+    row.location_name
+
+  ) {
+
+    ranking.location = {
+
+      name:
+
+        row.location_name,
+
+
+      city:
+
+        row.location_city ??
+        undefined,
+
+
+      country:
+
+        row.location_country ??
+        undefined
+
+    }
 
   }
 

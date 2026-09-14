@@ -1514,6 +1514,97 @@ export default function RankingCard({
         }
 
 
+        {
+          ranking.location && (
+
+            <div
+
+              className="
+                mt-3
+                inline-flex
+                items-center
+                gap-2
+                rounded-full
+                border
+                border-black/10
+                bg-black/[0.03]
+                px-3
+                py-1.5
+                text-[9px]
+                font-black
+                uppercase
+                tracking-[0.16em]
+                text-black/55
+              "
+
+            >
+
+              <span
+
+                className="
+                  relative
+                  flex
+                  h-2.5
+                  w-2.5
+                  items-center
+                  justify-center
+                  rounded-full
+                  border
+                  border-[#FF6B35]
+                "
+
+                aria-hidden="true"
+
+              >
+
+                <span
+
+                  className="
+                    h-1
+                    w-1
+                    rounded-full
+                    bg-[#FF6B35]
+                  "
+
+                />
+
+              </span>
+
+
+              <span>
+
+                {
+                  ranking.location.name
+                }
+
+
+                {
+                  ranking.location.city && (
+
+                    <>
+                      <span
+                        className="mx-1 opacity-40"
+                      >
+                        ·
+                      </span>
+
+                      {
+                        ranking.location.city
+                      }
+
+                    </>
+
+                  )
+                }
+
+              </span>
+
+            </div>
+
+          )
+        }
+
+
         <div
 
           className={`
@@ -1684,6 +1775,7 @@ export default function RankingCard({
           </div>
 
         </div>
+
 
       </Link>
 

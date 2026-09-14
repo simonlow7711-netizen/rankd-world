@@ -143,6 +143,40 @@ export default async function sitemap(): Promise<
       priority:
         0.8
 
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/islington`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/williamsburg`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
     }
 
   ]

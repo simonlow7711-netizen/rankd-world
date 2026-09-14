@@ -54,6 +54,18 @@ export type RankingSource =
 
 
 
+export interface RankingLocation {
+
+  name:string
+
+  city?:string
+
+  country?:string
+
+}
+
+
+
 
 
 export interface Ranking {
@@ -112,5 +124,7 @@ export interface Ranking {
 
   remixes?:number
 
+
+  location?:RankingLocation
 
 }
