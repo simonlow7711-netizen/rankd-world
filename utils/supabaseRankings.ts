@@ -2,544 +2,135 @@ import {
   supabase
 } from "@/utils/supabase"
 
-
 import {
-  Ranking,
-  RankingItem
+  Ranking
 } from "@/types/ranking"
 
 
-import {
-  rankings as seedRankings
-} from "@/data/rankings"
-
-
-import {
-  getRankingSignals
-} from "@/utils/rankingSignals"
-
-
-import {
-  buildTasteGraph
-} from "@/utils/tasteGraphBuilder"
-
-
-import {
-  saveTasteGraph
-} from "@/utils/tasteGraphRepository"
-
-
-
-
-
-
-
-
-
 type RankingRow = {
+  id:string
+  title:string
+  category:string
+  description:string | null
+  views:number | null
+  user_id:string | null
+  parent_id:string | null
+  root_id:string | null
+  source_type:string | null
+  created_at:string | null
 
-  id: string
-
-  title: string
-
-  category: string | null
-
-  description: string | null
-
-  user_id: string
-
-  views: number | null
-
-  created_at: string | null
-
-  parent_id: string | null
-
-  root_id: string | null
-
-  location_name: string | null
-
-  location_city: string | null
-
-  location_country: string | null
-
+  location_name:string | null
+  location_city:string | null
+  location_country:string | null
 }
-
-
-
-
-
-
-
-
-
-type ProfileRow = {
-
-  id: string
-
-  username: string
-
-  display_name: string
-
-}
-
-
-
-
-
-
-
-
-
-type RankingItemRow = {
-
-  ranking_id: string
-
-  position: number
-
-  name: string
-
-  votes: number | null
-
-}
-
-
-
-
-
-
-
-
-
-async function getProfileMap(
-
-  userIds: string[]
-
-) {
-
-
-  if (userIds.length === 0) {
-
-    return new Map<string, ProfileRow>()
-
-  }
-
-
-  const {
-    data: profiles
-
-  } =
-    await supabase
-
-      .from("profiles")
-
-      .select(
-
-        "id, username, display_name"
-
-      )
-
-      .in(
-
-        "id",
-
-        userIds
-
-      )
-
-
-  const map =
-
-    new Map<string, ProfileRow>()
-
-
-  ;(profiles ?? [])
-
-    .forEach(profile => {
-
-
-      map.set(
-
-        profile.id,
-
-        profile as ProfileRow
-
-      )
-
-
-    })
-
-
-  return map
-
-}
-
-
-
-
-
-
-
-
-
-async function getRankingItems(
-
-  rankingIds: string[]
-
-) {
-
-
-  if (rankingIds.length === 0) {
-
-    return new Map<string, RankingItem[]>()
-
-  }
-
-
-  const map =
-
-    new Map<string, RankingItem[]>()
-
-
-  const batchSize =
-
-    50
-
-
-  for (
-
-    let start = 0;
-
-    start < rankingIds.length;
-
-    start += batchSize
-
-  ) {
-
-
-    const batchIds =
-
-      rankingIds.slice(
-
-        start,
-
-        start + batchSize
-
-      )
-
-
-    const {
-
-      data: items,
-
-      error
-
-    } =
-      await supabase
-
-        .from("ranking_items")
-
-        .select("*")
-
-        .in(
-
-          "ranking_id",
-
-          batchIds
-
-        )
-
-        .order(
-
-          "ranking_id",
-
-          {
-
-            ascending:
-              true
-
-          }
-
-        )
-
-        .order(
-
-          "position",
-
-          {
-
-            ascending:
-              true
-
-          }
-
-        )
-
-
-    if (error) {
-
-      console.error(
-
-        "RANKING ITEMS FETCH ERROR",
-
-        error
-
-      )
-
-      continue
-
-    }
-
-
-    ;(items ?? []).forEach(item => {
-
-
-      const row =
-
-        item as RankingItemRow
-
-
-      if (
-
-        !map.has(
-
-          row.ranking_id
-
-        )
-
-      ) {
-
-
-        map.set(
-
-          row.ranking_id,
-
-          []
-
-        )
-
-      }
-
-
-      map
-
-        .get(
-
-          row.ranking_id
-
-        )!
-
-        .push({
-
-          position:
-
-            row.position,
-
-          name:
-
-            row.name,
-
-          votes:
-
-            row.votes ?? 0
-
-        })
-
-    })
-
-  }
-
-
-  return map
-
-}
-
-
-
-
-
-
-
 
 
 function mapRanking(
+  row:RankingRow,
+  items:any[]
+):Ranking{
 
-  row: RankingRow,
-
-  profile: ProfileRow | undefined,
-
-  items: RankingItem[]
-
-): Ranking {
-
-
-  const ranking: Ranking = {
-
-
-    id:
-
-      row.id,
-
-
-    title:
-
-      row.title,
-
-
-    category:
-
-      row.category ?? "General",
-
-
-    creator:
-
-      profile?.display_name ??
-      "Anonymous",
-
-
-    creatorId:
-
-      row.user_id,
-
-
-    creatorUsername:
-
-      profile?.username,
-
-
-    creatorDisplayName:
-
-      profile?.display_name,
-
-
-    description:
-
-      row.description ?? "",
-
-
-    items,
-
-
-    createdAt:
-
-      row.created_at ??
-      undefined,
-
-
-    views:
-
-      row.views ?? 0,
-
-
+  const ranking:Ranking = {
+    id:row.id,
+    title:row.title,
+    category:row.category,
+    creator:"",
+    description:row.description ?? "",
+    items:items.map(
+      item => ({
+        position:item.position,
+        name:item.name,
+        votes:item.votes ?? 0
+      })
+    ),
+    creatorId:row.user_id ?? undefined,
+    parentId:row.parent_id,
+    rootId:row.root_id,
     source:
-
-      "community",
-
-
-    parentId:
-
-      row.parent_id ??
-      null,
-
-
-    rootId:
-
-      row.root_id ??
-      null
-
+      row.source_type === "remix"
+        ? "remix"
+        : row.source_type === "challenge"
+          ? "challenge"
+          : row.source_type === "seed"
+            ? "seed"
+            : "community",
+    createdAt:row.created_at ?? undefined,
+    views:row.views ?? 0
   }
 
 
-  if (
-
-    row.location_name
-
-  ) {
+  if(
+    row.location_name ||
+    row.location_city ||
+    row.location_country
+  ){
 
     ranking.location = {
-
       name:
-
-        row.location_name,
-
-
+        row.location_name ??
+        "",
       city:
-
         row.location_city ??
         undefined,
-
-
       country:
-
         row.location_country ??
         undefined
-
     }
 
   }
 
 
-  return {
-
-
-    ...ranking,
-
-    signals:
-
-      getRankingSignals(
-
-        ranking
-
-      )
-
-  }
+  return ranking
 
 }
 
 
-
-
-
-
-
-
-
 export async function getSupabaseRanking(
-
-  id: string
-
-): Promise<Ranking | null> {
-
+  id:string
+):Promise<Ranking | null>{
 
   const {
-    data: rankingRow,
+    data:rankingRow,
+    error:rankingError
+  } = await supabase
+    .from("rankings")
+    .select(
+      `
+        id,
+        title,
+        category,
+        description,
+        views,
+        user_id,
+        parent_id,
+        root_id,
+        source_type,
+        created_at,
+        location_name,
+        location_city,
+        location_country
+      `
+    )
+    .eq(
+      "id",
+      id
+    )
+    .single()
 
-    error: rankingError
 
-  } =
-    await supabase
+  if(rankingError){
 
-      .from("rankings")
+    console.error(
+      "RANKING LOAD ERROR",
+      rankingError
+    )
 
-      .select("*")
+    return null
 
-      .eq(
-
-        "id",
-
-        id
-
-      )
-
-      .single()
+  }
 
 
-  if (
-
-    rankingError ||
-
-    !rankingRow
-
-  ) {
+  if(!rankingRow){
 
     return null
 
@@ -547,460 +138,493 @@ export async function getSupabaseRanking(
 
 
   const {
-    data: items
-
-  } =
-    await supabase
-
-      .from("ranking_items")
-
-      .select("*")
-
-      .eq(
-
-        "ranking_id",
-
-        id
-
-      )
-
-      .order(
-
-        "position",
-
-        {
-
-          ascending:
-            true
-
-        }
-
-      )
+    data:items,
+    error:itemsError
+  } = await supabase
+    .from("ranking_items")
+    .select(
+      `
+        position,
+        name,
+        votes
+      `
+    )
+    .eq(
+      "ranking_id",
+      id
+    )
+    .order(
+      "position",
+      {
+        ascending:true
+      }
+    )
 
 
-  const {
-    data: profile
+  if(itemsError){
 
-  } =
-    await supabase
+    console.error(
+      "RANKING ITEMS LOAD ERROR",
+      itemsError
+    )
 
+  }
+
+
+  const ranking =
+    mapRanking(
+      rankingRow as RankingRow,
+      items ?? []
+    )
+
+
+  if(rankingRow.user_id){
+
+    const {
+      data:profile
+    } = await supabase
       .from("profiles")
-
       .select(
-
-        "id, username, display_name"
-
+        `
+          username,
+          display_name
+        `
       )
-
       .eq(
-
         "id",
-
         rankingRow.user_id
-
       )
+      .maybeSingle()
 
-      .single()
+
+    if(profile){
+
+      ranking.creatorUsername =
+        profile.username ??
+        undefined
+
+      ranking.creatorDisplayName =
+        profile.display_name ??
+        undefined
+
+      ranking.creator =
+        profile.display_name ||
+        profile.username ||
+        ""
+
+    }
+
+  }
 
 
-  return mapRanking(
-
-    rankingRow as RankingRow,
-
-    profile as ProfileRow | undefined,
-
-    (items ?? [])
-
-      .map(
-
-        (item: RankingItemRow) => ({
-
-          position:
-
-            item.position,
-
-          name:
-
-            item.name,
-
-          votes:
-
-            item.votes ?? 0
-
-        })
-
-      )
-
-  )
+  return ranking
 
 }
 
 
-
-
-
-
-
-
-
-export async function getAllSupabaseRankings(): Promise<Ranking[]> {
-
+export async function getAllSupabaseRankings():Promise<Ranking[]>{
 
   const {
-    data: rankings,
+    data:rankingRows,
+    error:rankingError
+  } = await supabase
+    .from("rankings")
+    .select(
+      `
+        id,
+        title,
+        category,
+        description,
+        views,
+        user_id,
+        parent_id,
+        root_id,
+        source_type,
+        created_at,
+        location_name,
+        location_city,
+        location_country
+      `
+    )
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    )
 
-    error
 
-  } =
-    await supabase
+  if(rankingError){
 
-      .from("rankings")
-
-      .select("*")
-
-      .order(
-
-        "created_at",
-
-        {
-
-          ascending:
-            false
-
-        }
-
-      )
-
-
-  if (
-
-    error ||
-
-    !rankings
-
-  ) {
+    console.error(
+      "ALL RANKINGS LOAD ERROR",
+      rankingError
+    )
 
     return []
 
   }
 
 
-  const userIds =
+  if(!rankingRows){
 
-    [
+    return []
 
-      ...new Set(
-
-        rankings.map(
-
-          ranking =>
-
-            ranking.user_id
-
-        )
-
-      )
-
-    ]
+  }
 
 
   const rankingIds =
-
-    rankings.map(
-
-      ranking =>
-
-        ranking.id
-
+    rankingRows.map(
+      row => row.id
     )
 
 
-  const profileMap =
+  if(rankingIds.length === 0){
 
-    await getProfileMap(
+    return []
 
-      userIds
-
-    )
+  }
 
 
-  const itemMap =
+  /*
+   *
+   * Load ranking items in batches.
+   *
+   * A single .in() query containing hundreds
+   * of ranking IDs can produce a URL large
+   * enough to exceed the HTTP header limit.
+   *
+   */
+  const rankingItems:any[] = []
 
-    await getRankingItems(
+  const batchSize = 50
 
-      rankingIds
+  for(
+    let i = 0;
+    i < rankingIds.length;
+    i += batchSize
+  ){
 
-    )
+    const batchIds =
+      rankingIds.slice(
+        i,
+        i + batchSize
+      )
 
 
-  return (
+    const {
+      data:batchItems,
+      error:batchItemsError
+    } = await supabase
+      .from("ranking_items")
+      .select(
+        `
+          ranking_id,
+          position,
+          name,
+          votes
+        `
+      )
+      .in(
+        "ranking_id",
+        batchIds
+      )
+      .order(
+        "position",
+        {
+          ascending:true
+        }
+      )
 
-    rankings as RankingRow[]
 
+    if(batchItemsError){
+
+      console.error(
+        "ALL RANKING ITEMS LOAD ERROR",
+        batchItemsError
+      )
+
+    }
+    else if(batchItems){
+
+      rankingItems.push(
+        ...batchItems
+      )
+
+    }
+
+  }
+
+
+  const itemsByRanking =
+    new Map<
+      string,
+      any[]
+    >()
+
+
+  rankingItems.forEach(
+    item => {
+
+      const existing =
+        itemsByRanking.get(
+          item.ranking_id
+        ) ?? []
+
+      existing.push(
+        item
+      )
+
+      itemsByRanking.set(
+        item.ranking_id,
+        existing
+      )
+
+    }
   )
 
-    .map(row => {
+
+  const userIds =
+    rankingRows
+      .map(
+        row => row.user_id
+      )
+      .filter(
+        (
+          userId
+        ):userId is string =>
+          Boolean(userId)
+      )
 
 
-      const profile =
+  const uniqueUserIds =
+    Array.from(
+      new Set(
+        userIds
+      )
+    )
 
-        profileMap.get(
 
-          row.user_id
+  const profilesByUser =
+    new Map<
+      string,
+      {
+        username:string
+        display_name:string
+      }
+    >()
 
+
+  if(
+    uniqueUserIds.length > 0
+  ){
+
+    const {
+      data:profiles,
+      error:profilesError
+    } = await supabase
+      .from("profiles")
+      .select(
+        `
+          id,
+          username,
+          display_name
+        `
+      )
+      .in(
+        "id",
+        uniqueUserIds
+      )
+
+
+    if(profilesError){
+
+      console.error(
+        "PROFILES LOAD ERROR",
+        profilesError
+      )
+
+    }
+
+
+    ;(profiles ?? []).forEach(
+      profile => {
+
+        profilesByUser.set(
+          profile.id,
+          {
+            username:
+              profile.username,
+            display_name:
+              profile.display_name
+          }
+        )
+
+      }
+    )
+
+  }
+
+
+  return rankingRows.map(
+    row => {
+
+      const ranking =
+        mapRanking(
+          row as RankingRow,
+          itemsByRanking.get(
+            row.id
+          ) ?? []
         )
 
 
-      return mapRanking(
+      if(row.user_id){
 
-        row,
-
-        profile,
-
-        itemMap.get(
-
-          row.id
-
-        ) ?? []
-
-      )
-
-    })
-
-}
-
-
-
-
-
-
-
-
-
-export async function getAllRankings(): Promise<Ranking[]> {
-
-
-  const supabaseRankings =
-
-    await getAllSupabaseRankings()
-
-
-  const allRankings = [
-
-    ...supabaseRankings,
-
-    ...seedRankings
-
-  ]
-
-    .filter(
-
-      (ranking, index, self) =>
-
-        ranking &&
-
-        index ===
-
-          self.findIndex(
-
-            item =>
-
-              item.id ===
-
-              ranking.id
-
+        const profile =
+          profilesByUser.get(
+            row.user_id
           )
 
-    )
+
+        if(profile){
+
+          ranking.creatorUsername =
+            profile.username
+
+          ranking.creatorDisplayName =
+            profile.display_name
+
+          ranking.creator =
+            profile.display_name ||
+            profile.username ||
+            ""
+
+        }
+
+      }
 
 
-  return (
+      return ranking
 
-    allRankings.map(
-
-      ranking => ({
-
-        ...ranking,
-
-        signals:
-
-          getRankingSignals(
-
-            ranking
-
-          )
-
-      })
-
-    )
-
+    }
   )
 
 }
 
 
+export async function getAllRankings():Promise<Ranking[]>{
 
-
-
-
-
-
-
-export async function getUserRankings(
-
-  userId: string
-
-): Promise<Ranking[]> {
-
-
-  const rankings =
-
-    await getAllRankings()
-
-
-  return rankings.filter(
-
-    ranking =>
-
-      ranking.creatorId ===
-
-      userId
-
-  )
+  return getAllSupabaseRankings()
 
 }
-
-
-
-
-
-
-
 
 
 export async function createSupabaseRanking(
-
-  ranking: Ranking,
-
-  userId: string
-
-) {
-
+  ranking:Ranking,
+  userId:string
+):Promise<Ranking | null>{
 
   const {
-    data,
-
-    error
-
-  } =
-    await supabase
-
-      .from("rankings")
-
-      .insert({
-
-        id:
-
-          ranking.id,
-
-        title:
-
-          ranking.title,
-
-        category:
-
-          ranking.category,
-
-        description:
-
-          ranking.description,
-
-        user_id:
-
-          userId,
-
-        views:
-
-          ranking.views ?? 0,
-
-        created_at:
-
-          ranking.createdAt ??
-          new Date().toISOString(),
-
-        parent_id:
-
-          ranking.parentId ??
-          null,
-
-        root_id:
-
-          ranking.rootId ??
-          ranking.id
-
-      })
-
-      .select()
-
-      .single()
+    data:rankingRow,
+    error:rankingError
+  } = await supabase
+    .from("rankings")
+    .insert(
+      {
+        title:ranking.title,
+        category:ranking.category,
+        description:ranking.description,
+        views:ranking.views ?? 0,
+        user_id:userId,
+        parent_id:ranking.parentId,
+        root_id:ranking.rootId,
+        source_type:
+          ranking.source === "remix"
+            ? "remix"
+            : ranking.source === "challenge"
+              ? "challenge"
+              : ranking.source === "seed"
+                ? "seed"
+                : "community"
+      }
+    )
+    .select(
+      `
+        id,
+        title,
+        category,
+        description,
+        views,
+        user_id,
+        parent_id,
+        root_id,
+        source_type,
+        created_at,
+        location_name,
+        location_city,
+        location_country
+      `
+    )
+    .single()
 
 
-  if (error) {
+  if(rankingError){
 
-    throw error
+    console.error(
+      "RANKING CREATE ERROR",
+      rankingError
+    )
+
+    return null
 
   }
 
 
-  const items =
+  if(!rankingRow){
 
+    return null
+
+  }
+
+
+  const rankingItems =
     ranking.items.map(
-
       item => ({
-
         ranking_id:
-
-          ranking.id,
-
+          rankingRow.id,
         position:
-
           item.position,
-
         name:
-
           item.name,
-
         votes:
-
           item.votes ?? 0
-
       })
-
     )
 
 
   const {
-    error: itemsError
-
-  } =
-    await supabase
-
-      .from("ranking_items")
-
-      .insert(
-
-        items
-
-      )
+    error:itemsError
+  } = await supabase
+    .from("ranking_items")
+    .insert(
+      rankingItems
+    )
 
 
-  if (itemsError) {
+  if(itemsError){
 
-    throw itemsError
+    console.error(
+      "RANKING ITEMS CREATE ERROR",
+      itemsError
+    )
+
+    return null
 
   }
 
 
-  return data
+  return getSupabaseRanking(
+    rankingRow.id
+  )
 
 }
