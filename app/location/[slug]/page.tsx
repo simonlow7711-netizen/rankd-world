@@ -17,6 +17,8 @@ type LocationConfig = {
 
   country:string
 
+  cityLevel?:boolean
+
 }
 
 
@@ -61,6 +63,38 @@ const locations:Record<
 
     country:
       "United States"
+
+  },
+
+  leeds: {
+
+    name:
+      "Leeds",
+
+    city:
+      "Leeds",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
+
+  },
+
+  sheffield: {
+
+    name:
+      "Sheffield",
+
+    city:
+      "Sheffield",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
 
   }
 
@@ -167,20 +201,62 @@ export default async function LocationPage({
 
         }
 
+
+        const rankingName =
+          ranking.location.name
+            ?.trim()
+            .toLowerCase()
+
+        const rankingCity =
+          ranking.location.city
+            ?.trim()
+            .toLowerCase()
+
+        const rankingCountry =
+          ranking.location.country
+            ?.trim()
+            .toLowerCase()
+
+
+        if (
+          location.cityLevel
+        ) {
+
+          return (
+
+            rankingCity ===
+              location.city
+                .trim()
+                .toLowerCase()
+
+            &&
+
+            rankingCountry ===
+              location.country
+                .trim()
+                .toLowerCase()
+
+          )
+
+        }
+
+
         return (
 
-          ranking.location.name
-            .toLowerCase() ===
-            location.name.toLowerCase()
+          rankingName ===
+            location.name
+              .trim()
+              .toLowerCase()
 
           &&
 
           (
             !ranking.location.city
             ||
-            ranking.location.city
-              .toLowerCase() ===
-              location.city.toLowerCase()
+            rankingCity ===
+              location.city
+                .trim()
+                .toLowerCase()
           )
 
           &&
@@ -188,9 +264,10 @@ export default async function LocationPage({
           (
             !ranking.location.country
             ||
-            ranking.location.country
-              .toLowerCase() ===
-              location.country.toLowerCase()
+            rankingCountry ===
+              location.country
+                .trim()
+                .toLowerCase()
           )
 
         )
