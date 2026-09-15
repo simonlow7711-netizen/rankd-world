@@ -1574,27 +1574,13 @@ export default function RankingCard({
               <span>
 
                 {
-                  ranking.location.name
-                }
-
-
-                {
-                  ranking.location.city && (
-
-                    <>
-                      <span
-                        className="mx-1 opacity-40"
-                      >
-                        ·
-                      </span>
-
-                      {
-                        ranking.location.city
-                      }
-
-                    </>
-
-                  )
+                  [
+                    ranking.location.name,
+                    ranking.location.city,
+                    ranking.location.country
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")
                 }
 
               </span>
