@@ -75,10 +75,42 @@ export async function generateMetadata(
     )
 
 
+  const locationLabel =
+
+    ranking.location
+
+      ? [
+
+          ranking.location.name,
+
+          ranking.location.city,
+
+          ranking.location.country
+
+        ]
+
+          .filter(Boolean)
+
+          .join(
+            ", "
+          )
+
+      : ""
+
+
   const description =
+
     ranking.description
     ||
-    `Discover ${title} on RANKD.`
+    (
+
+      locationLabel
+
+        ? `Discover ${title} in ${locationLabel} on RANKD.`
+
+        : `Discover ${title} on RANKD.`
+
+    )
 
 
   const rankingUrl =
@@ -210,9 +242,18 @@ export default async function RankPage(
 
 
   const description =
+
     ranking.description
     ||
-    `Discover ${title} on RANKD.`
+    (
+
+      ranking.location
+
+        ? `Discover ${title} in ${ranking.location.name} on RANKD.`
+
+        : `Discover ${title} on RANKD.`
+
+    )
 
 
   const rankingUrl =
@@ -359,7 +400,41 @@ export default async function RankPage(
 
           )
 
-      }
+      },
+
+      ...(ranking.location
+
+        ? [
+
+            {
+
+              "@type":
+                "Place",
+
+              "@id":
+                `${rankingUrl}/#place`,
+
+              name:
+                ranking.location.name,
+
+              address: {
+
+                "@type":
+                  "PostalAddress",
+
+                addressLocality:
+                  ranking.location.city,
+
+                addressCountry:
+                  ranking.location.country
+
+              }
+
+            }
+
+          ]
+
+        : [])
 
     ]
 
