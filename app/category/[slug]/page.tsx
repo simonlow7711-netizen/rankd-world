@@ -23,6 +23,10 @@ import {
   categoryMetadata
 } from "@/utils/categoryMetadata"
 
+import {
+  categoryToSlug
+} from "@/utils/categorySlug"
+
 
 const SITE_URL =
   "https://rankd.world"
@@ -220,74 +224,6 @@ const categoryThemes: Record<
 }
 
 
-const categorySlugs: Record<
-  RankingCategory,
-  string
-> = {
-
-  "Food & Drink":
-    "food-drink",
-
-  "Film & TV":
-    "film-tv",
-
-  "Music":
-    "music",
-
-  "Sport":
-    "sport",
-
-  "Gaming":
-    "gaming",
-
-  "Travel":
-    "travel",
-
-  "Technology":
-    "technology",
-
-  "Lifestyle":
-    "lifestyle",
-
-  "Books":
-    "books",
-
-  "Art & Design":
-    "art-design",
-
-  "Fashion":
-    "fashion",
-
-  "Beauty":
-    "beauty",
-
-  "Health & Fitness":
-    "health-fitness",
-
-  "Business":
-    "business",
-
-  "Science":
-    "science",
-
-  "History":
-    "history",
-
-  "Nature & Animals":
-    "nature-animals",
-
-  "Cars & Transport":
-    "cars-transport",
-
-  "Home & Garden":
-    "home-garden",
-
-  "General":
-    "general"
-
-}
-
-
 function slugToCategory(
   slug: string
 ): RankingCategory | null {
@@ -297,9 +233,10 @@ function slugToCategory(
 
       category =>
 
-        categorySlugs[
+        categoryToSlug(
           category
-        ] === slug
+        ) ===
+        slug
 
     )
 
@@ -330,9 +267,9 @@ export async function generateStaticParams() {
     category => ({
 
       slug:
-        categorySlugs[
+        categoryToSlug(
           category
-        ]
+        )
 
     })
 
