@@ -1093,6 +1093,33 @@ function getTheme(
 }
 
 
+function formatLocationCountry(
+  country?: string
+): string {
+
+  const countryCodes: Record<string, string> = {
+
+    "United Kingdom":
+      "UK",
+
+    "United States":
+      "US",
+
+    "Philippines":
+      "PH"
+
+  }
+
+
+  return (
+    countryCodes[country ?? ""] ??
+    country ??
+    ""
+  )
+
+}
+
+
 export default function RankingCard({
 
   ranking,
@@ -1577,7 +1604,9 @@ export default function RankingCard({
                   [
                     ranking.location.name,
                     ranking.location.city,
-                    ranking.location.country
+                    formatLocationCountry(
+                      ranking.location.country
+                    )
                   ]
                     .filter(Boolean)
                     .join(" · ")
