@@ -217,6 +217,17 @@ export default async function LocationPage({
             ?.trim()
             .toLowerCase()
 
+        const normalisedRankingCountry =
+          rankingCountry ===
+            "uk"
+            ? "united kingdom"
+            : rankingCountry
+
+        const normalisedLocationCountry =
+          location.country
+            .trim()
+            .toLowerCase()
+
 
         if (
           location.cityLevel
@@ -231,10 +242,8 @@ export default async function LocationPage({
 
             &&
 
-            rankingCountry ===
-              location.country
-                .trim()
-                .toLowerCase()
+            normalisedRankingCountry ===
+              normalisedLocationCountry
 
           )
 
@@ -264,10 +273,8 @@ export default async function LocationPage({
           (
             !ranking.location.country
             ||
-            rankingCountry ===
-              location.country
-                .trim()
-                .toLowerCase()
+            normalisedRankingCountry ===
+              normalisedLocationCountry
           )
 
         )
@@ -301,254 +308,194 @@ export default async function LocationPage({
       className="
         min-h-screen
         bg-[#F7F4EE]
-        text-black
-        px-6
-        py-12
+        px-4
+        py-8
+        sm:px-6
+        lg:px-8
       "
     >
 
       <div
         className="
-          max-w-7xl
           mx-auto
+          max-w-7xl
         "
       >
 
-        <section
+        <header
           className="
-            mb-16
-            text-center
-          "
-        >
-
-          <p
-            className="
-              rankd-accent
-              uppercase
-              tracking-[0.3em]
-              text-sm
-              font-black
-            "
-          >
-            Local RANKD
-          </p>
-
-
-          <h1
-            className="
-              text-5xl
-              md:text-7xl
-              font-black
-              mt-5
-              leading-none
-            "
-          >
-            Top 7
-            <br />
-            {location.name}
-          </h1>
-
-
-          <p
-            className="
-              mt-6
-              text-xl
-              rankd-muted
-              max-w-2xl
-              mx-auto
-            "
-          >
-            The Top 7 opinions,
-            rankings and debates
-            from {location.name},
-            {` ${location.city}`}.
-          </p>
-
-
-          <p
-            className="
-              mt-4
-              text-sm
-              uppercase
-              tracking-[0.2em]
-              font-black
-              text-black/50
-            "
-          >
-            {location.city}
-            {" · "}
-            {location.country}
-          </p>
-
-        </section>
-
-
-        <section
-          className="
-            mb-16
+            mb-10
           "
         >
 
           <div
             className="
-              grid
-              grid-cols-2
-              md:grid-cols-4
-              gap-4
+              mb-3
+              inline-flex
+              items-center
+              rounded-full
+              border
+              border-black/10
+              bg-white
+              px-3
+              py-1
+              text-xs
+              font-semibold
+              uppercase
+              tracking-[0.18em]
+              text-black/60
             "
           >
 
-            <div
+            {location.name}
+
+            <span
               className="
-                rankd-card
-                p-6
+                mx-2
+                text-black/30
               "
             >
+              ·
+            </span>
 
-              <p
-                className="
-                  text-3xl
-                  font-black
-                "
-              >
-                {locationRankings.length}
-              </p>
+            {location.city}
 
-              <p
-                className="
-                  mt-2
-                  text-sm
-                  rankd-muted
-                "
-              >
-                Local RANKDs
-              </p>
-
-            </div>
-
-
-            <div
+            <span
               className="
-                rankd-card
-                p-6
+                mx-2
+                text-black/30
               "
             >
+              ·
+            </span>
 
-              <p
+            {
+              location.country ===
+                "United Kingdom"
+                ? "UK"
+                : location.country ===
+                    "United States"
+                  ? "US"
+                  : location.country ===
+                      "Philippines"
+                    ? "PH"
+                    : location.country
+            }
+
+          </div>
+
+
+          <h1
+            className="
+              max-w-4xl
+              text-4xl
+              font-black
+              tracking-tight
+              text-black
+              sm:text-5xl
+              lg:text-6xl
+            "
+          >
+
+            Top 7 rankings from{" "}
+            {location.name}
+
+          </h1>
+
+
+          <p
+            className="
+              mt-4
+              max-w-2xl
+              text-base
+              leading-7
+              text-black/60
+              sm:text-lg
+            "
+          >
+
+            Discover local opinions,
+            rankings and perspectives
+            from {location.name},
+            {` `}
+            {location.city}.
+
+          </p>
+
+        </header>
+
+
+        <section>
+
+          <div
+            className="
+              mb-8
+              flex
+              flex-wrap
+              items-center
+              justify-between
+              gap-3
+            "
+          >
+
+            <div>
+
+              <h2
                 className="
-                  text-3xl
-                  font-black
+                  text-xl
+                  font-bold
+                  text-black
                 "
               >
-                {categories.length}
-              </p>
+
+                {locationRankings.length} RANKDs
+
+              </h2>
 
               <p
                 className="
-                  mt-2
+                  mt-1
                   text-sm
-                  rankd-muted
+                  text-black/50
                 "
               >
-                Categories
+
+                Across {categories.length} categories
+
               </p>
 
             </div>
 
           </div>
 
-        </section>
 
+          <div
+            className="
+              grid
+              gap-6
+              sm:grid-cols-2
+              lg:grid-cols-3
+            "
+          >
 
-        {
-          categories.map(
-            category => {
+            {locationRankings.map(
+              ranking => (
 
-              const categoryRankings =
-                locationRankings.filter(
-                  ranking =>
-                    ranking.category ===
-                    category
-                )
-
-
-              return (
-
-                <section
-                  key={category}
-                  className="
-                    mb-20
-                  "
-                >
-
-                  <div
-                    className="
-                      mb-8
-                    "
-                  >
-
-                    <p
-                      className="
-                        rankd-accent
-                        uppercase
-                        tracking-widest
-                        text-sm
-                        font-black
-                      "
-                    >
-                      {location.name}
-                    </p>
-
-
-                    <h2
-                      className="
-                        text-4xl
-                        md:text-5xl
-                        font-black
-                        mt-3
-                      "
-                    >
-                      {category}
-                    </h2>
-
-                  </div>
-
-
-                  <div
-                    className="
-                      grid
-                      md:grid-cols-2
-                      lg:grid-cols-3
-                      gap-8
-                    "
-                  >
-
-                    {
-                      categoryRankings.map(
-                        ranking => (
-
-                          <RankingCard
-                            key={
-                              ranking.id
-                            }
-                            ranking={
-                              ranking
-                            }
-                          />
-
-                        )
-                      )
-                    }
-
-                  </div>
-
-                </section>
+                <RankingCard
+                  key={
+                    ranking.id
+                  }
+                  ranking={
+                    ranking
+                  }
+                />
 
               )
+            )}
 
-            }
-          )
-        }
+          </div>
+
+        </section>
 
       </div>
 
