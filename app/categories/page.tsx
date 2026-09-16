@@ -1,5 +1,9 @@
 import Link from "next/link"
 
+import {
+  categoryToSlug
+} from "@/utils/categorySlug"
+
 
 type CategoryTheme = {
   bg: string
@@ -482,7 +486,9 @@ export default function CategoriesPage() {
                     category.slug
                   }
                   href={
-                    `/category/${category.slug}`
+                    `/category/${categoryToSlug(
+                      category.name
+                    )}`
                   }
                   className="
                     group
