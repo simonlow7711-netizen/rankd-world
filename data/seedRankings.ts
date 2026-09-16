@@ -1807,6 +1807,244 @@ export const seedRankings = [
       "Plates of meat — feet",
       "Porkies — lies"
     ]
-  }
 
+  },
+  // ============================
+  // AMERICANA — SPORT
+  // ============================
+
+  {
+    title: "Seven Baseball Traditions That Are Older Than They Look",
+    category: "Sport",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "The seventh-inning stretch",
+      "Take Me Out to the Ball Game",
+      "Peanuts at the ballpark",
+      "Cracker Jack",
+      "The ceremonial first pitch",
+      "Baseball scorekeeping",
+      "The baseball organ",
+    ],
+  },
+
+  {
+    title: "Seven American Sports Rituals That Make No Sense Until You Know the History",
+    category: "Sport",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Thanksgiving football",
+      "Tailgating",
+      "The national anthem before games",
+      "March Madness brackets",
+      "Homecoming games",
+      "Friday-night high-school football",
+      "The seventh-inning stretch",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — CARS & TRANSPORT
+  // ============================
+
+  {
+    title: "Seven American Roads That Became Cultural Icons",
+    category: "Cars & Transport",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Route 66",
+      "The Lincoln Highway",
+      "Highway 61",
+      "Pacific Coast Highway",
+      "U.S. Route 50",
+      "Blue Ridge Parkway",
+      "U.S. Route 1",
+    ],
+  },
+
+  {
+    title: "Seven Things About American Highways That Changed the World",
+    category: "Cars & Transport",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "The Interstate Highway System",
+      "The numbered U.S. highway system",
+      "The cloverleaf interchange",
+      "The roadside motel",
+      "The drive-through",
+      "The American truck stop",
+      "The suburban commute",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — TRAVEL
+  // ============================
+
+  {
+    title: "Seven American Roadside Attractions With Stranger Stories Than They Look",
+    category: "Travel",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "The Blue Whale of Catoosa",
+      "Wall Drug",
+      "Cadillac Ranch",
+      "The World's Largest Ball of Twine",
+      "Wigwam Village",
+      "The Corn Palace",
+      "The Mystery Spot",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — NATURE & ANIMALS
+  // ============================
+
+  {
+    title: "Seven Animals That Became Symbols of America",
+    category: "Nature & Animals",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Bald eagle",
+      "American bison",
+      "Wild turkey",
+      "Beaver",
+      "Mustang",
+      "Grizzly bear",
+      "American alligator",
+    ],
+  },
+
+  {
+    title: "Seven American Landscapes That Don't Look Like America",
+    category: "Nature & Animals",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "White Sands, New Mexico",
+      "The Badlands, South Dakota",
+      "The Everglades, Florida",
+      "Monument Valley, Arizona and Utah",
+      "Denali, Alaska",
+      "Yellowstone's geothermal landscape",
+      "The Grand Canyon",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — HISTORY
+  // ============================
+
+  {
+    title: "Seven National Parks With Surprisingly Strange Histories",
+    category: "History",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Yellowstone — the world's first national park",
+      "Yosemite — initially protected as a state park",
+      "Hot Springs — reserved decades before Yellowstone",
+      "Yellowstone's U.S. Army era",
+      "The 1988 Yellowstone fires",
+      "The return of wolves to Yellowstone",
+      "The national-park idea itself",
+    ],
+  },
+
+  {
+    title: "Seven American Historical Myths That Aren't Quite True",
+    category: "History",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "George Washington chopped down the cherry tree",
+      "Betsy Ross definitely sewed the first American flag",
+      "Benjamin Franklin wanted the turkey as America's national bird",
+      "The first Thanksgiving happened exactly as the popular story suggests",
+      "Paul Revere shouted \"The British are coming!\"",
+      "The Pilgrims dressed exactly like the traditional Thanksgiving image",
+      "The Wild West looked like Hollywood says it did",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — FOOD & DRINK
+  // ============================
+
+  {
+    title: "Seven American Foods With Unexpected Origins",
+    category: "Food & Drink",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Fortune cookies",
+      "Chocolate-chip cookies",
+      "Buffalo wings",
+      "Ranch dressing",
+      "The hamburger",
+      "The hot dog",
+      "Ketchup",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — MUSIC
+  // ============================
+
+  {
+    title: "Seven Sounds That Changed American Music",
+    category: "Music",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Blues",
+      "Jazz",
+      "Ragtime",
+      "Gospel",
+      "Rock 'n' roll",
+      "Soul",
+      "Hip-hop",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — SCIENCE
+  // ============================
+
+  {
+    title: "Seven Everyday Things That Were Created by American Accidents",
+    category: "Science",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "The microwave oven",
+      "The pacemaker",
+      "The Popsicle",
+      "The Slinky",
+      "Post-it Notes",
+      "Super Glue's practical breakthrough",
+      "Corn flakes",
+    ],
+  },
+
+
+  // ============================
+  // AMERICANA — LIFESTYLE
+  // ============================
+
+  {
+    title: "Seven Ordinary Objects With Extraordinary American Histories",
+    category: "Lifestyle",
+    description: "RANKD Team Americana edition.",
+    items: [
+      "Tupperware",
+      "The shopping cart",
+      "The microwave oven",
+      "The refrigerator",
+      "The transistor radio",
+      "Ready-to-wear clothing",
+      "The bicycle",
+    ],
+  },
 ]
