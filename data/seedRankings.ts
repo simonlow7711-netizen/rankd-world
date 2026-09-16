@@ -1605,7 +1605,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven Rules of Making Tea That People Will Defend Like Constitutional Law",
+    title: "Top 7 Rules of Making Tea That People Will Defend Like Constitutional Law",
     category: "Food & Drink",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1620,7 +1620,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven Stages of a British Pub Evening",
+    title: "Top 7 Stages of a British Pub Evening",
     category: "Food & Drink",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1640,7 +1640,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "The Seven Unwritten Rules of British Queuing",
+    title: "Top 7 Unwritten Rules of British Queuing",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1655,7 +1655,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Ways of Saying \"Sorry\" Without Apologising",
+    title: "Top 7 British Ways of Saying \"Sorry\" Without Apologising",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1670,7 +1670,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven Different Meanings of \"You Alright?\"",
+    title: "Top 7 Different Meanings of \"You Alright?\"",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1685,7 +1685,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Compliments That Sound Like Insults",
+    title: "Top 7 British Compliments That Sound Like Insults",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1700,7 +1700,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Public-Space Behaviours That Need No Sign",
+    title: "Top 7 British Public-Space Behaviours That Need No Sign",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1715,7 +1715,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Conversations That Begin and End With the Weather",
+    title: "Top 7 British Conversations That Begin and End With the Weather",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1730,7 +1730,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Ways to Avoid Saying What You Mean",
+    title: "Top 7 British Ways to Avoid Saying What You Mean",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1745,7 +1745,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Social Situations Everyone Understands Without Explanation",
+    title: "Top 7 British Social Situations Everyone Understands Without Explanation",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1760,7 +1760,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Contradictions That Somehow Make Perfect Sense",
+    title: "Top 7 British Contradictions That Somehow Make Perfect Sense",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1775,7 +1775,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven British Rituals That Depend on Everyone Knowing the Rules",
+    title: "Top 7 British Rituals That Depend on Everyone Knowing the Rules",
     category: "Lifestyle",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1795,7 +1795,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "The Seven Cockney Rhyming Slang Expressions Everyone Should Know",
+    title: "Top 7 Cockney Rhyming Slang Expressions Everyone Should Know",
     category: "History",
     description: "RANKD Team Britishness edition.",
     items: [
@@ -1814,7 +1814,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven Baseball Traditions That Are Older Than They Look",
+    title: "Top 7 Baseball Traditions That Are Older Than They Look",
     category: "Sport",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1829,7 +1829,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven American Sports Rituals That Make No Sense Until You Know the History",
+    title: "Top 7 American Sports Rituals That Make No Sense Until You Know the History",
     category: "Sport",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1849,7 +1849,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven American Roads That Became Cultural Icons",
+    title: "Top 7 American Roads That Became Cultural Icons",
     category: "Cars & Transport",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1864,7 +1864,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven Things About American Highways That Changed the World",
+    title: "Top 7 Things About American Highways That Changed the World",
     category: "Cars & Transport",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1884,7 +1884,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven American Roadside Attractions With Stranger Stories Than They Look",
+    title: "Top 7 American Roadside Attractions With Stranger Stories Than They Look",
     category: "Travel",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1904,7 +1904,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven Animals That Became Symbols of America",
+    title: "Top 7 Animals That Became Symbols of America",
     category: "Nature & Animals",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1919,7 +1919,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven American Landscapes That Don't Look Like America",
+    title: "Top 7 American Landscapes That Don't Look Like America",
     category: "Nature & Animals",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1939,7 +1939,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven National Parks With Surprisingly Strange Histories",
+    title: "Top 7 National Parks With Surprisingly Strange Histories",
     category: "History",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1954,7 +1954,7 @@ export const seedRankings = [
   },
 
   {
-    title: "Seven American Historical Myths That Aren't Quite True",
+    title: "Top 7 American Historical Myths That Aren't Quite True",
     category: "History",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1974,7 +1974,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven American Foods With Unexpected Origins",
+    title: "Top 7 American Foods With Unexpected Origins",
     category: "Food & Drink",
     description: "RANKD Team Americana edition.",
     items: [
@@ -1994,7 +1994,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven Sounds That Changed American Music",
+    title: "Top 7 Sounds That Changed American Music",
     category: "Music",
     description: "RANKD Team Americana edition.",
     items: [
@@ -2014,7 +2014,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven Everyday Things That Were Created by American Accidents",
+    title: "Top 7 Everyday Things That Were Created by American Accidents",
     category: "Science",
     description: "RANKD Team Americana edition.",
     items: [
@@ -2034,7 +2034,7 @@ export const seedRankings = [
   // ============================
 
   {
-    title: "Seven Ordinary Objects With Extraordinary American Histories",
+    title: "Top 7 Ordinary Objects With Extraordinary American Histories",
     category: "Lifestyle",
     description: "RANKD Team Americana edition.",
     items: [
