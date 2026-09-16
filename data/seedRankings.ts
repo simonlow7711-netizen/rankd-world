@@ -230,12 +230,12 @@ export const seedRankings = [
     description: "RANKD Team Islington edition.",
     items: [
       "Union Chapel",
-      "O2 Academy Islington",
       "The Grace",
       "Hope & Anchor",
       "The Garage",
       "Islington Assembly Hall",
-      "Electrowerkz"
+      "Electrowerkz",
+      "O2 Academy Islington"
     ]
   },
 
@@ -1596,6 +1596,216 @@ export const seedRankings = [
       "Architecture",
       "Parks",
       "Neighbourhoods"
+    ]
+  },
+
+
+  // ============================
+  // BRITISHNESS — FOOD & DRINK
+  // ============================
+
+  {
+    title: "Seven Rules of Making Tea That People Will Defend Like Constitutional Law",
+    category: "Food & Drink",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Tea must be strong enough to have a position",
+      "Milk is a decision, not an ingredient",
+      "The person who offers tea accepts responsibility for the entire round",
+      "Everyone's tea is different",
+      "A tea break is not always about tea",
+      "The correct biscuit is part of the argument",
+      "Tea can be formal, functional, comforting or medicinal"
+    ]
+  },
+
+  {
+    title: "Seven Stages of a British Pub Evening",
+    category: "Food & Drink",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "\"Just one\"",
+      "The first drink is an administrative decision",
+      "The group establishes territory",
+      "The round creates a social contract",
+      "The conversation becomes unexpectedly serious",
+      "Someone says they should leave",
+      "The final drink becomes a separate event"
+    ]
+  },
+
+
+  // ============================
+  // BRITISHNESS — LIFESTYLE
+  // ============================
+
+  {
+    title: "The Seven Unwritten Rules of British Queuing",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Find the end before asking what the queue is for",
+      "Never assume an empty-looking space means you can walk straight in",
+      "A queue-jumper has committed a social offence",
+      "Move forward when the queue moves",
+      "You may complain about the queue, but you must remain in it",
+      "You can leave temporarily, but you must explain yourself",
+      "The queue must remain morally superior to the alternative"
+    ]
+  },
+
+  {
+    title: "Seven British Ways of Saying \"Sorry\" Without Apologising",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Sorry — can I get past?",
+      "Sorry?",
+      "Oh, sorry — I thought you were finished",
+      "Sorry, but…",
+      "Sorry, are you alright?",
+      "Sorry, I didn't mean it like that",
+      "Sorry — you're going to have to explain that again"
+    ]
+  },
+
+  {
+    title: "Seven Different Meanings of \"You Alright?\"",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Hello",
+      "Are you genuinely alright?",
+      "I have noticed something is wrong",
+      "Are we about to have a problem?",
+      "I haven't seen you for a while",
+      "I need to speak to you, but I'm easing into it",
+      "I have no idea what to say, so this is what we say"
+    ]
+  },
+
+  {
+    title: "Seven British Compliments That Sound Like Insults",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Not bad",
+      "You've done alright",
+      "That'll do",
+      "You clean up well",
+      "That's brave",
+      "You're not completely useless",
+      "I suppose you could do worse"
+    ]
+  },
+
+  {
+    title: "Seven British Public-Space Behaviours That Need No Sign",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Stand on the right of the escalator",
+      "Let people off before getting on",
+      "Form a queue even when it is unclear whether one is required",
+      "Keep your voice down on public transport",
+      "Avoid occupying extra seats",
+      "Give strangers physical space",
+      "Acknowledge inconvenience without making a scene"
+    ]
+  },
+
+  {
+    title: "Seven British Conversations That Begin and End With the Weather",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "The forecast as an opening line",
+      "Weather as a shared inconvenience",
+      "Weather as national entertainment",
+      "Weather as a moral complaint",
+      "Weather as a memory trigger",
+      "Weather as a coded emotional statement",
+      "Weather as a safe way to end a conversation"
+    ]
+  },
+
+  {
+    title: "Seven British Ways to Avoid Saying What You Mean",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "\"I'm not sure that's quite right\"",
+      "\"That's interesting\"",
+      "\"You might want to have another look at that\"",
+      "\"It's not ideal\"",
+      "\"I'll bear it in mind\"",
+      "\"We'll see\"",
+      "\"With respect…\""
+    ]
+  },
+
+  {
+    title: "Seven British Social Situations Everyone Understands Without Explanation",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "The pub round",
+      "The awkward goodbye",
+      "\"You alright?\" as a greeting",
+      "The queue that suddenly becomes complicated",
+      "The office tea round",
+      "The weather conversation with a stranger",
+      "The invitation that is not quite an invitation"
+    ]
+  },
+
+  {
+    title: "Seven British Contradictions That Somehow Make Perfect Sense",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Reserved with strangers, generous with the group",
+      "Attached to tradition, constantly changing tradition",
+      "Polite in wording, aggressive about rules",
+      "Suspicious of showing off, fascinated by status",
+      "Private in personal matters, communal in public complaint",
+      "Comfortable with absurdity, uncomfortable with sincerity",
+      "Individualistic in theory, rule-bound in practice"
+    ]
+  },
+
+  {
+    title: "Seven British Rituals That Depend on Everyone Knowing the Rules",
+    category: "Lifestyle",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Buying a round",
+      "Making tea for other people",
+      "Joining a queue",
+      "The pub quiz",
+      "The awkward farewell",
+      "The office collection",
+      "The shared complaint"
+    ]
+  },
+
+
+  // ============================
+  // BRITISHNESS — HISTORY
+  // ============================
+
+  {
+    title: "The Seven Cockney Rhyming Slang Expressions Everyone Should Know",
+    category: "History",
+    description: "RANKD Team Britishness edition.",
+    items: [
+      "Apples and pears — stairs",
+      "Butcher's hook — look",
+      "Dog and bone — phone",
+      "Ruby Murray — curry",
+      "Trouble and strife — wife",
+      "Plates of meat — feet",
+      "Porkies — lies"
     ]
   }
 
