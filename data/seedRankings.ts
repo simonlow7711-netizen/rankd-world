@@ -1807,8 +1807,9 @@ export const seedRankings = [
       "Plates of meat — feet",
       "Porkies — lies"
     ]
-
   },
+
+
   // ============================
   // AMERICANA — SPORT
   // ============================
@@ -1824,8 +1825,8 @@ export const seedRankings = [
       "Cracker Jack",
       "The ceremonial first pitch",
       "Baseball scorekeeping",
-      "The baseball organ",
-    ],
+      "The baseball organ"
+    ]
   },
 
   {
@@ -1839,8 +1840,8 @@ export const seedRankings = [
       "March Madness brackets",
       "Homecoming games",
       "Friday-night high-school football",
-      "The seventh-inning stretch",
-    ],
+      "The seventh-inning stretch"
+    ]
   },
 
 
@@ -1859,8 +1860,8 @@ export const seedRankings = [
       "Pacific Coast Highway",
       "U.S. Route 50",
       "Blue Ridge Parkway",
-      "U.S. Route 1",
-    ],
+      "U.S. Route 1"
+    ]
   },
 
   {
@@ -1874,8 +1875,8 @@ export const seedRankings = [
       "The roadside motel",
       "The drive-through",
       "The American truck stop",
-      "The suburban commute",
-    ],
+      "The suburban commute"
+    ]
   },
 
 
@@ -1894,8 +1895,8 @@ export const seedRankings = [
       "The World's Largest Ball of Twine",
       "Wigwam Village",
       "The Corn Palace",
-      "The Mystery Spot",
-    ],
+      "The Mystery Spot"
+    ]
   },
 
 
@@ -1914,8 +1915,8 @@ export const seedRankings = [
       "Beaver",
       "Mustang",
       "Grizzly bear",
-      "American alligator",
-    ],
+      "American alligator"
+    ]
   },
 
   {
@@ -1929,8 +1930,8 @@ export const seedRankings = [
       "Monument Valley, Arizona and Utah",
       "Denali, Alaska",
       "Yellowstone's geothermal landscape",
-      "The Grand Canyon",
-    ],
+      "The Grand Canyon"
+    ]
   },
 
 
@@ -1949,8 +1950,8 @@ export const seedRankings = [
       "Yellowstone's U.S. Army era",
       "The 1988 Yellowstone fires",
       "The return of wolves to Yellowstone",
-      "The national-park idea itself",
-    ],
+      "The national-park idea itself"
+    ]
   },
 
   {
@@ -1964,8 +1965,8 @@ export const seedRankings = [
       "The first Thanksgiving happened exactly as the popular story suggests",
       "Paul Revere shouted \"The British are coming!\"",
       "The Pilgrims dressed exactly like the traditional Thanksgiving image",
-      "The Wild West looked like Hollywood says it did",
-    ],
+      "The Wild West looked like Hollywood says it did"
+    ]
   },
 
 
@@ -1984,8 +1985,8 @@ export const seedRankings = [
       "Ranch dressing",
       "The hamburger",
       "The hot dog",
-      "Ketchup",
-    ],
+      "Ketchup"
+    ]
   },
 
 
@@ -2004,8 +2005,8 @@ export const seedRankings = [
       "Gospel",
       "Rock 'n' roll",
       "Soul",
-      "Hip-hop",
-    ],
+      "Hip-hop"
+    ]
   },
 
 
@@ -2024,8 +2025,8 @@ export const seedRankings = [
       "The Slinky",
       "Post-it Notes",
       "Super Glue's practical breakthrough",
-      "Corn flakes",
-    ],
+      "Corn flakes"
+    ]
   },
 
 
@@ -2044,7 +2045,408 @@ export const seedRankings = [
       "The refrigerator",
       "The transistor radio",
       "Ready-to-wear clothing",
-      "The bicycle",
-    ],
+      "The bicycle"
+    ]
   },
+
+
+  // ============================
+  // DERRY — LOCAL CONTENT
+  // ============================
+
+  {
+    title: "Top 7 Derry Landmarks That Tell the Walled City's Story",
+    category: "History",
+    description: "RANKD Team Derry edition.",
+    items: [
+      "Derry City Walls",
+      "Peace Bridge",
+      "Guildhall",
+      "Free Derry Corner",
+      "People's Gallery Murals",
+      "Tower Museum",
+      "St Columb's Cathedral"
+    ]
+  },
+
+  {
+    title: "Top 7 Derry Festivals and Events Worth Travelling For",
+    category: "Lifestyle",
+    description: "RANKD Team Derry edition.",
+    items: [
+      "Derry Halloween",
+      "City of Derry Jazz Festival",
+      "City of Derry International Choir Festival",
+      "Foyle Maritime Festival",
+      "Foyle Cup",
+      "IMBOLC International Music Festival",
+      "Derry Girls Festival events"
+    ]
+  },
+
+  {
+    title: "Top 7 Derry Civil Rights Stories Everyone Should Understand",
+    category: "History",
+    description: "RANKD Team Derry edition.",
+    items: [
+      "The 1968 Civil Rights March",
+      "The Battle of the Bogside",
+      "Internment without trial",
+      "Bloody Sunday",
+      "Operation Motorman",
+      "Free Derry",
+      "The Good Friday Agreement"
+    ]
+  },
+
+  {
+    title: "Top 7 Derry Girls Experiences Fans Can Actually Visit",
+    category: "Film & TV",
+    description: "RANKD Team Derry edition.",
+    items: [
+      "The Derry Girls Experience",
+      "Derry Girls Mural",
+      "Pump Street",
+      "Limewood Street",
+      "Free Derry Corner",
+      "Guildhall Square",
+      "The historic City Walls"
+    ]
+  },
+
+  {
+    title: "Top 7 Derry Food and Drink Traditions to Try",
+    category: "Food & Drink",
+    description: "RANKD Team Derry edition.",
+    items: [
+      "Soda bread",
+      "Potato farls",
+      "Champ",
+      "Wheaten bread",
+      "Doherty's bakery cream horns",
+      "Fresh Lough Foyle seafood",
+      "Walled City Brewery beer"
+    ]
+  },
+
+
+  // ============================
+  // STOKE-ON-TRENT — LOCAL CONTENT
+  // ============================
+
+  {
+    title: "Top 7 Stoke-on-Trent Ceramic Experiences",
+    category: "Art & Design",
+    description: "RANKD Team Stoke-on-Trent edition.",
+    items: [
+      "World of Wedgwood",
+      "Gladstone Pottery Museum",
+      "Middleport Pottery",
+      "Moorcroft Heritage Visitor Centre",
+      "Emma Bridgewater Factory",
+      "Potteries Museum & Art Gallery",
+      "LoveClay Pottery Studio"
+    ]
+  },
+
+  {
+    title: "Top 7 Stoke-on-Trent Industrial Heritage Sites",
+    category: "History",
+    description: "RANKD Team Stoke-on-Trent edition.",
+    items: [
+      "Etruria Industrial Museum",
+      "Chatterley Whitfield Colliery",
+      "Gladstone Pottery Museum",
+      "Middleport Pottery",
+      "Trent and Mersey Canal",
+      "Caldon Canal",
+      "Dudson Museum"
+    ]
+  },
+
+  {
+    title: "Top 7 Stoke-on-Trent Characters Who Became Part of Local History",
+    category: "General",
+    description: "RANKD Team Stoke-on-Trent edition.",
+    items: [
+      "Josiah Wedgwood",
+      "Clarice Cliff",
+      "Susie Cooper",
+      "Arnold Bennett",
+      "Reginald Mitchell",
+      "Stanley Matthews",
+      "Robbie Williams"
+    ]
+  },
+
+  {
+    title: "Top 7 Stoke-on-Trent Theatre and Culture Experiences",
+    category: "Film & TV",
+    description: "RANKD Team Stoke-on-Trent edition.",
+    items: [
+      "New Vic Theatre",
+      "Regent Theatre",
+      "Victoria Hall",
+      "Mitchell Arts Centre",
+      "Potteries Museum & Art Gallery",
+      "Theatre Royal Hanley",
+      "Stoke Repertory Theatre"
+    ]
+  },
+
+  {
+    title: "Top 7 Stoke-on-Trent Food Traditions to Argue About",
+    category: "Food & Drink",
+    description: "RANKD Team Stoke-on-Trent edition.",
+    items: [
+      "Staffordshire oatcakes",
+      "Cheese and bacon oatcakes",
+      "Sausage and egg oatcakes",
+      "Pikelets",
+      "Staffordshire lobby",
+      "Titanic Brewery ale",
+      "The best local oatcake shop"
+    ]
+  },
+
+
+  // ============================
+  // MIDDLESBROUGH — LOCAL CONTENT
+  // ============================
+
+  {
+    title: "Top 7 Middlesbrough Engineering Landmarks",
+    category: "Cars & Transport",
+    description: "RANKD Team Middlesbrough edition.",
+    items: [
+      "Tees Transporter Bridge",
+      "Newport Bridge",
+      "Riverside Stadium",
+      "Temenos",
+      "Middlesbrough railway heritage",
+      "Tees Dock",
+      "The former steelworks landscape"
+    ]
+  },
+
+  {
+    title: "Top 7 Middlesbrough Stories From the Birth of the Modern Railway Town",
+    category: "History",
+    description: "RANKD Team Middlesbrough edition.",
+    items: [
+      "The arrival of the Stockton & Darlington Railway",
+      "The founding of Middlesbrough in 1830",
+      "Joseph Pease and the railway connection",
+      "The rise of Bolckow Vaughan",
+      "The growth of the iron industry",
+      "The expansion of the port",
+      "The transformation into an industrial town"
+    ]
+  },
+
+  {
+    title: "Top 7 Middlesbrough Cultural Experiences to Know",
+    category: "Art & Design",
+    description: "RANKD Team Middlesbrough edition.",
+    items: [
+      "MIMA",
+      "Middlesbrough Town Hall",
+      "Dorman Museum",
+      "Captain Cook Birthplace Museum",
+      "Middlesbrough Theatre",
+      "Middlesbrough Mela",
+      "Teesside University creative scene"
+    ]
+  },
+
+  {
+    title: "Top 7 Middlesbrough Football Experiences",
+    category: "Sport",
+    description: "RANKD Team Middlesbrough edition.",
+    items: [
+      "Middlesbrough FC matchday",
+      "Riverside Stadium",
+      "Middlesbrough FC 2004 League Cup victory",
+      "Middlesbrough FC's UEFA Cup run",
+      "Ayresome Park history",
+      "Boro's promotion celebrations",
+      "The Teesside football derby"
+    ]
+  },
+
+  {
+    title: "Top 7 Teesside Food Traditions That Start Arguments",
+    category: "Food & Drink",
+    description: "RANKD Team Middlesbrough edition.",
+    items: [
+      "The classic chicken parmo",
+      "Hot-shot parmo",
+      "Pepperoni parmo",
+      "Mushroom parmo",
+      "Parmo with extra cheese",
+      "Parmo toppings",
+      "The correct chips-and-salad ratio"
+    ]
+  },
+
+
+  // ============================
+  // SWANSEA — LOCAL CONTENT
+  // ============================
+
+  {
+    title: "Top 7 Swansea Bay Coastline Experiences",
+    category: "Travel",
+    description: "RANKD Team Swansea edition.",
+    items: [
+      "Swansea Bay Beach",
+      "Mumbles Pier",
+      "Rhossili Bay",
+      "Three Cliffs Bay",
+      "Caswell Bay",
+      "Langland Bay",
+      "Gower Coast Path"
+    ]
+  },
+
+  {
+    title: "Top 7 Swansea Cultural Institutions Worth Knowing",
+    category: "Art & Design",
+    description: "RANKD Team Swansea edition.",
+    items: [
+      "Dylan Thomas Centre",
+      "National Waterfront Museum",
+      "Swansea Museum",
+      "Glynn Vivian Art Gallery",
+      "Mission Gallery",
+      "Swansea Grand Theatre",
+      "Brangwyn Hall"
+    ]
+  },
+
+  {
+    title: "Top 7 Swansea Industrial Heritage Stories",
+    category: "History",
+    description: "RANKD Team Swansea edition.",
+    items: [
+      "Hafod Copperworks",
+      "Morfa Copperworks",
+      "Swansea Canal",
+      "Copperopolis",
+      "The Lower Swansea Valley",
+      "The port and docks",
+      "The rise of the tinplate industry"
+    ]
+  },
+
+  {
+    title: "Top 7 Swansea Screen Locations You Can Actually Visit",
+    category: "Film & TV",
+    description: "RANKD Team Swansea edition.",
+    items: [
+      "Rhossili Bay",
+      "Brangwyn Hall",
+      "Kardomah Café",
+      "Cambrian Place",
+      "Victoria Avenue",
+      "Mumbles",
+      "Swansea Bay"
+    ]
+  },
+
+  {
+    title: "Top 7 Swansea Food Traditions to Try",
+    category: "Food & Drink",
+    description: "RANKD Team Swansea edition.",
+    items: [
+      "Penclawdd cockles",
+      "Laverbread",
+      "Swansea breakfast",
+      "Welsh cakes",
+      "Cawl",
+      "Welsh rarebit",
+      "Mumbles ice cream"
+    ]
+  },
+
+
+  // ============================
+  // DUNDEE — LOCAL CONTENT
+  // ============================
+
+  {
+    title: "Top 7 Dundee Design Connections",
+    category: "Art & Design",
+    description: "RANKD Team Dundee edition.",
+    items: [
+      "V&A Dundee",
+      "Dundee Contemporary Arts",
+      "Duncan of Jordanstone College of Art & Design",
+      "Dundee Design Festival",
+      "Beano",
+      "Dandy",
+      "Dundee's video-game industry"
+    ]
+  },
+
+  {
+    title: "Top 7 Dundee Jute, Jam and Journalism Stories",
+    category: "History",
+    description: "RANKD Team Dundee edition.",
+    items: [
+      "Verdant Works",
+      "The Keiller marmalade story",
+      "Dundee's jute mills",
+      "D.C. Thomson",
+      "The Dundee Courier",
+      "Dundee's jam industry",
+      "The city's transformation after the decline of jute"
+    ]
+  },
+
+  {
+    title: "Top 7 Dundee Exploration and Maritime Experiences",
+    category: "Travel",
+    description: "RANKD Team Dundee edition.",
+    items: [
+      "RRS Discovery",
+      "Discovery Point",
+      "HMS Unicorn",
+      "Dundee Waterfront",
+      "Tay Rail Bridge",
+      "Tay Road Bridge",
+      "Dundee's shipbuilding heritage"
+    ]
+  },
+
+  {
+    title: "Top 7 Dundee Comics and Pop Culture Icons",
+    category: "General",
+    description: "RANKD Team Dundee edition.",
+    items: [
+      "Desperate Dan",
+      "Oor Wullie",
+      "Minnie the Minx",
+      "The Bash Street Kids",
+      "The Beano",
+      "The Dandy",
+      "Grand Theft Auto"
+    ]
+  },
+
+  {
+    title: "Top 7 Dundee Food Traditions to Try",
+    category: "Food & Drink",
+    description: "RANKD Team Dundee edition.",
+    items: [
+      "Dundee Cake",
+      "Dundee marmalade",
+      "Fisher & Donaldson fudge doughnut",
+      "Arbroath smokie",
+      "Tayside local produce",
+      "Dundee craft beer",
+      "Waterfront dining"
+    ]
+  }
+
 ]
