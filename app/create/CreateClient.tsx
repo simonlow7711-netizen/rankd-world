@@ -152,8 +152,94 @@ export default function CreateClient(){
 
       const parentId =
         searchParams.get(
+          "parentId"
+        ) ??
+        searchParams.get(
           "parent"
         )
+
+      const rerankTitle =
+        searchParams.get(
+          "title"
+        )
+
+      const rerankCategory =
+        searchParams.get(
+          "category"
+        )
+
+      const rerankItems =
+        searchParams.get(
+          "items"
+        )
+
+      if(
+        rerankTitle
+        ||
+        rerankCategory
+        ||
+        rerankItems
+      ){
+
+        if(rerankTitle){
+
+          setTitle(
+            rerankTitle
+          )
+
+        }
+
+        if(
+          rerankCategory &&
+          isValidRankingCategory(
+            rerankCategory
+          )
+        ){
+
+          setCategory(
+            rerankCategory
+          )
+
+        }
+
+        if(rerankItems){
+
+          const itemNames =
+            rerankItems
+              .split("|")
+              .map(
+                item =>
+                  item.trim()
+              )
+              .filter(
+                item =>
+                  item.length > 0
+              )
+              .slice(
+                0,
+                7
+              )
+
+          if(
+            itemNames.length ===
+            7
+          ){
+
+            setItems(
+              itemNames.map(
+                name => ({
+                  id:
+                    crypto.randomUUID(),
+                  name
+                })
+              )
+            )
+
+          }
+
+        }
+
+      }
 
       if(!parentId){
 
@@ -184,34 +270,58 @@ export default function CreateClient(){
           ranking
         )
 
-        setTitle(
-          `RANKD ${stripRankingPrefix(
-            ranking.title
-          )}`
-        )
+        if(
+          !rerankTitle
+        ){
 
-        setCategory(
-          ranking.category
-        )
-
-        setDescription(
-          ranking.description
-            ? `Remix of ${stripRankingPrefix(
-                ranking.title
-              )}.`
-            : ""
-        )
-
-        setItems(
-          ranking.items.map(
-            item => ({
-              id:
-                crypto.randomUUID(),
-              name:
-                item.name
-            })
+          setTitle(
+            `RANKD ${stripRankingPrefix(
+              ranking.title
+            )}`
           )
-        )
+
+        }
+
+        if(
+          !rerankCategory
+        ){
+
+          setCategory(
+            ranking.category
+          )
+
+        }
+
+        if(
+          !rerankTitle
+        ){
+
+          setDescription(
+            ranking.description
+              ? `Remix of ${stripRankingPrefix(
+                  ranking.title
+                )}.`
+              : ""
+          )
+
+        }
+
+        if(
+          !rerankItems
+        ){
+
+          setItems(
+            ranking.items.map(
+              item => ({
+                id:
+                  crypto.randomUUID(),
+                name:
+                  item.name
+              })
+            )
+          )
+
+        }
 
       }
 
@@ -241,17 +351,6 @@ export default function CreateClient(){
                 }
               : item
         )
-    )
-
-  }
-
-
-  function handleItemsChange(
-    nextItems:RankingBuilderItem[]
-  ){
-
-    setItems(
-      nextItems
     )
 
   }
