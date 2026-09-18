@@ -5,8 +5,6 @@ import {
   useState
 } from "react"
 
-import Link from "next/link"
-
 import {
   useParams
 } from "next/navigation"
@@ -16,8 +14,7 @@ import {
 } from "@/utils/supabase"
 
 
-type PhotoRankdHotspot = {
-  id: number
+type Hotspot = {
   rankingId: string
   x: number
   y: number
@@ -29,41 +26,41 @@ type PhotoRankd = {
   title: string
   description: string | null
   image_url: string
-  hotspots: PhotoRankdHotspot[]
+  ranking_ids: string[]
+  hotspots: Hotspot[]
 }
 
 
 export default function PhotoRankdPage() {
-  const params =
-    useParams<{
-      id: string
-    }>()
+  const params = useParams()
+
+  const id =
+    typeof params?.id === "string"
+      ? params.id
+      : ""
+
 
   const [
-    experience,
-    setExperience
-  ] = useState<PhotoRankd | null>(
-    null
-  )
+    photoRankd,
+    setPhotoRankd
+  ] = useState<PhotoRankd | null>(null)
+
 
   const [
     loading,
     setLoading
   ] = useState(true)
 
-  const [
-    notFound,
-    setNotFound
-  ] = useState(false)
-
 
   useEffect(() => {
-    async function loadExperience() {
-      if (!params.id) {
-        setNotFound(true)
-        setLoading(false)
-        return
-      }
+    if (!id) {
+      return
+    }
+
+
+    async function loadPhotoRankd() {
+      setLoading(true)
+
 
       const {
         data,
@@ -76,44 +73,44 @@ export default function PhotoRankdPage() {
             title,
             description,
             image_url,
+            ranking_ids,
             hotspots
           `
         )
         .eq(
           "id",
-          params.id
+          id
         )
         .eq(
           "published",
           true
         )
-        .single()
+        .maybeSingle()
 
-      if (
-        error ||
-        !data
-      ) {
-        setNotFound(true)
+
+      if (error) {
+        console.error(
+          "Could not load Photo RANKD:",
+          error
+        )
+
+        setPhotoRankd(null)
         setLoading(false)
+
         return
       }
 
-      setExperience({
-        id: data.id,
-        title: data.title,
-        description: data.description,
-        image_url: data.image_url,
-        hotspots:
-          Array.isArray(data.hotspots)
-            ? data.hotspots
-            : []
-      })
+
+      setPhotoRankd(
+        data as PhotoRankd | null
+      )
 
       setLoading(false)
     }
 
-    loadExperience()
-  }, [params.id])
+
+    loadPhotoRankd()
+  }, [id])
 
 
   if (loading) {
@@ -125,8 +122,7 @@ export default function PhotoRankdPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "24px",
-          fontFamily: "Arial, sans-serif"
+          padding: "40px"
         }}
       >
         <div
@@ -142,10 +138,7 @@ export default function PhotoRankdPage() {
   }
 
 
-  if (
-    notFound ||
-    !experience
-  ) {
+  if (!photoRankd) {
     return (
       <main
         style={{
@@ -154,22 +147,22 @@ export default function PhotoRankdPage() {
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          padding: "24px",
-          fontFamily: "Arial, sans-serif"
+          padding: "40px"
         }}
       >
         <div
           style={{
+            maxWidth: "520px",
             textAlign: "center"
           }}
         >
           <div
             style={{
-              fontSize: "64px",
-              fontWeight: 900,
+              fontSize: "72px",
               lineHeight: 1,
+              fontWeight: 900,
               color: "#FF6B35",
-              marginBottom: "18px"
+              marginBottom: "20px"
             }}
           >
             7
@@ -179,6 +172,7 @@ export default function PhotoRankdPage() {
             style={{
               margin: 0,
               fontSize: "28px",
+              lineHeight: 1.1,
               fontWeight: 800,
               color: "#111"
             }}
@@ -188,32 +182,25 @@ export default function PhotoRankdPage() {
 
           <p
             style={{
-              marginTop: "10px",
-              color: "#666"
+              marginTop: "12px",
+              color: "#666",
+              fontSize: "15px",
+              lineHeight: 1.5
             }}
           >
-            This Photo RANKD may not have been published.
+            This Photo RANKD may not have been published,
+            or the link may no longer be available.
           </p>
-
-          <Link
-            href="/"
-            style={{
-              display: "inline-block",
-              marginTop: "20px",
-              padding: "12px 18px",
-              borderRadius: "999px",
-              background: "#111",
-              color: "#fff",
-              textDecoration: "none",
-              fontWeight: 700
-            }}
-          >
-            Back to RANKD
-          </Link>
         </div>
       </main>
     )
   }
+
+
+  const hotspots =
+    Array.isArray(photoRankd.hotspots)
+      ? photoRankd.hotspots
+      : []
 
 
   return (
@@ -221,20 +208,20 @@ export default function PhotoRankdPage() {
       style={{
         minHeight: "100vh",
         background: "#F7F4EE",
-        padding: "24px 16px 48px",
-        fontFamily: "Arial, sans-serif"
+        color: "#111"
       }}
     >
       <div
         style={{
           width: "100%",
-          maxWidth: "1200px",
-          margin: "0 auto"
+          maxWidth: "1400px",
+          margin: "0 auto",
+          padding: "24px 20px 60px"
         }}
       >
         <header
           style={{
-            marginBottom: "22px"
+            marginBottom: "24px"
           }}
         >
           <div
@@ -245,54 +232,57 @@ export default function PhotoRankdPage() {
               marginBottom: "10px"
             }}
           >
-            <div
+            <span
               style={{
-                fontSize: "34px",
-                fontWeight: 900,
-                lineHeight: 1,
-                color: "#FF6B35"
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "34px",
+                height: "34px",
+                borderRadius: "50%",
+                background: "#FF6B35",
+                color: "#fff",
+                fontSize: "18px",
+                fontWeight: 900
               }}
             >
               7
-            </div>
+            </span>
 
-            <div
+            <span
               style={{
-                fontSize: "20px",
-                fontWeight: 900,
-                letterSpacing: "-0.04em",
-                color: "#111"
+                fontSize: "14px",
+                fontWeight: 800,
+                letterSpacing: "0.08em"
               }}
             >
               RANKD
-            </div>
+            </span>
           </div>
 
           <h1
             style={{
               margin: 0,
-              fontSize: "clamp(28px, 5vw, 48px)",
-              lineHeight: 1,
-              letterSpacing: "-0.04em",
+              fontSize: "clamp(32px, 5vw, 64px)",
+              lineHeight: 0.98,
               fontWeight: 900,
-              color: "#111"
+              letterSpacing: "-0.04em"
             }}
           >
-            {experience.title}
+            {photoRankd.title}
           </h1>
 
-          {experience.description && (
+          {photoRankd.description && (
             <p
               style={{
                 maxWidth: "720px",
-                marginTop: "12px",
-                marginBottom: 0,
+                margin: "14px 0 0",
                 fontSize: "16px",
                 lineHeight: 1.5,
                 color: "#555"
               }}
             >
-              {experience.description}
+              {photoRankd.description}
             </p>
           )}
         </header>
@@ -302,57 +292,111 @@ export default function PhotoRankdPage() {
           style={{
             position: "relative",
             width: "100%",
-            aspectRatio: "4 / 3",
             overflow: "hidden",
-            borderRadius: "24px",
+            borderRadius: "18px",
             background: "#111",
             boxShadow:
-              "0 20px 60px rgba(0,0,0,0.16)"
+              "0 20px 60px rgba(0,0,0,0.12)"
           }}
         >
           <img
-            src={experience.image_url}
-            alt={experience.title}
+            src={photoRankd.image_url}
+            alt={photoRankd.title}
             style={{
-              position: "absolute",
-              inset: 0,
+              display: "block",
               width: "100%",
-              height: "100%",
+              height: "auto",
+              maxHeight: "80vh",
               objectFit: "contain"
             }}
           />
 
-          {experience.hotspots.map(
-            hotspot => (
-              <Link
-                key={hotspot.id}
-                href={`/rank/${hotspot.rankingId}`}
-                aria-label={`Open RANKD ${hotspot.id}`}
-                style={{
-                  position: "absolute",
-                  left: `${hotspot.x}%`,
-                  top: `${hotspot.y}%`,
-                  transform: "translate(-50%, -50%)",
-                  width: "58px",
-                  height: "58px",
-                  borderRadius: "50%",
-                  background: "#FF6B35",
-                  color: "#111",
-                  textDecoration: "none",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  fontSize: "27px",
-                  fontWeight: 900,
-                  border: "3px solid #111",
-                  boxShadow:
-                    "0 8px 24px rgba(0,0,0,0.28)",
-                  zIndex: 5
-                }}
-              >
-                7
-              </Link>
-            )
+
+          {hotspots.map(
+            (
+              hotspot,
+              index
+            ) => {
+              if (
+                !hotspot?.rankingId
+              ) {
+                return null
+              }
+
+
+              return (
+                <a
+                  key={
+                    `${hotspot.rankingId}-${index}`
+                  }
+                  href={
+                    `/rank/${hotspot.rankingId}`
+                  }
+                  aria-label={
+                    `Open RANKD ${index + 1}`
+                  }
+                  style={{
+                    position: "absolute",
+                    left: `${hotspot.x}%`,
+                    top: `${hotspot.y}%`,
+                    transform:
+                      "translate(-50%, -50%)",
+                    width: "54px",
+                    height: "54px",
+                    borderRadius: "50%",
+                    background: "#FF6B35",
+                    color: "#fff",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    textDecoration: "none",
+                    fontSize: "26px",
+                    fontWeight: 900,
+                    boxShadow:
+                      "0 8px 24px rgba(0,0,0,0.28)",
+                    border:
+                      "3px solid rgba(255,255,255,0.95)",
+                    transition:
+                      "transform 160ms ease"
+                  }}
+                  onMouseEnter={
+                    (event) => {
+                      event.currentTarget.style.transform =
+                        "translate(-50%, -50%) scale(1.08)"
+                    }
+                  }
+                  onMouseLeave={
+                    (event) => {
+                      event.currentTarget.style.transform =
+                        "translate(-50%, -50%) scale(1)"
+                    }
+                  }
+                >
+                  7
+
+                  <span
+                    style={{
+                      position: "absolute",
+                      right: "-7px",
+                      top: "-7px",
+                      minWidth: "21px",
+                      height: "21px",
+                      padding: "0 5px",
+                      borderRadius: "999px",
+                      background: "#111",
+                      color: "#fff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: "11px",
+                      fontWeight: 800
+                    }}
+                  >
+                    {index + 1}
+                  </span>
+                </a>
+              )
+            }
           )}
         </section>
 
@@ -361,12 +405,13 @@ export default function PhotoRankdPage() {
           style={{
             display: "flex",
             justifyContent: "center",
-            marginTop: "18px",
+            marginTop: "20px",
             color: "#777",
-            fontSize: "13px"
+            fontSize: "13px",
+            textAlign: "center"
           }}
         >
-          Tap any 7 to explore the RANKD.
+          Tap a RANKD 7 to explore the list.
         </div>
       </div>
     </main>

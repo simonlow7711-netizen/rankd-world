@@ -9,8 +9,8 @@ import {
 
 
 import {
-  getSupabaseRanking
-} from "@/utils/supabaseRankings"
+  getSupabaseRankingServer
+} from "@/utils/supabaseRankingServer"
 
 
 import {
@@ -21,49 +21,35 @@ import {
 import RankClient from "./RankClient"
 
 
-const SITE_URL =
-  "https://rankd.world"
-
-
 type Props = {
-
   params: Promise<{
-    id: string
+    id:string
   }>
-
 }
 
 
 export async function generateMetadata(
-
   {
     params
-
-  }: Props
-
-): Promise<Metadata> {
-
+  }:Props
+):Promise<Metadata>{
 
   const {
     id
-
-  } =
-    await params
+  } = await params
 
 
   const ranking =
-    await getSupabaseRanking(
+    await getSupabaseRankingServer(
       id
     )
 
 
-  if (!ranking) {
+  if(!ranking){
 
     return {
-
       title:
-        "RANKD | Top 7 everything"
-
+        "RANKD | The world's Top 7 everything"
     }
 
   }
@@ -75,160 +61,38 @@ export async function generateMetadata(
     )
 
 
-  const locationLabel =
-
-    ranking.location
-
-      ? [
-
-          ranking.location.name,
-
-          ranking.location.city,
-
-          ranking.location.country
-
-        ]
-
-          .filter(Boolean)
-
-          .join(
-            ", "
-          )
-
-      : ""
-
-
   const description =
-
-    ranking.description
-    ||
-    (
-
-      locationLabel
-
-        ? `Discover ${title} in ${locationLabel} on RANKD.`
-
-        : `Discover ${title} on RANKD.`
-
-    )
-
-
-  const rankingUrl =
-    `${SITE_URL}/rank/${ranking.id}`
-
-
-  const imageUrl =
-    `${SITE_URL}/api/og?id=${encodeURIComponent(
-      ranking.id
-    )}`
+    ranking.description ||
+    `Discover ${title} on RANKD.`
 
 
   return {
-
     title:
       `${title} | RANKD`,
-
-    description:
-      description,
-
-    alternates: {
-
-      canonical:
-        rankingUrl
-
-    },
-
-    openGraph: {
-
-      type:
-        "website",
-
-      url:
-        rankingUrl,
-
-      title:
-        `${title} | RANKD`,
-
-      description:
-        description,
-
-      siteName:
-        "RANKD",
-
-      locale:
-        "en_GB",
-
-      images: [
-
-        {
-
-          url:
-            imageUrl,
-
-          width:
-            1200,
-
-          height:
-            630,
-
-          alt:
-            `${title} | RANKD`
-
-        }
-
-      ]
-
-    },
-
-    twitter: {
-
-      card:
-        "summary_large_image",
-
-      title:
-        `${title} | RANKD`,
-
-      description:
-        description,
-
-      images: [
-
-        imageUrl
-
-      ]
-
-    }
-
+    description
   }
 
 }
 
 
 export default async function RankPage(
-
   {
-
     params
-
-  }: Props
-
-) {
-
+  }:Props
+){
 
   const {
     id
-
-  } =
-    await params
+  } = await params
 
 
   const ranking =
-    await getSupabaseRanking(
+    await getSupabaseRankingServer(
       id
     )
 
 
-  if (!ranking) {
+  if(!ranking){
 
     notFound()
 
@@ -242,238 +106,52 @@ export default async function RankPage(
 
 
   const description =
-
-    ranking.description
-    ||
-    (
-
-      ranking.location
-
-        ? `Discover ${title} in ${ranking.location.name} on RANKD.`
-
-        : `Discover ${title} on RANKD.`
-
-    )
-
-
-  const rankingUrl =
-    `${SITE_URL}/rank/${ranking.id}`
-
-
-  const sortedItems =
-
-    [...ranking.items]
-
-      .sort(
-
-        (a, b) =>
-
-          a.position -
-          b.position
-
-      )
+    ranking.description ||
+    `Discover ${title} on RANKD.`
 
 
   const structuredData = {
-
     "@context":
       "https://schema.org",
-
-    "@graph": [
-
-      {
-
-        "@type":
-          "WebSite",
-
-        "@id":
-          `${SITE_URL}/#website`,
-
-        url:
-          SITE_URL,
-
-        name:
-          "RANKD",
-
-        description:
-          "The world's Top 7 everything.",
-
-        inLanguage:
-          "en-GB"
-
-      },
-
-
-      {
-
-        "@type":
-          "Organization",
-
-        "@id":
-          `${SITE_URL}/#organization`,
-
-        name:
-          "RANKD",
-
-        url:
-          SITE_URL
-
-      },
-
-
-      {
-
-        "@type":
-          "WebPage",
-
-        "@id":
-          `${rankingUrl}/#webpage`,
-
-        url:
-          rankingUrl,
-
-        name:
-          `${title} | RANKD`,
-
-        description:
-          description,
-
-        isPartOf: {
-
-          "@id":
-            `${SITE_URL}/#website`
-
-        },
-
-        about: {
-
-          "@id":
-            `${SITE_URL}/#organization`
-
-        },
-
-        inLanguage:
-          "en-GB"
-
-      },
-
-
-      {
-
-        "@type":
-          "ItemList",
-
-        "@id":
-          `${rankingUrl}/#ranking`,
-
-        name:
-          title,
-
-        description:
-          description,
-
-        url:
-          rankingUrl,
-
-        numberOfItems:
-          sortedItems.length,
-
-        itemListOrder:
-          "https://schema.org/ItemListOrderAscending",
-
-        itemListElement:
-
-          sortedItems.map(
-
-            item => ({
-
-              "@type":
-                "ListItem",
-
-              position:
-                item.position,
-
-              name:
-                item.name
-
-            })
-
-          )
-
-      },
-
-
-      ...(ranking.location
-
-        ? [
-
-            {
-
-              "@type":
-                "Place",
-
-              "@id":
-                `${rankingUrl}/#place`,
-
-              name:
-                ranking.location.name,
-
-              address: {
-
-                "@type":
-                  "PostalAddress",
-
-                addressLocality:
-                  ranking.location.city,
-
-                addressCountry:
-                  ranking.location.country
-
-              }
-
-            }
-
-          ]
-
-        : [])
-
-    ]
-
+    "@type":
+      "ItemList",
+    name:
+      title,
+    description,
+    numberOfItems:
+      ranking.items.length,
+    itemListElement:
+      ranking.items.map(
+        item => ({
+          "@type":
+            "ListItem",
+          position:
+            item.position,
+          name:
+            item.name
+        })
+      )
   }
 
 
   return (
-
     <>
-
       <script
-
         type="application/ld+json"
-
         dangerouslySetInnerHTML={{
-
           __html:
             JSON.stringify(
               structuredData
             )
-
         }}
-
       />
 
-
       <RankClient
-
         id={id}
-
-        initialRanking={
-          ranking
-        }
-
+        initialRanking={ranking}
       />
 
     </>
-
   )
 
 }

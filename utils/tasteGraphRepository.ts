@@ -1205,8 +1205,10 @@ export async function saveTasteGraph(
 
         "SAVE TASTE SIGNAL ERROR",
 
-        insertError
-
+        `message=${insertError.message ?? "none"} | ` +
+        `code=${insertError.code ?? "none"} | ` +
+        `details=${insertError.details ?? "none"} | ` +
+        `hint=${insertError.hint ?? "none"}`
       )
 
     }
