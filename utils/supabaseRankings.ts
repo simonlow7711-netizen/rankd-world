@@ -2,6 +2,7 @@ import {
   supabase
 } from "@/utils/supabase"
 
+
 import {
   Ranking
 } from "@/types/ranking"
@@ -545,7 +546,19 @@ export async function createSupabaseRanking(
               ? "challenge"
               : ranking.source === "seed"
                 ? "seed"
-                : "community"
+                : "community",
+
+        location_name:
+          ranking.location?.name ??
+          null,
+
+        location_city:
+          ranking.location?.city ??
+          null,
+
+        location_country:
+          ranking.location?.country ??
+          null
       }
     )
     .select(

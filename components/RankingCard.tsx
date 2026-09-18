@@ -1217,6 +1217,22 @@ export default function RankingCard({
     )
 
 
+  const locationName =
+    ranking.location?.name?.trim() ??
+    ""
+
+  const locationCity =
+    ranking.location?.city?.trim() ??
+    ""
+
+  const showLocationCity =
+    Boolean(
+      locationCity
+    ) &&
+    locationCity.toLowerCase() !==
+      locationName.toLowerCase()
+
+
   function handleRankd() {
 
     if (response !== null) {
@@ -1602,8 +1618,10 @@ export default function RankingCard({
 
                 {
                   [
-                    ranking.location.name,
-                    ranking.location.city,
+                    locationName,
+                    showLocationCity
+                      ? locationCity
+                      : "",
                     formatLocationCountry(
                       ranking.location.country
                     )

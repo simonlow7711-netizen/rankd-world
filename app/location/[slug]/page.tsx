@@ -1,12 +1,12 @@
 import {
-  notFound
-} from "next/navigation"
-
-import {
   getAllRankings
 } from "@/utils/supabaseRankings"
 
 import RankingCard from "@/components/RankingCard"
+
+
+export const dynamic =
+  "force-dynamic"
 
 
 type LocationConfig = {
@@ -190,6 +190,171 @@ type LocationPageProps = {
 }
 
 
+function normalise(
+  value:string | null | undefined
+):string{
+
+  return (
+    value ??
+    ""
+  )
+    .trim()
+    .toLowerCase()
+
+}
+
+
+function normaliseCountry(
+  value:string | null | undefined
+):string{
+
+  const country =
+    normalise(
+      value
+    )
+
+
+  if(
+    country === "uk"
+  ){
+
+    return "united kingdom"
+
+  }
+
+
+  if(
+    country === "us"
+  ){
+
+    return "united states"
+
+  }
+
+
+  return country
+
+}
+
+
+function locationMatches(
+  ranking:any,
+  location:LocationConfig
+):boolean{
+
+  if(
+    !ranking.location
+  ){
+
+    return false
+
+  }
+
+
+  const rankingName =
+    normalise(
+      ranking.location.name
+    )
+
+  const rankingCity =
+    normalise(
+      ranking.location.city
+    )
+
+  const rankingCountry =
+    normaliseCountry(
+      ranking.location.country
+    )
+
+  const locationName =
+    normalise(
+      location.name
+    )
+
+  const locationCity =
+    normalise(
+      location.city
+    )
+
+  const locationCountry =
+    normaliseCountry(
+      location.country
+    )
+
+
+  /*
+   *
+   * City-level locations:
+   *
+   * Leeds, Sheffield, Dundee etc.
+   * match against the city rather than
+   * requiring a particular location_name.
+   *
+   */
+  if(
+    location.cityLevel
+  ){
+
+    return (
+
+      rankingCity ===
+        locationCity
+
+      &&
+
+      rankingCountry ===
+        locationCountry
+
+    )
+
+  }
+
+
+  /*
+   *
+   * Neighbourhood / district locations:
+   *
+   * Match the location name and, where
+   * available, the associated city/country.
+   *
+   */
+  if(
+    rankingName !==
+      locationName
+  ){
+
+    return false
+
+  }
+
+
+  if(
+    rankingCity &&
+    rankingCity !==
+      locationCity
+  ){
+
+    return false
+
+  }
+
+
+  if(
+    rankingCountry &&
+    rankingCountry !==
+      locationCountry
+  ){
+
+    return false
+
+  }
+
+
+  return true
+
+}
+
+
 export async function generateMetadata({
   params
 }:LocationPageProps) {
@@ -199,42 +364,52 @@ export async function generateMetadata({
   } =
     await params
 
+
   const location =
     locations[
       slug.toLowerCase()
     ]
 
-  if (!location) {
+
+  if(
+    !location
+  ){
 
     return {}
 
   }
 
+
+  const title =
+    `Top 7 ${location.name} Rankings | RANKD`
+
+  const description =
+    `Discover the Top 7 rankings from ${location.name}, ${location.city}. Explore local opinions across food, travel, culture, sport and more.`
+
+  const canonical =
+    `/location/${slug.toLowerCase()}`
+
+
   return {
 
-    title:
-      `Top 7 ${location.name} Rankings | RANKD`,
+    title,
 
-    description:
-      `Discover the Top 7 rankings from ${location.name}, ${location.city}. Explore local opinions across food, travel, culture, sport and more.`,
+    description,
 
     alternates: {
 
-      canonical:
-        `/location/${slug.toLowerCase()}`
+      canonical
 
     },
 
     openGraph: {
 
-      title:
-        `Top 7 ${location.name} Rankings | RANKD`,
+      title,
 
-      description:
-        `Discover the Top 7 rankings from ${location.name}, ${location.city}. Explore local opinions across food, travel, culture, sport and more.`,
+      description,
 
       url:
-        `/location/${slug.toLowerCase()}`,
+        canonical,
 
       type:
         "website"
@@ -255,14 +430,25 @@ export default async function LocationPage({
   } =
     await params
 
+
   const location =
     locations[
       slug.toLowerCase()
     ]
 
-  if (!location) {
 
-    notFound()
+  /*
+   *
+   * An unknown location slug is a genuine
+   * 404. A known location with zero RANKDs
+   * is NOT a 404.
+   *
+   */
+  if(
+    !location
+  ){
+
+    return null
 
   }
 
@@ -273,103 +459,12 @@ export default async function LocationPage({
 
   const locationRankings =
     allRankings.filter(
-      ranking => {
-
-        if (!ranking.location) {
-
-          return false
-
-        }
-
-
-        const rankingName =
-          ranking.location.name
-            ?.trim()
-            .toLowerCase()
-
-        const rankingCity =
-          ranking.location.city
-            ?.trim()
-            .toLowerCase()
-
-        const rankingCountry =
-          ranking.location.country
-            ?.trim()
-            .toLowerCase()
-
-        const normalisedRankingCountry =
-          rankingCountry ===
-            "uk"
-            ? "united kingdom"
-            : rankingCountry
-
-        const normalisedLocationCountry =
-          location.country
-            .trim()
-            .toLowerCase()
-
-
-        if (
-          location.cityLevel
-        ) {
-
-          return (
-
-            rankingCity ===
-              location.city
-                .trim()
-                .toLowerCase()
-
-            &&
-
-            normalisedRankingCountry ===
-              normalisedLocationCountry
-
-          )
-
-        }
-
-
-        return (
-
-          rankingName ===
-            location.name
-              .trim()
-              .toLowerCase()
-
-          &&
-
-          (
-            !ranking.location.city
-            ||
-            rankingCity ===
-              location.city
-                .trim()
-                .toLowerCase()
-          )
-
-          &&
-
-          (
-            !ranking.location.country
-            ||
-            normalisedRankingCountry ===
-              normalisedLocationCountry
-          )
-
+      ranking =>
+        locationMatches(
+          ranking,
+          location
         )
-
-      }
     )
-
-
-  if (
-    locationRankings.length === 0
-  ) {
-
-    notFound()
-
-  }
 
 
   const categories = [
@@ -380,6 +475,19 @@ export default async function LocationPage({
       )
     )
   ]
+
+
+  const countryLabel =
+    location.country ===
+      "United Kingdom"
+      ? "UK"
+      : location.country ===
+          "United States"
+        ? "US"
+        : location.country ===
+            "Philippines"
+          ? "PH"
+          : location.country
 
 
   return (
@@ -449,18 +557,7 @@ export default async function LocationPage({
               ·
             </span>
 
-            {
-              location.country ===
-                "United Kingdom"
-                ? "UK"
-                : location.country ===
-                    "United States"
-                  ? "US"
-                  : location.country ===
-                      "Philippines"
-                    ? "PH"
-                    : location.country
-            }
+            {countryLabel}
 
           </div>
 
@@ -532,6 +629,7 @@ export default async function LocationPage({
 
               </h2>
 
+
               <p
                 className="
                   mt-1
@@ -540,7 +638,11 @@ export default async function LocationPage({
                 "
               >
 
-                Across {categories.length} categories
+                {
+                  locationRankings.length > 0
+                    ? `Across ${categories.length} categories`
+                    : "No RANKDs have been added here yet"
+                }
 
               </p>
 
@@ -549,31 +651,80 @@ export default async function LocationPage({
           </div>
 
 
-          <div
-            className="
-              grid
-              gap-6
-              sm:grid-cols-2
-              lg:grid-cols-3
-            "
-          >
+          {
+            locationRankings.length > 0 ? (
 
-            {locationRankings.map(
-              ranking => (
+              <div
+                className="
+                  grid
+                  gap-6
+                  sm:grid-cols-2
+                  lg:grid-cols-3
+                "
+              >
 
-                <RankingCard
-                  key={
-                    ranking.id
-                  }
-                  ranking={
-                    ranking
-                  }
-                />
+                {locationRankings.map(
+                  ranking => (
 
-              )
-            )}
+                    <RankingCard
+                      key={
+                        ranking.id
+                      }
+                      ranking={
+                        ranking
+                      }
+                    />
 
-          </div>
+                  )
+                )}
+
+              </div>
+
+            ) : (
+
+              <div
+                className="
+                  rounded-2xl
+                  border
+                  border-black/10
+                  bg-white
+                  px-6
+                  py-12
+                  text-center
+                "
+              >
+
+                <p
+                  className="
+                    text-lg
+                    font-semibold
+                    text-black
+                  "
+                >
+
+                  No RANKDs here yet.
+
+                </p>
+
+
+                <p
+                  className="
+                    mt-2
+                    text-sm
+                    text-black/50
+                  "
+                >
+
+                  Check back soon for
+                  rankings from {location.name}.
+
+                </p>
+
+              </div>
+
+            )
+
+          }
 
         </section>
 
