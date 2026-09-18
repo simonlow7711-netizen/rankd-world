@@ -96,6 +96,86 @@ const locations:Record<
     cityLevel:
       true
 
+  },
+
+  dundee: {
+
+    name:
+      "Dundee",
+
+    city:
+      "Dundee",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
+
+  },
+
+  middlesbrough: {
+
+    name:
+      "Middlesbrough",
+
+    city:
+      "Middlesbrough",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
+
+  },
+
+  "stoke-on-trent": {
+
+    name:
+      "Stoke-on-Trent",
+
+    city:
+      "Stoke-on-Trent",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
+
+  },
+
+  derry: {
+
+    name:
+      "Derry",
+
+    city:
+      "Derry",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
+
+  },
+
+  swansea: {
+
+    name:
+      "Swansea",
+
+    city:
+      "Swansea",
+
+    country:
+      "United Kingdom",
+
+    cityLevel:
+      true
+
   }
 
 }

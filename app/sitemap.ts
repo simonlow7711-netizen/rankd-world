@@ -211,6 +211,91 @@ export default async function sitemap(): Promise<
       priority:
         0.8
 
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/dundee`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/middlesbrough`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/stoke-on-trent`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/derry`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
+    },
+
+    {
+
+      url:
+        `${SITE_URL}/location/swansea`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+
     }
 
   ]
