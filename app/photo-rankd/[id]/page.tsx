@@ -234,14 +234,23 @@ export default function PhotoRankdPage(){
     window.setTimeout(
       () => {
 
-        document
-          .getElementById(
+        const preview =
+          document.getElementById(
             "photo-rankd-preview"
           )
-          ?.scrollIntoView({
+
+
+        if(
+          preview &&
+          window.innerWidth <= 900
+        ){
+
+          preview.scrollIntoView({
             behavior: "smooth",
             block: "start"
           })
+
+        }
 
       },
       50
@@ -304,7 +313,7 @@ export default function PhotoRankdPage(){
             style={{
               fontSize: "72px",
               lineHeight: 1,
-              fontWeight: 900,
+              fontWeight: 950,
               color: "#FF6B35",
               marginBottom: "20px"
             }}
@@ -318,7 +327,7 @@ export default function PhotoRankdPage(){
               margin: 0,
               fontSize: "28px",
               lineHeight: 1.1,
-              fontWeight: 800,
+              fontWeight: 900,
               color: "#111"
             }}
           >
@@ -367,25 +376,31 @@ export default function PhotoRankdPage(){
       <div
         style={{
           width: "100%",
-          maxWidth: "1500px",
+          maxWidth: "1480px",
           margin: "0 auto",
-          padding: "24px 20px 60px"
+          padding:
+            "28px 28px 72px"
         }}
       >
 
         <header
           style={{
-            marginBottom: "24px"
+            maxWidth: "1080px",
+            margin:
+              "0 auto 38px"
           }}
         >
 
           <p
             style={{
-              margin: "0 0 10px",
-              fontSize: "12px",
+              margin:
+                "0 0 12px",
+              fontSize: "11px",
               fontWeight: 900,
-              letterSpacing: "0.16em",
-              textTransform: "uppercase",
+              letterSpacing:
+                "0.18em",
+              textTransform:
+                "uppercase",
               color: "#FF6B35"
             }}
           >
@@ -396,10 +411,14 @@ export default function PhotoRankdPage(){
           <h1
             style={{
               margin: 0,
-              fontSize: "clamp(32px, 5vw, 64px)",
-              lineHeight: 0.98,
-              fontWeight: 900,
-              letterSpacing: "-0.04em"
+              maxWidth: "900px",
+              fontSize:
+                "clamp(36px, 5.5vw, 72px)",
+              lineHeight:
+                0.94,
+              fontWeight: 950,
+              letterSpacing:
+                "-0.055em"
             }}
           >
             {photoRankd.title}
@@ -410,14 +429,17 @@ export default function PhotoRankdPage(){
 
             <p
               style={{
-                maxWidth: "720px",
-                margin: "14px 0 0",
+                maxWidth: "650px",
+                margin:
+                  "18px 0 0",
                 fontSize: "16px",
-                lineHeight: 1.5,
-                color: "#555"
+                lineHeight: 1.55,
+                color: "#666"
               }}
             >
-              {photoRankd.description}
+              {
+                photoRankd.description
+              }
             </p>
 
           )}
@@ -426,30 +448,35 @@ export default function PhotoRankdPage(){
 
 
         <div
+          className="photo-rankd-layout"
           style={{
             display: "grid",
             gridTemplateColumns:
-              "minmax(0, 1.25fr) minmax(360px, 0.75fr)",
+              "minmax(0, 1.15fr) minmax(360px, 0.72fr)",
             alignItems: "start",
-            gap: "28px"
+            gap: "48px",
+            maxWidth: "1260px",
+            margin:
+              "0 auto"
           }}
-          className="photo-rankd-layout"
         >
 
           <section
+            className="photo-rankd-image-column"
             style={{
-              width: "100%",
+              minWidth: 0,
               display: "flex",
               justifyContent: "center"
             }}
           >
 
             <div
+              className="photo-rankd-image-wrap"
               style={{
                 position: "relative",
                 display: "inline-block",
-                maxWidth: "100%",
-                maxHeight: "78vh"
+                width: "auto",
+                maxWidth: "100%"
               }}
             >
 
@@ -460,13 +487,17 @@ export default function PhotoRankdPage(){
                 alt={
                   photoRankd.title
                 }
+                className="photo-rankd-image"
                 style={{
                   display: "block",
                   width: "auto",
                   maxWidth: "100%",
                   height: "auto",
                   maxHeight: "78vh",
-                  objectFit: "contain"
+                  objectFit: "contain",
+                  boxShadow:
+                    "0 24px 60px rgba(0,0,0,0.16)",
+                  borderRadius: "2px"
                 }}
               />
 
@@ -519,8 +550,8 @@ export default function PhotoRankdPage(){
                           isSelected
                             ? "translate(-50%, -50%) scale(1.12)"
                             : "translate(-50%, -50%)",
-                        width: "52px",
-                        height: "52px",
+                        width: "54px",
+                        height: "54px",
                         padding: 0,
                         border: "none",
                         borderRadius: 0,
@@ -530,7 +561,7 @@ export default function PhotoRankdPage(){
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "31px",
+                        fontSize: "32px",
                         lineHeight: 1,
                         fontWeight: 950,
                         fontFamily:
@@ -539,11 +570,11 @@ export default function PhotoRankdPage(){
                         opacity:
                           isSelected
                             ? 1
-                            : 0.42,
+                            : 0.38,
                         filter:
                           isSelected
-                            ? "drop-shadow(0 5px 12px rgba(0,0,0,0.35))"
-                            : "drop-shadow(0 3px 8px rgba(0,0,0,0.2))",
+                            ? "drop-shadow(0 5px 12px rgba(0,0,0,0.34))"
+                            : "drop-shadow(0 3px 7px rgba(0,0,0,0.20))",
                         transition:
                           "transform 160ms ease, opacity 160ms ease, filter 160ms ease"
                       }}
@@ -557,7 +588,7 @@ export default function PhotoRankdPage(){
                             "translate(-50%, -50%) scale(1.12)"
 
                           event.currentTarget.style.filter =
-                            "drop-shadow(0 5px 12px rgba(0,0,0,0.35))"
+                            "drop-shadow(0 5px 12px rgba(0,0,0,0.34))"
 
                         }
                       }
@@ -567,7 +598,7 @@ export default function PhotoRankdPage(){
                           event.currentTarget.style.opacity =
                             isSelected
                               ? "1"
-                              : "0.42"
+                              : "0.38"
 
                           event.currentTarget.style.transform =
                             isSelected
@@ -576,8 +607,8 @@ export default function PhotoRankdPage(){
 
                           event.currentTarget.style.filter =
                             isSelected
-                              ? "drop-shadow(0 5px 12px rgba(0,0,0,0.35))"
-                              : "drop-shadow(0 3px 8px rgba(0,0,0,0.2))"
+                              ? "drop-shadow(0 5px 12px rgba(0,0,0,0.34))"
+                              : "drop-shadow(0 3px 7px rgba(0,0,0,0.20))"
 
                         }
                       }
@@ -589,25 +620,29 @@ export default function PhotoRankdPage(){
                       <span
                         style={{
                           position: "absolute",
-                          right: "-4px",
-                          top: "-2px",
+                          right: "-3px",
+                          top: "-3px",
                           minWidth: "21px",
                           height: "21px",
-                          padding: "0 5px",
-                          borderRadius: "999px",
+                          padding:
+                            "0 5px",
+                          borderRadius:
+                            "999px",
                           background:
                             isSelected
                               ? "#111"
-                              : "rgba(17,17,17,0.72)",
+                              : "rgba(17,17,17,0.68)",
                           color: "#fff",
                           display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
+                          alignItems:
+                            "center",
+                          justifyContent:
+                            "center",
                           fontSize: "10px",
                           lineHeight: 1,
                           fontWeight: 900,
                           border:
-                            "2px solid rgba(247,244,238,0.8)"
+                            "2px solid rgba(247,244,238,0.82)"
                         }}
                       >
                         {index + 1}
@@ -627,10 +662,11 @@ export default function PhotoRankdPage(){
 
           <section
             id="photo-rankd-preview"
+            className="photo-rankd-preview"
             style={{
               minWidth: 0,
               position: "sticky",
-              top: "24px"
+              top: "28px"
             }}
           >
 
@@ -639,24 +675,25 @@ export default function PhotoRankdPage(){
 
                 <div
                   style={{
-                    minHeight: "300px",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    padding: "40px",
-                    background: "#fff",
+                    padding:
+                      "42px 36px",
                     borderTop:
-                      "4px solid #FF6B35"
+                      "1px solid #111",
+                    borderBottom:
+                      "1px solid #D8D3CA"
                   }}
                 >
 
                   <div
                     style={{
-                      fontSize: "56px",
-                      lineHeight: 1,
+                      fontSize:
+                        "72px",
+                      lineHeight: 0.8,
                       fontWeight: 950,
-                      color: "#FF6B35",
-                      marginBottom: "20px"
+                      color:
+                        "#FF6B35",
+                      marginBottom:
+                        "30px"
                     }}
                   >
                     7
@@ -666,29 +703,37 @@ export default function PhotoRankdPage(){
                   <p
                     style={{
                       margin: 0,
-                      fontSize: "22px",
-                      lineHeight: 1.15,
+                      maxWidth:
+                        "360px",
+                      fontSize:
+                        "28px",
+                      lineHeight:
+                        1.03,
                       fontWeight: 900,
                       letterSpacing:
-                        "-0.025em"
+                        "-0.035em"
                     }}
                   >
-                    Explore the seven RANKDs
+                    Explore the seven RANKDs.
                   </p>
 
 
                   <p
                     style={{
                       margin:
-                        "12px 0 0",
-                      maxWidth: "360px",
-                      color: "#666",
-                      fontSize: "14px",
-                      lineHeight: 1.5
+                        "16px 0 0",
+                      maxWidth:
+                        "380px",
+                      color:
+                        "#666",
+                      fontSize:
+                        "14px",
+                      lineHeight:
+                        1.55
                     }}
                   >
-                    Select a 7 on the photograph
-                    to see the ranking behind it.
+                    Each 7 on the photograph
+                    reveals a different ranking.
                   </p>
 
                 </div>
@@ -700,16 +745,24 @@ export default function PhotoRankdPage(){
 
               <div
                 style={{
-                  minHeight: "300px",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  padding: "40px",
-                  background: "#fff",
+                  minHeight:
+                    "300px",
+                  display:
+                    "flex",
+                  alignItems:
+                    "center",
+                  justifyContent:
+                    "center",
+                  padding:
+                    "40px",
                   borderTop:
-                    "4px solid #FF6B35",
-                  color: "#666",
-                  fontSize: "14px"
+                    "1px solid #111",
+                  borderBottom:
+                    "1px solid #D8D3CA",
+                  color:
+                    "#666",
+                  fontSize:
+                    "14px"
                 }}
               >
                 Loading RANKD...
@@ -724,25 +777,28 @@ export default function PhotoRankdPage(){
                 <div
                   style={{
                     padding:
-                      "28px 24px 30px",
-                    background: "#fff",
+                      "34px 32px 30px",
                     borderTop:
                       "4px solid #FF6B35",
-                    boxShadow:
-                      "0 14px 40px rgba(0,0,0,0.08)"
+                    borderBottom:
+                      "1px solid #D8D3CA",
+                    background:
+                      "rgba(255,255,255,0.42)"
                   }}
                 >
 
                   <div
                     style={{
-                      display: "flex",
+                      display:
+                        "flex",
                       alignItems:
                         "flex-start",
                       justifyContent:
                         "space-between",
-                      gap: "20px",
+                      gap:
+                        "20px",
                       marginBottom:
-                        "22px"
+                        "26px"
                     }}
                   >
 
@@ -751,14 +807,17 @@ export default function PhotoRankdPage(){
                       <p
                         style={{
                           margin:
-                            "0 0 8px",
-                          fontSize: "11px",
-                          fontWeight: 900,
+                            "0 0 9px",
+                          fontSize:
+                            "10px",
+                          fontWeight:
+                            900,
                           letterSpacing:
-                            "0.14em",
+                            "0.16em",
                           textTransform:
                             "uppercase",
-                          color: "#FF6B35"
+                          color:
+                            "#FF6B35"
                         }}
                       >
                         RANKD{" "}
@@ -773,11 +832,13 @@ export default function PhotoRankdPage(){
                         style={{
                           margin: 0,
                           fontSize:
-                            "clamp(24px, 3vw, 40px)",
-                          lineHeight: 1,
-                          fontWeight: 900,
+                            "clamp(25px, 3vw, 42px)",
+                          lineHeight:
+                            0.98,
+                          fontWeight:
+                            950,
                           letterSpacing:
-                            "-0.035em"
+                            "-0.045em"
                         }}
                       >
                         {
@@ -805,13 +866,18 @@ export default function PhotoRankdPage(){
                       }
                       style={{
                         flexShrink: 0,
-                        border: "none",
+                        border:
+                          "none",
                         background:
                           "transparent",
-                        color: "#666",
-                        fontSize: "13px",
-                        fontWeight: 700,
-                        cursor: "pointer",
+                        color:
+                          "#666",
+                        fontSize:
+                          "12px",
+                        fontWeight:
+                          800,
+                        cursor:
+                          "pointer",
                         padding:
                           "4px 0"
                       }}
@@ -828,9 +894,12 @@ export default function PhotoRankdPage(){
                       style={{
                         margin:
                           "0 0 24px",
-                        color: "#666",
-                        fontSize: "14px",
-                        lineHeight: 1.5
+                        color:
+                          "#666",
+                        fontSize:
+                          "14px",
+                        lineHeight:
+                          1.55
                       }}
                     >
                       {
@@ -844,7 +913,7 @@ export default function PhotoRankdPage(){
                   <div
                     style={{
                       borderTop:
-                        "1px solid #ddd"
+                        "1px solid #D8D3CA"
                     }}
                   >
 
@@ -875,11 +944,12 @@ export default function PhotoRankdPage(){
                                 "38px 1fr",
                               alignItems:
                                 "center",
-                              gap: "10px",
+                              gap:
+                                "10px",
                               padding:
-                                "13px 0",
+                                "14px 0",
                               borderBottom:
-                                "1px solid #ddd"
+                                "1px solid #D8D3CA"
                             }}
                           >
 
@@ -888,7 +958,7 @@ export default function PhotoRankdPage(){
                                 fontSize:
                                   "17px",
                                 fontWeight:
-                                  900,
+                                  950,
                                 color:
                                   "#FF6B35"
                               }}
@@ -902,9 +972,9 @@ export default function PhotoRankdPage(){
                                 fontSize:
                                   "15px",
                                 fontWeight:
-                                  700,
+                                  750,
                                 lineHeight:
-                                  1.25
+                                  1.3
                               }}
                             >
                               {
@@ -924,10 +994,14 @@ export default function PhotoRankdPage(){
                     style={{
                       display:
                         "flex",
+                      alignItems:
+                        "center",
                       justifyContent:
-                        "flex-start",
+                        "space-between",
+                      gap:
+                        "20px",
                       marginTop:
-                        "24px"
+                        "26px"
                     }}
                   >
 
@@ -975,18 +1049,6 @@ export default function PhotoRankdPage(){
 
         </div>
 
-
-        <div
-          style={{
-            marginTop: "20px",
-            color: "#777",
-            fontSize: "13px",
-            textAlign: "center"
-          }}
-        >
-          Tap a RANKD 7 to explore the list.
-        </div>
-
       </div>
 
 
@@ -997,20 +1059,44 @@ export default function PhotoRankdPage(){
           .photo-rankd-layout{
             grid-template-columns:
               minmax(0, 1fr) !important;
-            gap: 24px !important;
+            gap:
+              32px !important;
           }
 
-          .photo-rankd-layout
-          section:last-child{
-            position: static !important;
+          .photo-rankd-image-column{
+            display:
+              block !important;
+          }
+
+          .photo-rankd-image-wrap{
+            width:
+              100% !important;
+            max-width:
+              100% !important;
+          }
+
+          .photo-rankd-image{
+            width:
+              100% !important;
+            max-width:
+              100% !important;
+            max-height:
+              none !important;
+          }
+
+          .photo-rankd-preview{
+            position:
+              static !important;
           }
 
         }
 
+
         @media (max-width: 600px){
 
           .photo-rankd-layout{
-            gap: 18px !important;
+            gap:
+              24px !important;
           }
 
         }
