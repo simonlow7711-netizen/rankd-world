@@ -328,9 +328,7 @@ export default function PhotoRankdPage() {
           alignItems:
             "center",
           justifyContent:
-            "center",
-          fontFamily:
-            "Arial, Helvetica, sans-serif"
+            "center"
         }}
       >
         Loading...
@@ -352,9 +350,7 @@ export default function PhotoRankdPage() {
           color:
             "#111",
           padding:
-            "80px 24px",
-          fontFamily:
-            "Arial, Helvetica, sans-serif"
+            "80px 24px"
         }}
       >
         <div
@@ -365,6 +361,7 @@ export default function PhotoRankdPage() {
               "0 auto"
           }}
         >
+
           <h1
             style={{
               margin:
@@ -380,6 +377,7 @@ export default function PhotoRankdPage() {
             Photo RANKD not found
           </h1>
 
+
           <p
             style={{
               margin:
@@ -390,6 +388,7 @@ export default function PhotoRankdPage() {
           >
             This Photo RANKD could not be loaded.
           </p>
+
         </div>
       </main>
     )
@@ -406,9 +405,7 @@ export default function PhotoRankdPage() {
         color:
           "#111",
         padding:
-          "40px 24px 72px",
-        fontFamily:
-          "Arial, Helvetica, sans-serif"
+          "40px 24px 72px"
       }}
     >
 
@@ -457,6 +454,7 @@ export default function PhotoRankdPage() {
             >
               7
             </span>
+
 
             <span
               style={{
@@ -512,7 +510,9 @@ export default function PhotoRankdPage() {
                     "#5F5B56"
                 }}
               >
-                {photoRankd.description}
+                {
+                  photoRankd.description
+                }
               </p>
             )
           }
@@ -654,6 +654,7 @@ export default function PhotoRankdPage() {
                             2
                         }}
                         onMouseEnter={event => {
+
                           event.currentTarget.style.opacity =
                             "1"
 
@@ -662,11 +663,14 @@ export default function PhotoRankdPage() {
 
                           event.currentTarget.style.filter =
                             "drop-shadow(0 4px 10px rgba(0,0,0,0.28))"
+
                         }}
                         onMouseLeave={event => {
+
                           if (
                             !selected
                           ) {
+
                             event.currentTarget.style.opacity =
                               "0.42"
 
@@ -675,11 +679,14 @@ export default function PhotoRankdPage() {
 
                             event.currentTarget.style.filter =
                               "drop-shadow(0 3px 8px rgba(0,0,0,0.24))"
+
                           }
+
                         }}
                       >
 
                         7
+
 
                         <span
                           style={{
@@ -820,7 +827,9 @@ export default function PhotoRankdPage() {
                                 "background 150ms ease, color 150ms ease"
                             }}
                           >
+
                             {index + 1}
+
 
                             {
                               selected && (
@@ -856,6 +865,7 @@ export default function PhotoRankdPage() {
 
               {
                 previewLoading ? (
+
                   <div
                     style={{
                       minHeight:
@@ -876,8 +886,10 @@ export default function PhotoRankdPage() {
                   >
                     Loading RANKD...
                   </div>
+
                 )
-              : selectedRanking ? (
+                : selectedRanking ? (
+
                   <div
                     style={{
                       background:
@@ -927,8 +939,12 @@ export default function PhotoRankdPage() {
                                 "8px"
                             }}
                           >
-                            RANKD #{selectedHotspotIndex + 1}
+                            RANKD #
+                            {
+                              selectedHotspotIndex + 1
+                            }
                           </div>
+
 
                           <h2
                             style={{
@@ -944,7 +960,9 @@ export default function PhotoRankdPage() {
                                 "-0.04em"
                             }}
                           >
-                            {selectedRanking.title}
+                            {
+                              selectedRanking.title
+                            }
                           </h2>
 
                         </div>
@@ -1139,6 +1157,7 @@ export default function PhotoRankdPage() {
                           Open full RANKD
                         </span>
 
+
                         <span
                           style={{
                             color:
@@ -1155,7 +1174,10 @@ export default function PhotoRankdPage() {
                     </div>
 
                   </div>
-                ) : (
+
+                )
+                : (
+
                   <div
                     style={{
                       minHeight:
@@ -1188,6 +1210,7 @@ export default function PhotoRankdPage() {
                       7
                     </div>
 
+
                     <div
                       style={{
                         fontSize:
@@ -1206,6 +1229,7 @@ export default function PhotoRankdPage() {
                     </div>
 
                   </div>
+
                 )
               }
 
@@ -1229,15 +1253,18 @@ export default function PhotoRankdPage() {
               32px !important;
           }
 
+
           .photo-rankd-image-column {
             display:
               block !important;
           }
 
+
           .photo-rankd-image-wrap {
             width:
               100% !important;
           }
+
 
           .photo-rankd-image {
             width:
@@ -1247,6 +1274,7 @@ export default function PhotoRankdPage() {
             height:
               auto !important;
           }
+
 
           .photo-rankd-preview {
             position:
@@ -1263,10 +1291,12 @@ export default function PhotoRankdPage() {
               28px 16px 56px !important;
           }
 
+
           .photo-rankd-layout {
             gap:
               24px !important;
           }
+
 
           .photo-rankd-image-wrap button {
             width:
