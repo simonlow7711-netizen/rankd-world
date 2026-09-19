@@ -46,7 +46,7 @@ type PreviewRanking =
   >
 
 
-export default function PhotoRankdPage(){
+export default function PhotoRankdPage() {
 
   const params =
     useParams()
@@ -54,16 +54,14 @@ export default function PhotoRankdPage(){
   const id =
     typeof params?.id === "string"
       ? params.id
-      : ""
+      : null
 
 
   const [
     photoRankd,
     setPhotoRankd
   ] =
-    useState<PhotoRankd | null>(
-      null
-    )
+    useState<PhotoRankd | null>(null)
 
 
   const [
@@ -77,18 +75,14 @@ export default function PhotoRankdPage(){
     selectedRanking,
     setSelectedRanking
   ] =
-    useState<PreviewRanking | null>(
-      null
-    )
+    useState<PreviewRanking | null>(null)
 
 
   const [
     selectedHotspotIndex,
     setSelectedHotspotIndex
   ] =
-    useState<number | null>(
-      null
-    )
+    useState(0)
 
 
   const [
@@ -101,12 +95,16 @@ export default function PhotoRankdPage(){
   useEffect(
     () => {
 
-      if(!id){
+      if (!id) {
         return
       }
 
 
-      async function loadPhotoRankd(){
+      let cancelled =
+        false
+
+
+      async function loadPhotoRankd() {
 
         setLoading(true)
 
@@ -134,38 +132,102 @@ export default function PhotoRankdPage(){
             .maybeSingle()
 
 
-        if(error){
-
-          console.error(
-            "Could not load Photo RANKD:",
-            error
-          )
-
-          setPhotoRankd(
-            null
-          )
-
-          setLoading(
-            false
-          )
-
+        if (
+          cancelled
+        ) {
           return
-
         }
 
 
+        if (
+          error ||
+          !data
+        ) {
+          setPhotoRankd(null)
+          setLoading(false)
+          return
+        }
+
+
+        const loadedPhotoRankd: PhotoRankd =
+          {
+            id:
+              data.id,
+
+            title:
+              data.title,
+
+            description:
+              data.description,
+
+            image_url:
+              data.image_url,
+
+            ranking_ids:
+              Array.isArray(
+                data.ranking_ids
+              )
+                ? data.ranking_ids
+                : [],
+
+            hotspots:
+              Array.isArray(
+                data.hotspots
+              )
+                ? data.hotspots
+                : []
+          }
+
+
         setPhotoRankd(
-          data as PhotoRankd | null
+          loadedPhotoRankd
         )
 
-        setLoading(
-          false
+        setLoading(false)
+
+
+        if (
+          loadedPhotoRankd.hotspots.length === 0
+        ) {
+          return
+        }
+
+
+        const firstHotspot =
+          loadedPhotoRankd.hotspots[0]
+
+
+        setSelectedHotspotIndex(0)
+        setPreviewLoading(true)
+
+
+        const firstRanking =
+          await getSupabaseRanking(
+            firstHotspot.rankingSupabaseId
+          )
+
+
+        if (
+          cancelled
+        ) {
+          return
+        }
+
+
+        setSelectedRanking(
+          firstRanking
         )
 
+        setPreviewLoading(false)
       }
 
 
       loadPhotoRankd()
+
+
+      return () => {
+        cancelled = true
+      }
 
     },
     [
@@ -174,46 +236,36 @@ export default function PhotoRankdPage(){
   )
 
 
-  async function selectHotspot(
-    hotspot: Hotspot,
-    index: number
-  ){
+  async function selectRanking(
+    hotspotIndex: number
+  ) {
 
-    if(
-      !hotspot?.rankingSupabaseId
-    ){
+    if (
+      !photoRankd
+    ) {
       return
     }
 
 
-    if(
-      selectedHotspotIndex === index
-    ){
+    const hotspot =
+      photoRankd.hotspots[
+        hotspotIndex
+      ]
 
-      setSelectedHotspotIndex(
-        null
-      )
 
-      setSelectedRanking(
-        null
-      )
-
+    if (
+      !hotspot
+    ) {
       return
-
     }
 
 
     setSelectedHotspotIndex(
-      index
+      hotspotIndex
     )
 
-    setSelectedRanking(
-      null
-    )
 
-    setPreviewLoading(
-      true
-    )
+    setPreviewLoading(true)
 
 
     const ranking =
@@ -226,223 +278,244 @@ export default function PhotoRankdPage(){
       ranking
     )
 
-    setPreviewLoading(
-      false
-    )
+    setPreviewLoading(false)
 
 
-    window.setTimeout(
-      () => {
+    if (
+      window.innerWidth <= 900
+    ) {
+      window.setTimeout(
+        () => {
 
-        const preview =
-          document.getElementById(
-            "photo-rankd-preview"
-          )
+          document
+            .querySelector(
+              ".photo-rankd-preview"
+            )
+            ?.scrollIntoView({
+              behavior:
+                "smooth",
+              block:
+                "start"
+            })
 
-
-        if(
-          preview &&
-          window.innerWidth <= 900
-        ){
-
-          preview.scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          })
-
-        }
-
-      },
-      50
-    )
-
+        },
+        50
+      )
+    }
   }
 
 
-  if(loading){
+  function closePreview() {
 
+    setSelectedRanking(null)
+  }
+
+
+  if (
+    loading
+  ) {
     return (
       <main
         style={{
-          minHeight: "100vh",
-          background: "#F7F4EE",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "40px"
+          minHeight:
+            "100vh",
+          background:
+            "#F7F4EE",
+          color:
+            "#111",
+          display:
+            "flex",
+          alignItems:
+            "center",
+          justifyContent:
+            "center",
+          fontFamily:
+            "Arial, Helvetica, sans-serif"
         }}
       >
-
-        <div
-          style={{
-            fontSize: "14px",
-            color: "#111"
-          }}
-        >
-          Loading Photo RANKD...
-        </div>
-
+        Loading...
       </main>
     )
-
   }
 
 
-  if(!photoRankd){
-
+  if (
+    !photoRankd
+  ) {
     return (
       <main
         style={{
-          minHeight: "100vh",
-          background: "#F7F4EE",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          padding: "40px"
+          minHeight:
+            "100vh",
+          background:
+            "#F7F4EE",
+          color:
+            "#111",
+          padding:
+            "80px 24px",
+          fontFamily:
+            "Arial, Helvetica, sans-serif"
         }}
       >
-
         <div
           style={{
-            maxWidth: "520px",
-            textAlign: "center"
+            maxWidth:
+              "900px",
+            margin:
+              "0 auto"
           }}
         >
-
-          <div
-            style={{
-              fontSize: "72px",
-              lineHeight: 1,
-              fontWeight: 950,
-              color: "#FF6B35",
-              marginBottom: "20px"
-            }}
-          >
-            7
-          </div>
-
-
           <h1
             style={{
-              margin: 0,
-              fontSize: "28px",
-              lineHeight: 1.1,
-              fontWeight: 900,
-              color: "#111"
+              margin:
+                "0 0 12px",
+              fontSize:
+                "36px",
+              fontWeight:
+                800,
+              letterSpacing:
+                "-0.04em"
             }}
           >
             Photo RANKD not found
           </h1>
 
-
           <p
             style={{
-              marginTop: "12px",
-              color: "#666",
-              fontSize: "15px",
-              lineHeight: 1.5
+              margin:
+                0,
+              color:
+                "#666"
             }}
           >
-            This Photo RANKD could not be found,
-            or the link may be incorrect.
+            This Photo RANKD could not be loaded.
           </p>
-
         </div>
-
       </main>
     )
-
   }
 
 
-  const hotspots =
-    Array.isArray(
-      photoRankd.hotspots
-    )
-      ? photoRankd.hotspots
-      : []
-
-
   return (
-
     <main
       style={{
-        minHeight: "100vh",
-        background: "#F7F4EE",
-        color: "#111"
+        minHeight:
+          "100vh",
+        background:
+          "#F7F4EE",
+        color:
+          "#111",
+        padding:
+          "40px 24px 72px",
+        fontFamily:
+          "Arial, Helvetica, sans-serif"
       }}
     >
 
       <div
         style={{
-          width: "100%",
-          maxWidth: "1480px",
-          margin: "0 auto",
-          padding:
-            "28px 28px 72px"
+          maxWidth:
+            "1320px",
+          margin:
+            "0 auto"
         }}
       >
 
         <header
           style={{
-            maxWidth: "1080px",
+            maxWidth:
+              "1180px",
             margin:
-              "0 auto 38px"
+              "0 auto 36px"
           }}
         >
 
-          <p
+          <div
             style={{
-              margin:
-                "0 0 12px",
-              fontSize: "11px",
-              fontWeight: 900,
-              letterSpacing:
-                "0.18em",
-              textTransform:
-                "uppercase",
-              color: "#FF6B35"
+              display:
+                "flex",
+              alignItems:
+                "center",
+              gap:
+                "10px",
+              marginBottom:
+                "12px"
             }}
           >
-            PHOTO RANKD
-          </p>
+
+            <span
+              style={{
+                color:
+                  "#FF6B35",
+                fontSize:
+                  "24px",
+                fontWeight:
+                  900,
+                lineHeight:
+                  1
+              }}
+            >
+              7
+            </span>
+
+            <span
+              style={{
+                fontSize:
+                  "13px",
+                fontWeight:
+                  800,
+                letterSpacing:
+                  "0.14em",
+                textTransform:
+                  "uppercase"
+              }}
+            >
+              Photo RANKD
+            </span>
+
+          </div>
 
 
           <h1
             style={{
-              margin: 0,
-              maxWidth: "900px",
+              margin:
+                0,
               fontSize:
-                "clamp(36px, 5.5vw, 72px)",
+                "clamp(32px, 4vw, 52px)",
               lineHeight:
-                0.94,
-              fontWeight: 950,
+                0.98,
+              fontWeight:
+                900,
               letterSpacing:
-                "-0.055em"
+                "-0.055em",
+              maxWidth:
+                "900px"
             }}
           >
             {photoRankd.title}
           </h1>
 
 
-          {photoRankd.description && (
-
-            <p
-              style={{
-                maxWidth: "650px",
-                margin:
-                  "18px 0 0",
-                fontSize: "16px",
-                lineHeight: 1.55,
-                color: "#666"
-              }}
-            >
-              {
-                photoRankd.description
-              }
-            </p>
-
-          )}
+          {
+            photoRankd.description && (
+              <p
+                style={{
+                  margin:
+                    "16px 0 0",
+                  maxWidth:
+                    "760px",
+                  fontSize:
+                    "16px",
+                  lineHeight:
+                    1.55,
+                  color:
+                    "#5F5B56"
+                }}
+              >
+                {photoRankd.description}
+              </p>
+            )
+          }
 
         </header>
 
@@ -450,602 +523,695 @@ export default function PhotoRankdPage(){
         <div
           className="photo-rankd-layout"
           style={{
-            display: "grid",
+            display:
+              "grid",
             gridTemplateColumns:
-              "minmax(0, 1.15fr) minmax(360px, 0.72fr)",
-            alignItems: "start",
-            gap: "48px",
-            maxWidth: "1260px",
+              "minmax(0, 1.22fr) minmax(360px, 0.72fr)",
+            alignItems:
+              "start",
+            gap:
+              "56px",
+            maxWidth:
+              "1320px",
             margin:
               "0 auto"
           }}
         >
 
-          <section
+          <div
             className="photo-rankd-image-column"
             style={{
-              minWidth: 0,
-              display: "flex",
-              justifyContent: "center"
+              minWidth:
+                0
             }}
           >
 
             <div
               className="photo-rankd-image-wrap"
               style={{
-                position: "relative",
-                display: "inline-block",
-                width: "auto",
-                maxWidth: "100%"
+                position:
+                  "relative",
+                display:
+                  "block",
+                width:
+                  "100%"
               }}
             >
 
               <img
+                className="photo-rankd-image"
                 src={
                   photoRankd.image_url
                 }
                 alt={
                   photoRankd.title
                 }
-                className="photo-rankd-image"
                 style={{
-                  display: "block",
-                  width: "auto",
-                  maxWidth: "100%",
-                  height: "auto",
-                  maxHeight: "78vh",
-                  objectFit: "contain",
+                  display:
+                    "block",
+                  width:
+                    "100%",
+                  height:
+                    "auto",
+                  maxWidth:
+                    "100%",
                   boxShadow:
-                    "0 24px 60px rgba(0,0,0,0.16)",
-                  borderRadius: "2px"
+                    "0 28px 70px rgba(0,0,0,0.17)",
+                  borderRadius:
+                    "2px"
                 }}
               />
 
 
-              {hotspots.map(
-                (
-                  hotspot,
-                  index
-                ) => {
-
-                  if(
-                    !hotspot?.rankingSupabaseId
-                  ){
-
-                    return null
-
-                  }
-
-
-                  const isSelected =
-                    selectedHotspotIndex ===
+              {
+                photoRankd.hotspots.map(
+                  (
+                    hotspot,
                     index
+                  ) => {
+
+                    const selected =
+                      index ===
+                      selectedHotspotIndex
 
 
-                  return (
-
-                    <button
-                      key={
-                        `${hotspot.rankingSupabaseId}-${index}`
-                      }
-                      type="button"
-                      aria-label={
-                        `Preview RANKD ${index + 1}`
-                      }
-                      aria-pressed={
-                        isSelected
-                      }
-                      onClick={
-                        () =>
-                          selectHotspot(
-                            hotspot,
+                    return (
+                      <button
+                        key={
+                          `${hotspot.rankingSupabaseId}-${index}`
+                        }
+                        type="button"
+                        aria-label={
+                          `Open RANKD ${index + 1}`
+                        }
+                        onClick={() =>
+                          selectRanking(
                             index
                           )
-                      }
-                      style={{
-                        position: "absolute",
-                        left: `${hotspot.x}%`,
-                        top: `${hotspot.y}%`,
-                        transform:
-                          isSelected
-                            ? "translate(-50%, -50%) scale(1.12)"
-                            : "translate(-50%, -50%)",
-                        width: "54px",
-                        height: "54px",
-                        padding: 0,
-                        border: "none",
-                        borderRadius: 0,
-                        background:
-                          "transparent",
-                        color: "#FF6B35",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "32px",
-                        lineHeight: 1,
-                        fontWeight: 950,
-                        fontFamily:
-                          "inherit",
-                        cursor: "pointer",
-                        opacity:
-                          isSelected
-                            ? 1
-                            : 0.38,
-                        filter:
-                          isSelected
-                            ? "drop-shadow(0 5px 12px rgba(0,0,0,0.34))"
-                            : "drop-shadow(0 3px 7px rgba(0,0,0,0.20))",
-                        transition:
-                          "transform 160ms ease, opacity 160ms ease, filter 160ms ease"
-                      }}
-                      onMouseEnter={
-                        event => {
-
+                        }
+                        style={{
+                          position:
+                            "absolute",
+                          left:
+                            `${hotspot.x}%`,
+                          top:
+                            `${hotspot.y}%`,
+                          width:
+                            "58px",
+                          height:
+                            "58px",
+                          margin:
+                            "-29px 0 0 -29px",
+                          padding:
+                            0,
+                          border:
+                            "0",
+                          background:
+                            "transparent",
+                          color:
+                            "#FF6B35",
+                          fontSize:
+                            "36px",
+                          lineHeight:
+                            1,
+                          fontWeight:
+                            900,
+                          cursor:
+                            "pointer",
+                          opacity:
+                            selected
+                              ? 1
+                              : 0.42,
+                          transform:
+                            selected
+                              ? "scale(1.14)"
+                              : "scale(1)",
+                          filter:
+                            "drop-shadow(0 3px 8px rgba(0,0,0,0.24))",
+                          transition:
+                            "opacity 160ms ease, transform 160ms ease, filter 160ms ease",
+                          zIndex:
+                            2
+                        }}
+                        onMouseEnter={event => {
                           event.currentTarget.style.opacity =
                             "1"
 
                           event.currentTarget.style.transform =
-                            "translate(-50%, -50%) scale(1.12)"
+                            "scale(1.14)"
 
                           event.currentTarget.style.filter =
-                            "drop-shadow(0 5px 12px rgba(0,0,0,0.34))"
+                            "drop-shadow(0 4px 10px rgba(0,0,0,0.28))"
+                        }}
+                        onMouseLeave={event => {
+                          if (
+                            !selected
+                          ) {
+                            event.currentTarget.style.opacity =
+                              "0.42"
 
-                        }
-                      }
-                      onMouseLeave={
-                        event => {
+                            event.currentTarget.style.transform =
+                              "scale(1)"
 
-                          event.currentTarget.style.opacity =
-                            isSelected
-                              ? "1"
-                              : "0.38"
-
-                          event.currentTarget.style.transform =
-                            isSelected
-                              ? "translate(-50%, -50%) scale(1.12)"
-                              : "translate(-50%, -50%)"
-
-                          event.currentTarget.style.filter =
-                            isSelected
-                              ? "drop-shadow(0 5px 12px rgba(0,0,0,0.34))"
-                              : "drop-shadow(0 3px 7px rgba(0,0,0,0.20))"
-
-                        }
-                      }
-                    >
-
-                      7
-
-
-                      <span
-                        style={{
-                          position: "absolute",
-                          right: "-3px",
-                          top: "-3px",
-                          minWidth: "21px",
-                          height: "21px",
-                          padding:
-                            "0 5px",
-                          borderRadius:
-                            "999px",
-                          background:
-                            isSelected
-                              ? "#111"
-                              : "rgba(17,17,17,0.68)",
-                          color: "#fff",
-                          display: "flex",
-                          alignItems:
-                            "center",
-                          justifyContent:
-                            "center",
-                          fontSize: "10px",
-                          lineHeight: 1,
-                          fontWeight: 900,
-                          border:
-                            "2px solid rgba(247,244,238,0.82)"
+                            event.currentTarget.style.filter =
+                              "drop-shadow(0 3px 8px rgba(0,0,0,0.24))"
+                          }
                         }}
                       >
-                        {index + 1}
-                      </span>
 
-                    </button>
+                        7
 
-                  )
+                        <span
+                          style={{
+                            position:
+                              "absolute",
+                            right:
+                              "-4px",
+                            top:
+                              "-3px",
+                            minWidth:
+                              "20px",
+                            height:
+                              "20px",
+                            padding:
+                              "0 5px",
+                            borderRadius:
+                              "999px",
+                            background:
+                              "#111",
+                            color:
+                              "#F7F4EE",
+                            fontSize:
+                              "10px",
+                            fontWeight:
+                              800,
+                            lineHeight:
+                              "20px",
+                            textAlign:
+                              "center",
+                            boxSizing:
+                              "border-box"
+                          }}
+                        >
+                          {index + 1}
+                        </span>
 
-                }
-              )}
+                      </button>
+                    )
+                  }
+                )
+              }
 
             </div>
 
-          </section>
+          </div>
 
 
-          <section
-            id="photo-rankd-preview"
+          <aside
             className="photo-rankd-preview"
             style={{
-              minWidth: 0,
-              position: "sticky",
-              top: "28px"
+              position:
+                "sticky",
+              top:
+                "28px",
+              minWidth:
+                0
             }}
           >
 
-            {!previewLoading &&
-              !selectedRanking && (
+            <div
+              style={{
+                borderTop:
+                  "4px solid #111",
+                borderBottom:
+                  "1px solid #D8D3CA"
+              }}
+            >
 
-                <div
-                  style={{
-                    padding:
-                      "42px 36px",
-                    borderTop:
-                      "1px solid #111",
-                    borderBottom:
-                      "1px solid #D8D3CA"
-                  }}
-                >
-
-                  <div
-                    style={{
-                      fontSize:
-                        "72px",
-                      lineHeight: 0.8,
-                      fontWeight: 950,
-                      color:
-                        "#FF6B35",
-                      marginBottom:
-                        "30px"
-                    }}
-                  >
-                    7
-                  </div>
-
-
-                  <p
-                    style={{
-                      margin: 0,
-                      maxWidth:
-                        "360px",
-                      fontSize:
-                        "28px",
-                      lineHeight:
-                        1.03,
-                      fontWeight: 900,
-                      letterSpacing:
-                        "-0.035em"
-                    }}
-                  >
-                    Explore the seven RANKDs.
-                  </p>
-
-
-                  <p
-                    style={{
-                      margin:
-                        "16px 0 0",
-                      maxWidth:
-                        "380px",
-                      color:
-                        "#666",
-                      fontSize:
-                        "14px",
-                      lineHeight:
-                        1.55
-                    }}
-                  >
-                    Each 7 on the photograph
-                    reveals a different ranking.
-                  </p>
-
-                </div>
-
-              )}
-
-
-            {previewLoading && (
-
-              <div
+              <nav
+                aria-label="RANKD selection"
                 style={{
-                  minHeight:
-                    "300px",
                   display:
-                    "flex",
-                  alignItems:
-                    "center",
-                  justifyContent:
-                    "center",
-                  padding:
-                    "40px",
-                  borderTop:
-                    "1px solid #111",
+                    "grid",
+                  gridTemplateColumns:
+                    "repeat(7, minmax(0, 1fr))",
                   borderBottom:
-                    "1px solid #D8D3CA",
-                  color:
-                    "#666",
-                  fontSize:
-                    "14px"
+                    "1px solid #D8D3CA"
                 }}
               >
-                Loading RANKD...
-              </div>
 
-            )}
+                {
+                  photoRankd.hotspots
+                    .slice(
+                      0,
+                      7
+                    )
+                    .map(
+                      (
+                        hotspot,
+                        index
+                      ) => {
 
-
-            {!previewLoading &&
-              selectedRanking && (
-
-                <div
-                  style={{
-                    padding:
-                      "34px 32px 30px",
-                    borderTop:
-                      "4px solid #FF6B35",
-                    borderBottom:
-                      "1px solid #D8D3CA",
-                    background:
-                      "rgba(255,255,255,0.42)"
-                  }}
-                >
-
-                  <div
-                    style={{
-                      display:
-                        "flex",
-                      alignItems:
-                        "flex-start",
-                      justifyContent:
-                        "space-between",
-                      gap:
-                        "20px",
-                      marginBottom:
-                        "26px"
-                    }}
-                  >
-
-                    <div>
-
-                      <p
-                        style={{
-                          margin:
-                            "0 0 9px",
-                          fontSize:
-                            "10px",
-                          fontWeight:
-                            900,
-                          letterSpacing:
-                            "0.16em",
-                          textTransform:
-                            "uppercase",
-                          color:
-                            "#FF6B35"
-                        }}
-                      >
-                        RANKD{" "}
-                        {(
-                          selectedHotspotIndex ??
-                          0
-                        ) + 1}
-                      </p>
+                        const selected =
+                          index ===
+                          selectedHotspotIndex
 
 
-                      <h2
-                        style={{
-                          margin: 0,
-                          fontSize:
-                            "clamp(25px, 3vw, 42px)",
-                          lineHeight:
-                            0.98,
-                          fontWeight:
-                            950,
-                          letterSpacing:
-                            "-0.045em"
-                        }}
-                      >
-                        {
-                          selectedRanking.title
-                        }
-                      </h2>
-
-                    </div>
-
-
-                    <button
-                      type="button"
-                      onClick={
-                        () => {
-
-                          setSelectedHotspotIndex(
-                            null
-                          )
-
-                          setSelectedRanking(
-                            null
-                          )
-
-                        }
-                      }
-                      style={{
-                        flexShrink: 0,
-                        border:
-                          "none",
-                        background:
-                          "transparent",
-                        color:
-                          "#666",
-                        fontSize:
-                          "12px",
-                        fontWeight:
-                          800,
-                        cursor:
-                          "pointer",
-                        padding:
-                          "4px 0"
-                      }}
-                    >
-                      Close
-                    </button>
-
-                  </div>
-
-
-                  {selectedRanking.description && (
-
-                    <p
-                      style={{
-                        margin:
-                          "0 0 24px",
-                        color:
-                          "#666",
-                        fontSize:
-                          "14px",
-                        lineHeight:
-                          1.55
-                      }}
-                    >
-                      {
-                        selectedRanking.description
-                      }
-                    </p>
-
-                  )}
-
-
-                  <div
-                    style={{
-                      borderTop:
-                        "1px solid #D8D3CA"
-                    }}
-                  >
-
-                    {selectedRanking.items
-                      .slice()
-                      .sort(
-                        (
-                          a,
-                          b
-                        ) =>
-                          a.position -
-                          b.position
-                      )
-                      .map(
-                        (
-                          item,
-                          index
-                        ) => (
-
-                          <div
+                        return (
+                          <button
                             key={
-                              `${item.name}-${index}`
+                              `menu-${hotspot.rankingSupabaseId}-${index}`
+                            }
+                            type="button"
+                            onClick={() =>
+                              selectRanking(
+                                index
+                              )
+                            }
+                            aria-label={
+                              `Show RANKD ${index + 1}`
                             }
                             style={{
-                              display:
-                                "grid",
-                              gridTemplateColumns:
-                                "38px 1fr",
-                              alignItems:
-                                "center",
-                              gap:
-                                "10px",
-                              padding:
-                                "14px 0",
-                              borderBottom:
-                                "1px solid #D8D3CA"
+                              position:
+                                "relative",
+                              height:
+                                "54px",
+                              border:
+                                "0",
+                              borderRight:
+                                index < 6
+                                  ? "1px solid #D8D3CA"
+                                  : "0",
+                              background:
+                                selected
+                                  ? "#111"
+                                  : "transparent",
+                              color:
+                                selected
+                                  ? "#F7F4EE"
+                                  : "#111",
+                              fontSize:
+                                "15px",
+                              fontWeight:
+                                900,
+                              cursor:
+                                "pointer",
+                              transition:
+                                "background 150ms ease, color 150ms ease"
                             }}
                           >
+                            {index + 1}
 
-                            <div
-                              style={{
-                                fontSize:
-                                  "17px",
-                                fontWeight:
-                                  950,
-                                color:
-                                  "#FF6B35"
-                              }}
-                            >
-                              {index + 1}
-                            </div>
+                            {
+                              selected && (
+                                <span
+                                  style={{
+                                    position:
+                                      "absolute",
+                                    left:
+                                      "50%",
+                                    bottom:
+                                      "-1px",
+                                    width:
+                                      "22px",
+                                    height:
+                                      "3px",
+                                    transform:
+                                      "translateX(-50%)",
+                                    background:
+                                      "#FF6B35"
+                                  }}
+                                />
+                              )
+                            }
 
-
-                            <div
-                              style={{
-                                fontSize:
-                                  "15px",
-                                fontWeight:
-                                  750,
-                                lineHeight:
-                                  1.3
-                              }}
-                            >
-                              {
-                                item.name
-                              }
-                            </div>
-
-                          </div>
-
+                          </button>
                         )
-                      )}
+                      }
+                    )
+                }
 
-                  </div>
+              </nav>
 
 
+              {
+                previewLoading ? (
                   <div
                     style={{
+                      minHeight:
+                        "430px",
                       display:
                         "flex",
                       alignItems:
                         "center",
                       justifyContent:
-                        "space-between",
-                      gap:
-                        "20px",
-                      marginTop:
-                        "26px"
+                        "center",
+                      padding:
+                        "40px",
+                      color:
+                        "#777",
+                      fontSize:
+                        "14px"
+                    }}
+                  >
+                    Loading RANKD...
+                  </div>
+                )
+              : selectedRanking ? (
+                  <div
+                    style={{
+                      background:
+                        "rgba(255,255,255,0.42)",
+                      borderBottom:
+                        "1px solid #D8D3CA"
                     }}
                   >
 
-                    <a
-                      href={
-                        `/rank/${selectedRanking.id}`
-                      }
+                    <div
                       style={{
-                        display:
-                          "inline-flex",
-                        alignItems:
-                          "center",
-                        justifyContent:
-                          "center",
-                        minHeight:
-                          "46px",
                         padding:
-                          "0 20px",
-                        background:
-                          "#111",
+                          "22px 24px 20px",
+                        borderBottom:
+                          "1px solid #D8D3CA"
+                      }}
+                    >
+
+                      <div
+                        style={{
+                          display:
+                            "flex",
+                          alignItems:
+                            "flex-start",
+                          justifyContent:
+                            "space-between",
+                          gap:
+                            "16px"
+                        }}
+                      >
+
+                        <div>
+
+                          <div
+                            style={{
+                              color:
+                                "#FF6B35",
+                              fontSize:
+                                "12px",
+                              fontWeight:
+                                900,
+                              letterSpacing:
+                                "0.12em",
+                              textTransform:
+                                "uppercase",
+                              marginBottom:
+                                "8px"
+                            }}
+                          >
+                            RANKD #{selectedHotspotIndex + 1}
+                          </div>
+
+                          <h2
+                            style={{
+                              margin:
+                                0,
+                              fontSize:
+                                "27px",
+                              lineHeight:
+                                1.04,
+                              fontWeight:
+                                900,
+                              letterSpacing:
+                                "-0.04em"
+                            }}
+                          >
+                            {selectedRanking.title}
+                          </h2>
+
+                        </div>
+
+
+                        <button
+                          type="button"
+                          onClick={
+                            closePreview
+                          }
+                          aria-label="Close preview"
+                          style={{
+                            flex:
+                              "0 0 auto",
+                            width:
+                              "30px",
+                            height:
+                              "30px",
+                            border:
+                              "1px solid #CFC9C0",
+                            borderRadius:
+                              "50%",
+                            background:
+                              "transparent",
+                            color:
+                              "#111",
+                            cursor:
+                              "pointer",
+                            fontSize:
+                              "18px",
+                            lineHeight:
+                              "28px"
+                          }}
+                        >
+                          ×
+                        </button>
+
+                      </div>
+
+
+                      {
+                        selectedRanking.description && (
+                          <p
+                            style={{
+                              margin:
+                                "16px 0 0",
+                              color:
+                                "#625E59",
+                              fontSize:
+                                "14px",
+                              lineHeight:
+                                1.5
+                            }}
+                          >
+                            {
+                              selectedRanking.description
+                            }
+                          </p>
+                        )
+                      }
+
+                    </div>
+
+
+                    <div
+                      style={{
+                        padding:
+                          "4px 24px 8px"
+                      }}
+                    >
+
+                      {
+                        selectedRanking.items
+                          .sort(
+                            (
+                              a,
+                              b
+                            ) =>
+                              a.position -
+                              b.position
+                          )
+                          .map(
+                            (
+                              item,
+                              index
+                            ) => (
+                              <div
+                                key={
+                                  `${item.name}-${index}`
+                                }
+                                style={{
+                                  display:
+                                    "grid",
+                                  gridTemplateColumns:
+                                    "34px minmax(0, 1fr)",
+                                  gap:
+                                    "10px",
+                                  alignItems:
+                                    "baseline",
+                                  padding:
+                                    "13px 0",
+                                  borderBottom:
+                                    index <
+                                    selectedRanking.items.length - 1
+                                      ? "1px solid #E2DED7"
+                                      : "0"
+                                }}
+                              >
+
+                                <span
+                                  style={{
+                                    color:
+                                      "#FF6B35",
+                                    fontSize:
+                                      "13px",
+                                    fontWeight:
+                                      900
+                                  }}
+                                >
+                                  {
+                                    String(
+                                      item.position
+                                    ).padStart(
+                                      2,
+                                      "0"
+                                    )
+                                  }
+                                </span>
+
+
+                                <span
+                                  style={{
+                                    fontSize:
+                                      "15px",
+                                    lineHeight:
+                                      1.3,
+                                    fontWeight:
+                                      700
+                                  }}
+                                >
+                                  {
+                                    item.name
+                                  }
+                                </span>
+
+                              </div>
+                            )
+                          )
+                      }
+
+                    </div>
+
+
+                    <div
+                      style={{
+                        padding:
+                          "18px 24px 24px"
+                      }}
+                    >
+
+                      <a
+                        href={
+                          `/rank/${selectedRanking.id}`
+                        }
+                        style={{
+                          display:
+                            "flex",
+                          alignItems:
+                            "center",
+                          justifyContent:
+                            "space-between",
+                          gap:
+                            "16px",
+                          padding:
+                            "15px 17px",
+                          background:
+                            "#111",
+                          color:
+                            "#F7F4EE",
+                          textDecoration:
+                            "none",
+                          fontSize:
+                            "13px",
+                          fontWeight:
+                            800,
+                          letterSpacing:
+                            "0.02em"
+                        }}
+                      >
+
+                        <span>
+                          Open full RANKD
+                        </span>
+
+                        <span
+                          style={{
+                            color:
+                              "#FF6B35",
+                            fontSize:
+                              "18px"
+                          }}
+                        >
+                          →
+                        </span>
+
+                      </a>
+
+                    </div>
+
+                  </div>
+                ) : (
+                  <div
+                    style={{
+                      minHeight:
+                        "430px",
+                      display:
+                        "flex",
+                      flexDirection:
+                        "column",
+                      justifyContent:
+                        "center",
+                      padding:
+                        "48px 32px"
+                    }}
+                  >
+
+                    <div
+                      style={{
                         color:
-                          "#fff",
-                        textDecoration:
-                          "none",
+                          "#FF6B35",
                         fontSize:
-                          "12px",
+                          "72px",
+                        lineHeight:
+                          0.8,
+                        fontWeight:
+                          900,
+                        marginBottom:
+                          "32px"
+                      }}
+                    >
+                      7
+                    </div>
+
+                    <div
+                      style={{
+                        fontSize:
+                          "28px",
+                        lineHeight:
+                          1.05,
                         fontWeight:
                           900,
                         letterSpacing:
-                          "0.04em",
-                        textTransform:
-                          "uppercase"
+                          "-0.04em",
+                        maxWidth:
+                          "320px"
                       }}
                     >
-                      Open RANKD →
-                    </a>
+                      Explore the seven RANKDs.
+                    </div>
 
                   </div>
+                )
+              }
 
-                </div>
+            </div>
 
-              )}
-
-          </section>
+          </aside>
 
         </div>
 
@@ -1054,37 +1220,35 @@ export default function PhotoRankdPage(){
 
       <style jsx>{`
 
-        @media (max-width: 900px){
+        @media (max-width: 900px) {
 
-          .photo-rankd-layout{
+          .photo-rankd-layout {
             grid-template-columns:
               minmax(0, 1fr) !important;
             gap:
               32px !important;
           }
 
-          .photo-rankd-image-column{
+          .photo-rankd-image-column {
             display:
               block !important;
           }
 
-          .photo-rankd-image-wrap{
+          .photo-rankd-image-wrap {
+            width:
+              100% !important;
+          }
+
+          .photo-rankd-image {
             width:
               100% !important;
             max-width:
               100% !important;
+            height:
+              auto !important;
           }
 
-          .photo-rankd-image{
-            width:
-              100% !important;
-            max-width:
-              100% !important;
-            max-height:
-              none !important;
-          }
-
-          .photo-rankd-preview{
+          .photo-rankd-preview {
             position:
               static !important;
           }
@@ -1092,11 +1256,27 @@ export default function PhotoRankdPage(){
         }
 
 
-        @media (max-width: 600px){
+        @media (max-width: 600px) {
 
-          .photo-rankd-layout{
+          main {
+            padding:
+              28px 16px 56px !important;
+          }
+
+          .photo-rankd-layout {
             gap:
               24px !important;
+          }
+
+          .photo-rankd-image-wrap button {
+            width:
+              48px !important;
+            height:
+              48px !important;
+            margin:
+              -24px 0 0 -24px !important;
+            font-size:
+              30px !important;
           }
 
         }
@@ -1104,7 +1284,5 @@ export default function PhotoRankdPage(){
       `}</style>
 
     </main>
-
   )
-
 }
