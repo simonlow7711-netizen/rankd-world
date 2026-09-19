@@ -335,27 +335,6 @@ export default function CreateClient(){
   )
 
 
-  function updateItem(
-    id:string,
-    name:string
-  ){
-
-    setItems(
-      current =>
-        current.map(
-          item =>
-            item.id === id
-              ? {
-                  ...item,
-                  name
-                }
-              : item
-        )
-    )
-
-  }
-
-
   async function handleCreate(){
 
     if(saving){
@@ -756,6 +735,20 @@ export default function CreateClient(){
   }
 
 
+  const isRerank =
+    Boolean(
+      parentRanking
+      ||
+      searchParams.get(
+        "parentId"
+      )
+      ||
+      searchParams.get(
+        "parent"
+      )
+    )
+
+
   return (
 
     <main
@@ -769,325 +762,431 @@ export default function CreateClient(){
       <div
         className="
           mx-auto
+          w-full
           max-w-4xl
-          px-4
+          px-5
           py-8
-          sm:px-6
+          sm:px-8
           sm:py-12
+          lg:py-16
         "
       >
 
-        <div
+        <header
           className="
-            mb-8
-            text-center
+            mb-10
           "
         >
 
-          <h1
+          <p
             className="
-              text-3xl
+              mb-2
+              text-xs
               font-black
-              tracking-tight
-              sm:text-4xl
+              uppercase
+              tracking-[0.18em]
+              text-[#FF6B35]
             "
           >
-            Create a RANKD
+            {isRerank
+              ? "RE-RANKD"
+              : "CREATE"
+            }
+          </p>
+
+
+          <h1
+            className="
+              max-w-3xl
+              text-4xl
+              font-black
+              leading-[0.95]
+              tracking-[-0.04em]
+              sm:text-6xl
+            "
+          >
+            {isRerank
+              ? "Rank it differently."
+              : "Make your choices."
+            }
           </h1>
+
 
           <p
             className="
-              mt-2
+              mt-4
+              max-w-xl
               text-sm
-              text-black/60
+              font-medium
+              leading-6
+              text-black/55
               sm:text-base
             "
           >
-            Make your choices. Put them in order.
+            {isRerank
+              ? "Start with the existing choices. Change the order to make it yours."
+              : "Seven choices. One order. Your opinion."
+            }
           </p>
 
-        </div>
+        </header>
+
+
+        {isRerank && (
+
+          <div
+            className="
+              mb-8
+              border-l-4
+              border-[#FF6B35]
+              bg-white/70
+              px-5
+              py-4
+              sm:px-6
+            "
+          >
+
+            <p
+              className="
+                text-xs
+                font-black
+                uppercase
+                tracking-[0.14em]
+                text-black/45
+              "
+            >
+              You are re-ranking
+            </p>
+
+            <p
+              className="
+                mt-1
+                text-lg
+                font-black
+                leading-tight
+              "
+            >
+              {stripRankingPrefix(
+                title
+              )}
+            </p>
+
+          </div>
+
+        )}
 
 
         <section
           className="
-            rounded-3xl
-            border
-            border-black/10
-            bg-white
-            p-5
-            shadow-sm
-            sm:p-8
+            border-t-2
+            border-black
           "
         >
 
           <div
             className="
-              grid
-              gap-6
+              py-6
+              sm:py-8
             "
           >
 
-            <div>
-
-              <label
-                htmlFor="title"
-                className="
-                  mb-2
-                  block
-                  text-sm
-                  font-bold
-                "
-              >
-                Title
-              </label>
-
-              <input
-                id="title"
-                value={title}
-                onChange={
-                  event =>
-                    setTitle(
-                      event.target.value
-                    )
-                }
-                placeholder="Top 7..."
-                className="
-                  w-full
-                  rounded-2xl
-                  border
-                  border-black/15
-                  bg-[#F7F4EE]
-                  px-4
-                  py-3
-                  outline-none
-                  transition
-                  focus:border-[#FF6B35]
-                  focus:ring-2
-                  focus:ring-[#FF6B35]/20
-                "
-              />
-
-            </div>
-
-
-            <div>
-
-              <label
-                htmlFor="category"
-                className="
-                  mb-2
-                  block
-                  text-sm
-                  font-bold
-                "
-              >
-                Category
-              </label>
-
-              <select
-                id="category"
-                value={category}
-                onChange={
-                  event =>
-                    setCategory(
-                      event.target.value
-                    )
-                }
-                className="
-                  w-full
-                  rounded-2xl
-                  border
-                  border-black/15
-                  bg-[#F7F4EE]
-                  px-4
-                  py-3
-                  outline-none
-                  transition
-                  focus:border-[#FF6B35]
-                  focus:ring-2
-                  focus:ring-[#FF6B35]/20
-                "
-              >
-
-                <option value="">
-                  Choose a category
-                </option>
-
-                {categories.map(
-                  item => (
-                    <option
-                      key={item}
-                      value={item}
-                    >
-                      {item}
-                    </option>
-                  )
-                )}
-
-              </select>
-
-            </div>
-
-
-            <div>
-
-              <label
-                htmlFor="description"
-                className="
-                  mb-2
-                  block
-                  text-sm
-                  font-bold
-                "
-              >
-                Description
-              </label>
-
-              <textarea
-                id="description"
-                value={description}
-                onChange={
-                  event =>
-                    setDescription(
-                      event.target.value
-                    )
-                }
-                rows={4}
-                placeholder="Why did you make this RANKD?"
-                className="
-                  w-full
-                  resize-none
-                  rounded-2xl
-                  border
-                  border-black/15
-                  bg-[#F7F4EE]
-                  px-4
-                  py-3
-                  outline-none
-                  transition
-                  focus:border-[#FF6B35]
-                  focus:ring-2
-                  focus:ring-[#FF6B35]/20
-                "
-              />
-
-            </div>
-
-
-            <div>
-
-              <div
-                className="
-                  mb-3
-                  flex
-                  items-center
-                  justify-between
-                "
-              >
-
-                <div>
-
-                  <h2
-                    className="
-                      text-sm
-                      font-bold
-                    "
-                  >
-                    Your Top 7
-                  </h2>
-
-                  <p
-                    className="
-                      mt-1
-                      text-xs
-                      text-black/50
-                    "
-                  >
-                    Drag to put your choices in order.
-                  </p>
-
-                </div>
-
-                <div
-                  className="
-                    text-sm
-                    font-black
-                    text-[#FF6B35]
-                  "
-                >
-                  7 items
-                </div>
-
-              </div>
-
-
-              <SortableRankingList
-                items={
-                  items
-                }
-                setItems={
-                  setItems
-                }
-              />
-
-            </div>
-
-
-            {error && (
-
-              <div
-                className="
-                  rounded-2xl
-                  border
-                  border-red-200
-                  bg-red-50
-                  px-4
-                  py-3
-                  text-sm
-                  text-red-700
-                "
-              >
-                {error}
-              </div>
-
-            )}
-
-
-            <button
-              type="button"
-              onClick={
-                handleCreate
-              }
-              disabled={
-                saving
-              }
+            <div
               className="
-                w-full
-                rounded-2xl
-                bg-[#FF6B35]
-                px-5
-                py-4
-                text-base
-                font-black
-                text-white
-                transition
-                hover:opacity-90
-                disabled:cursor-not-allowed
-                disabled:opacity-50
+                grid
+                gap-7
+                sm:grid-cols-2
               "
             >
 
-              {saving
-                ? "Creating..."
-                : "Create RANKD"
-              }
+              <div
+                className="
+                  sm:col-span-2
+                "
+              >
 
-            </button>
+                <label
+                  htmlFor="title"
+                  className="
+                    mb-2
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.12em]
+                  "
+                >
+                  Title
+                </label>
+
+                <input
+                  id="title"
+                  value={title}
+                  onChange={
+                    event =>
+                      setTitle(
+                        event.target.value
+                      )
+                  }
+                  placeholder="What are you ranking?"
+                  className="
+                    w-full
+                    border-b-2
+                    border-black/15
+                    bg-transparent
+                    px-0
+                    py-3
+                    text-2xl
+                    font-black
+                    outline-none
+                    transition
+                    placeholder:text-black/20
+                    focus:border-[#FF6B35]
+                    sm:text-3xl
+                  "
+                />
+
+              </div>
+
+
+              <div>
+
+                <label
+                  htmlFor="category"
+                  className="
+                    mb-2
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.12em]
+                  "
+                >
+                  Category
+                </label>
+
+                <select
+                  id="category"
+                  value={category}
+                  onChange={
+                    event =>
+                      setCategory(
+                        event.target.value
+                      )
+                  }
+                  className="
+                    w-full
+                    border-b-2
+                    border-black/15
+                    bg-transparent
+                    px-0
+                    py-3
+                    text-base
+                    font-bold
+                    outline-none
+                    transition
+                    focus:border-[#FF6B35]
+                  "
+                >
+
+                  <option value="">
+                    Choose a category
+                  </option>
+
+                  {categories.map(
+                    item => (
+                      <option
+                        key={item}
+                        value={item}
+                      >
+                        {item}
+                      </option>
+                    )
+                  )}
+
+                </select>
+
+              </div>
+
+
+              <div>
+
+                <label
+                  htmlFor="description"
+                  className="
+                    mb-2
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.12em]
+                  "
+                >
+                  Description
+                </label>
+
+                <textarea
+                  id="description"
+                  value={description}
+                  onChange={
+                    event =>
+                      setDescription(
+                        event.target.value
+                      )
+                  }
+                  rows={2}
+                  placeholder="Why did you make this RANKD?"
+                  className="
+                    w-full
+                    resize-none
+                    border-b-2
+                    border-black/15
+                    bg-transparent
+                    px-0
+                    py-3
+                    text-base
+                    font-medium
+                    leading-6
+                    outline-none
+                    transition
+                    placeholder:text-black/20
+                    focus:border-[#FF6B35]
+                  "
+                />
+
+              </div>
+
+            </div>
 
           </div>
 
         </section>
+
+
+        <section
+          className="
+            border-t-2
+            border-black
+          "
+        >
+
+          <div
+            className="
+              border-b
+              border-black/10
+              py-5
+            "
+          >
+
+            <h2
+              className="
+                text-lg
+                font-black
+              "
+            >
+              Your Top 7
+            </h2>
+
+            <p
+              className="
+                mt-1
+                text-xs
+                font-medium
+                text-black/50
+              "
+            >
+              Put them in the order you believe.
+            </p>
+
+          </div>
+
+
+          <div
+            className="
+              py-6
+              sm:py-8
+            "
+          >
+
+            <SortableRankingList
+              items={
+                items
+              }
+              setItems={
+                setItems
+              }
+            />
+
+          </div>
+
+        </section>
+
+
+        {error && (
+
+          <div
+            className="
+              mb-6
+              border-l-4
+              border-red-500
+              bg-red-50
+              px-4
+              py-3
+              text-sm
+              font-medium
+              text-red-700
+            "
+          >
+            {error}
+          </div>
+
+        )}
+
+
+        <button
+          type="button"
+          onClick={
+            handleCreate
+          }
+          disabled={
+            saving
+          }
+          className="
+            w-full
+            bg-[#FF6B35]
+            px-6
+            py-4
+            text-base
+            font-black
+            text-white
+            transition
+            hover:bg-black
+            disabled:cursor-not-allowed
+            disabled:opacity-50
+            sm:py-5
+          "
+        >
+
+          {saving
+            ? "Creating..."
+            : isRerank
+              ? "Publish RE-RANKD"
+              : "Publish RANKD"
+          }
+
+        </button>
+
+
+        <div
+          className="
+            mt-6
+            text-center
+            text-xs
+            font-medium
+            text-black/35
+          "
+        >
+          Seven choices. Your order.
+        </div>
 
       </div>
 

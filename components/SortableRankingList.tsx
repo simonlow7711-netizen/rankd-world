@@ -30,25 +30,19 @@ import {
 } from "@/types/ranking"
 
 
-
-
-
 type Props = {
 
-  items: RankingBuilderItem[]
+  items:
+    RankingBuilderItem[]
 
-  setItems: React.Dispatch<
-    React.SetStateAction<RankingBuilderItem[]>
-  >
+  setItems:
+    React.Dispatch<
+      React.SetStateAction<
+        RankingBuilderItem[]
+      >
+    >
 
 }
-
-
-
-
-
-
-
 
 
 function SortableItem({
@@ -61,54 +55,38 @@ function SortableItem({
 
 }:{
 
-  item: RankingBuilderItem
+  item:
+    RankingBuilderItem
 
-  index: number
+  index:
+    number
 
-  updateRankingItem:(
-
-    id:string,
-
-    value:string
-
-  )=>void
+  updateRankingItem:
+    (
+      id:string,
+      value:string
+    ) => void
 
 }){
 
-
-
   const {
-
     attributes,
-
     listeners,
-
     setNodeRef,
-
     transform,
-
     transition
-
-  } = useSortable({
-
-    id:item.id
-
-  })
-
-
-
-
-
+  } =
+    useSortable({
+      id:
+        item.id
+    })
 
 
   const style = {
 
     transform:
-
       CSS.Transform.toString(
-
         transform
-
       ),
 
     transition
@@ -116,148 +94,125 @@ function SortableItem({
   }
 
 
-
-
-
-
-
-
   return (
 
     <div
-
-      ref={setNodeRef}
-
-      style={style}
-
+      ref={
+        setNodeRef
+      }
+      style={
+        style
+      }
       className="
+        group
         flex
+        min-w-0
         items-center
-        gap-4
-        touch-none
+        border-b
+        border-black/10
+        py-3
+        sm:py-4
       "
-
     >
 
-
-
-
-
       <button
-
         {...attributes}
-
         {...listeners}
-
         type="button"
-
         aria-label={`Move ${
-          item.name || `choice ${index + 1}`
+          item.name ||
+          `choice ${index + 1}`
         }`}
-
         className="
-          w-12
-          h-12
-          rounded-full
-          bg-black
-          text-white
-          text-xl
-          font-black
           flex
-          items-center
-          justify-center
+          h-9
+          w-7
           shrink-0
           cursor-grab
-          active:cursor-grabbing
-          select-none
           touch-none
+          select-none
+          items-center
+          justify-center
+          text-lg
+          font-black
+          leading-none
+          text-black/25
+          transition
+          group-hover:text-black
+          active:cursor-grabbing
+          sm:h-10
+          sm:w-9
         "
-
       >
-
-        ☰
-
+        <span
+          aria-hidden="true"
+          className="
+            tracking-[-0.18em]
+          "
+        >
+          ⋮⋮
+        </span>
       </button>
 
 
-
-
-
-
-
-
       <div
-
         className="
-          w-10
-          h-10
-          rounded-full
-          bg-[#E8E2D8]
           flex
-          items-center
-          justify-center
-          font-black
+          w-12
           shrink-0
+          items-center
+          text-2xl
+          font-black
+          leading-none
+          text-[#FF6B35]
+          sm:w-16
+          sm:text-3xl
         "
-
       >
-
         {index + 1}
-
       </div>
 
 
-
-
-
-
-
-
       <input
-
-        value={item.name}
-
-        onChange={e =>
-
-          updateRankingItem(
-
-            item.id,
-
-            e.target.value
-
-          )
-
+        value={
+          item.name
         }
-
-        placeholder={`Choice ${index + 1}`}
-
+        onChange={
+          event =>
+            updateRankingItem(
+              item.id,
+              event.target.value
+            )
+        }
+        placeholder={
+          `Choice ${index + 1}`
+        }
+        aria-label={
+          `Choice ${index + 1}`
+        }
         className="
+          min-w-0
           flex-1
-          p-4
-          rounded-2xl
-          bg-[#F7F4EE]
+          border-0
+          bg-transparent
+          px-0
+          py-2
           text-lg
           font-bold
+          leading-tight
+          text-black
           outline-none
-          min-w-0
+          placeholder:text-black/20
+          sm:text-xl
+          md:text-2xl
         "
-
       />
-
-
 
     </div>
 
   )
 
 }
-
-
-
-
-
-
-
 
 
 export default function SortableRankingList({
@@ -268,84 +223,49 @@ export default function SortableRankingList({
 
 }:Props){
 
-
-
   const [
-
     hydrated,
-
     setHydrated
-
-  ] = useState(false)
-
-
+  ] =
+    useState(false)
 
 
+  useEffect(
+    () => {
+
+      setHydrated(
+        true
+      )
+
+    },
+    []
+  )
 
 
+  const sensors =
+    useSensors(
 
-  useEffect(()=>{
-
-    setHydrated(true)
-
-  },[])
-
-
-
-
-
-
-
-  const sensors = useSensors(
-
-
-
-    useSensor(
-
-      PointerSensor,
-
-      {
-
-        activationConstraint:{
-
-          distance:8
-
+      useSensor(
+        PointerSensor,
+        {
+          activationConstraint:{
+            distance:8
+          }
         }
-
-      }
+      )
 
     )
 
 
-  )
-
-
-
-
-
-
-
-
   function handleDragEnd(
-
     event:DragEndEvent
-
   ){
 
-
-
     const {
-
       active,
-
       over
-
-    } = event
-
-
-
-
-
+    } =
+      event
 
 
     if(!over){
@@ -355,270 +275,227 @@ export default function SortableRankingList({
     }
 
 
-
-
-
-
-
-    if(active.id === over.id){
+    if(
+      active.id ===
+      over.id
+    ){
 
       return
 
     }
 
 
+    setItems(
+      current => {
+
+        const oldIndex =
+          current.findIndex(
+            item =>
+              item.id ===
+              active.id
+          )
+
+        const newIndex =
+          current.findIndex(
+            item =>
+              item.id ===
+              over.id
+          )
 
 
+        if(
+          oldIndex === -1
+          ||
+          newIndex === -1
+        ){
 
-
-
-
-    setItems(current=>{
-
-
-      const oldIndex =
-
-        current.findIndex(
-
-          item =>
-
-            item.id === active.id
-
-        )
-
-
-
-
-
-      const newIndex =
-
-        current.findIndex(
-
-          item =>
-
-            item.id === over.id
-
-        )
-
-
-
-
-
-      return arrayMove(
-
-        current,
-
-        oldIndex,
-
-        newIndex
-
-      )
-
-
-    })
-
-
-  }
-
-
-
-
-
-
-
-
-  function updateRankingItem(
-
-    id:string,
-
-    value:string
-
-  ){
-
-
-
-    setItems(current =>
-
-      current.map(item =>
-
-        item.id === id
-
-        ?
-
-        {
-
-          ...item,
-
-          name:value
+          return current
 
         }
 
-        :
 
-        item
+        return arrayMove(
+          current,
+          oldIndex,
+          newIndex
+        )
 
-      )
-
+      }
     )
-
 
   }
 
 
+  function updateRankingItem(
+    id:string,
+    value:string
+  ){
 
+    setItems(
+      current =>
+        current.map(
+          item =>
+            item.id === id
+              ? {
+                  ...item,
+                  name:value
+                }
+              : item
+        )
+    )
 
-
-
-
+  }
 
 
   if(!hydrated){
 
-
     return (
 
-      <div className="
-        space-y-4
-      ">
+      <div
+        className="
+          divide-y
+          divide-black/10
+        "
+      >
 
+        {items.map(
+          (
+            item,
+            index
+          ) => (
 
-        {items.map(item=>(
+            <div
+              key={
+                item.id
+              }
+              className="
+                flex
+                items-center
+                py-4
+              "
+            >
 
+              <div
+                className="
+                  w-7
+                  shrink-0
+                "
+              />
 
-          <div
+              <div
+                className="
+                  w-12
+                  shrink-0
+                  text-2xl
+                  font-black
+                  text-black/10
+                "
+              >
+                {index + 1}
+              </div>
 
-            key={item.id}
+              <div
+                className="
+                  h-8
+                  flex-1
+                  bg-black/5
+                "
+              />
 
-            className="
-              flex
-              items-center
-              gap-4
-            "
+            </div>
 
-          >
-
-
-            <div className="
-              w-12
-              h-12
-              rounded-full
-              bg-black/10
-            "/>
-
-
-
-            <div className="
-              flex-1
-              h-14
-              rounded-2xl
-              bg-[#F7F4EE]
-            "/>
-
-
-          </div>
-
-
-        ))}
-
+          )
+        )}
 
       </div>
 
     )
 
-
   }
-
-
-
-
-
-
 
 
   return (
 
     <div>
 
+      <div
+        className="
+          mb-4
+          flex
+          items-center
+          justify-between
+          text-xs
+          font-bold
+          text-black/40
+        "
+      >
 
-      <p className="
-        text-center
-        rankd-muted
-        text-sm
-        font-bold
-        mb-6
-      ">
+        <span>
+          1 = your favourite
+        </span>
 
-        Hold ☰ and drag to reorder your Top 7
+        <span>
+          Drag to reorder
+        </span>
 
-      </p>
-
-
-
+      </div>
 
 
       <DndContext
-
-        sensors={sensors}
-
-        collisionDetection={closestCenter}
-
-        onDragEnd={handleDragEnd}
-
+        sensors={
+          sensors
+        }
+        collisionDetection={
+          closestCenter
+        }
+        onDragEnd={
+          handleDragEnd
+        }
       >
 
-
-
         <SortableContext
-
-          items={items.map(
-
-            item => item.id
-
-          )}
-
-          strategy={verticalListSortingStrategy}
-
+          items={
+            items.map(
+              item =>
+                item.id
+            )
+          }
+          strategy={
+            verticalListSortingStrategy
+          }
         >
 
+          <div>
 
+            {items.map(
+              (
+                item,
+                index
+              ) => (
 
-          <div className="
-            space-y-4
-          ">
+                <SortableItem
+                  key={
+                    item.id
+                  }
+                  item={
+                    item
+                  }
+                  index={
+                    index
+                  }
+                  updateRankingItem={
+                    updateRankingItem
+                  }
+                />
 
-
-
-            {items.map((item,index)=>(
-
-
-              <SortableItem
-
-                key={item.id}
-
-                item={item}
-
-                index={index}
-
-                updateRankingItem={updateRankingItem}
-
-              />
-
-
-            ))}
-
-
+              )
+            )}
 
           </div>
 
-
-
         </SortableContext>
 
-
-
       </DndContext>
-
-
 
     </div>
 
