@@ -150,6 +150,7 @@ export default function PhotoRankdPage(){
           )
 
           return
+
         }
 
 
@@ -198,6 +199,7 @@ export default function PhotoRankdPage(){
       )
 
       return
+
     }
 
 
@@ -365,7 +367,7 @@ export default function PhotoRankdPage(){
       <div
         style={{
           width: "100%",
-          maxWidth: "1400px",
+          maxWidth: "1500px",
           margin: "0 auto",
           padding: "24px 20px 60px"
         }}
@@ -423,218 +425,289 @@ export default function PhotoRankdPage(){
         </header>
 
 
-        <section
+        <div
           style={{
-            width: "100%",
-            overflow: "hidden",
-            borderRadius: "18px",
-            background: "#111",
-            boxShadow:
-              "0 20px 60px rgba(0,0,0,0.12)"
+            display: "grid",
+            gridTemplateColumns:
+              "minmax(0, 1.25fr) minmax(360px, 0.75fr)",
+            alignItems: "start",
+            gap: "28px"
           }}
+          className="photo-rankd-layout"
         >
 
-          <div
+          <section
             style={{
-              position: "relative",
-              width: "fit-content",
-              maxWidth: "100%",
-              maxHeight: "80vh",
-              margin: "0 auto"
+              width: "100%",
+              display: "flex",
+              justifyContent: "center"
             }}
           >
 
-            <img
-              src={
-                photoRankd.image_url
-              }
-              alt={
-                photoRankd.title
-              }
+            <div
               style={{
-                display: "block",
-                width: "auto",
+                position: "relative",
+                display: "inline-block",
                 maxWidth: "100%",
-                height: "auto",
-                maxHeight: "80vh",
-                objectFit: "contain"
+                maxHeight: "78vh"
               }}
-            />
+            >
 
-
-            {hotspots.map(
-              (
-                hotspot,
-                index
-              ) => {
-
-                if(
-                  !hotspot?.rankingSupabaseId
-                ){
-
-                  return null
-
+              <img
+                src={
+                  photoRankd.image_url
                 }
+                alt={
+                  photoRankd.title
+                }
+                style={{
+                  display: "block",
+                  width: "auto",
+                  maxWidth: "100%",
+                  height: "auto",
+                  maxHeight: "78vh",
+                  objectFit: "contain"
+                }}
+              />
 
 
-                const isSelected =
-                  selectedHotspotIndex ===
+              {hotspots.map(
+                (
+                  hotspot,
                   index
+                ) => {
+
+                  if(
+                    !hotspot?.rankingSupabaseId
+                  ){
+
+                    return null
+
+                  }
 
 
-                return (
+                  const isSelected =
+                    selectedHotspotIndex ===
+                    index
 
-                  <button
-                    key={
-                      `${hotspot.rankingSupabaseId}-${index}`
-                    }
-                    type="button"
-                    aria-label={
-                      `Preview RANKD ${index + 1}`
-                    }
-                    aria-pressed={
-                      isSelected
-                    }
-                    onClick={
-                      () =>
-                        selectHotspot(
-                          hotspot,
-                          index
-                        )
-                    }
-                    style={{
-                      position: "absolute",
-                      left: `${hotspot.x}%`,
-                      top: `${hotspot.y}%`,
-                      transform:
-                        isSelected
-                          ? "translate(-50%, -50%) scale(1.1)"
-                          : "translate(-50%, -50%)",
-                      width: "58px",
-                      height: "58px",
-                      padding: 0,
-                      borderRadius: "50%",
-                      background:
-                        isSelected
-                          ? "#FF6B35"
-                          : "#F7F4EE",
-                      color:
-                        isSelected
-                          ? "#fff"
-                          : "#FF6B35",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      textDecoration: "none",
-                      fontSize: "27px",
-                      lineHeight: 1,
-                      fontWeight: 900,
-                      fontFamily:
-                        "inherit",
-                      boxShadow:
-                        "0 8px 24px rgba(0,0,0,0.28)",
-                      border:
-                        "3px solid #111",
-                      cursor: "pointer",
-                      transition:
-                        "transform 160ms ease, background 160ms ease, color 160ms ease"
-                    }}
-                    onMouseEnter={
-                      event => {
 
-                        event.currentTarget.style.transform =
-                          "translate(-50%, -50%) scale(1.1)"
+                  return (
 
+                    <button
+                      key={
+                        `${hotspot.rankingSupabaseId}-${index}`
                       }
-                    }
-                    onMouseLeave={
-                      event => {
-
-                        event.currentTarget.style.transform =
-                          isSelected
-                            ? "translate(-50%, -50%) scale(1.1)"
-                            : "translate(-50%, -50%)"
-
+                      type="button"
+                      aria-label={
+                        `Preview RANKD ${index + 1}`
                       }
-                    }
-                  >
-
-                    7
-
-
-                    <span
+                      aria-pressed={
+                        isSelected
+                      }
+                      onClick={
+                        () =>
+                          selectHotspot(
+                            hotspot,
+                            index
+                          )
+                      }
                       style={{
                         position: "absolute",
-                        right: "-8px",
-                        top: "-8px",
-                        minWidth: "22px",
-                        height: "22px",
-                        padding: "0 5px",
-                        borderRadius: "999px",
-                        background: "#111",
-                        color: "#fff",
+                        left: `${hotspot.x}%`,
+                        top: `${hotspot.y}%`,
+                        transform:
+                          isSelected
+                            ? "translate(-50%, -50%) scale(1.12)"
+                            : "translate(-50%, -50%)",
+                        width: "52px",
+                        height: "52px",
+                        padding: 0,
+                        border: "none",
+                        borderRadius: 0,
+                        background:
+                          "transparent",
+                        color: "#FF6B35",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
-                        fontSize: "11px",
+                        fontSize: "31px",
                         lineHeight: 1,
-                        fontWeight: 800,
-                        border:
-                          "2px solid #F7F4EE"
+                        fontWeight: 950,
+                        fontFamily:
+                          "inherit",
+                        cursor: "pointer",
+                        opacity:
+                          isSelected
+                            ? 1
+                            : 0.42,
+                        filter:
+                          isSelected
+                            ? "drop-shadow(0 5px 12px rgba(0,0,0,0.35))"
+                            : "drop-shadow(0 3px 8px rgba(0,0,0,0.2))",
+                        transition:
+                          "transform 160ms ease, opacity 160ms ease, filter 160ms ease"
                       }}
+                      onMouseEnter={
+                        event => {
+
+                          event.currentTarget.style.opacity =
+                            "1"
+
+                          event.currentTarget.style.transform =
+                            "translate(-50%, -50%) scale(1.12)"
+
+                          event.currentTarget.style.filter =
+                            "drop-shadow(0 5px 12px rgba(0,0,0,0.35))"
+
+                        }
+                      }
+                      onMouseLeave={
+                        event => {
+
+                          event.currentTarget.style.opacity =
+                            isSelected
+                              ? "1"
+                              : "0.42"
+
+                          event.currentTarget.style.transform =
+                            isSelected
+                              ? "translate(-50%, -50%) scale(1.12)"
+                              : "translate(-50%, -50%)"
+
+                          event.currentTarget.style.filter =
+                            isSelected
+                              ? "drop-shadow(0 5px 12px rgba(0,0,0,0.35))"
+                              : "drop-shadow(0 3px 8px rgba(0,0,0,0.2))"
+
+                        }
+                      }
                     >
-                      {index + 1}
-                    </span>
 
-                  </button>
-
-                )
-
-              }
-            )}
-
-          </div>
-
-        </section>
+                      7
 
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginTop: "20px",
-            color: "#777",
-            fontSize: "13px",
-            textAlign: "center"
-          }}
-        >
-          Tap a RANKD 7 to preview the list.
-        </div>
+                      <span
+                        style={{
+                          position: "absolute",
+                          right: "-4px",
+                          top: "-2px",
+                          minWidth: "21px",
+                          height: "21px",
+                          padding: "0 5px",
+                          borderRadius: "999px",
+                          background:
+                            isSelected
+                              ? "#111"
+                              : "rgba(17,17,17,0.72)",
+                          color: "#fff",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: "10px",
+                          lineHeight: 1,
+                          fontWeight: 900,
+                          border:
+                            "2px solid rgba(247,244,238,0.8)"
+                        }}
+                      >
+                        {index + 1}
+                      </span>
 
+                    </button>
 
-        {(previewLoading ||
-          selectedHotspotIndex !== null) && (
+                  )
+
+                }
+              )}
+
+            </div>
+
+          </section>
+
 
           <section
             id="photo-rankd-preview"
             style={{
-              marginTop: "32px",
-              padding:
-                "28px 24px 30px",
-              background: "#fff",
-              borderTop:
-                "4px solid #FF6B35",
-              boxShadow:
-                "0 14px 40px rgba(0,0,0,0.08)"
+              minWidth: 0,
+              position: "sticky",
+              top: "24px"
             }}
           >
+
+            {!previewLoading &&
+              !selectedRanking && (
+
+                <div
+                  style={{
+                    minHeight: "300px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    padding: "40px",
+                    background: "#fff",
+                    borderTop:
+                      "4px solid #FF6B35"
+                  }}
+                >
+
+                  <div
+                    style={{
+                      fontSize: "56px",
+                      lineHeight: 1,
+                      fontWeight: 950,
+                      color: "#FF6B35",
+                      marginBottom: "20px"
+                    }}
+                  >
+                    7
+                  </div>
+
+
+                  <p
+                    style={{
+                      margin: 0,
+                      fontSize: "22px",
+                      lineHeight: 1.15,
+                      fontWeight: 900,
+                      letterSpacing:
+                        "-0.025em"
+                    }}
+                  >
+                    Explore the seven RANKDs
+                  </p>
+
+
+                  <p
+                    style={{
+                      margin:
+                        "12px 0 0",
+                      maxWidth: "360px",
+                      color: "#666",
+                      fontSize: "14px",
+                      lineHeight: 1.5
+                    }}
+                  >
+                    Select a 7 on the photograph
+                    to see the ranking behind it.
+                  </p>
+
+                </div>
+
+              )}
+
 
             {previewLoading && (
 
               <div
                 style={{
-                  padding: "24px 0",
-                  textAlign: "center",
+                  minHeight: "300px",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "40px",
+                  background: "#fff",
+                  borderTop:
+                    "4px solid #FF6B35",
                   color: "#666",
                   fontSize: "14px"
                 }}
@@ -646,34 +719,30 @@ export default function PhotoRankdPage(){
 
 
             {!previewLoading &&
-              !selectedRanking && (
+              selectedRanking && (
 
                 <div
                   style={{
-                    padding: "24px 0",
-                    textAlign: "center",
-                    color: "#666",
-                    fontSize: "14px"
+                    padding:
+                      "28px 24px 30px",
+                    background: "#fff",
+                    borderTop:
+                      "4px solid #FF6B35",
+                    boxShadow:
+                      "0 14px 40px rgba(0,0,0,0.08)"
                   }}
                 >
-                  This RANKD could not be loaded.
-                </div>
-
-              )}
-
-
-            {!previewLoading &&
-              selectedRanking && (
-
-                <div>
 
                   <div
                     style={{
                       display: "flex",
-                      alignItems: "flex-start",
-                      justifyContent: "space-between",
+                      alignItems:
+                        "flex-start",
+                      justifyContent:
+                        "space-between",
                       gap: "20px",
-                      marginBottom: "22px"
+                      marginBottom:
+                        "22px"
                     }}
                   >
 
@@ -704,14 +773,16 @@ export default function PhotoRankdPage(){
                         style={{
                           margin: 0,
                           fontSize:
-                            "clamp(24px, 4vw, 42px)",
+                            "clamp(24px, 3vw, 40px)",
                           lineHeight: 1,
                           fontWeight: 900,
                           letterSpacing:
                             "-0.035em"
                         }}
                       >
-                        {selectedRanking.title}
+                        {
+                          selectedRanking.title
+                        }
                       </h2>
 
                     </div>
@@ -741,7 +812,8 @@ export default function PhotoRankdPage(){
                         fontSize: "13px",
                         fontWeight: 700,
                         cursor: "pointer",
-                        padding: "4px 0"
+                        padding:
+                          "4px 0"
                       }}
                     >
                       Close
@@ -756,9 +828,8 @@ export default function PhotoRankdPage(){
                       style={{
                         margin:
                           "0 0 24px",
-                        maxWidth: "760px",
                         color: "#666",
-                        fontSize: "15px",
+                        fontSize: "14px",
                         lineHeight: 1.5
                       }}
                     >
@@ -801,12 +872,12 @@ export default function PhotoRankdPage(){
                               display:
                                 "grid",
                               gridTemplateColumns:
-                                "42px 1fr",
+                                "38px 1fr",
                               alignItems:
                                 "center",
-                              gap: "12px",
+                              gap: "10px",
                               padding:
-                                "15px 0",
+                                "13px 0",
                               borderBottom:
                                 "1px solid #ddd"
                             }}
@@ -815,7 +886,7 @@ export default function PhotoRankdPage(){
                             <div
                               style={{
                                 fontSize:
-                                  "18px",
+                                  "17px",
                                 fontWeight:
                                   900,
                                 color:
@@ -829,14 +900,16 @@ export default function PhotoRankdPage(){
                             <div
                               style={{
                                 fontSize:
-                                  "16px",
+                                  "15px",
                                 fontWeight:
                                   700,
                                 lineHeight:
                                   1.25
                               }}
                             >
-                              {item.name}
+                              {
+                                item.name
+                              }
                             </div>
 
                           </div>
@@ -849,7 +922,8 @@ export default function PhotoRankdPage(){
 
                   <div
                     style={{
-                      display: "flex",
+                      display:
+                        "flex",
                       justifyContent:
                         "flex-start",
                       marginTop:
@@ -869,9 +943,9 @@ export default function PhotoRankdPage(){
                         justifyContent:
                           "center",
                         minHeight:
-                          "48px",
+                          "46px",
                         padding:
-                          "0 22px",
+                          "0 20px",
                         background:
                           "#111",
                         color:
@@ -879,7 +953,7 @@ export default function PhotoRankdPage(){
                         textDecoration:
                           "none",
                         fontSize:
-                          "13px",
+                          "12px",
                         fontWeight:
                           900,
                         letterSpacing:
@@ -899,9 +973,49 @@ export default function PhotoRankdPage(){
 
           </section>
 
-        )}
+        </div>
+
+
+        <div
+          style={{
+            marginTop: "20px",
+            color: "#777",
+            fontSize: "13px",
+            textAlign: "center"
+          }}
+        >
+          Tap a RANKD 7 to explore the list.
+        </div>
 
       </div>
+
+
+      <style jsx>{`
+
+        @media (max-width: 900px){
+
+          .photo-rankd-layout{
+            grid-template-columns:
+              minmax(0, 1fr) !important;
+            gap: 24px !important;
+          }
+
+          .photo-rankd-layout
+          section:last-child{
+            position: static !important;
+          }
+
+        }
+
+        @media (max-width: 600px){
+
+          .photo-rankd-layout{
+            gap: 18px !important;
+          }
+
+        }
+
+      `}</style>
 
     </main>
 
