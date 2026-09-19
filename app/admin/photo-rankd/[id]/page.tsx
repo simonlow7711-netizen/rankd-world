@@ -15,7 +15,8 @@ import {
 
 
 type Hotspot = {
-  rankingId: string
+  rankingId?: number
+  rankingSupabaseId: string
   x: number
   y: number
 }
@@ -31,8 +32,10 @@ type PhotoRankd = {
 }
 
 
-export default function PhotoRankdPage() {
-  const params = useParams()
+export default function PhotoRankdPage(){
+
+  const params =
+    useParams()
 
   const id =
     typeof params?.id === "string"
@@ -43,77 +46,96 @@ export default function PhotoRankdPage() {
   const [
     photoRankd,
     setPhotoRankd
-  ] = useState<PhotoRankd | null>(null)
+  ] =
+    useState<PhotoRankd | null>(
+      null
+    )
 
 
   const [
     loading,
     setLoading
-  ] = useState(true)
+  ] =
+    useState(true)
 
 
-  useEffect(() => {
-    if (!id) {
-      return
-    }
+  useEffect(
+    () => {
 
-
-    async function loadPhotoRankd() {
-      setLoading(true)
-
-
-      const {
-        data,
-        error
-      } = await supabase
-        .from("photo_rankds")
-        .select(
-          `
-            id,
-            title,
-            description,
-            image_url,
-            ranking_ids,
-            hotspots
-          `
-        )
-        .eq(
-          "id",
-          id
-        )
-        .eq(
-          "published",
-          true
-        )
-        .maybeSingle()
-
-
-      if (error) {
-        console.error(
-          "Could not load Photo RANKD:",
-          error
-        )
-
-        setPhotoRankd(null)
-        setLoading(false)
-
+      if(!id){
         return
       }
 
 
-      setPhotoRankd(
-        data as PhotoRankd | null
-      )
+      async function loadPhotoRankd(){
 
-      setLoading(false)
-    }
+        setLoading(true)
 
 
-    loadPhotoRankd()
-  }, [id])
+        const {
+          data,
+          error
+        } =
+          await supabase
+            .from("photo_rankds")
+            .select(
+              `
+                id,
+                title,
+                description,
+                image_url,
+                ranking_ids,
+                hotspots
+              `
+            )
+            .eq(
+              "id",
+              id
+            )
+            .maybeSingle()
 
 
-  if (loading) {
+        if(error){
+
+          console.error(
+            "Could not load Photo RANKD:",
+            error
+          )
+
+          setPhotoRankd(
+            null
+          )
+
+          setLoading(
+            false
+          )
+
+          return
+        }
+
+
+        setPhotoRankd(
+          data as PhotoRankd | null
+        )
+
+        setLoading(
+          false
+        )
+
+      }
+
+
+      loadPhotoRankd()
+
+    },
+    [
+      id
+    ]
+  )
+
+
+  if(loading){
+
     return (
       <main
         style={{
@@ -125,6 +147,7 @@ export default function PhotoRankdPage() {
           padding: "40px"
         }}
       >
+
         <div
           style={{
             fontSize: "14px",
@@ -133,12 +156,15 @@ export default function PhotoRankdPage() {
         >
           Loading Photo RANKD...
         </div>
+
       </main>
     )
+
   }
 
 
-  if (!photoRankd) {
+  if(!photoRankd){
+
     return (
       <main
         style={{
@@ -150,12 +176,14 @@ export default function PhotoRankdPage() {
           padding: "40px"
         }}
       >
+
         <div
           style={{
             maxWidth: "520px",
             textAlign: "center"
           }}
         >
+
           <div
             style={{
               fontSize: "72px",
@@ -167,6 +195,7 @@ export default function PhotoRankdPage() {
           >
             7
           </div>
+
 
           <h1
             style={{
@@ -180,6 +209,7 @@ export default function PhotoRankdPage() {
             Photo RANKD not found
           </h1>
 
+
           <p
             style={{
               marginTop: "12px",
@@ -188,22 +218,28 @@ export default function PhotoRankdPage() {
               lineHeight: 1.5
             }}
           >
-            This Photo RANKD may not have been published,
-            or the link may no longer be available.
+            This Photo RANKD may no longer be available,
+            or the link may be incorrect.
           </p>
+
         </div>
+
       </main>
     )
+
   }
 
 
   const hotspots =
-    Array.isArray(photoRankd.hotspots)
+    Array.isArray(
+      photoRankd.hotspots
+    )
       ? photoRankd.hotspots
       : []
 
 
   return (
+
     <main
       style={{
         minHeight: "100vh",
@@ -211,6 +247,7 @@ export default function PhotoRankdPage() {
         color: "#111"
       }}
     >
+
       <div
         style={{
           width: "100%",
@@ -219,46 +256,26 @@ export default function PhotoRankdPage() {
           padding: "24px 20px 60px"
         }}
       >
+
         <header
           style={{
             marginBottom: "24px"
           }}
         >
-          <div
+
+          <p
             style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "10px",
-              marginBottom: "10px"
+              margin: "0 0 10px",
+              fontSize: "12px",
+              fontWeight: 900,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: "#FF6B35"
             }}
           >
-            <span
-              style={{
-                display: "inline-flex",
-                alignItems: "center",
-                justifyContent: "center",
-                width: "34px",
-                height: "34px",
-                borderRadius: "50%",
-                background: "#FF6B35",
-                color: "#fff",
-                fontSize: "18px",
-                fontWeight: 900
-              }}
-            >
-              7
-            </span>
+            PHOTO RANKD
+          </p>
 
-            <span
-              style={{
-                fontSize: "14px",
-                fontWeight: 800,
-                letterSpacing: "0.08em"
-              }}
-            >
-              RANKD
-            </span>
-          </div>
 
           <h1
             style={{
@@ -272,7 +289,9 @@ export default function PhotoRankdPage() {
             {photoRankd.title}
           </h1>
 
+
           {photoRankd.description && (
+
             <p
               style={{
                 maxWidth: "720px",
@@ -284,7 +303,9 @@ export default function PhotoRankdPage() {
             >
               {photoRankd.description}
             </p>
+
           )}
+
         </header>
 
 
@@ -299,9 +320,14 @@ export default function PhotoRankdPage() {
               "0 20px 60px rgba(0,0,0,0.12)"
           }}
         >
+
           <img
-            src={photoRankd.image_url}
-            alt={photoRankd.title}
+            src={
+              photoRankd.image_url
+            }
+            alt={
+              photoRankd.title
+            }
             style={{
               display: "block",
               width: "100%",
@@ -317,20 +343,24 @@ export default function PhotoRankdPage() {
               hotspot,
               index
             ) => {
-              if (
-                !hotspot?.rankingId
-              ) {
+
+              if(
+                !hotspot?.rankingSupabaseId
+              ){
+
                 return null
+
               }
 
 
               return (
+
                 <a
                   key={
-                    `${hotspot.rankingId}-${index}`
+                    `${hotspot.rankingSupabaseId}-${index}`
                   }
                   href={
-                    `/rank/${hotspot.rankingId}`
+                    `/rank/${hotspot.rankingSupabaseId}`
                   }
                   aria-label={
                     `Open RANKD ${index + 1}`
@@ -360,19 +390,25 @@ export default function PhotoRankdPage() {
                       "transform 160ms ease"
                   }}
                   onMouseEnter={
-                    (event) => {
+                    event => {
+
                       event.currentTarget.style.transform =
                         "translate(-50%, -50%) scale(1.08)"
+
                     }
                   }
                   onMouseLeave={
-                    (event) => {
+                    event => {
+
                       event.currentTarget.style.transform =
                         "translate(-50%, -50%) scale(1)"
+
                     }
                   }
                 >
+
                   7
+
 
                   <span
                     style={{
@@ -394,10 +430,14 @@ export default function PhotoRankdPage() {
                   >
                     {index + 1}
                   </span>
+
                 </a>
+
               )
+
             }
           )}
+
         </section>
 
 
@@ -413,7 +453,11 @@ export default function PhotoRankdPage() {
         >
           Tap a RANKD 7 to explore the list.
         </div>
+
       </div>
+
     </main>
+
   )
+
 }
