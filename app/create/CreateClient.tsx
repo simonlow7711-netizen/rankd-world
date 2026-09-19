@@ -563,78 +563,13 @@ export default function CreateClient(){
     }
 
 
-    if(
-      parentRanking?.creatorId
-      &&
-      parentRanking.creatorId !== user.id
-      &&
-      finalParentId
-    ){
-
-      await createRemixNotification({
-        recipientUserId:
-          parentRanking.creatorId,
-
-        actorUserId:
-          user.id,
-
-        originalRankingId:
-          finalParentId,
-
-        remixRankingId:
-          publishedRankingId
-
-      })
-
-    }
-
-
-    try{
-
-      const existingGraph =
-        await getTasteGraph(
-          user.id
-        )
-
-      const baselineSignals =
-        buildTasteBaselineSignals(
-          user.id,
-          publishedRanking
-        )
-
-      if(
-        baselineSignals.length > 0
-      ){
-
-        const baselineGraph:TasteGraph = {
-
-          ...existingGraph,
-
-          signals:[
-            ...existingGraph.signals,
-
-            ...baselineSignals
-          ]
-
-        }
-
-        await saveTasteGraph(
-          baselineGraph
-        )
-
-      }
-
-    }catch(
-      tasteError
-    ){
-
-      console.error(
-        "TASTE GRAPH BASELINE ERROR",
-        tasteError
-      )
-
-    }
-
+    /*
+     * The RANKD is now published.
+     *
+     * Everything below this point is post-publication
+     * enrichment and should not delay the user seeing
+     * their newly published RANKD.
+     */
 
     const recommendationId =
       searchParams.get(
@@ -646,80 +581,214 @@ export default function CreateClient(){
         "recommendationScore"
       )
 
-    if(
-      recommendationId
-      &&
-      recommendationScore
-    ){
 
-      try{
+    void Promise.all(
+      [
 
-        const recommendation =
-          await getSupabaseRanking(
-            recommendationId
-          )
+        /*
+         * Remix notification
+         */
 
-        if(recommendation){
+        (
+          async () => {
 
-          const existingGraph =
-            await getTasteGraph(
-              user.id
-            )
+            if(
+              !parentRanking?.creatorId
+              ||
+              parentRanking.creatorId === user.id
+              ||
+              !finalParentId
+            ){
 
-          const comparison =
-            compareTasteFeedback(
-              recommendation,
-              publishedRanking,
-              Number(
-                recommendationScore
+              return
+            }
+
+            try{
+
+              await createRemixNotification({
+                recipientUserId:
+                  parentRanking.creatorId,
+
+                actorUserId:
+                  user.id,
+
+                originalRankingId:
+                  finalParentId,
+
+                remixRankingId:
+                  publishedRankingId
+
+              })
+
+            }catch(
+              notificationError
+            ){
+
+              console.error(
+                "REMIX NOTIFICATION ERROR",
+                notificationError
               )
-            )
-
-          const feedbackSignals =
-            buildTasteFeedbackSignals(
-              user.id,
-              recommendation,
-              publishedRanking,
-              comparison
-            )
-
-          if(
-            feedbackSignals.length > 0
-          ){
-
-            const feedbackGraph:TasteGraph = {
-
-              ...existingGraph,
-
-              signals:[
-                ...existingGraph.signals,
-
-                ...feedbackSignals
-              ]
 
             }
 
-            await saveTasteGraph(
-              feedbackGraph
-            )
+          }
+        )(),
+
+
+        /*
+         * Taste Graph baseline
+         */
+
+        (
+          async () => {
+
+            try{
+
+              const existingGraph =
+                await getTasteGraph(
+                  user.id
+                )
+
+              const baselineSignals =
+                buildTasteBaselineSignals(
+                  user.id,
+                  publishedRanking
+                )
+
+              if(
+                baselineSignals.length === 0
+              ){
+
+                return
+              }
+
+              const baselineGraph:TasteGraph = {
+
+                ...existingGraph,
+
+                signals:[
+                  ...existingGraph.signals,
+
+                  ...baselineSignals
+                ]
+
+              }
+
+              await saveTasteGraph(
+                baselineGraph
+              )
+
+            }catch(
+              tasteError
+            ){
+
+              console.error(
+                "TASTE GRAPH BASELINE ERROR",
+                tasteError
+              )
+
+            }
 
           }
+        )(),
 
-        }
 
-      }catch(
-        feedbackError
-      ){
+        /*
+         * Recommendation feedback
+         */
 
-        console.error(
-          "TASTE GRAPH FEEDBACK ERROR",
-          feedbackError
-        )
+        (
+          async () => {
 
-      }
+            if(
+              !recommendationId
+              ||
+              !recommendationScore
+            ){
 
-    }
+              return
+            }
 
+            try{
+
+              const recommendation =
+                await getSupabaseRanking(
+                  recommendationId
+                )
+
+              if(!recommendation){
+                return
+              }
+
+              const existingGraph =
+                await getTasteGraph(
+                  user.id
+                )
+
+              const comparison =
+                compareTasteFeedback(
+                  recommendation,
+                  publishedRanking,
+                  Number(
+                    recommendationScore
+                  )
+                )
+
+              const feedbackSignals =
+                buildTasteFeedbackSignals(
+                  user.id,
+                  recommendation,
+                  publishedRanking,
+                  comparison
+                )
+
+              if(
+                feedbackSignals.length === 0
+              ){
+
+                return
+              }
+
+              const feedbackGraph:TasteGraph = {
+
+                ...existingGraph,
+
+                signals:[
+                  ...existingGraph.signals,
+
+                  ...feedbackSignals
+                ]
+
+              }
+
+              await saveTasteGraph(
+                feedbackGraph
+              )
+
+            }catch(
+              feedbackError
+            ){
+
+              console.error(
+                "TASTE GRAPH FEEDBACK ERROR",
+                feedbackError
+              )
+
+            }
+
+          }
+        )()
+
+      ]
+    )
+
+
+    /*
+     * Do not wait for post-publication processing.
+     *
+     * The ranking already exists in Supabase, so take
+     * the user directly to the published RANKD.
+     */
 
     router.push(
       `/rank/${publishedRankingId}`
