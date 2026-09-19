@@ -218,7 +218,7 @@ export default function PhotoRankdPage(){
               lineHeight: 1.5
             }}
           >
-            This Photo RANKD may no longer be available,
+            This Photo RANKD could not be found,
             or the link may be incorrect.
           </p>
 
