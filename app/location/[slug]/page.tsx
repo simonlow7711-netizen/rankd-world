@@ -1,8 +1,23 @@
+import type {
+  Metadata
+} from "next"
+
+
+import {
+  notFound
+} from "next/navigation"
+
+
 import {
   getAllRankings
 } from "@/utils/supabaseRankings"
 
+
 import RankingCard from "@/components/RankingCard"
+
+
+const SITE_URL =
+  "https://rankd.world"
 
 
 export const dynamic =
@@ -357,7 +372,7 @@ function locationMatches(
 
 export async function generateMetadata({
   params
-}:LocationPageProps) {
+}:LocationPageProps):Promise<Metadata>{
 
   const {
     slug
@@ -365,9 +380,13 @@ export async function generateMetadata({
     await params
 
 
+  const locationSlug =
+    slug.toLowerCase()
+
+
   const location =
     locations[
-      slug.toLowerCase()
+      locationSlug
     ]
 
 
@@ -375,7 +394,22 @@ export async function generateMetadata({
     !location
   ){
 
-    return {}
+    return {
+
+      title:
+        "Location Not Found | RANKD",
+
+      robots: {
+
+        index:
+          false,
+
+        follow:
+          false
+
+      }
+
+    }
 
   }
 
@@ -383,11 +417,13 @@ export async function generateMetadata({
   const title =
     `Top 7 ${location.name} Rankings | RANKD`
 
+
   const description =
     `Discover the Top 7 rankings from ${location.name}, ${location.city}. Explore local opinions across food, travel, culture, sport and more.`
 
+
   const canonical =
-    `/location/${slug.toLowerCase()}`
+    `${SITE_URL}/location/${locationSlug}`
 
 
   return {
@@ -396,23 +432,54 @@ export async function generateMetadata({
 
     description,
 
+
     alternates: {
 
       canonical
 
     },
 
+
     openGraph: {
+
+      type:
+        "website",
+
+      url:
+        canonical,
+
+      siteName:
+        "RANKD",
 
       title,
 
       description,
 
-      url:
-        canonical,
+      locale:
+        "en_GB"
 
-      type:
-        "website"
+    },
+
+
+    twitter: {
+
+      card:
+        "summary_large_image",
+
+      title,
+
+      description
+
+    },
+
+
+    robots: {
+
+      index:
+        true,
+
+      follow:
+        true
 
     }
 
@@ -431,9 +498,13 @@ export default async function LocationPage({
     await params
 
 
+  const locationSlug =
+    slug.toLowerCase()
+
+
   const location =
     locations[
-      slug.toLowerCase()
+      locationSlug
     ]
 
 
@@ -448,7 +519,7 @@ export default async function LocationPage({
     !location
   ){
 
-    return null
+    notFound()
 
   }
 
@@ -490,247 +561,363 @@ export default async function LocationPage({
           : location.country
 
 
+  const canonical =
+    `${SITE_URL}/location/${locationSlug}`
+
+
+  const title =
+    `Top 7 rankings from ${location.name}`
+
+
+  const description =
+    `Discover local opinions, rankings and perspectives from ${location.name}, ${location.city}.`
+
+
+  const structuredData = {
+
+    "@context":
+      "https://schema.org",
+
+    "@graph": [
+
+      {
+
+        "@type":
+          "CollectionPage",
+
+        "@id":
+          `${canonical}/#webpage`,
+
+        url:
+          canonical,
+
+        name:
+          `${title} | RANKD`,
+
+        description,
+
+        isPartOf: {
+
+          "@id":
+            `${SITE_URL}/#website`
+
+        },
+
+        inLanguage:
+          "en-GB"
+
+      },
+
+      {
+
+        "@type":
+          "ItemList",
+
+        "@id":
+          `${canonical}/#rankings`,
+
+        name:
+          `Top 7 rankings from ${location.name}`,
+
+        url:
+          canonical,
+
+        numberOfItems:
+          locationRankings.length,
+
+        itemListElement:
+
+          locationRankings.map(
+
+            (
+              ranking,
+              index
+            ) => ({
+
+              "@type":
+                "ListItem",
+
+              position:
+                index + 1,
+
+              name:
+                ranking.title,
+
+              url:
+                `${SITE_URL}/rank/${ranking.id}`
+
+            })
+
+          )
+
+      }
+
+    ]
+
+  }
+
+
   return (
 
-    <main
-      className="
-        min-h-screen
-        bg-[#F7F4EE]
-        px-4
-        py-8
-        sm:px-6
-        lg:px-8
-      "
-    >
+    <>
 
-      <div
+      <script
+
+        type="application/ld+json"
+
+        dangerouslySetInnerHTML={{
+
+          __html:
+            JSON.stringify(
+              structuredData
+            )
+
+        }}
+
+      />
+
+
+      <main
         className="
-          mx-auto
-          max-w-7xl
+          min-h-screen
+          bg-[#F7F4EE]
+          px-4
+          py-8
+          sm:px-6
+          lg:px-8
         "
       >
 
-        <header
+        <div
           className="
-            mb-10
+            mx-auto
+            max-w-7xl
           "
         >
 
-          <div
+          <header
             className="
-              mb-3
-              inline-flex
-              items-center
-              rounded-full
-              border
-              border-black/10
-              bg-white
-              px-3
-              py-1
-              text-xs
-              font-semibold
-              uppercase
-              tracking-[0.18em]
-              text-black/60
+              mb-10
             "
           >
 
-            {location.name}
-
-            <span
+            <div
               className="
-                mx-2
-                text-black/30
+                mb-3
+                inline-flex
+                items-center
+                rounded-full
+                border
+                border-black/10
+                bg-white
+                px-3
+                py-1
+                text-xs
+                font-semibold
+                uppercase
+                tracking-[0.18em]
+                text-black/60
               "
             >
-              ·
-            </span>
 
-            {location.city}
+              {location.name}
 
-            <span
-              className="
-                mx-2
-                text-black/30
-              "
-            >
-              ·
-            </span>
-
-            {countryLabel}
-
-          </div>
-
-
-          <h1
-            className="
-              max-w-4xl
-              text-4xl
-              font-black
-              tracking-tight
-              text-black
-              sm:text-5xl
-              lg:text-6xl
-            "
-          >
-
-            Top 7 rankings from{" "}
-            {location.name}
-
-          </h1>
-
-
-          <p
-            className="
-              mt-4
-              max-w-2xl
-              text-base
-              leading-7
-              text-black/60
-              sm:text-lg
-            "
-          >
-
-            Discover local opinions,
-            rankings and perspectives
-            from {location.name},
-            {` `}
-            {location.city}.
-
-          </p>
-
-        </header>
-
-
-        <section>
-
-          <div
-            className="
-              mb-8
-              flex
-              flex-wrap
-              items-center
-              justify-between
-              gap-3
-            "
-          >
-
-            <div>
-
-              <h2
+              <span
                 className="
-                  text-xl
-                  font-bold
-                  text-black
+                  mx-2
+                  text-black/30
                 "
               >
+                ·
+              </span>
 
-                {locationRankings.length} RANKDs
+              {location.city}
 
-              </h2>
-
-
-              <p
+              <span
                 className="
-                  mt-1
-                  text-sm
-                  text-black/50
+                  mx-2
+                  text-black/30
                 "
               >
+                ·
+              </span>
 
-                {
-                  locationRankings.length > 0
-                    ? `Across ${categories.length} categories`
-                    : "No RANKDs have been added here yet"
-                }
-
-              </p>
+              {countryLabel}
 
             </div>
 
-          </div>
+
+            <h1
+              className="
+                max-w-4xl
+                text-4xl
+                font-black
+                tracking-tight
+                text-black
+                sm:text-5xl
+                lg:text-6xl
+              "
+            >
+
+              Top 7 rankings from{" "}
+              {location.name}
+
+            </h1>
 
 
-          {
-            locationRankings.length > 0 ? (
+            <p
+              className="
+                mt-4
+                max-w-2xl
+                text-base
+                leading-7
+                text-black/60
+                sm:text-lg
+              "
+            >
 
-              <div
-                className="
-                  grid
-                  gap-6
-                  sm:grid-cols-2
-                  lg:grid-cols-3
-                "
-              >
+              Discover local opinions,
+              rankings and perspectives
+              from {location.name},
+              {` `}
+              {location.city}.
 
-                {locationRankings.map(
-                  ranking => (
+            </p>
 
-                    <RankingCard
-                      key={
-                        ranking.id
-                      }
-                      ranking={
-                        ranking
-                      }
-                    />
+          </header>
 
-                  )
-                )}
 
-              </div>
+          <section>
 
-            ) : (
+            <div
+              className="
+                mb-8
+                flex
+                flex-wrap
+                items-center
+                justify-between
+                gap-3
+              "
+            >
 
-              <div
-                className="
-                  rounded-2xl
-                  border
-                  border-black/10
-                  bg-white
-                  px-6
-                  py-12
-                  text-center
-                "
-              >
+              <div>
 
-                <p
+                <h2
                   className="
-                    text-lg
-                    font-semibold
+                    text-xl
+                    font-bold
                     text-black
                   "
                 >
 
-                  No RANKDs here yet.
+                  {locationRankings.length} RANKDs
 
-                </p>
+                </h2>
 
 
                 <p
                   className="
-                    mt-2
+                    mt-1
                     text-sm
                     text-black/50
                   "
                 >
 
-                  Check back soon for
-                  rankings from {location.name}.
+                  {
+                    locationRankings.length > 0
+                      ? `Across ${categories.length} categories`
+                      : "No RANKDs have been added here yet"
+                  }
 
                 </p>
 
               </div>
 
-            )
+            </div>
 
-          }
 
-        </section>
+            {
+              locationRankings.length > 0 ? (
 
-      </div>
+                <div
+                  className="
+                    grid
+                    gap-6
+                    sm:grid-cols-2
+                    lg:grid-cols-3
+                  "
+                >
 
-    </main>
+                  {locationRankings.map(
+                    ranking => (
+
+                      <RankingCard
+                        key={
+                          ranking.id
+                        }
+                        ranking={
+                          ranking
+                        }
+                      />
+
+                    )
+                  )}
+
+                </div>
+
+              ) : (
+
+                <div
+                  className="
+                    rounded-2xl
+                    border
+                    border-black/10
+                    bg-white
+                    px-6
+                    py-12
+                    text-center
+                  "
+                >
+
+                  <p
+                    className="
+                      text-lg
+                      font-semibold
+                      text-black
+                    "
+                  >
+
+                    No RANKDs here yet.
+
+                  </p>
+
+
+                  <p
+                    className="
+                      mt-2
+                      text-sm
+                      text-black/50
+                    "
+                  >
+
+                    Check back soon for
+                    rankings from {location.name}.
+
+                  </p>
+
+                </div>
+
+              )
+
+            }
+
+          </section>
+
+        </div>
+
+      </main>
+
+    </>
 
   )
 

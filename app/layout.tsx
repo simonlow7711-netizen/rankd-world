@@ -24,6 +24,18 @@ const SITE_URL =
   "https://rankd.world"
 
 
+const SITE_NAME =
+  "RANKD"
+
+
+const SITE_TITLE =
+  "RANKD — The World's Top 7 Everything"
+
+
+const SITE_DESCRIPTION =
+  "Discover, create and debate the world's Top 7. Compare opinions, explore different perspectives and rank it differently."
+
+
 export const metadata: Metadata = {
 
   metadataBase:
@@ -35,7 +47,7 @@ export const metadata: Metadata = {
   title: {
 
     default:
-      "RANKD — The World's Top 7 Everything",
+      SITE_TITLE,
 
     template:
       "%s | RANKD"
@@ -44,11 +56,11 @@ export const metadata: Metadata = {
 
 
   description:
-    "Discover, create and debate the world's Top 7 rankings. Explore opinions, compare perspectives and create your own Top 7.",
+    SITE_DESCRIPTION,
 
 
   applicationName:
-    "RANKD",
+    SITE_NAME,
 
 
   keywords: [
@@ -57,21 +69,21 @@ export const metadata: Metadata = {
 
     "Top 7",
 
-    "rankings",
-
     "Top 7 rankings",
 
-    "best of",
+    "rankings",
+
+    "ranking",
 
     "opinions",
 
-    "rankings and opinions",
+    "compare rankings",
 
     "community rankings",
 
-    "compare rankings",
+    "create a ranking",
 
-    "create a ranking"
+    "rank it differently"
 
   ],
 
@@ -81,7 +93,10 @@ export const metadata: Metadata = {
     {
 
       name:
-        "RANKD"
+        SITE_NAME,
+
+      url:
+        SITE_URL
 
     }
 
@@ -89,11 +104,11 @@ export const metadata: Metadata = {
 
 
   creator:
-    "RANKD",
+    SITE_NAME,
 
 
   publisher:
-    "RANKD",
+    SITE_NAME,
 
 
   alternates: {
@@ -113,13 +128,13 @@ export const metadata: Metadata = {
       SITE_URL,
 
     siteName:
-      "RANKD",
+      SITE_NAME,
 
     title:
-      "RANKD — The World's Top 7 Everything",
+      SITE_TITLE,
 
     description:
-      "Discover, create and debate the world's Top 7 rankings.",
+      SITE_DESCRIPTION,
 
     locale:
       "en_GB"
@@ -133,10 +148,10 @@ export const metadata: Metadata = {
       "summary_large_image",
 
     title:
-      "RANKD — The World's Top 7 Everything",
+      SITE_TITLE,
 
     description:
-      "Discover, create and debate the world's Top 7 rankings."
+      SITE_DESCRIPTION
 
   },
 
@@ -147,7 +162,26 @@ export const metadata: Metadata = {
       true,
 
     follow:
-      true
+      true,
+
+    googleBot: {
+
+      index:
+        true,
+
+      follow:
+        true,
+
+      "max-image-preview":
+        "large",
+
+      "max-snippet":
+        -1,
+
+      "max-video-preview":
+        -1
+
+    }
 
   }
 
@@ -220,13 +254,20 @@ export default function RootLayout({
                       SITE_URL,
 
                     name:
-                      "RANKD",
+                      SITE_NAME,
 
                     description:
-                      "Discover, create and debate the world's Top 7 rankings.",
+                      SITE_DESCRIPTION,
 
                     inLanguage:
-                      "en-GB"
+                      "en-GB",
+
+                    publisher: {
+
+                      "@id":
+                        `${SITE_URL}/#organization`
+
+                    }
 
                   },
 
@@ -240,7 +281,7 @@ export default function RootLayout({
                       `${SITE_URL}/#organization`,
 
                     name:
-                      "RANKD",
+                      SITE_NAME,
 
                     url:
                       SITE_URL

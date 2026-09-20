@@ -21,6 +21,10 @@ import {
 import RankClient from "./RankClient"
 
 
+const SITE_URL =
+  "https://rankd.world"
+
+
 type Props = {
   params: Promise<{
     id:string
@@ -49,7 +53,15 @@ export async function generateMetadata(
 
     return {
       title:
-        "RANKD | The world's Top 7 everything"
+        "RANKD — The World's Top 7 Everything",
+      description:
+        "Discover, create and debate the world's Top 7 on RANKD.",
+      robots: {
+        index:
+          false,
+        follow:
+          false
+      }
     }
 
   }
@@ -66,10 +78,59 @@ export async function generateMetadata(
     `Discover ${title} on RANKD.`
 
 
+  const canonicalUrl =
+    `${SITE_URL}/rank/${id}`
+
+
   return {
-    title:
-      `${title} | RANKD`,
-    description
+
+    title,
+
+    description,
+
+
+    alternates: {
+
+      canonical:
+        canonicalUrl
+
+    },
+
+
+    openGraph: {
+
+      type:
+        "article",
+
+      url:
+        canonicalUrl,
+
+      siteName:
+        "RANKD",
+
+      title:
+        `${title} | RANKD`,
+
+      description,
+
+      locale:
+        "en_GB"
+
+    },
+
+
+    twitter: {
+
+      card:
+        "summary_large_image",
+
+      title:
+        `${title} | RANKD`,
+
+      description
+
+    }
+
   }
 
 }
@@ -110,48 +171,81 @@ export default async function RankPage(
     `Discover ${title} on RANKD.`
 
 
+  const canonicalUrl =
+    `${SITE_URL}/rank/${id}`
+
+
   const structuredData = {
+
     "@context":
       "https://schema.org",
+
     "@type":
       "ItemList",
+
+    "@id":
+      `${canonicalUrl}#ranking`,
+
+    url:
+      canonicalUrl,
+
     name:
       title,
+
     description,
+
     numberOfItems:
       ranking.items.length,
+
     itemListElement:
       ranking.items.map(
         item => ({
+
           "@type":
             "ListItem",
+
           position:
             item.position,
+
           name:
             item.name
+
         })
       )
+
   }
 
 
   return (
+
     <>
+
       <script
+
         type="application/ld+json"
+
         dangerouslySetInnerHTML={{
+
           __html:
             JSON.stringify(
               structuredData
             )
+
         }}
+
       />
 
+
       <RankClient
+
         id={id}
+
         initialRanking={ranking}
+
       />
 
     </>
+
   )
 
 }

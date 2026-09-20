@@ -308,7 +308,17 @@ export async function generateMetadata(
     return {
 
       title:
-        "Category Not Found | RANKD"
+        "Category Not Found | RANKD",
+
+      robots: {
+
+        index:
+          false,
+
+        follow:
+          false
+
+      }
 
     }
 
@@ -329,12 +339,17 @@ export async function generateMetadata(
     `${SITE_URL}/category/${slug}`
 
 
+  const pageTitle =
+    `Top 7 ${category} Rankings | RANKD`
+
+
   return {
 
     title:
-      `Top 7 ${category} Rankings | RANKD`,
+      pageTitle,
 
     description,
+
 
     alternates: {
 
@@ -342,6 +357,7 @@ export async function generateMetadata(
         categoryUrl
 
     },
+
 
     openGraph: {
 
@@ -355,7 +371,7 @@ export async function generateMetadata(
         "RANKD",
 
       title:
-        `Top 7 ${category} Rankings | RANKD`,
+        pageTitle,
 
       description,
 
@@ -364,17 +380,19 @@ export async function generateMetadata(
 
     },
 
+
     twitter: {
 
       card:
         "summary_large_image",
 
       title:
-        `Top 7 ${category} Rankings | RANKD`,
+        pageTitle,
 
       description
 
     },
+
 
     robots: {
 
@@ -469,6 +487,10 @@ export default async function CategoryPage(
     `${SITE_URL}/category/${slug}`
 
 
+  const pageTitle =
+    `Top 7 ${category} Rankings | RANKD`
+
+
   const structuredData = {
 
     "@context":
@@ -488,7 +510,7 @@ export default async function CategoryPage(
           categoryUrl,
 
         name:
-          `Top 7 ${category} Rankings | RANKD`,
+          pageTitle,
 
         description:
           metadata.description,
@@ -497,13 +519,6 @@ export default async function CategoryPage(
 
           "@id":
             `${SITE_URL}/#website`
-
-        },
-
-        about: {
-
-          "@id":
-            `${SITE_URL}/#organization`
 
         },
 
