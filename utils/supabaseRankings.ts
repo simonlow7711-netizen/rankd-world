@@ -91,6 +91,62 @@ function mapRanking(
 }
 
 
+function normalise(
+  value:string | null | undefined
+):string{
+
+  return (
+    value ??
+    ""
+  )
+    .trim()
+    .toLowerCase()
+
+}
+
+
+function normaliseCountry(
+  value:string | null | undefined
+):string{
+
+  const country =
+    normalise(
+      value
+    )
+
+
+  if(
+    country === "uk"
+  ){
+
+    return "united kingdom"
+
+  }
+
+
+  if(
+    country === "us"
+  ){
+
+    return "united states"
+
+  }
+
+
+  if(
+    country === "ph"
+  ){
+
+    return "philippines"
+
+  }
+
+
+  return country
+
+}
+
+
 async function attachProfiles(
   rankings:Ranking[],
   rows:RankingRow[]
@@ -588,22 +644,44 @@ export async function getRankingsForLocation(
       )
 
 
-  if(location.cityLevel){
+  /*
+   *
+   * City-level locations:
+   *
+   * Query by city only.
+   *
+   * We deliberately do not apply the country
+   * in the Supabase query because existing
+   * rows may contain either:
+   *
+   * "UK"
+   * or
+   * "United Kingdom"
+   *
+   * The country is normalised below.
+   *
+   */
+  if(
+    location.cityLevel
+  ){
 
     query =
-      query
-        .eq(
-          "location_city",
-          location.city
-        )
-        .eq(
-          "location_country",
-          location.country
-        )
+      query.eq(
+        "location_city",
+        location.city
+      )
 
   }
   else{
 
+    /*
+     *
+     * Neighbourhood / district locations:
+     *
+     * Query by location name and city.
+     * Country is checked after retrieval.
+     *
+     */
     query =
       query
         .eq(
@@ -613,10 +691,6 @@ export async function getRankingsForLocation(
         .eq(
           "location_city",
           location.city
-        )
-        .eq(
-          "location_country",
-          location.country
         )
 
   }
@@ -653,8 +727,42 @@ export async function getRankingsForLocation(
   }
 
 
+  const locationCountry =
+    normaliseCountry(
+      location.country
+    )
+
+
+  /*
+   *
+   * Apply the country comparison after the
+   * database query so that both abbreviated
+   * and full country names are supported.
+   *
+   */
+  const filteredRows =
+    (
+      rankingRows as RankingRow[]
+    ).filter(
+      row => {
+
+        const rankingCountry =
+          normaliseCountry(
+            row.location_country
+          )
+
+
+        return (
+          rankingCountry ===
+          locationCountry
+        )
+
+      }
+    )
+
+
   return attachRankingItems(
-    rankingRows as RankingRow[]
+    filteredRows
   )
 
 }
