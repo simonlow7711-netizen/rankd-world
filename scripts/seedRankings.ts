@@ -280,6 +280,234 @@ const seedRankingsLeedsSheffield:SeedRanking[] = [
       "Sheffield's Bleeps & Bass scene",
       "The Leadmill"
     ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Things You'd Never Find in a University Guide",
+    category:"General",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "National Emergency Services Museum",
+      "National Videogame Museum",
+      "Leah's Yard",
+      "Kelham Island Museum",
+      "Red Brick Market",
+      "Moor Market",
+      "Park Hill"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Places to Go Alone Without Feeling Alone",
+    category:"Lifestyle",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Sheffield Botanical Gardens",
+      "Showroom Cinema",
+      "Sheffield Cathedral",
+      "Peace Gardens",
+      "Weston Park",
+      "Central Library",
+      "Winter Garden"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Rabbit Holes Worth Falling Down",
+    category:"General",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Panke Social",
+      "Plot 22",
+      "Delicious Clam",
+      "Sidney & Matilda",
+      "Yellow Arch Studios",
+      "Sheffield General Cemetery",
+      "Castlegate"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Places That Make You Forget You're a Student",
+    category:"Lifestyle",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Sharrow Vale",
+      "Nether Edge",
+      "Ecclesall Road",
+      "Abbeydale Road",
+      "Kelham Island",
+      "Broomhill",
+      "Crookes"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Walks for When You Need to Clear Your Head",
+    category:"Health & Fitness",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Rivelin Valley Trail",
+      "Porter Valley",
+      "Sheffield Round Walk",
+      "Wyming Brook",
+      "Ecclesall Woods",
+      "Loxley Valley",
+      "Limb Valley"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Places to Meet People Without Going to a Nightclub",
+    category:"Lifestyle",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Treehouse Board Game Café",
+      "Patriot Games",
+      "Sheffield Students' Union",
+      "Hallam Students' Union",
+      "Foundry",
+      "Parkrun",
+      "Peddler Market"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Discoveries for Someone Who Just Arrived",
+    category:"General",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Winter Garden",
+      "Millennium Gallery",
+      "Sheffield Cathedral",
+      "Tudor Square",
+      "Leah's Yard",
+      "Cambridge Street Collective",
+      "Moor Market"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Things to Do on a Rainy Sunday",
+    category:"Lifestyle",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "National Videogame Museum",
+      "Kelham Island Museum",
+      "Weston Park Museum",
+      "Millennium Gallery",
+      "Showroom Cinema",
+      "Crucible Theatre",
+      "Builder's Brew LEGO Café"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Places That Feel Like a Secret",
+    category:"Nature & Animals",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Norfolk Heritage Park",
+      "Parkwood Springs",
+      "Heeley People's Park",
+      "Sheffield General Cemetery",
+      "Bolehills Park",
+      "Wyming Brook",
+      "Clay Wood"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Vegetarian Places Where Meat Isn't the Point",
+    category:"Food & Drink",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Church - Temple of Fun",
+      "Pom Kitchen",
+      "South Street Kitchen",
+      "The Old Workshop",
+      "The Chakra Lounge",
+      "5Tara",
+      "Blue Moon Café"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Vegetarian Meals Worth Leaving the Student Bubble For",
+    category:"Food & Drink",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "Church's vegan Sunday roast",
+      "South Street Kitchen brunch",
+      "Pom Kitchen brunch",
+      "The Old Workshop's Make No Bones comfort food",
+      "Chakra Lounge breakfast",
+      "5Tara's Punjabi vegetarian dishes",
+      "Vegetarian food crawl around London Road"
+    ]
+  },
+
+
+  {
+    title:"Top 7 Sheffield Things Worth Doing Before You Graduate",
+    category:"Lifestyle",
+    description:"RANKD Team Sheffield edition.",
+    location_name:"Sheffield",
+    location_city:"Sheffield",
+    location_country:"United Kingdom",
+    items:[
+      "See a gig at Yellow Arch Studios",
+      "Go to Tramlines",
+      "Spend a day in the Peak District",
+      "Do the Sheffield Round Walk",
+      "See a production at the Crucible",
+      "Explore Castlegate after dark",
+      "Go to a grassroots night at Panke Social"
+    ]
   }
 
 ]
