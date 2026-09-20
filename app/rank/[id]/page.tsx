@@ -27,7 +27,7 @@ const SITE_URL =
 
 type Props = {
   params: Promise<{
-    id:string
+    id: string
   }>
 }
 
@@ -35,8 +35,8 @@ type Props = {
 export async function generateMetadata(
   {
     params
-  }:Props
-):Promise<Metadata>{
+  }: Props
+): Promise<Metadata> {
 
   const {
     id
@@ -49,19 +49,23 @@ export async function generateMetadata(
     )
 
 
-  if(!ranking){
+  if (!ranking) {
 
     return {
+
       title:
         "RANKD — The World's Top 7 Everything",
+
       description:
         "Discover, create and debate the world's Top 7 on RANKD.",
+
       robots: {
         index:
           false,
         follow:
           false
       }
+
     }
 
   }
@@ -80,6 +84,10 @@ export async function generateMetadata(
 
   const canonicalUrl =
     `${SITE_URL}/rank/${id}`
+
+
+  const ogImageUrl =
+    `${SITE_URL}/api/og?id=${encodeURIComponent(id)}`
 
 
   return {
@@ -114,7 +122,30 @@ export async function generateMetadata(
       description,
 
       locale:
-        "en_GB"
+        "en_GB",
+
+      images: [
+
+        {
+
+          url:
+            ogImageUrl,
+
+          width:
+            1200,
+
+          height:
+            630,
+
+          type:
+            "image/png",
+
+          alt:
+            `${title} | RANKD`
+
+        }
+
+      ]
 
     },
 
@@ -127,7 +158,11 @@ export async function generateMetadata(
       title:
         `${title} | RANKD`,
 
-      description
+      description,
+
+      images: [
+        ogImageUrl
+      ]
 
     }
 
@@ -139,8 +174,8 @@ export async function generateMetadata(
 export default async function RankPage(
   {
     params
-  }:Props
-){
+  }: Props
+) {
 
   const {
     id
@@ -153,7 +188,7 @@ export default async function RankPage(
     )
 
 
-  if(!ranking){
+  if (!ranking) {
 
     notFound()
 
@@ -221,27 +256,19 @@ export default async function RankPage(
     <>
 
       <script
-
         type="application/ld+json"
-
         dangerouslySetInnerHTML={{
-
           __html:
             JSON.stringify(
               structuredData
             )
-
         }}
-
       />
 
 
       <RankClient
-
         id={id}
-
         initialRanking={ranking}
-
       />
 
     </>
