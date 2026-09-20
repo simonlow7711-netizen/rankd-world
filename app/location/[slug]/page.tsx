@@ -9,7 +9,7 @@ import {
 
 
 import {
-  getAllRankings
+  getRankingsForLocation
 } from "@/utils/supabaseRankings"
 
 
@@ -17,8 +17,7 @@ import RankingCard from "@/components/RankingCard"
 
 
 import {
-  locations,
-  type LocationConfig
+  locations
 } from "@/utils/locations"
 
 
@@ -35,171 +34,6 @@ type LocationPageProps = {
   params:Promise<{
     slug:string
   }>
-
-}
-
-
-function normalise(
-  value:string | null | undefined
-):string{
-
-  return (
-    value ??
-    ""
-  )
-    .trim()
-    .toLowerCase()
-
-}
-
-
-function normaliseCountry(
-  value:string | null | undefined
-):string{
-
-  const country =
-    normalise(
-      value
-    )
-
-
-  if(
-    country === "uk"
-  ){
-
-    return "united kingdom"
-
-  }
-
-
-  if(
-    country === "us"
-  ){
-
-    return "united states"
-
-  }
-
-
-  return country
-
-}
-
-
-function locationMatches(
-  ranking:any,
-  location:LocationConfig
-):boolean{
-
-  if(
-    !ranking.location
-  ){
-
-    return false
-
-  }
-
-
-  const rankingName =
-    normalise(
-      ranking.location.name
-    )
-
-  const rankingCity =
-    normalise(
-      ranking.location.city
-    )
-
-  const rankingCountry =
-    normaliseCountry(
-      ranking.location.country
-    )
-
-  const locationName =
-    normalise(
-      location.name
-    )
-
-  const locationCity =
-    normalise(
-      location.city
-    )
-
-  const locationCountry =
-    normaliseCountry(
-      location.country
-    )
-
-
-  /*
-   *
-   * City-level locations:
-   *
-   * Leeds, Sheffield, Dundee etc.
-   * match against the city rather than
-   * requiring a particular location_name.
-   *
-   */
-  if(
-    location.cityLevel
-  ){
-
-    return (
-
-      rankingCity ===
-        locationCity
-
-      &&
-
-      rankingCountry ===
-        locationCountry
-
-    )
-
-  }
-
-
-  /*
-   *
-   * Neighbourhood / district locations:
-   *
-   * Match the location name and, where
-   * available, the associated city/country.
-   *
-   */
-  if(
-    rankingName !==
-      locationName
-  ){
-
-    return false
-
-  }
-
-
-  if(
-    rankingCity &&
-    rankingCity !==
-      locationCity
-  ){
-
-    return false
-
-  }
-
-
-  if(
-    rankingCountry &&
-    rankingCountry !==
-      locationCountry
-  ){
-
-    return false
-
-  }
-
-
-  return true
 
 }
 
@@ -358,17 +192,18 @@ export default async function LocationPage({
   }
 
 
-  const allRankings =
-    await getAllRankings()
-
-
+  /*
+   *
+   * Query Supabase directly for this location.
+   *
+   * This avoids relying on the global rankings
+   * query and then filtering the returned rows
+   * in JavaScript.
+   *
+   */
   const locationRankings =
-    allRankings.filter(
-      ranking =>
-        locationMatches(
-          ranking,
-          location
-        )
+    await getRankingsForLocation(
+      location
     )
 
 
@@ -441,6 +276,7 @@ export default async function LocationPage({
           "en-GB"
 
       },
+
 
       {
 
@@ -556,16 +392,29 @@ export default async function LocationPage({
 
               {location.name}
 
-              <span
-                className="
-                  mx-2
-                  text-black/30
-                "
-              >
-                ·
-              </span>
 
-              {location.city}
+              {
+                !location.cityLevel &&
+                location.city &&
+                location.city.toLowerCase() !==
+                  location.name.toLowerCase()
+                  ? (
+                    <>
+                      <span
+                        className="
+                          mx-2
+                          text-black/30
+                        "
+                      >
+                        ·
+                      </span>
+
+                      {location.city}
+                    </>
+                  )
+                  : null
+              }
+
 
               <span
                 className="

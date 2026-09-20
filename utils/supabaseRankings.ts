@@ -8,6 +8,11 @@ import {
 } from "@/types/ranking"
 
 
+import {
+  LocationConfig
+} from "@/utils/locations"
+
+
 type RankingRow = {
   id:string
   title:string
@@ -82,6 +87,282 @@ function mapRanking(
 
 
   return ranking
+
+}
+
+
+async function attachProfiles(
+  rankings:Ranking[],
+  rows:RankingRow[]
+):Promise<Ranking[]>{
+
+  const userIds =
+    rows
+      .map(
+        row => row.user_id
+      )
+      .filter(
+        (
+          userId
+        ):userId is string =>
+          Boolean(userId)
+      )
+
+
+  const uniqueUserIds =
+    Array.from(
+      new Set(
+        userIds
+      )
+    )
+
+
+  if(
+    uniqueUserIds.length === 0
+  ){
+
+    return rankings
+
+  }
+
+
+  const {
+    data:profiles,
+    error:profilesError
+  } = await supabase
+    .from("profiles")
+    .select(
+      `
+        id,
+        username,
+        display_name
+      `
+    )
+    .in(
+      "id",
+      uniqueUserIds
+    )
+
+
+  if(profilesError){
+
+    console.error(
+      "PROFILES LOAD ERROR",
+      profilesError
+    )
+
+    return rankings
+
+  }
+
+
+  const profilesByUser =
+    new Map<
+      string,
+      {
+        username:string
+        display_name:string
+      }
+    >()
+
+
+  ;(profiles ?? []).forEach(
+    profile => {
+
+      profilesByUser.set(
+        profile.id,
+        {
+          username:
+            profile.username,
+          display_name:
+            profile.display_name
+        }
+      )
+
+    }
+  )
+
+
+  rankings.forEach(
+    ranking => {
+
+      if(!ranking.creatorId){
+
+        return
+
+      }
+
+
+      const profile =
+        profilesByUser.get(
+          ranking.creatorId
+        )
+
+
+      if(!profile){
+
+        return
+
+      }
+
+
+      ranking.creatorUsername =
+        profile.username
+
+      ranking.creatorDisplayName =
+        profile.display_name
+
+      ranking.creator =
+        profile.display_name ||
+        profile.username ||
+        ""
+
+    }
+  )
+
+
+  return rankings
+
+}
+
+
+async function attachRankingItems(
+  rankingRows:RankingRow[]
+):Promise<Ranking[]>{
+
+  if(
+    rankingRows.length === 0
+  ){
+
+    return []
+
+  }
+
+
+  const rankingIds =
+    rankingRows.map(
+      row => row.id
+    )
+
+
+  /*
+   *
+   * Load ranking items in batches.
+   *
+   * A single .in() query containing hundreds
+   * of ranking IDs can produce a URL large
+   * enough to exceed the HTTP header limit.
+   *
+   */
+  const rankingItems:any[] = []
+
+  const batchSize = 50
+
+
+  for(
+    let i = 0;
+    i < rankingIds.length;
+    i += batchSize
+  ){
+
+    const batchIds =
+      rankingIds.slice(
+        i,
+        i + batchSize
+      )
+
+
+    const {
+      data:batchItems,
+      error:batchItemsError
+    } = await supabase
+      .from("ranking_items")
+      .select(
+        `
+          ranking_id,
+          position,
+          name,
+          votes
+        `
+      )
+      .in(
+        "ranking_id",
+        batchIds
+      )
+      .order(
+        "position",
+        {
+          ascending:true
+        }
+      )
+
+
+    if(batchItemsError){
+
+      console.error(
+        "ALL RANKING ITEMS LOAD ERROR",
+        batchItemsError
+      )
+
+    }
+    else if(batchItems){
+
+      rankingItems.push(
+        ...batchItems
+      )
+
+    }
+
+  }
+
+
+  const itemsByRanking =
+    new Map<
+      string,
+      any[]
+    >()
+
+
+  rankingItems.forEach(
+    item => {
+
+      const existing =
+        itemsByRanking.get(
+          item.ranking_id
+        ) ?? []
+
+      existing.push(
+        item
+      )
+
+      itemsByRanking.set(
+        item.ranking_id,
+        existing
+      )
+
+    }
+  )
+
+
+  const rankings =
+    rankingRows.map(
+      row => {
+
+        return mapRanking(
+          row,
+          itemsByRanking.get(
+            row.id
+          ) ?? []
+        )
+
+      }
+    )
+
+
+  return attachProfiles(
+    rankings,
+    rankingRows
+  )
 
 }
 
@@ -274,240 +555,106 @@ export async function getAllSupabaseRankings():Promise<Ranking[]>{
   }
 
 
-  const rankingIds =
-    rankingRows.map(
-      row => row.id
+  return attachRankingItems(
+    rankingRows as RankingRow[]
+  )
+
+}
+
+
+export async function getRankingsForLocation(
+  location:LocationConfig
+):Promise<Ranking[]>{
+
+  let query =
+    supabase
+      .from("rankings")
+      .select(
+        `
+          id,
+          title,
+          category,
+          description,
+          views,
+          user_id,
+          parent_id,
+          root_id,
+          source_type,
+          created_at,
+          location_name,
+          location_city,
+          location_country
+        `
+      )
+
+
+  if(location.cityLevel){
+
+    query =
+      query
+        .eq(
+          "location_city",
+          location.city
+        )
+        .eq(
+          "location_country",
+          location.country
+        )
+
+  }
+  else{
+
+    query =
+      query
+        .eq(
+          "location_name",
+          location.name
+        )
+        .eq(
+          "location_city",
+          location.city
+        )
+        .eq(
+          "location_country",
+          location.country
+        )
+
+  }
+
+
+  const {
+    data:rankingRows,
+    error:rankingError
+  } = await query
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
     )
 
 
-  if(rankingIds.length === 0){
+  if(rankingError){
+
+    console.error(
+      "LOCATION RANKINGS LOAD ERROR",
+      rankingError
+    )
 
     return []
 
   }
 
 
-  /*
-   *
-   * Load ranking items in batches.
-   *
-   * A single .in() query containing hundreds
-   * of ranking IDs can produce a URL large
-   * enough to exceed the HTTP header limit.
-   *
-   */
-  const rankingItems:any[] = []
+  if(!rankingRows){
 
-  const batchSize = 50
-
-  for(
-    let i = 0;
-    i < rankingIds.length;
-    i += batchSize
-  ){
-
-    const batchIds =
-      rankingIds.slice(
-        i,
-        i + batchSize
-      )
-
-
-    const {
-      data:batchItems,
-      error:batchItemsError
-    } = await supabase
-      .from("ranking_items")
-      .select(
-        `
-          ranking_id,
-          position,
-          name,
-          votes
-        `
-      )
-      .in(
-        "ranking_id",
-        batchIds
-      )
-      .order(
-        "position",
-        {
-          ascending:true
-        }
-      )
-
-
-    if(batchItemsError){
-
-      console.error(
-        "ALL RANKING ITEMS LOAD ERROR",
-        batchItemsError
-      )
-
-    }
-    else if(batchItems){
-
-      rankingItems.push(
-        ...batchItems
-      )
-
-    }
+    return []
 
   }
 
 
-  const itemsByRanking =
-    new Map<
-      string,
-      any[]
-    >()
-
-
-  rankingItems.forEach(
-    item => {
-
-      const existing =
-        itemsByRanking.get(
-          item.ranking_id
-        ) ?? []
-
-      existing.push(
-        item
-      )
-
-      itemsByRanking.set(
-        item.ranking_id,
-        existing
-      )
-
-    }
-  )
-
-
-  const userIds =
-    rankingRows
-      .map(
-        row => row.user_id
-      )
-      .filter(
-        (
-          userId
-        ):userId is string =>
-          Boolean(userId)
-      )
-
-
-  const uniqueUserIds =
-    Array.from(
-      new Set(
-        userIds
-      )
-    )
-
-
-  const profilesByUser =
-    new Map<
-      string,
-      {
-        username:string
-        display_name:string
-      }
-    >()
-
-
-  if(
-    uniqueUserIds.length > 0
-  ){
-
-    const {
-      data:profiles,
-      error:profilesError
-    } = await supabase
-      .from("profiles")
-      .select(
-        `
-          id,
-          username,
-          display_name
-        `
-      )
-      .in(
-        "id",
-        uniqueUserIds
-      )
-
-
-    if(profilesError){
-
-      console.error(
-        "PROFILES LOAD ERROR",
-        profilesError
-      )
-
-    }
-
-
-    ;(profiles ?? []).forEach(
-      profile => {
-
-        profilesByUser.set(
-          profile.id,
-          {
-            username:
-              profile.username,
-            display_name:
-              profile.display_name
-          }
-        )
-
-      }
-    )
-
-  }
-
-
-  return rankingRows.map(
-    row => {
-
-      const ranking =
-        mapRanking(
-          row as RankingRow,
-          itemsByRanking.get(
-            row.id
-          ) ?? []
-        )
-
-
-      if(row.user_id){
-
-        const profile =
-          profilesByUser.get(
-            row.user_id
-          )
-
-
-        if(profile){
-
-          ranking.creatorUsername =
-            profile.username
-
-          ranking.creatorDisplayName =
-            profile.display_name
-
-          ranking.creator =
-            profile.display_name ||
-            profile.username ||
-            ""
-
-        }
-
-      }
-
-
-      return ranking
-
-    }
+  return attachRankingItems(
+    rankingRows as RankingRow[]
   )
 
 }
