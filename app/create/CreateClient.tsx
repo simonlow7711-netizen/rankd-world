@@ -61,6 +61,10 @@ import {
   createRemixNotification
 } from "@/utils/notifications"
 
+import {
+  locations
+} from "@/utils/locations"
+
 
 export default function CreateClient(){
 
@@ -74,6 +78,9 @@ export default function CreateClient(){
     useState("")
 
   const [category,setCategory] =
+    useState("")
+
+  const [locationSlug,setLocationSlug] =
     useState("")
 
   const [description,setDescription] =
@@ -293,6 +300,43 @@ export default function CreateClient(){
         }
 
         if(
+          ranking.location
+        ){
+
+          const matchingLocation =
+            Object.entries(
+              locations
+            ).find(
+              (
+                [
+                  ,
+                  configuredLocation
+                ]
+              ) => {
+
+                return (
+                  configuredLocation.name
+                    .toLowerCase() ===
+                    ranking.location?.name
+                      ?.toLowerCase()
+                )
+
+              }
+            )
+
+          if(
+            matchingLocation
+          ){
+
+            setLocationSlug(
+              matchingLocation[0]
+            )
+
+          }
+
+        }
+
+        if(
           !rerankTitle
         ){
 
@@ -426,6 +470,13 @@ export default function CreateClient(){
       parentRanking?.id ??
       null
 
+    const selectedLocation =
+      locationSlug
+        ? locations[
+            locationSlug
+          ]
+        : null
+
     const ranking:Ranking = {
 
       id:
@@ -481,7 +532,21 @@ export default function CreateClient(){
         finalParentId,
 
       rootId:
-        finalRootId
+        finalRootId,
+
+      location:
+        selectedLocation
+          ? {
+              name:
+                selectedLocation.name,
+
+              city:
+                selectedLocation.city,
+
+              country:
+                selectedLocation.country
+            }
+          : undefined
 
     }
 
@@ -818,6 +883,43 @@ export default function CreateClient(){
     )
 
 
+  const formatCountry =
+    (
+      country:string
+    ):string => {
+
+      if(
+        country ===
+        "United Kingdom"
+      ){
+
+        return "UK"
+
+      }
+
+      if(
+        country ===
+        "United States"
+      ){
+
+        return "US"
+
+      }
+
+      if(
+        country ===
+        "Philippines"
+      ){
+
+        return "PH"
+
+      }
+
+      return country
+
+    }
+
+
   return (
 
     <main
@@ -1078,6 +1180,92 @@ export default function CreateClient(){
 
 
               <div>
+
+                <label
+                  htmlFor="location"
+                  className="
+                    mb-2
+                    block
+                    text-xs
+                    font-black
+                    uppercase
+                    tracking-[0.12em]
+                  "
+                >
+                  Location
+                </label>
+
+                <select
+                  id="location"
+                  value={locationSlug}
+                  onChange={
+                    event =>
+                      setLocationSlug(
+                        event.target.value
+                      )
+                  }
+                  className="
+                    w-full
+                    border-b-2
+                    border-black/15
+                    bg-transparent
+                    px-0
+                    py-3
+                    text-base
+                    font-bold
+                    outline-none
+                    transition
+                    focus:border-[#FF6B35]
+                  "
+                >
+
+                  <option value="">
+                    No location
+                  </option>
+
+                  {Object.entries(
+                    locations
+                  ).map(
+                    (
+                      [
+                        slug,
+                        location
+                      ]
+                    ) => {
+
+                      const locationLabel =
+                        location.cityLevel
+                          ? `${location.name} · ${formatCountry(
+                              location.country
+                            )}`
+                          : `${location.name} · ${location.city} · ${formatCountry(
+                              location.country
+                            )}`
+
+                      return (
+
+                        <option
+                          key={slug}
+                          value={slug}
+                        >
+                          {locationLabel}
+                        </option>
+
+                      )
+
+                    }
+                  )}
+
+                </select>
+
+              </div>
+
+
+              <div
+                className="
+                  sm:col-span-2
+                "
+              >
 
                 <label
                   htmlFor="description"
