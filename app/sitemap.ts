@@ -129,7 +129,6 @@ export default async function sitemap(): Promise<
   const locationUrls = [
 
     {
-
       url:
         `${SITE_URL}/location/poblacion`,
 
@@ -142,11 +141,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/islington`,
 
@@ -159,11 +156,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/williamsburg`,
 
@@ -176,11 +171,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/leeds`,
 
@@ -193,11 +186,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/sheffield`,
 
@@ -210,11 +201,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/dundee`,
 
@@ -227,11 +216,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/middlesbrough`,
 
@@ -244,11 +231,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/stoke-on-trent`,
 
@@ -261,11 +246,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/derry`,
 
@@ -278,11 +261,9 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
-
     },
 
     {
-
       url:
         `${SITE_URL}/location/swansea`,
 
@@ -295,7 +276,231 @@ export default async function sitemap(): Promise<
 
       priority:
         0.8
+    },
 
+    {
+      url:
+        `${SITE_URL}/location/wrexham`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/grimsby`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/yeovil`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/sligo`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/waterford`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/drogheda`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/letterkenny`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/ashtabula`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/hattiesburg`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/eureka`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/muncie`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/marquette`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/lafayette`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/saint-john`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
+    },
+
+    {
+      url:
+        `${SITE_URL}/location/launceston`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.8
     }
 
   ]
@@ -304,7 +509,6 @@ export default async function sitemap(): Promise<
   return [
 
     {
-
       url:
         SITE_URL,
 
@@ -322,7 +526,6 @@ export default async function sitemap(): Promise<
 
 
     {
-
       url:
         `${SITE_URL}/categories`,
 
@@ -340,7 +543,6 @@ export default async function sitemap(): Promise<
 
 
     {
-
       url:
         `${SITE_URL}/explore`,
 

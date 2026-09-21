@@ -4,6 +4,7 @@ import { createClient } from "@supabase/supabase-js"
 import { seedRankings } from "../data/seedRankings"
 import { seedRankingsWilliamsburg } from "../data/seedRankingsWilliamsburg"
 import { seedRankingsPoblacion } from "../data/seedRankingPoblacion"
+import { seedRankingsNewLocations } from "../data/seedRankingsNewLocations"
 
 
 dotenv.config({
@@ -510,6 +511,7 @@ const seedRankingsLeedsSheffield:SeedRanking[] = [
     ]
   }
 
+
 ]
 
 
@@ -521,7 +523,9 @@ const allSeedRankings:SeedRanking[] = [
 
   ...seedRankingsPoblacion,
 
-  ...seedRankingsLeedsSheffield
+  ...seedRankingsLeedsSheffield,
+
+  ...seedRankingsNewLocations
 
 ]
 
