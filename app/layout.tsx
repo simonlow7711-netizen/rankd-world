@@ -36,6 +36,10 @@ const SITE_DESCRIPTION =
   "Discover, create and debate the world's Top 7. Compare opinions, explore different perspectives and rank it differently."
 
 
+const SITE_LOGO =
+  `${SITE_URL}/rankd-logo.png`
+
+
 export const metadata: Metadata = {
 
   metadataBase:
@@ -137,7 +141,21 @@ export const metadata: Metadata = {
       SITE_DESCRIPTION,
 
     locale:
-      "en_GB"
+      "en_GB",
+
+    images: [
+
+      {
+
+        url:
+          SITE_LOGO,
+
+        alt:
+          "RANKD — The World's Top 7 Everything"
+
+      }
+
+    ]
 
   },
 
@@ -151,7 +169,13 @@ export const metadata: Metadata = {
       SITE_TITLE,
 
     description:
-      SITE_DESCRIPTION
+      SITE_DESCRIPTION,
+
+    images: [
+
+      SITE_LOGO
+
+    ]
 
   },
 
@@ -284,7 +308,17 @@ export default function RootLayout({
                       SITE_NAME,
 
                     url:
-                      SITE_URL
+                      SITE_URL,
+
+                    logo: {
+
+                      "@type":
+                        "ImageObject",
+
+                      url:
+                        SITE_LOGO
+
+                    }
 
                   }
 
