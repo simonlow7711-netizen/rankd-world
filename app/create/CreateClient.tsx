@@ -543,6 +543,9 @@ export default function CreateClient(){
               city:
                 selectedLocation.city,
 
+              state:
+                selectedLocation.state,
+
               country:
                 selectedLocation.country
             }
@@ -1234,13 +1237,18 @@ export default function CreateClient(){
                     ) => {
 
                       const locationLabel =
-                        location.cityLevel
-                          ? `${location.name} · ${formatCountry(
-                              location.country
-                            )}`
-                          : `${location.name} · ${location.city} · ${formatCountry(
-                              location.country
-                            )}`
+                        [
+                          location.name,
+                          location.cityLevel
+                            ? ""
+                            : location.city,
+                          location.state,
+                          formatCountry(
+                            location.country
+                          )
+                        ]
+                          .filter(Boolean)
+                          .join(" · ")
 
                       return (
 
