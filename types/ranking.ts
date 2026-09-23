@@ -60,6 +60,8 @@ export interface RankingLocation {
 
   city?:string
 
+  state?:string
+
   country?:string
 
 }

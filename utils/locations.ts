@@ -6,6 +6,8 @@ export type LocationConfig = {
 
   country:string
 
+  state?:string
+
   cityLevel?:boolean
 
 }
@@ -287,6 +289,9 @@ export const locations:Record<
     city:
       "Ashtabula",
 
+    state:
+      "Ohio",
+
     country:
       "United States",
 
@@ -302,6 +307,9 @@ export const locations:Record<
 
     city:
       "Hattiesburg",
+
+    state:
+      "Mississippi",
 
     country:
       "United States",
@@ -319,6 +327,9 @@ export const locations:Record<
     city:
       "Eureka",
 
+    state:
+      "California",
+
     country:
       "United States",
 
@@ -334,6 +345,9 @@ export const locations:Record<
 
     city:
       "Muncie",
+
+    state:
+      "Indiana",
 
     country:
       "United States",
@@ -351,6 +365,9 @@ export const locations:Record<
     city:
       "Marquette",
 
+    state:
+      "Michigan",
+
     country:
       "United States",
 
@@ -366,6 +383,9 @@ export const locations:Record<
 
     city:
       "Lafayette",
+
+    state:
+      "Louisiana",
 
     country:
       "United States",
@@ -383,6 +403,9 @@ export const locations:Record<
     city:
       "Saint John",
 
+    state:
+      "New Brunswick",
+
     country:
       "Canada",
 
@@ -398,6 +421,9 @@ export const locations:Record<
 
     city:
       "Launceston",
+
+    state:
+      "Tasmania",
 
     country:
       "Australia",

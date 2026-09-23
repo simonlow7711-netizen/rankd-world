@@ -1102,9 +1102,6 @@ function formatLocationCountry(
     "United Kingdom":
       "UK",
 
-    "United States":
-      "US",
-
     "Philippines":
       "PH"
 
@@ -1223,6 +1220,10 @@ export default function RankingCard({
 
   const locationCity =
     ranking.location?.city?.trim() ??
+    ""
+
+  const locationState =
+    ranking.location?.state?.trim() ??
     ""
 
   const showLocationCity =
@@ -1622,6 +1623,7 @@ export default function RankingCard({
                     showLocationCity
                       ? locationCity
                       : "",
+                    locationState,
                     formatLocationCountry(
                       ranking.location.country
                     )

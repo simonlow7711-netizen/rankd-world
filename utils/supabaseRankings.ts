@@ -27,6 +27,7 @@ type RankingRow = {
 
   location_name:string | null
   location_city:string | null
+  location_state:string | null
   location_country:string | null
 }
 
@@ -68,6 +69,7 @@ function mapRanking(
   if(
     row.location_name ||
     row.location_city ||
+    row.location_state ||
     row.location_country
   ){
 
@@ -77,6 +79,9 @@ function mapRanking(
         "",
       city:
         row.location_city ??
+        undefined,
+      state:
+        row.location_state ??
         undefined,
       country:
         row.location_country ??
@@ -446,6 +451,7 @@ export async function getSupabaseRanking(
         created_at,
         location_name,
         location_city,
+        location_state,
         location_country
       `
     )
@@ -581,6 +587,7 @@ export async function getAllSupabaseRankings():Promise<Ranking[]>{
         created_at,
         location_name,
         location_city,
+        location_state,
         location_country
       `
     )
@@ -639,6 +646,7 @@ export async function getRankingsForLocation(
           created_at,
           location_name,
           location_city,
+          location_state,
           location_country
         `
       )
@@ -811,6 +819,10 @@ export async function createSupabaseRanking(
           ranking.location?.city ??
           null,
 
+        location_state:
+          ranking.location?.state ??
+          null,
+
         location_country:
           ranking.location?.country ??
           null
@@ -830,6 +842,7 @@ export async function createSupabaseRanking(
         created_at,
         location_name,
         location_city,
+        location_state,
         location_country
       `
     )

@@ -222,12 +222,9 @@ export default async function LocationPage({
       "United Kingdom"
       ? "UK"
       : location.country ===
-          "United States"
-        ? "US"
-        : location.country ===
-            "Philippines"
-          ? "PH"
-          : location.country
+          "Philippines"
+        ? "PH"
+        : location.country
 
 
   const canonical =
@@ -416,6 +413,26 @@ export default async function LocationPage({
               }
 
 
+              {
+                location.state
+                  ? (
+                    <>
+                      <span
+                        className="
+                          mx-2
+                          text-black/30
+                        "
+                      >
+                        ·
+                      </span>
+
+                      {location.state}
+                    </>
+                  )
+                  : null
+              }
+
+
               <span
                 className="
                   mx-2
@@ -580,7 +597,7 @@ export default async function LocationPage({
                       mt-2
                       text-sm
                       text-black/50
-                    "
+                  "
                   >
 
                     Check back soon for
