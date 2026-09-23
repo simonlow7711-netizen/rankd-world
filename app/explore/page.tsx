@@ -108,8 +108,30 @@ export const metadata: Metadata = {
 
 export default async function ExplorePage() {
 
+  const rankingsPromise =
+    getAllRankings()
+
+
+  const photoRankdPromise =
+    supabase
+      .from("photo_rankds")
+      .select(
+        `
+          id,
+          title,
+          description,
+          image_url
+        `
+      )
+      .eq(
+        "id",
+        PHOTO_RANKD_ID
+      )
+      .maybeSingle()
+
+
   const allRankings =
-    await getAllRankings()
+    await rankingsPromise
 
 
   const latestRankings =
@@ -188,21 +210,7 @@ export default async function ExplorePage() {
     data:
       photoRankd
   } =
-    await supabase
-      .from("photo_rankds")
-      .select(
-        `
-          id,
-          title,
-          description,
-          image_url
-        `
-      )
-      .eq(
-        "id",
-        PHOTO_RANKD_ID
-      )
-      .maybeSingle()
+    await photoRankdPromise
 
 
   return (

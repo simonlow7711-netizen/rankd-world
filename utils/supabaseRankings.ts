@@ -314,10 +314,19 @@ async function attachRankingItems(
    * of ranking IDs can produce a URL large
    * enough to exceed the HTTP header limit.
    *
+   * The batches are deliberately kept at 50.
+   *
+   * The batches themselves are loaded
+   * concurrently so that one slow batch does
+   * not make every later batch wait for it.
+   *
    */
   const rankingItems:any[] = []
 
   const batchSize = 50
+
+
+  const batches:string[][] = []
 
 
   for(
@@ -326,55 +335,76 @@ async function attachRankingItems(
     i += batchSize
   ){
 
-    const batchIds =
+    batches.push(
       rankingIds.slice(
         i,
         i + batchSize
       )
+    )
+
+  }
 
 
-    const {
-      data:batchItems,
-      error:batchItemsError
-    } = await supabase
-      .from("ranking_items")
-      .select(
-        `
-          ranking_id,
-          position,
-          name,
-          votes
-        `
-      )
-      .in(
-        "ranking_id",
-        batchIds
-      )
-      .order(
-        "position",
-        {
-          ascending:true
+  const batchResults =
+    await Promise.all(
+
+      batches.map(
+        async batchIds => {
+
+          const {
+            data:batchItems,
+            error:batchItemsError
+          } = await supabase
+            .from("ranking_items")
+            .select(
+              `
+                ranking_id,
+                position,
+                name,
+                votes
+              `
+            )
+            .in(
+              "ranking_id",
+              batchIds
+            )
+            .order(
+              "position",
+              {
+                ascending:true
+              }
+            )
+
+
+          if(batchItemsError){
+
+            console.error(
+              "ALL RANKING ITEMS LOAD ERROR",
+              batchItemsError
+            )
+
+            return []
+
+          }
+
+
+          return batchItems ?? []
+
         }
       )
 
+    )
 
-    if(batchItemsError){
 
-      console.error(
-        "ALL RANKING ITEMS LOAD ERROR",
-        batchItemsError
-      )
-
-    }
-    else if(batchItems){
+  batchResults.forEach(
+    batchItems => {
 
       rankingItems.push(
         ...batchItems
       )
 
     }
-
-  }
+  )
 
 
   const itemsByRanking =
