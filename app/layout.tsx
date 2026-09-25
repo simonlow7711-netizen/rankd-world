@@ -245,6 +245,10 @@ export default function RootLayout({
 
       data-scroll-behavior="smooth"
 
+      className="
+        overflow-x-hidden
+      "
+
     >
 
 
@@ -252,6 +256,7 @@ export default function RootLayout({
 
         className={`
           ${GeistSans.className}
+          overflow-x-hidden
           bg-[#F7F4EE]
           text-black
           antialiased
