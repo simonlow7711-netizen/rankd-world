@@ -6,7 +6,9 @@ import {
   useState
 } from "react"
 
+
 import Link from "next/link"
+
 
 import {
   Bell,
@@ -17,13 +19,16 @@ import {
   User
 } from "lucide-react"
 
+
 import {
   useRouter
 } from "next/navigation"
 
+
 import {
   supabase
 } from "@/utils/supabase"
+
 
 import {
   getUnreadNotificationCount
@@ -261,6 +266,8 @@ export default function Navbar() {
         sticky
         top-0
         z-50
+        w-full
+        overflow-x-clip
         border-b
         border-black/[0.06]
         bg-[#F7F4EE]/95
@@ -273,6 +280,7 @@ export default function Navbar() {
           relative
           mx-auto
           w-full
+          min-w-0
           max-w-7xl
           px-4
           py-3
@@ -600,6 +608,7 @@ export default function Navbar() {
             relative
             flex
             min-h-12
+            min-w-0
             items-center
             justify-center
             md:hidden
@@ -616,6 +625,7 @@ export default function Navbar() {
               flex
               h-12
               w-fit
+              max-w-full
               -translate-x-1/2
               -translate-y-1/2
               items-center
@@ -671,6 +681,7 @@ export default function Navbar() {
           }
           className="
             mt-3
+            min-w-0
             md:hidden
           "
         >
@@ -679,6 +690,8 @@ export default function Navbar() {
             className="
               flex
               h-11
+              min-w-0
+              w-full
               items-center
               rounded-full
               border
@@ -732,9 +745,12 @@ export default function Navbar() {
         <nav
           className="
             grid
+            w-full
+            min-w-0
             grid-cols-5
             items-center
             gap-1
+            overflow-hidden
             border-t
             border-black/[0.06]
             pt-3
@@ -746,10 +762,12 @@ export default function Navbar() {
             href="/explore"
             className="
               flex
+              min-w-0
               flex-col
               items-center
               justify-center
               gap-1
+              overflow-hidden
               rounded-xl
               py-2
               text-black/60
@@ -760,11 +778,13 @@ export default function Navbar() {
           >
 
             <Compass
-              className="h-5 w-5"
+              className="h-5 w-5 shrink-0"
             />
 
             <span
               className="
+                max-w-full
+                truncate
                 text-[10px]
                 font-semibold
               "
@@ -779,10 +799,12 @@ export default function Navbar() {
             href="/categories"
             className="
               flex
+              min-w-0
               flex-col
               items-center
               justify-center
               gap-1
+              overflow-hidden
               rounded-xl
               py-2
               text-black/60
@@ -793,11 +815,13 @@ export default function Navbar() {
           >
 
             <Grid2X2
-              className="h-5 w-5"
+              className="h-5 w-5 shrink-0"
             />
 
             <span
               className="
+                max-w-full
+                truncate
                 text-[10px]
                 font-semibold
               "
@@ -812,10 +836,12 @@ export default function Navbar() {
             href="/create"
             className="
               flex
+              min-w-0
               flex-col
               items-center
               justify-center
               gap-1
+              overflow-hidden
               rounded-xl
               bg-black
               py-2
@@ -826,11 +852,13 @@ export default function Navbar() {
           >
 
             <Plus
-              className="h-5 w-5"
+              className="h-5 w-5 shrink-0"
             />
 
             <span
               className="
+                max-w-full
+                truncate
                 text-[10px]
                 font-semibold
               "
@@ -846,10 +874,12 @@ export default function Navbar() {
             className="
               relative
               flex
+              min-w-0
               flex-col
               items-center
               justify-center
               gap-1
+              overflow-hidden
               rounded-xl
               py-2
               text-black/60
@@ -860,11 +890,13 @@ export default function Navbar() {
           >
 
             <Bell
-              className="h-5 w-5"
+              className="h-5 w-5 shrink-0"
             />
 
             <span
               className="
+                max-w-full
+                truncate
                 text-[10px]
                 font-semibold
               "
@@ -908,10 +940,12 @@ export default function Navbar() {
             href="/profile"
             className="
               flex
+              min-w-0
               flex-col
               items-center
               justify-center
               gap-1
+              overflow-hidden
               rounded-xl
               py-2
               text-black/60
@@ -922,11 +956,13 @@ export default function Navbar() {
           >
 
             <User
-              className="h-5 w-5"
+              className="h-5 w-5 shrink-0"
             />
 
             <span
               className="
+                max-w-full
+                truncate
                 text-[10px]
                 font-semibold
               "
