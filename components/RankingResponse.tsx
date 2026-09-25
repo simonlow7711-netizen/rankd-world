@@ -413,8 +413,9 @@ export default function RankingResponse({
         className="
           mt-5
           grid
+          w-full
           min-w-0
-          grid-cols-2
+          grid-cols-[minmax(0,1fr)_minmax(0,1fr)]
           gap-2
         "
       >
@@ -428,11 +429,14 @@ export default function RankingResponse({
           className={`
             group/reaction
             relative
+            block
+            w-full
             min-w-0
+            max-w-full
             overflow-hidden
             rounded-2xl
             border
-            px-3
+            px-2.5
             py-3.5
             text-left
             transition-all
@@ -445,6 +449,7 @@ export default function RankingResponse({
             focus:outline-none
             focus-visible:ring-2
             focus-visible:ring-[#FF6B35]/40
+            sm:px-3
             ${border}
             ${card}
           `}
@@ -467,8 +472,10 @@ export default function RankingResponse({
           <span
             className="
               flex
+              min-w-0
               items-center
-              gap-2
+              gap-1.5
+              sm:gap-2
             "
           >
 
@@ -476,9 +483,10 @@ export default function RankingResponse({
               className="
                 relative
                 flex
-                w-7
+                w-6
                 shrink-0
                 items-center
+                sm:w-7
               "
               aria-hidden="true"
             >
@@ -486,12 +494,13 @@ export default function RankingResponse({
               <span
                 className="
                   h-px
-                  w-7
+                  w-6
                   bg-[#FF6B35]/35
                   transition-all
                   duration-300
                   group-hover/reaction:w-5
                   group-hover/reaction:bg-[#FF6B35]/70
+                  sm:w-7
                 "
               />
 
@@ -509,7 +518,8 @@ export default function RankingResponse({
                   duration-300
                   group-hover/reaction:left-5
                   group-hover/reaction:shadow-[0_0_0_4px_rgba(255,107,53,0.12)]
-                  group-active/reaction:left-6
+                  group-active/reaction:left-5
+                  sm:group-active/reaction:left-6
                 "
               />
 
@@ -518,14 +528,18 @@ export default function RankingResponse({
 
             <span
               className={`
-                text-[8px]
+                min-w-0
+                truncate
+                text-[7px]
                 font-black
                 uppercase
-                tracking-[0.16em]
+                tracking-[0.12em]
                 opacity-50
                 transition-colors
                 duration-300
                 group-hover/reaction:opacity-100
+                sm:text-[8px]
+                sm:tracking-[0.16em]
                 ${text}
               `}
             >
@@ -539,13 +553,15 @@ export default function RankingResponse({
             className={`
               mt-2.5
               block
-              text-lg
+              truncate
+              text-[17px]
               font-black
               leading-none
               tracking-[-0.05em]
               transition-transform
               duration-300
               group-hover/reaction:translate-x-1
+              sm:text-lg
               ${accent}
             `}
           >
@@ -557,9 +573,11 @@ export default function RankingResponse({
             className={`
               mt-1.5
               block
-              text-[10px]
+              truncate
+              text-[9px]
               font-medium
               opacity-55
+              sm:text-[10px]
               ${text}
             `}
           >
@@ -571,24 +589,34 @@ export default function RankingResponse({
             className={`
               mt-3
               flex
+              min-w-0
               items-center
               gap-1
-              text-[9px]
+              text-[8px]
               font-black
               opacity-60
               transition-all
               duration-300
               group-hover/reaction:gap-2
               group-hover/reaction:opacity-100
+              sm:text-[9px]
               ${text}
             `}
           >
 
-            That's my ranking
+            <span
+              className="
+                min-w-0
+                truncate
+              "
+            >
+              That's my ranking
+            </span>
 
 
             <span
               className={`
+                shrink-0
                 ${accent}
                 transition-transform
                 duration-300
@@ -612,11 +640,14 @@ export default function RankingResponse({
           className={`
             group/reaction
             relative
+            block
+            w-full
             min-w-0
+            max-w-full
             overflow-hidden
             rounded-2xl
             border
-            px-3
+            px-2.5
             py-3.5
             text-left
             transition-all
@@ -629,6 +660,7 @@ export default function RankingResponse({
             focus:outline-none
             focus-visible:ring-2
             focus-visible:ring-[#FF6B35]/40
+            sm:px-3
             ${border}
             ${card}
           `}
@@ -651,8 +683,10 @@ export default function RankingResponse({
           <span
             className="
               flex
+              min-w-0
               items-center
-              gap-2
+              gap-1.5
+              sm:gap-2
             "
           >
 
@@ -660,9 +694,10 @@ export default function RankingResponse({
               className="
                 relative
                 flex
-                w-7
+                w-6
                 shrink-0
                 items-center
+                sm:w-7
               "
               aria-hidden="true"
             >
@@ -670,12 +705,13 @@ export default function RankingResponse({
               <span
                 className="
                   h-px
-                  w-7
+                  w-6
                   bg-[#FF6B35]/35
                   transition-all
                   duration-300
                   group-hover/reaction:w-5
                   group-hover/reaction:bg-[#FF6B35]/70
+                  sm:w-7
                 "
               />
 
@@ -693,7 +729,8 @@ export default function RankingResponse({
                   duration-300
                   group-hover/reaction:left-5
                   group-hover/reaction:bg-[#FF6B35]
-                  group-active/reaction:left-6
+                  group-active/reaction:left-5
+                  sm:group-active/reaction:left-6
                 "
               />
 
@@ -702,14 +739,18 @@ export default function RankingResponse({
 
             <span
               className={`
-                text-[8px]
+                min-w-0
+                truncate
+                text-[7px]
                 font-black
                 uppercase
-                tracking-[0.16em]
+                tracking-[0.12em]
                 opacity-50
                 transition-colors
                 duration-300
                 group-hover/reaction:opacity-100
+                sm:text-[8px]
+                sm:tracking-[0.16em]
                 ${text}
               `}
             >
@@ -723,13 +764,15 @@ export default function RankingResponse({
             className={`
               mt-2.5
               block
-              text-lg
+              truncate
+              text-[17px]
               font-black
               leading-none
               tracking-[-0.05em]
               transition-transform
               duration-300
               group-hover/reaction:translate-x-1
+              sm:text-lg
               ${accent}
             `}
           >
@@ -741,9 +784,11 @@ export default function RankingResponse({
             className={`
               mt-1.5
               block
-              text-[10px]
+              truncate
+              text-[9px]
               font-medium
               opacity-55
+              sm:text-[10px]
               ${text}
             `}
           >
@@ -755,24 +800,34 @@ export default function RankingResponse({
             className={`
               mt-3
               flex
+              min-w-0
               items-center
               gap-1
-              text-[9px]
+              text-[8px]
               font-black
               opacity-60
               transition-all
               duration-300
               group-hover/reaction:gap-2
               group-hover/reaction:opacity-100
+              sm:text-[9px]
               ${text}
             `}
           >
 
-            Make it mine
+            <span
+              className="
+                min-w-0
+                truncate
+              "
+            >
+              Make it mine
+            </span>
 
 
             <span
               className={`
+                shrink-0
                 ${accent}
                 transition-transform
                 duration-300
