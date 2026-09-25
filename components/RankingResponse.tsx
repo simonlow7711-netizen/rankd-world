@@ -22,6 +22,16 @@ type RankingResponseProps = {
 
   card?: string
 
+  accentColor?: string
+
+  textColor?: string
+
+  mutedColor?: string
+
+  borderColor?: string
+
+  cardColor?: string
+
 }
 
 
@@ -53,7 +63,17 @@ export default function RankingResponse({
     "border-black/10",
 
   card =
-    "bg-[#F7F4EE]"
+    "bg-[#F7F4EE]",
+
+  accentColor,
+
+  textColor,
+
+  mutedColor,
+
+  borderColor,
+
+  cardColor
 
 }: RankingResponseProps) {
 
@@ -89,6 +109,98 @@ export default function RankingResponse({
   }
 
 
+  const accentStyle =
+    accentColor
+      ? {
+          color:
+            accentColor
+        }
+      : undefined
+
+
+  const textStyle =
+    textColor
+      ? {
+          color:
+            textColor
+        }
+      : undefined
+
+
+  const mutedStyle =
+    mutedColor
+      ? {
+          color:
+            mutedColor
+        }
+      : undefined
+
+
+  const borderStyle =
+    borderColor
+      ? {
+          borderColor:
+            borderColor
+        }
+      : undefined
+
+
+  const cardStyle =
+    cardColor
+      ? {
+          backgroundColor:
+            cardColor
+        }
+      : undefined
+
+
+  const accentBorderStyle =
+    accentColor
+      ? {
+          borderColor:
+            `${accentColor}73`
+        }
+      : undefined
+
+
+  const accentSoftStyle =
+    accentColor
+      ? {
+          backgroundColor:
+            `${accentColor}33`
+        }
+      : undefined
+
+
+  const accentLineStyle =
+    accentColor
+      ? {
+          backgroundColor:
+            `${accentColor}59`
+        }
+      : undefined
+
+
+  const accentDotStyle =
+    accentColor
+      ? {
+          backgroundColor:
+            accentColor,
+          boxShadow:
+            `0 0 0 3px ${accentColor}14`
+        }
+      : undefined
+
+
+  const accentOutlineDotStyle =
+    accentColor
+      ? {
+          borderColor:
+            accentColor
+        }
+      : undefined
+
+
   if (
     response === "rankd"
   ) {
@@ -102,6 +214,9 @@ export default function RankingResponse({
           pt-5
           ${border}
         `}
+        style={
+          borderStyle
+        }
       >
 
         <div
@@ -118,6 +233,9 @@ export default function RankingResponse({
               tracking-[0.24em]
               ${accent}
             `}
+            style={
+              accentStyle
+            }
           >
             YOUR CALL
           </p>
@@ -133,6 +251,9 @@ export default function RankingResponse({
               sm:text-2xl
               ${text}
             `}
+            style={
+              textStyle
+            }
           >
             You RANKD it.
           </h2>
@@ -148,6 +269,9 @@ export default function RankingResponse({
               sm:text-sm
               ${muted}
             `}
+            style={
+              mutedStyle
+            }
           >
             You agree with this ranking.
             Your opinion is now part of the conversation.
@@ -161,6 +285,9 @@ export default function RankingResponse({
               pt-4
               ${border}
             `}
+            style={
+              borderStyle
+            }
           >
 
             <p
@@ -169,6 +296,9 @@ export default function RankingResponse({
                 font-bold
                 ${muted}
               `}
+              style={
+                mutedStyle
+              }
             >
               Want to see another opinion?
             </p>
@@ -198,11 +328,17 @@ export default function RankingResponse({
                 focus-visible:ring-2
                 focus-visible:ring-[#FF6B35]/40
               `}
+              style={
+                textStyle
+              }
             >
 
               <span
                 className={
                   accent
+                }
+                style={
+                  accentStyle
                 }
               >
                 RE-RANKD
@@ -221,6 +357,9 @@ export default function RankingResponse({
                   duration-300
                   group-hover:translate-x-1
                 `}
+                style={
+                  accentStyle
+                }
               >
                 →
               </span>
@@ -251,6 +390,9 @@ export default function RankingResponse({
           pt-5
           ${border}
         `}
+        style={
+          borderStyle
+        }
       >
 
         <div
@@ -267,6 +409,9 @@ export default function RankingResponse({
               tracking-[0.24em]
               ${accent}
             `}
+            style={
+              accentStyle
+            }
           >
             YOUR CALL
           </p>
@@ -282,6 +427,9 @@ export default function RankingResponse({
               sm:text-2xl
               ${text}
             `}
+            style={
+              textStyle
+            }
           >
             You'd RE-RANKD it.
           </h2>
@@ -297,6 +445,9 @@ export default function RankingResponse({
               sm:text-sm
               ${muted}
             `}
+            style={
+              mutedStyle
+            }
           >
             That's exactly what RANKD is about —
             making your own call.
@@ -327,11 +478,17 @@ export default function RankingResponse({
               focus-visible:ring-2
               focus-visible:ring-[#FF6B35]/40
             `}
+            style={
+              textStyle
+            }
           >
 
             <span
               className={
                 accent
+              }
+              style={
+                accentStyle
               }
             >
               RE-RANKD
@@ -350,6 +507,9 @@ export default function RankingResponse({
                 duration-300
                 group-hover:translate-x-1
               `}
+              style={
+                accentStyle
+              }
             >
               →
             </span>
@@ -374,6 +534,9 @@ export default function RankingResponse({
         pt-5
         ${border}
       `}
+      style={
+        borderStyle
+      }
     >
 
       <div
@@ -391,6 +554,9 @@ export default function RankingResponse({
             sm:text-base
             ${text}
           `}
+          style={
+            textStyle
+          }
         >
           Would you rank this the same?
         </p>
@@ -402,6 +568,9 @@ export default function RankingResponse({
             text-xs
             ${muted}
           `}
+          style={
+            mutedStyle
+          }
         >
           Make your call.
         </p>
@@ -453,6 +622,10 @@ export default function RankingResponse({
             ${border}
             ${card}
           `}
+          style={{
+            ...borderStyle,
+            ...cardStyle
+          }}
         >
 
           <span
@@ -466,6 +639,9 @@ export default function RankingResponse({
               duration-300
               group-hover/reaction:bg-[#FF6B35]/60
             "
+            style={
+              accentSoftStyle
+            }
           />
 
 
@@ -502,6 +678,9 @@ export default function RankingResponse({
                   group-hover/reaction:bg-[#FF6B35]/70
                   sm:w-7
                 "
+                style={
+                  accentLineStyle
+                }
               />
 
 
@@ -521,6 +700,9 @@ export default function RankingResponse({
                   group-active/reaction:left-5
                   sm:group-active/reaction:left-6
                 "
+                style={
+                  accentDotStyle
+                }
               />
 
             </span>
@@ -542,6 +724,9 @@ export default function RankingResponse({
                 sm:tracking-[0.16em]
                 ${text}
               `}
+              style={
+                textStyle
+              }
             >
               KEEP IT
             </span>
@@ -564,6 +749,9 @@ export default function RankingResponse({
               sm:text-lg
               ${accent}
             `}
+            style={
+              accentStyle
+            }
           >
             RANKD
           </span>
@@ -580,6 +768,9 @@ export default function RankingResponse({
               sm:text-[10px]
               ${text}
             `}
+            style={
+              textStyle
+            }
           >
             I'd keep this ranking
           </span>
@@ -602,6 +793,9 @@ export default function RankingResponse({
               sm:text-[9px]
               ${text}
             `}
+            style={
+              textStyle
+            }
           >
 
             <span
@@ -622,6 +816,9 @@ export default function RankingResponse({
                 duration-300
                 group-hover/reaction:translate-x-1
               `}
+              style={
+                accentStyle
+              }
             >
               →
             </span>
@@ -664,6 +861,10 @@ export default function RankingResponse({
             ${border}
             ${card}
           `}
+          style={{
+            ...borderStyle,
+            ...cardStyle
+          }}
         >
 
           <span
@@ -677,6 +878,9 @@ export default function RankingResponse({
               duration-300
               group-hover/reaction:bg-[#FF6B35]/60
             "
+            style={
+              accentSoftStyle
+            }
           />
 
 
@@ -713,6 +917,9 @@ export default function RankingResponse({
                   group-hover/reaction:bg-[#FF6B35]/70
                   sm:w-7
                 "
+                style={
+                  accentLineStyle
+                }
               />
 
 
@@ -732,6 +939,9 @@ export default function RankingResponse({
                   group-active/reaction:left-5
                   sm:group-active/reaction:left-6
                 "
+                style={
+                  accentOutlineDotStyle
+                }
               />
 
             </span>
@@ -753,6 +963,9 @@ export default function RankingResponse({
                 sm:tracking-[0.16em]
                 ${text}
               `}
+              style={
+                textStyle
+              }
             >
               CHANGE IT
             </span>
@@ -775,6 +988,9 @@ export default function RankingResponse({
               sm:text-lg
               ${accent}
             `}
+            style={
+              accentStyle
+            }
           >
             RE-RANKD
           </span>
@@ -791,6 +1007,9 @@ export default function RankingResponse({
               sm:text-[10px]
               ${text}
             `}
+            style={
+              textStyle
+            }
           >
             I'd change the order
           </span>
@@ -813,6 +1032,9 @@ export default function RankingResponse({
               sm:text-[9px]
               ${text}
             `}
+            style={
+              textStyle
+            }
           >
 
             <span
@@ -833,6 +1055,9 @@ export default function RankingResponse({
                 duration-300
                 group-hover/reaction:translate-x-1
               `}
+              style={
+                accentStyle
+              }
             >
               →
             </span>
@@ -852,6 +1077,9 @@ export default function RankingResponse({
           ${muted}
           opacity-60
         `}
+        style={
+          mutedStyle
+        }
       >
         Your choice becomes part of the conversation around this RANKD.
       </p>

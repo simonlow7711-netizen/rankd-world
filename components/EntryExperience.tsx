@@ -1315,6 +1315,26 @@ export default function EntryExperience({
                       onRerankd={
                         handleRerankd
                       }
+
+                      accentColor={
+                        theme.accent
+                      }
+
+                      textColor={
+                        theme.text
+                      }
+
+                      mutedColor={
+                        theme.muted
+                      }
+
+                      borderColor={
+                        theme.border
+                      }
+
+                      cardColor={
+                        theme.bg
+                      }
                     />
 
                   </div>
