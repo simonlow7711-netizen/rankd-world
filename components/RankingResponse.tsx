@@ -1,5 +1,6 @@
 "use client"
 
+
 import {
   useState
 } from "react"
@@ -10,6 +11,16 @@ type RankingResponseProps = {
   onRankd: () => void
 
   onRerankd: () => void
+
+  accent?: string
+
+  text?: string
+
+  muted?: string
+
+  border?: string
+
+  card?: string
 
 }
 
@@ -27,7 +38,22 @@ export default function RankingResponse({
 
   onRankd,
 
-  onRerankd
+  onRerankd,
+
+  accent =
+    "text-[#FF6B35]",
+
+  text =
+    "text-black",
+
+  muted =
+    "text-black/50",
+
+  border =
+    "border-black/10",
+
+  card =
+    "bg-[#F7F4EE]"
 
 }: RankingResponseProps) {
 
@@ -70,80 +96,79 @@ export default function RankingResponse({
     return (
 
       <section
-        className="
-          mt-14
+        className={`
+          mt-5
           border-t
-          border-black/10
-          pt-10
-          md:pt-12
-        "
+          pt-5
+          ${border}
+        `}
       >
 
         <div
           className="
-            max-w-4xl
+            max-w-2xl
           "
         >
 
           <p
-            className="
-              text-xs
+            className={`
+              text-[9px]
               font-black
               uppercase
-              tracking-[0.3em]
-              text-[#FF6B35]
-            "
+              tracking-[0.24em]
+              ${accent}
+            `}
           >
             YOUR CALL
           </p>
 
 
           <h2
-            className="
-              mt-3
-              text-4xl
+            className={`
+              mt-2
+              text-xl
               font-black
-              leading-[0.9]
-              tracking-[-0.05em]
-              md:text-6xl
-            "
+              leading-none
+              tracking-[-0.04em]
+              sm:text-2xl
+              ${text}
+            `}
           >
             You RANKD it.
           </h2>
 
 
           <p
-            className="
-              mt-5
-              max-w-2xl
-              text-lg
+            className={`
+              mt-2
+              max-w-lg
+              text-xs
               font-medium
               leading-relaxed
-              text-black/50
-              md:text-xl
-            "
+              sm:text-sm
+              ${muted}
+            `}
           >
             You agree with this ranking.
-            Your opinion is now part of the
-            conversation.
+            Your opinion is now part of the conversation.
           </p>
 
 
           <div
-            className="
-              mt-10
+            className={`
+              mt-4
               border-t
-              border-black/10
-              pt-7
-            "
+              pt-4
+              ${border}
+            `}
           >
 
             <p
-              className="
-                text-sm
+              className={`
+                text-xs
                 font-bold
-                text-black/45
-              "
+                ${muted}
+              `}
             >
               Want to see another opinion?
             </p>
@@ -154,37 +179,48 @@ export default function RankingResponse({
               onClick={
                 onRerankd
               }
-              className="
+              className={`
                 group
-                mt-5
+                mt-2
                 inline-flex
                 items-center
-                gap-3
+                gap-2
                 text-left
-                text-lg
+                text-sm
                 font-black
                 tracking-[-0.02em]
-                transition
-                hover:gap-5
-              "
+                ${text}
+                transition-all
+                duration-300
+                hover:gap-3
+                focus:outline-none
+                focus-visible:rounded-lg
+                focus-visible:ring-2
+                focus-visible:ring-[#FF6B35]/40
+              `}
             >
 
               <span
-                className="
-                  text-[#FF6B35]
-                "
+                className={
+                  accent
+                }
               >
                 RE-RANKD
               </span>
+
 
               <span>
                 it yourself
               </span>
 
+
               <span
-                className="
-                  text-[#FF6B35]
-                "
+                className={`
+                  ${accent}
+                  transition-transform
+                  duration-300
+                  group-hover:translate-x-1
+                `}
               >
                 →
               </span>
@@ -209,61 +245,61 @@ export default function RankingResponse({
     return (
 
       <section
-        className="
-          mt-14
+        className={`
+          mt-5
           border-t
-          border-black/10
-          pt-10
-          md:pt-12
-        "
+          pt-5
+          ${border}
+        `}
       >
 
         <div
           className="
-            max-w-4xl
+            max-w-2xl
           "
         >
 
           <p
-            className="
-              text-xs
+            className={`
+              text-[9px]
               font-black
               uppercase
-              tracking-[0.3em]
-              text-[#FF6B35]
-            "
+              tracking-[0.24em]
+              ${accent}
+            `}
           >
             YOUR CALL
           </p>
 
 
           <h2
-            className="
-              mt-3
-              text-4xl
+            className={`
+              mt-2
+              text-xl
               font-black
-              leading-[0.9]
-              tracking-[-0.05em]
-              md:text-6xl
-            "
+              leading-none
+              tracking-[-0.04em]
+              sm:text-2xl
+              ${text}
+            `}
           >
             You'd RE-RANKD it.
           </h2>
 
 
           <p
-            className="
-              mt-5
-              max-w-2xl
-              text-lg
+            className={`
+              mt-2
+              max-w-lg
+              text-xs
               font-medium
               leading-relaxed
-              text-black/50
-              md:text-xl
-            "
+              sm:text-sm
+              ${muted}
+            `}
           >
-            That's exactly what RANKD is
-            about — making your own call.
+            That's exactly what RANKD is about —
+            making your own call.
           </p>
 
 
@@ -272,38 +308,48 @@ export default function RankingResponse({
             onClick={
               onRerankd
             }
-            className="
+            className={`
               group
-              mt-9
+              mt-4
               inline-flex
               items-center
-              gap-3
+              gap-2
               text-left
-              text-xl
+              text-sm
               font-black
-              tracking-[-0.03em]
-              transition
-              hover:gap-5
-              md:text-2xl
-            "
+              tracking-[-0.02em]
+              ${text}
+              transition-all
+              duration-300
+              hover:gap-3
+              focus:outline-none
+              focus-visible:rounded-lg
+              focus-visible:ring-2
+              focus-visible:ring-[#FF6B35]/40
+            `}
           >
 
             <span
-              className="
-                text-[#FF6B35]
-              "
+              className={
+                accent
+              }
             >
               RE-RANKD
             </span>
+
 
             <span>
               it
             </span>
 
+
             <span
-              className="
-                text-[#FF6B35]
-              "
+              className={`
+                ${accent}
+                transition-transform
+                duration-300
+                group-hover:translate-x-1
+              `}
             >
               →
             </span>
@@ -322,63 +368,42 @@ export default function RankingResponse({
   return (
 
     <section
-      className="
-        mt-14
+      className={`
+        mt-6
         border-t
-        border-black/10
-        pt-10
-        md:pt-12
-      "
+        pt-5
+        ${border}
+      `}
     >
 
       <div
         className="
-          max-w-4xl
+          text-center
         "
       >
 
         <p
-          className="
-            text-xs
+          className={`
+            text-sm
             font-black
-            uppercase
-            tracking-[0.3em]
-            text-[#FF6B35]
-          "
+            leading-tight
+            tracking-[-0.02em]
+            sm:text-base
+            ${text}
+          `}
         >
-          YOUR CALL
+          Would you rank this the same?
         </p>
 
 
-        <h2
-          className="
-            mt-3
-            max-w-3xl
-            text-3xl
-            font-black
-            leading-[0.9]
-            tracking-[-0.05em]
-            md:text-5xl
-          "
-        >
-          Would you rank it
-          differently?
-        </h2>
-
-
         <p
-          className="
-            mt-4
-            max-w-xl
-            text-base
-            font-medium
-            leading-relaxed
-            text-black/50
-            md:text-lg
-          "
+          className={`
+            mt-1
+            text-xs
+            ${muted}
+          `}
         >
-          Agree with the ranking —
-          or make it your own.
+          Make your call.
         </p>
 
       </div>
@@ -386,11 +411,11 @@ export default function RankingResponse({
 
       <div
         className="
-          mt-10
+          mt-5
           grid
-          grid-cols-2
-          border-y
-          border-black/10
+          min-w-0
+          gap-2.5
+          sm:grid-cols-2
         "
       >
 
@@ -399,85 +424,176 @@ export default function RankingResponse({
           onClick={
             handleRankd
           }
-          className="
-            group
+          aria-label="RANKD this ranking"
+          className={`
+            group/reaction
             relative
+            min-w-0
+            overflow-hidden
+            rounded-2xl
+            border
+            px-4
+            py-3.5
             text-left
-            py-7
-            pr-4
-            transition
-            md:py-9
-            md:border-r
-            md:border-black/10
-            md:pr-10
-            hover:bg-[#FF6B35]/[0.035]
-          "
+            transition-all
+            duration-300
+            hover:-translate-y-0.5
+            hover:border-[#FF6B35]/45
+            hover:shadow-[0_8px_24px_rgba(255,107,53,0.07)]
+            active:translate-y-0
+            active:scale-[0.985]
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-[#FF6B35]/40
+            ${border}
+            ${card}
+          `}
         >
 
           <span
             className="
-              block
-              text-xs
-              font-black
-              uppercase
-              tracking-[0.25em]
-              text-black/35
+              absolute
+              inset-x-4
+              top-0
+              h-px
+              bg-[#FF6B35]/20
+              transition-all
+              duration-300
+              group-hover/reaction:bg-[#FF6B35]/60
             "
-          >
-            KEEP IT
-          </span>
+          />
 
 
           <span
             className="
-              mt-2
+              flex
+              items-center
+              gap-2.5
+            "
+          >
+
+            <span
+              className="
+                relative
+                flex
+                w-9
+                shrink-0
+                items-center
+              "
+              aria-hidden="true"
+            >
+
+              <span
+                className="
+                  h-px
+                  w-9
+                  bg-[#FF6B35]/35
+                  transition-all
+                  duration-300
+                  group-hover/reaction:w-7
+                  group-hover/reaction:bg-[#FF6B35]/70
+                "
+              />
+
+
+              <span
+                className="
+                  absolute
+                  left-0
+                  h-2
+                  w-2
+                  rounded-full
+                  bg-[#FF6B35]
+                  shadow-[0_0_0_3px_rgba(255,107,53,0.08)]
+                  transition-all
+                  duration-300
+                  group-hover/reaction:left-7
+                  group-hover/reaction:shadow-[0_0_0_4px_rgba(255,107,53,0.12)]
+                  group-active/reaction:left-8
+                "
+              />
+
+            </span>
+
+
+            <span
+              className={`
+                text-[9px]
+                font-black
+                uppercase
+                tracking-[0.2em]
+                opacity-50
+                transition-colors
+                duration-300
+                group-hover/reaction:opacity-100
+                ${text}
+              `}
+            >
+              KEEP IT
+            </span>
+
+          </span>
+
+
+          <span
+            className={`
+              mt-2.5
               block
-              text-3xl
+              text-xl
               font-black
               leading-none
-              tracking-[-0.06em]
-              text-[#FF6B35]
-              md:text-6xl
-            "
+              tracking-[-0.05em]
+              transition-transform
+              duration-300
+              group-hover/reaction:translate-x-1
+              ${accent}
+            `}
           >
             RANKD
           </span>
 
 
           <span
-            className="
-              mt-3
+            className={`
+              mt-1.5
               block
-              text-xs
-              font-bold
-              text-black/50
-              md:text-base
-            "
+              text-[11px]
+              font-medium
+              opacity-55
+              ${text}
+            `}
           >
             I'd keep this ranking
           </span>
 
 
           <span
-            className="
-              mt-6
-              inline-flex
+            className={`
+              mt-3
+              flex
               items-center
-              gap-2
-              text-xs
+              gap-1.5
+              text-[10px]
               font-black
-              text-black
-              transition
-              group-hover:gap-4
-              md:text-sm
-            "
+              opacity-60
+              transition-all
+              duration-300
+              group-hover/reaction:gap-2.5
+              group-hover/reaction:opacity-100
+              ${text}
+            `}
           >
+
             That's my ranking
 
+
             <span
-              className="
-                text-[#FF6B35]
-              "
+              className={`
+                ${accent}
+                transition-transform
+                duration-300
+                group-hover/reaction:translate-x-1
+              `}
             >
               →
             </span>
@@ -492,86 +608,176 @@ export default function RankingResponse({
           onClick={
             handleRerankd
           }
-          className="
-            group
+          aria-label="RE-RANKD this ranking"
+          className={`
+            group/reaction
             relative
+            min-w-0
+            overflow-hidden
+            rounded-2xl
+            border
+            px-4
+            py-3.5
             text-left
-            border-l
-            border-black/10
-            py-7
-            pl-4
-            transition
-            md:border-l-0
-            md:py-9
-            md:pl-10
-            hover:bg-black/[0.025]
-          "
+            transition-all
+            duration-300
+            hover:-translate-y-0.5
+            hover:border-[#FF6B35]/45
+            hover:shadow-[0_8px_24px_rgba(255,107,53,0.07)]
+            active:translate-y-0
+            active:scale-[0.985]
+            focus:outline-none
+            focus-visible:ring-2
+            focus-visible:ring-[#FF6B35]/40
+            ${border}
+            ${card}
+          `}
         >
 
           <span
             className="
-              block
-              text-xs
-              font-black
-              uppercase
-              tracking-[0.25em]
-              text-black/35
+              absolute
+              inset-x-4
+              top-0
+              h-px
+              bg-[#FF6B35]/20
+              transition-all
+              duration-300
+              group-hover/reaction:bg-[#FF6B35]/60
             "
-          >
-            CHANGE IT
-          </span>
+          />
 
 
           <span
             className="
-              mt-2
+              flex
+              items-center
+              gap-2.5
+            "
+          >
+
+            <span
+              className="
+                relative
+                flex
+                w-9
+                shrink-0
+                items-center
+              "
+              aria-hidden="true"
+            >
+
+              <span
+                className="
+                  h-px
+                  w-9
+                  bg-[#FF6B35]/35
+                  transition-all
+                  duration-300
+                  group-hover/reaction:w-7
+                  group-hover/reaction:bg-[#FF6B35]/70
+                "
+              />
+
+
+              <span
+                className="
+                  absolute
+                  left-0
+                  h-2
+                  w-2
+                  rounded-full
+                  border-2
+                  border-[#FF6B35]
+                  transition-all
+                  duration-300
+                  group-hover/reaction:left-7
+                  group-hover/reaction:bg-[#FF6B35]
+                  group-active/reaction:left-8
+                "
+              />
+
+            </span>
+
+
+            <span
+              className={`
+                text-[9px]
+                font-black
+                uppercase
+                tracking-[0.2em]
+                opacity-50
+                transition-colors
+                duration-300
+                group-hover/reaction:opacity-100
+                ${text}
+              `}
+            >
+              CHANGE IT
+            </span>
+
+          </span>
+
+
+          <span
+            className={`
+              mt-2.5
               block
-              text-3xl
+              text-xl
               font-black
               leading-none
-              tracking-[-0.06em]
-              text-black
-              md:text-6xl
-            "
+              tracking-[-0.05em]
+              transition-transform
+              duration-300
+              group-hover/reaction:translate-x-1
+              ${accent}
+            `}
           >
             RE-RANKD
           </span>
 
 
           <span
-            className="
-              mt-3
+            className={`
+              mt-1.5
               block
-              text-xs
-              font-bold
-              text-black/50
-              md:text-base
-            "
+              text-[11px]
+              font-medium
+              opacity-55
+              ${text}
+            `}
           >
             I'd change the order
           </span>
 
 
           <span
-            className="
-              mt-6
-              inline-flex
+            className={`
+              mt-3
+              flex
               items-center
-              gap-2
-              text-xs
+              gap-1.5
+              text-[10px]
               font-black
-              text-black
-              transition
-              group-hover:gap-4
-              md:text-sm
-            "
+              opacity-60
+              transition-all
+              duration-300
+              group-hover/reaction:gap-2.5
+              group-hover/reaction:opacity-100
+              ${text}
+            `}
           >
+
             Make it mine
 
+
             <span
-              className="
-                text-[#FF6B35]
-              "
+              className={`
+                ${accent}
+                transition-transform
+                duration-300
+                group-hover/reaction:translate-x-1
+              `}
             >
               →
             </span>
@@ -584,14 +790,15 @@ export default function RankingResponse({
 
 
       <p
-        className="
-          mt-5
-          text-sm
-          text-black/40
-        "
+        className={`
+          mt-4
+          text-center
+          text-[10px]
+          ${muted}
+          opacity-60
+        `}
       >
-        Your choice becomes part of the
-        conversation around this RANKD.
+        Your choice becomes part of the conversation around this RANKD.
       </p>
 
     </section>
