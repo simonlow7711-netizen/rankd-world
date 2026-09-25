@@ -1840,439 +1840,46 @@ export default function RankingCard({
       >
 
         {
-          response === null && (
+          response !== null && (
 
-            <>
+            <RankingResponse
 
-              <div
-                className="
-                  text-center
-                "
-              >
+              onRankd={
+                handleRankd
+              }
 
-                <p
-                  className={`
-                    text-sm
-                    font-black
-                    leading-tight
-                    tracking-[-0.02em]
-                    ${theme.text}
-                    sm:text-base
-                  `}
-                >
-                  Would you rank this the same?
-                </p>
+              onRerankd={
+                handleRerankd
+              }
 
+              accent={
+                theme.accent
+              }
 
-                <p
-                  className={`
-                    mt-1
-                    text-xs
-                    ${theme.muted}
-                  `}
-                >
-                  Make your call.
-                </p>
+              text={
+                theme.text
+              }
 
-              </div>
+              muted={
+                theme.muted
+              }
 
+              border={
+                theme.border
+              }
 
-              <div
-                className="
-                  mt-5
-                  grid
-                  min-w-0
-                  gap-2.5
-                  sm:grid-cols-2
-                "
-              >
+              card={
+                theme.card
+              }
 
-                <button
-                  type="button"
-                  onClick={
-                    handleRankd
-                  }
-                  aria-label="RANKD this ranking"
-                  className={`
-                    group/reaction
-                    relative
-                    min-w-0
-                    overflow-hidden
-                    rounded-2xl
-                    border
-                    px-4
-                    py-3.5
-                    text-left
-                    transition-all
-                    duration-300
-                    hover:-translate-y-0.5
-                    hover:border-[#FF6B35]/45
-                    hover:shadow-[0_8px_24px_rgba(255,107,53,0.07)]
-                    active:translate-y-0
-                    active:scale-[0.985]
-                    focus:outline-none
-                    focus-visible:ring-2
-                    focus-visible:ring-[#FF6B35]/40
-                    ${theme.border}
-                    ${theme.card}
-                  `}
-                >
-
-                  <span
-                    className="
-                      absolute
-                      inset-x-4
-                      top-0
-                      h-px
-                      bg-[#FF6B35]/20
-                      transition-all
-                      duration-300
-                      group-hover/reaction:bg-[#FF6B35]/60
-                    "
-                  />
-
-
-                  <span
-                    className="
-                      flex
-                      items-center
-                      gap-2.5
-                    "
-                  >
-
-                    <span
-                      className="
-                        relative
-                        flex
-                        w-9
-                        shrink-0
-                        items-center
-                      "
-                      aria-hidden="true"
-                    >
-
-                      <span
-                        className="
-                          h-px
-                          w-9
-                          bg-[#FF6B35]/35
-                          transition-all
-                          duration-300
-                          group-hover/reaction:w-7
-                          group-hover/reaction:bg-[#FF6B35]/70
-                        "
-                      />
-
-
-                      <span
-                        className="
-                          absolute
-                          left-0
-                          h-2
-                          w-2
-                          rounded-full
-                          bg-[#FF6B35]
-                          shadow-[0_0_0_3px_rgba(255,107,53,0.08)]
-                          transition-all
-                          duration-300
-                          group-hover/reaction:left-7
-                          group-hover/reaction:shadow-[0_0_0_4px_rgba(255,107,53,0.12)]
-                          group-active/reaction:left-8
-                        "
-                      />
-
-                    </span>
-
-
-                    <span
-                      className={`
-                        text-[9px]
-                        font-black
-                        uppercase
-                        tracking-[0.2em]
-                        opacity-50
-                        transition-colors
-                        duration-300
-                        group-hover/reaction:opacity-100
-                        ${theme.text}
-                      `}
-                    >
-                      KEEP IT
-                    </span>
-
-                  </span>
-
-
-                  <span
-                    className={`
-                      mt-2.5
-                      block
-                      text-xl
-                      font-black
-                      leading-none
-                      tracking-[-0.05em]
-                      transition-transform
-                      duration-300
-                      group-hover/reaction:translate-x-1
-                      ${theme.accent}
-                    `}
-                  >
-                    RANKD
-                  </span>
-
-
-                  <span
-                    className={`
-                      mt-1.5
-                      block
-                      text-[11px]
-                      font-medium
-                      opacity-55
-                      ${theme.text}
-                    `}
-                  >
-                    I'd keep this ranking
-                  </span>
-
-
-                  <span
-                    className={`
-                      mt-3
-                      flex
-                      items-center
-                      gap-1.5
-                      text-[10px]
-                      font-black
-                      opacity-60
-                      transition-all
-                      duration-300
-                      group-hover/reaction:gap-2.5
-                      group-hover/reaction:opacity-100
-                      ${theme.text}
-                    `}
-                  >
-                    That's my ranking
-
-                    <span
-                      className={`
-                        ${theme.accent}
-                        transition-transform
-                        duration-300
-                        group-hover/reaction:translate-x-1
-                      `}
-                    >
-                      →
-                    </span>
-
-                  </span>
-
-                </button>
-
-
-                <button
-                  type="button"
-                  onClick={
-                    handleRerankd
-                  }
-                  aria-label="RE-RANKD this ranking"
-                  className={`
-                    group/reaction
-                    relative
-                    min-w-0
-                    overflow-hidden
-                    rounded-2xl
-                    border
-                    px-4
-                    py-3.5
-                    text-left
-                    transition-all
-                    duration-300
-                    hover:-translate-y-0.5
-                    hover:border-[#FF6B35]/45
-                    hover:shadow-[0_8px_24px_rgba(255,107,53,0.07)]
-                    active:translate-y-0
-                    active:scale-[0.985]
-                    focus:outline-none
-                    focus-visible:ring-2
-                    focus-visible:ring-[#FF6B35]/40
-                    ${theme.border}
-                    ${theme.card}
-                  `}
-                >
-
-                  <span
-                    className="
-                      absolute
-                      inset-x-4
-                      top-0
-                      h-px
-                      bg-[#FF6B35]/20
-                      transition-all
-                      duration-300
-                      group-hover/reaction:bg-[#FF6B35]/60
-                    "
-                  />
-
-
-                  <span
-                    className="
-                      flex
-                      items-center
-                      gap-2.5
-                    "
-                  >
-
-                    <span
-                      className="
-                        relative
-                        flex
-                        w-9
-                        shrink-0
-                        items-center
-                      "
-                      aria-hidden="true"
-                    >
-
-                      <span
-                        className="
-                          h-px
-                          w-9
-                          bg-[#FF6B35]/35
-                          transition-all
-                          duration-300
-                          group-hover/reaction:w-7
-                          group-hover/reaction:bg-[#FF6B35]/70
-                        "
-                      />
-
-
-                      <span
-                        className="
-                          absolute
-                          left-0
-                          h-2
-                          w-2
-                          rounded-full
-                          border-2
-                          border-[#FF6B35]
-                          transition-all
-                          duration-300
-                          group-hover/reaction:left-7
-                          group-hover/reaction:bg-[#FF6B35]
-                          group-active/reaction:left-8
-                        "
-                      />
-
-                    </span>
-
-
-                    <span
-                      className={`
-                        text-[9px]
-                        font-black
-                        uppercase
-                        tracking-[0.2em]
-                        opacity-50
-                        transition-colors
-                        duration-300
-                        group-hover/reaction:opacity-100
-                        ${theme.text}
-                      `}
-                    >
-                      CHANGE IT
-                    </span>
-
-                  </span>
-
-
-                  <span
-                    className={`
-                      mt-2.5
-                      block
-                      text-xl
-                      font-black
-                      leading-none
-                      tracking-[-0.05em]
-                      transition-transform
-                      duration-300
-                      group-hover/reaction:translate-x-1
-                      ${theme.accent}
-                    `}
-                  >
-                    RE-RANKD
-                  </span>
-
-
-                  <span
-                    className={`
-                      mt-1.5
-                      block
-                      text-[11px]
-                      font-medium
-                      opacity-55
-                      ${theme.text}
-                    `}
-                  >
-                    I'd change the order
-                  </span>
-
-
-                  <span
-                    className={`
-                      mt-3
-                      flex
-                      items-center
-                      gap-1.5
-                      text-[10px]
-                      font-black
-                      opacity-60
-                      transition-all
-                      duration-300
-                      group-hover/reaction:gap-2.5
-                      group-hover/reaction:opacity-100
-                      ${theme.text}
-                    `}
-                  >
-                    Make it mine
-
-                    <span
-                      className={`
-                        ${theme.accent}
-                        transition-transform
-                        duration-300
-                        group-hover/reaction:translate-x-1
-                      `}
-                    >
-                      →
-                    </span>
-
-                  </span>
-
-                </button>
-
-              </div>
-
-
-              <p
-                className={`
-                  mt-4
-                  text-center
-                  text-[10px]
-                  ${theme.muted}
-                  opacity-60
-                `}
-              >
-                Your choice becomes part of the conversation around this RANKD.
-              </p>
-
-            </>
+            />
 
           )
         }
 
 
         {
-          response !== null && (
+          response === null && (
 
             <RankingResponse
 
