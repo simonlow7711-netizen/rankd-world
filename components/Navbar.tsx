@@ -13,8 +13,13 @@ import {
   Compass,
   Grid2X2,
   Plus,
+  Search,
   User
 } from "lucide-react"
+
+import {
+  useRouter
+} from "next/navigation"
 
 import {
   supabase
@@ -26,122 +31,231 @@ import {
 
 
 export default function Navbar() {
-  const [unreadCount, setUnreadCount] = useState(0)
 
-  const refreshUnreadCount = useCallback(
-    async () => {
-      try {
-        const {
-          data: {
-            user
+  const router =
+    useRouter()
+
+
+  const [
+    unreadCount,
+    setUnreadCount
+  ] = useState(0)
+
+
+  const [
+    searchTerm,
+    setSearchTerm
+  ] = useState("")
+
+
+  const refreshUnreadCount =
+    useCallback(
+      async () => {
+
+        try {
+
+          const {
+            data: {
+              user
+            }
+          } = await supabase.auth.getUser()
+
+
+          if(!user){
+
+            setUnreadCount(0)
+
+            return
+
           }
-        } = await supabase.auth.getUser()
 
-        if (!user) {
+
+          const count =
+            await getUnreadNotificationCount(
+              user.id
+            )
+
+
+          setUnreadCount(
+            count
+          )
+
+        }
+        catch{
+
           setUnreadCount(0)
-          return
+
         }
 
-        const count = await getUnreadNotificationCount(user.id)
+      },
+      []
+    )
 
-        setUnreadCount(count)
-      } catch {
-        setUnreadCount(0)
+
+  const submitSearch =
+    (
+      event:React.FormEvent<HTMLFormElement>
+    ) => {
+
+      event.preventDefault()
+
+
+      const query =
+        searchTerm.trim()
+
+
+      if(!query){
+
+        return
+
       }
-    },
-    []
-  )
+
+
+      router.push(
+        `/search?q=${encodeURIComponent(query)}`
+      )
+
+    }
+
 
   useEffect(
     () => {
+
       refreshUnreadCount()
 
-      const handleVisibilityChange = () => {
-        if (document.visibilityState === "visible") {
-          refreshUnreadCount()
-        }
-      }
 
-      const handleFocus = () => {
-        refreshUnreadCount()
-      }
+      const handleVisibilityChange =
+        () => {
+
+          if(
+            document.visibilityState ===
+            "visible"
+          ){
+
+            refreshUnreadCount()
+
+          }
+
+        }
+
+
+      const handleFocus =
+        () => {
+
+          refreshUnreadCount()
+
+        }
+
 
       document.addEventListener(
         "visibilitychange",
         handleVisibilityChange
       )
 
+
       window.addEventListener(
         "focus",
         handleFocus
       )
 
+
       return () => {
+
         document.removeEventListener(
           "visibilitychange",
           handleVisibilityChange
         )
 
+
         window.removeEventListener(
           "focus",
           handleFocus
         )
+
       }
+
     },
     [
       refreshUnreadCount
     ]
   )
+
 
   useEffect(
     () => {
+
       let channel:
-        ReturnType<typeof supabase.channel> | null = null
+        ReturnType<
+          typeof supabase.channel
+        > | null = null
 
-      const setupRealtime = async () => {
-        const {
-          data: {
-            user
+
+      const setupRealtime =
+        async () => {
+
+          const {
+            data: {
+              user
+            }
+          } = await supabase.auth.getUser()
+
+
+          if(!user){
+
+            return
+
           }
-        } = await supabase.auth.getUser()
 
-        if (!user) {
-          return
+
+          channel =
+            supabase
+              .channel(
+                `notifications-${user.id}`
+              )
+              .on(
+                "postgres_changes",
+                {
+                  event:"*",
+                  schema:"public",
+                  table:"notifications",
+                  filter:
+                    `user_id=eq.${user.id}`
+                },
+                () => {
+
+                  refreshUnreadCount()
+
+                }
+              )
+              .subscribe()
+
         }
 
-        channel = supabase
-          .channel(
-            `notifications-${user.id}`
-          )
-          .on(
-            "postgres_changes",
-            {
-              event: "*",
-              schema: "public",
-              table: "notifications",
-              filter: `user_id=eq.${user.id}`
-            },
-            () => {
-              refreshUnreadCount()
-            }
-          )
-          .subscribe()
-      }
 
       setupRealtime()
 
+
       return () => {
-        if (channel) {
-          supabase.removeChannel(channel)
+
+        if(channel){
+
+          supabase.removeChannel(
+            channel
+          )
+
         }
+
       }
+
     },
     [
       refreshUnreadCount
     ]
   )
 
+
   return (
+
     <header
       className="
         sticky
@@ -153,6 +267,7 @@ export default function Navbar() {
         backdrop-blur-md
       "
     >
+
       <div
         className="
           relative
@@ -170,6 +285,7 @@ export default function Navbar() {
             hidden
             items-center
             justify-between
+            gap-4
             md:flex
           "
         >
@@ -229,9 +345,75 @@ export default function Navbar() {
           </Link>
 
 
+          <form
+            onSubmit={
+              submitSearch
+            }
+            className="
+              min-w-0
+              flex-1
+              max-w-md
+            "
+          >
+
+            <div
+              className="
+                flex
+                h-11
+                items-center
+                rounded-full
+                border
+                border-black/[0.10]
+                bg-white/70
+                px-4
+                transition
+                focus-within:border-black/25
+                focus-within:bg-white
+              "
+            >
+
+              <Search
+                className="
+                  mr-2.5
+                  h-4
+                  w-4
+                  shrink-0
+                  text-black/45
+                "
+              />
+
+              <input
+                type="search"
+                value={searchTerm}
+                onChange={
+                  event =>
+                    setSearchTerm(
+                      event.target.value
+                    )
+                }
+                placeholder="Search RANKD"
+                aria-label="Search RANKD"
+                className="
+                  min-w-0
+                  flex-1
+                  bg-transparent
+                  text-sm
+                  font-medium
+                  text-black
+                  outline-none
+                  placeholder:text-black/40
+                "
+              />
+
+            </div>
+
+          </form>
+
+
           <nav
             className="
               flex
+              shrink-0
               items-center
               gap-1
             "
@@ -382,6 +564,7 @@ export default function Navbar() {
               </span>
 
               {unreadCount > 0 && (
+
                 <span
                   className="
                     flex
@@ -402,6 +585,7 @@ export default function Navbar() {
                     ? "99+"
                     : unreadCount}
                 </span>
+
               )}
 
             </Link>
@@ -479,6 +663,70 @@ export default function Navbar() {
           </Link>
 
         </div>
+
+
+        <form
+          onSubmit={
+            submitSearch
+          }
+          className="
+            mt-3
+            md:hidden
+          "
+        >
+
+          <div
+            className="
+              flex
+              h-11
+              items-center
+              rounded-full
+              border
+              border-black/[0.10]
+              bg-white/70
+              px-4
+              transition
+              focus-within:border-black/25
+              focus-within:bg-white
+            "
+          >
+
+            <Search
+              className="
+                mr-2.5
+                h-4
+                w-4
+                shrink-0
+                text-black/45
+              "
+            />
+
+            <input
+              type="search"
+              value={searchTerm}
+              onChange={
+                event =>
+                  setSearchTerm(
+                    event.target.value
+                  )
+              }
+              placeholder="Search RANKD"
+              aria-label="Search RANKD"
+              className="
+                min-w-0
+                flex-1
+                bg-transparent
+                text-sm
+                font-medium
+                text-black
+                outline-none
+                placeholder:text-black/40
+              "
+            />
+
+          </div>
+
+        </form>
 
 
         <nav
@@ -625,6 +873,7 @@ export default function Navbar() {
             </span>
 
             {unreadCount > 0 && (
+
               <span
                 className="
                   absolute
@@ -649,6 +898,7 @@ export default function Navbar() {
                   ? "99+"
                   : unreadCount}
               </span>
+
             )}
 
           </Link>
@@ -689,6 +939,9 @@ export default function Navbar() {
         </nav>
 
       </div>
+
     </header>
+
   )
+
 }

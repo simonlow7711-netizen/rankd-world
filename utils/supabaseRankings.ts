@@ -32,6 +32,11 @@ type RankingRow = {
 }
 
 
+type RankingItemSearchRow = {
+  ranking_id:string
+}
+
+
 function mapRanking(
   row:RankingRow,
   items:any[]
@@ -801,6 +806,263 @@ export async function getRankingsForLocation(
 
   return attachRankingItems(
     filteredRows
+  )
+
+}
+
+
+export async function searchSupabaseRankings(
+  searchTerm:string
+):Promise<Ranking[]>{
+
+  const term =
+    searchTerm.trim()
+
+
+  if(!term){
+
+    return []
+
+  }
+
+
+  const pattern =
+    `%${term}%`
+
+
+  /*
+   *
+   * Search ranking titles.
+   *
+   */
+  const {
+    data:titleRows,
+    error:titleError
+  } = await supabase
+    .from("rankings")
+    .select(
+      `
+        id,
+        title,
+        category,
+        description,
+        views,
+        user_id,
+        parent_id,
+        root_id,
+        source_type,
+        created_at,
+        location_name,
+        location_city,
+        location_state,
+        location_country
+      `
+    )
+    .ilike(
+      "title",
+      pattern
+    )
+
+
+  if(titleError){
+
+    console.error(
+      "RANKING TITLE SEARCH ERROR",
+      titleError
+    )
+
+  }
+
+
+  /*
+   *
+   * Search ranking item names.
+   *
+   * We only retrieve the ranking IDs here.
+   *
+   */
+  const {
+    data:itemRows,
+    error:itemError
+  } = await supabase
+    .from("ranking_items")
+    .select(
+      "ranking_id"
+    )
+    .ilike(
+      "name",
+      pattern
+    )
+
+
+  if(itemError){
+
+    console.error(
+      "RANKING ITEM SEARCH ERROR",
+      itemError
+    )
+
+  }
+
+
+  const titleMatches =
+    (titleRows ?? []) as RankingRow[]
+
+
+  const itemRankingIds =
+    Array.from(
+      new Set(
+        (
+          (itemRows ?? []) as RankingItemSearchRow[]
+        )
+          .map(
+            item =>
+              item.ranking_id
+          )
+      )
+    )
+
+
+  /*
+   *
+   * Load the ranking rows for rankings
+   * matched through an item.
+   *
+   */
+  let itemMatches:
+    RankingRow[] = []
+
+
+  if(
+    itemRankingIds.length > 0
+  ){
+
+    const {
+      data:rankingRows,
+      error:rankingError
+    } = await supabase
+      .from("rankings")
+      .select(
+        `
+          id,
+          title,
+          category,
+          description,
+          views,
+          user_id,
+          parent_id,
+          root_id,
+          source_type,
+          created_at,
+          location_name,
+          location_city,
+          location_state,
+          location_country
+        `
+      )
+      .in(
+        "id",
+        itemRankingIds
+      )
+
+
+    if(rankingError){
+
+      console.error(
+        "RANKING ITEM MATCH LOAD ERROR",
+        rankingError
+      )
+
+    }
+    else{
+
+      itemMatches =
+        (rankingRows ?? []) as RankingRow[]
+
+    }
+
+  }
+
+
+  /*
+   *
+   * Combine title and item matches.
+   *
+   * A ranking can match both, so a Map
+   * prevents duplicate results.
+   *
+   */
+  const rankingMap =
+    new Map<
+      string,
+      RankingRow
+    >()
+
+
+  titleMatches.forEach(
+    row => {
+
+      rankingMap.set(
+        row.id,
+        row
+      )
+
+    }
+  )
+
+
+  itemMatches.forEach(
+    row => {
+
+      rankingMap.set(
+        row.id,
+        row
+      )
+
+    }
+  )
+
+
+  const combinedRows =
+    Array.from(
+      rankingMap.values()
+    )
+
+
+  /*
+   *
+   * Keep search results in newest-first
+   * order, matching the rest of RANKD.
+   *
+   */
+  combinedRows.sort(
+    (
+      a,
+      b
+    ) => {
+
+      const aTime =
+        a.created_at
+          ? new Date(
+              a.created_at
+            ).getTime()
+          : 0
+
+      const bTime =
+        b.created_at
+          ? new Date(
+              b.created_at
+            ).getTime()
+          : 0
+
+      return bTime - aTime
+
+    }
+  )
+
+
+  return attachRankingItems(
+    combinedRows
   )
 
 }
