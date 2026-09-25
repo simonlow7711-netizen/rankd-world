@@ -1359,6 +1359,7 @@ export default function RankingCard({
       className={`
         group
         relative
+        min-w-0
         overflow-hidden
         h-full
         p-7
@@ -1566,6 +1567,8 @@ export default function RankingCard({
               className="
                 mt-3
                 inline-flex
+                max-w-full
+                min-w-0
                 items-center
                 gap-2
                 rounded-full
@@ -1590,6 +1593,7 @@ export default function RankingCard({
                   flex
                   h-2.5
                   w-2.5
+                  shrink-0
                   items-center
                   justify-center
                   rounded-full
@@ -1615,7 +1619,12 @@ export default function RankingCard({
               </span>
 
 
-              <span>
+              <span
+                className="
+                  min-w-0
+                  break-words
+                "
+              >
 
                 {
                   [
@@ -1880,6 +1889,7 @@ export default function RankingCard({
                 className="
                   mt-7
                   grid
+                  min-w-0
                   grid-cols-2
                   border-y
                   border-black/10
@@ -1900,6 +1910,7 @@ export default function RankingCard({
                   className="
                     group/reaction
                     relative
+                    min-w-0
                     py-6
                     pr-5
                     text-left
@@ -2013,6 +2024,7 @@ export default function RankingCard({
                   className="
                     group/reaction
                     relative
+                    min-w-0
                     border-l
                     border-black/10
                     py-6
