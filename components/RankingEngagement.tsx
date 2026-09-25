@@ -10,11 +10,11 @@ import {
 
 type RankingEngagementProps = {
 
-  views: number
+  views:number
 
-  rankd: number
+  rankd:number
 
-  rerankd: number
+  rerankd:number
 
 }
 
@@ -35,6 +35,7 @@ export default function RankingEngagement({
     <div
       className="
         flex
+        min-w-0
         items-center
         gap-3
         md:gap-4
@@ -44,12 +45,15 @@ export default function RankingEngagement({
       <div
         className="
           flex
+          min-w-0
+          shrink
           items-center
           gap-2
           rounded-2xl
           bg-black/[0.04]
-          px-4
+          px-3
           py-3
+          md:px-4
         "
       >
 
@@ -64,6 +68,8 @@ export default function RankingEngagement({
 
         <span
           className="
+            min-w-0
+            truncate
             text-xl
             font-black
             leading-none
@@ -80,12 +86,15 @@ export default function RankingEngagement({
       <div
         className="
           flex
+          min-w-0
+          shrink
           items-center
           gap-2
           rounded-2xl
           bg-black/[0.04]
-          px-4
+          px-3
           py-3
+          md:px-4
         "
       >
 
@@ -100,6 +109,8 @@ export default function RankingEngagement({
 
         <span
           className="
+            min-w-0
+            truncate
             text-xl
             font-black
             leading-none
@@ -116,12 +127,15 @@ export default function RankingEngagement({
       <div
         className="
           flex
+          min-w-0
+          shrink
           items-center
           gap-2
           rounded-2xl
           bg-black/[0.04]
-          px-4
+          px-3
           py-3
+          md:px-4
         "
       >
 
@@ -136,6 +150,8 @@ export default function RankingEngagement({
 
         <span
           className="
+            min-w-0
+            truncate
             text-xl
             font-black
             leading-none
