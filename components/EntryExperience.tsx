@@ -428,10 +428,10 @@ export default function EntryExperience({
             className="
               mt-5
               text-5xl
-              md:text-7xl
               font-black
               leading-none
               tracking-[-0.06em]
+              md:text-7xl
             "
           >
             Nothing to rank yet.
@@ -712,13 +712,18 @@ export default function EntryExperience({
     <section
       className="
         min-h-screen
-        bg-[#F7F4EE]
-        text-black
         px-5
         py-10
         md:px-8
         md:py-16
       "
+      style={{
+        backgroundColor:
+          theme.bg,
+
+        color:
+          theme.text
+      }}
     >
 
       <div
@@ -759,8 +764,11 @@ export default function EntryExperience({
                       font-black
                       uppercase
                       tracking-[0.3em]
-                      text-[#FF6B35]
                     "
+                    style={{
+                      color:
+                        theme.accent
+                    }}
                   >
                     RANKD / YOUR OPINION
                   </p>
@@ -793,9 +801,12 @@ export default function EntryExperience({
                         text-base
                         font-medium
                         leading-relaxed
-                        text-black/50
                         md:text-lg
                       "
+                      style={{
+                        color:
+                          theme.muted
+                      }}
                     >
                       See the Top 7.
                       Make your call.
@@ -1400,199 +1411,295 @@ export default function EntryExperience({
 
             <div
               className="
+                relative
                 min-h-[65vh]
-                flex
-                items-center
-                justify-center
+                overflow-hidden
+                rounded-[32px]
+                border
+                md:rounded-[40px]
               "
+              style={{
+                backgroundColor:
+                  theme.bg,
+
+                color:
+                  theme.text,
+
+                borderColor:
+                  theme.border
+              }}
             >
 
               <div
                 className="
-                  w-full
-                  max-w-2xl
-                  text-center
+                  pointer-events-none
+                  absolute
+                  -right-8
+                  -top-24
+                  select-none
+                  text-[18rem]
+                  font-black
+                  leading-none
+                  tracking-[-0.16em]
+                  opacity-[0.06]
+                  md:-right-12
+                  md:-top-32
+                  md:text-[28rem]
+                "
+                style={{
+                  color:
+                    theme.accent
+                }}
+                aria-hidden="true"
+              >
+                7
+              </div>
+
+
+              <div
+                className="
+                  relative
+                  z-10
+                  p-7
+                  md:p-12
+                  lg:p-16
                 "
               >
 
-                <p
+                <header
                   className="
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.3em]
-                    text-[#FF6B35]
+                    border-b
+                    pb-8
                   "
+                  style={{
+                    borderColor:
+                      `${theme.border}1A`
+                  }}
                 >
-                  Community insight
-                </p>
+
+                  <p
+                    className="
+                      text-xs
+                      font-black
+                      uppercase
+                      tracking-[0.3em]
+                    "
+                    style={{
+                      color:
+                        theme.accent
+                    }}
+                  >
+                    RANKD / {
+                      theme.label
+                    }
+                  </p>
+
+
+                  <h1
+                    className="
+                      mt-4
+                      max-w-4xl
+                      text-5xl
+                      font-black
+                      leading-[0.88]
+                      tracking-[-0.06em]
+                      md:text-7xl
+                    "
+                  >
+                    You RANKD it.
+                  </h1>
+
+
+                  <p
+                    className="
+                      mt-5
+                      max-w-2xl
+                      text-lg
+                      font-medium
+                      leading-relaxed
+                      md:text-xl
+                    "
+                    style={{
+                      color:
+                        theme.muted
+                    }}
+                  >
+                    Your opinion is now part
+                    of the conversation.
+                  </p>
+
+                </header>
 
 
                 {
                   response === "rankd" && (
 
-                    <>
+                    <section
+                      className="
+                        mt-10
+                        rounded-[28px]
+                        border
+                        p-6
+                        md:p-9
+                      "
+                      style={{
+                        borderColor:
+                          `${theme.border}33`,
 
-                      <h1
-                        className="
-                          mt-5
-                          text-5xl
-                          font-black
-                          leading-none
-                          tracking-[-0.06em]
-                          md:text-7xl
-                        "
-                      >
-                        You RANKD it.
-                      </h1>
-
+                        backgroundColor:
+                          `${theme.text}05`
+                      }}
+                    >
 
                       <div
                         className="
-                          mt-8
-                          rounded-[32px]
-                          border
-                          border-black/10
-                          bg-white
-                          p-7
-                          text-left
-                          shadow-[0_20px_60px_rgba(0,0,0,0.06)]
-                          md:p-9
+                          flex
+                          flex-col
+                          gap-6
+                          md:flex-row
+                          md:items-start
+                          md:justify-between
                         "
                       >
 
                         <div
                           className="
-                            flex
-                            items-start
-                            justify-between
-                            gap-6
+                            max-w-3xl
                           "
                         >
 
-                          <div>
-
-                            <p
-                              className="
-                                text-xs
-                                font-black
-                                uppercase
-                                tracking-[0.25em]
-                                text-black/40
-                              "
-                            >
-                              The community
-                            </p>
-
-
-                            <h2
-                              className="
-                                mt-3
-                                text-3xl
-                                font-black
-                                leading-tight
-                                tracking-[-0.04em]
-                                md:text-4xl
-                              "
-                            >
-                              {
-                                insight.title
-                              }
-                            </h2>
-
-                          </div>
-
-
-                          <div
+                          <p
                             className="
-                              shrink-0
-                              rounded-full
-                              bg-[#F7F4EE]
-                              px-4
-                              py-2
-                              text-sm
+                              text-xs
                               font-black
+                              uppercase
+                              tracking-[0.25em]
+                            "
+                            style={{
+                              color:
+                                theme.accent
+                            }}
+                          >
+                            Community insight
+                          </p>
+
+
+                          <h2
+                            className="
+                              mt-4
+                              text-3xl
+                              font-black
+                              leading-tight
+                              tracking-[-0.04em]
+                              md:text-5xl
                             "
                           >
                             {
-                              insightScore
-                            }%
-                          </div>
+                              insight.title
+                            }
+                          </h2>
 
                         </div>
-
-
-                        <p
-                          className="
-                            mt-5
-                            text-lg
-                            font-bold
-                            leading-relaxed
-                            md:text-xl
-                          "
-                        >
-                          {
-                            insight.description
-                          }
-                        </p>
 
 
                         <div
                           className="
-                            mt-6
-                            h-2
-                            overflow-hidden
+                            shrink-0
                             rounded-full
-                            bg-[#F7F4EE]
-                          "
-                        >
-
-                          <div
-                            className="
-                              h-full
-                              rounded-full
-                              bg-black
-                              transition-all
-                              duration-500
-                            "
-                            style={{
-                              width:
-                                `${Math.min(
-                                  insightScore,
-                                  100
-                                )}%`
-                            }}
-                          />
-
-                        </div>
-
-
-                        <p
-                          className="
-                            mt-3
+                            border
+                            px-5
+                            py-3
                             text-sm
-                            text-black/45
+                            font-black
                           "
+                          style={{
+                            borderColor:
+                              `${theme.border}33`,
+
+                            color:
+                              theme.accent
+                          }}
                         >
-                          Community insight combines
-                          perspective and live activity
-                          around this ranking.
-                        </p>
+                          {
+                            insightScore
+                          }%
+                        </div>
 
                       </div>
 
 
                       <p
                         className="
-                          mt-7
-                          text-black/45
+                          mt-6
+                          max-w-3xl
+                          text-lg
+                          font-bold
+                          leading-relaxed
+                          md:text-xl
                         "
+                        style={{
+                          color:
+                            theme.text
+                        }}
                       >
-                        Your opinion is now part
-                        of the conversation.
+                        {
+                          insight.description
+                        }
                       </p>
 
-                    </>
+
+                      <div
+                        className="
+                          mt-7
+                          h-2
+                          overflow-hidden
+                          rounded-full
+                        "
+                        style={{
+                          backgroundColor:
+                            `${theme.border}14`
+                        }}
+                      >
+
+                        <div
+                          className="
+                            h-full
+                            rounded-full
+                            transition-all
+                            duration-500
+                          "
+                          style={{
+                            width:
+                              `${Math.min(
+                                insightScore,
+                                100
+                              )}%`,
+
+                            backgroundColor:
+                              theme.accent
+                          }}
+                        />
+
+                      </div>
+
+
+                      <p
+                        className="
+                          mt-4
+                          text-sm
+                          leading-relaxed
+                        "
+                        style={{
+                          color:
+                            theme.muted
+                        }}
+                      >
+                        Community insight combines
+                        perspective and live activity
+                        around this ranking.
+                      </p>
+
+                    </section>
 
                   )
                 }
@@ -1601,69 +1708,119 @@ export default function EntryExperience({
                 {
                   nextRanking && (
 
-                    <div
+                    <section
                       className="
                         mt-10
-                        rounded-[32px]
-                        bg-black
-                        p-7
-                        text-left
-                        text-white
-                        md:p-8
+                        border-t
+                        pt-10
                       "
+                      style={{
+                        borderColor:
+                          `${theme.border}1A`
+                      }}
                     >
 
-                      <p
+                      <div
                         className="
-                          text-xs
-                          font-black
-                          uppercase
-                          tracking-[0.25em]
-                          opacity-60
+                          flex
+                          flex-col
+                          gap-6
+                          md:flex-row
+                          md:items-end
+                          md:justify-between
                         "
                       >
-                        Keep going
-                      </p>
+
+                        <div>
+
+                          <p
+                            className="
+                              text-xs
+                              font-black
+                              uppercase
+                              tracking-[0.25em]
+                            "
+                            style={{
+                              color:
+                                theme.accent
+                            }}
+                          >
+                            Keep going
+                          </p>
 
 
-                      <h2
-                        className="
-                          mt-3
-                          text-3xl
-                          font-black
-                          tracking-[-0.04em]
-                          md:text-4xl
-                        "
-                      >
-                        Your next RANKD
-                      </h2>
+                          <h2
+                            className="
+                              mt-3
+                              text-3xl
+                              font-black
+                              tracking-[-0.04em]
+                              md:text-5xl
+                            "
+                          >
+                            Your next RANKD.
+                          </h2>
 
 
-                      <p
-                        className="
-                          mt-3
-                          text-white/60
-                        "
-                      >
-                        {
-                          nextRanking.category ===
-                          ranking.category
+                          <p
+                            className="
+                              mt-3
+                              text-base
+                              font-medium
+                              md:text-lg
+                            "
+                            style={{
+                              color:
+                                theme.muted
+                            }}
+                          >
+                            {
+                              nextRanking.category ===
+                              ranking.category
 
-                            ? `Another ${ranking.category} ranking.`
+                                ? `Another ${ranking.category} ranking.`
 
-                            : "Another community opinion worth exploring."
-                        }
-                      </p>
+                                : "Another community opinion worth exploring."
+                            }
+                          </p>
+
+                        </div>
+
+
+                        <div
+                          className="
+                            shrink-0
+                            text-xs
+                            font-black
+                            uppercase
+                            tracking-[0.2em]
+                          "
+                          style={{
+                            color:
+                              theme.muted
+                          }}
+                        >
+                          02 — 07
+                        </div>
+
+                      </div>
 
 
                       <div
                         className="
-                          mt-6
-                          rounded-[24px]
-                          bg-white
-                          p-5
-                          text-black
+                          mt-7
+                          rounded-[28px]
+                          border
+                          p-6
+                          md:p-8
                         "
+                        style={{
+                          borderColor:
+                            `${theme.border}33`,
+
+                          backgroundColor:
+                            `${theme.text}05`
+                        }}
                       >
 
                         <p
@@ -1671,9 +1828,12 @@ export default function EntryExperience({
                             text-xs
                             font-black
                             uppercase
-                            tracking-widest
-                            text-[#FF6B35]
+                            tracking-[0.22em]
                           "
+                          style={{
+                            color:
+                              theme.accent
+                          }}
                         >
                           {
                             nextRanking.category ||
@@ -1684,11 +1844,13 @@ export default function EntryExperience({
 
                         <h3
                           className="
-                            mt-2
-                            text-2xl
+                            mt-3
+                            max-w-4xl
+                            text-3xl
                             font-black
+                            leading-tight
                             tracking-[-0.04em]
-                            md:text-3xl
+                            md:text-5xl
                           "
                         >
                           {
@@ -1698,32 +1860,40 @@ export default function EntryExperience({
                           }
                         </h3>
 
+
+                        <button
+                          type="button"
+                          onClick={
+                            viewNextRanking
+                          }
+                          className="
+                            mt-7
+                            rounded-full
+                            border
+                            px-6
+                            py-4
+                            text-sm
+                            font-black
+                            transition
+                            hover:-translate-y-0.5
+                          "
+                          style={{
+                            borderColor:
+                              theme.accent,
+
+                            backgroundColor:
+                              theme.accent,
+
+                            color:
+                              theme.bg
+                          }}
+                        >
+                          Rank this one too →
+                        </button>
+
                       </div>
 
-
-                      <button
-                        type="button"
-                        onClick={
-                          viewNextRanking
-                        }
-                        className="
-                          mt-5
-                          w-full
-                          rounded-[24px]
-                          bg-white
-                          px-6
-                          py-5
-                          text-lg
-                          font-black
-                          text-black
-                          transition
-                          hover:-translate-y-1
-                        "
-                      >
-                        Rank this one too →
-                      </button>
-
-                    </div>
+                    </section>
 
                   )
                 }
@@ -1742,15 +1912,20 @@ export default function EntryExperience({
                       className="
                         mt-10
                         rounded-full
-                        bg-black
                         px-7
                         py-4
                         text-sm
                         font-black
-                        text-white
                         transition
-                        hover:bg-black/85
+                        hover:-translate-y-0.5
                       "
+                      style={{
+                        backgroundColor:
+                          theme.text,
+
+                        color:
+                          theme.bg
+                      }}
                     >
                       Explore more RANKDs →
                     </button>
