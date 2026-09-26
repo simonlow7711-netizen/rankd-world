@@ -154,15 +154,6 @@ export default function RankingResponse({
       : undefined
 
 
-  const accentBorderStyle =
-    accentColor
-      ? {
-          borderColor:
-            `${accentColor}73`
-        }
-      : undefined
-
-
   const accentSoftStyle =
     accentColor
       ? {
@@ -198,6 +189,15 @@ export default function RankingResponse({
           borderColor:
             accentColor
         }
+      : undefined
+
+
+  const accentHoverBorderStyle =
+    accentColor
+      ? {
+          "--response-accent":
+            accentColor
+        } as React.CSSProperties
       : undefined
 
 
@@ -326,7 +326,7 @@ export default function RankingResponse({
                 focus:outline-none
                 focus-visible:rounded-lg
                 focus-visible:ring-2
-                focus-visible:ring-[#FF6B35]/40
+                focus-visible:ring-black/20
               `}
               style={
                 textStyle
@@ -476,7 +476,7 @@ export default function RankingResponse({
               focus:outline-none
               focus-visible:rounded-lg
               focus-visible:ring-2
-              focus-visible:ring-[#FF6B35]/40
+              focus-visible:ring-black/20
             `}
             style={
               textStyle
@@ -611,20 +611,20 @@ export default function RankingResponse({
             transition-all
             duration-300
             hover:-translate-y-0.5
-            hover:border-[#FF6B35]/45
-            hover:shadow-[0_8px_24px_rgba(255,107,53,0.07)]
+            hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]
             active:translate-y-0
             active:scale-[0.985]
             focus:outline-none
             focus-visible:ring-2
-            focus-visible:ring-[#FF6B35]/40
+            focus-visible:ring-black/20
             sm:px-3
             ${border}
             ${card}
           `}
           style={{
             ...borderStyle,
-            ...cardStyle
+            ...cardStyle,
+            ...accentHoverBorderStyle
           }}
         >
 
@@ -634,10 +634,8 @@ export default function RankingResponse({
               inset-x-3
               top-0
               h-px
-              bg-[#FF6B35]/20
               transition-all
               duration-300
-              group-hover/reaction:bg-[#FF6B35]/60
             "
             style={
               accentSoftStyle
@@ -671,11 +669,9 @@ export default function RankingResponse({
                 className="
                   h-px
                   w-6
-                  bg-[#FF6B35]/35
                   transition-all
                   duration-300
                   group-hover/reaction:w-5
-                  group-hover/reaction:bg-[#FF6B35]/70
                   sm:w-7
                 "
                 style={
@@ -691,12 +687,10 @@ export default function RankingResponse({
                   h-2
                   w-2
                   rounded-full
-                  bg-[#FF6B35]
-                  shadow-[0_0_0_3px_rgba(255,107,53,0.08)]
                   transition-all
                   duration-300
                   group-hover/reaction:left-5
-                  group-hover/reaction:shadow-[0_0_0_4px_rgba(255,107,53,0.12)]
+                  group-hover/reaction:shadow-[0_0_0_4px_rgba(0,0,0,0.06)]
                   group-active/reaction:left-5
                   sm:group-active/reaction:left-6
                 "
@@ -850,20 +844,20 @@ export default function RankingResponse({
             transition-all
             duration-300
             hover:-translate-y-0.5
-            hover:border-[#FF6B35]/45
-            hover:shadow-[0_8px_24px_rgba(255,107,53,0.07)]
+            hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]
             active:translate-y-0
             active:scale-[0.985]
             focus:outline-none
             focus-visible:ring-2
-            focus-visible:ring-[#FF6B35]/40
+            focus-visible:ring-black/20
             sm:px-3
             ${border}
             ${card}
           `}
           style={{
             ...borderStyle,
-            ...cardStyle
+            ...cardStyle,
+            ...accentHoverBorderStyle
           }}
         >
 
@@ -873,10 +867,8 @@ export default function RankingResponse({
               inset-x-3
               top-0
               h-px
-              bg-[#FF6B35]/20
               transition-all
               duration-300
-              group-hover/reaction:bg-[#FF6B35]/60
             "
             style={
               accentSoftStyle
@@ -910,11 +902,9 @@ export default function RankingResponse({
                 className="
                   h-px
                   w-6
-                  bg-[#FF6B35]/35
                   transition-all
                   duration-300
                   group-hover/reaction:w-5
-                  group-hover/reaction:bg-[#FF6B35]/70
                   sm:w-7
                 "
                 style={
@@ -931,17 +921,17 @@ export default function RankingResponse({
                   w-2
                   rounded-full
                   border-2
-                  border-[#FF6B35]
                   transition-all
                   duration-300
                   group-hover/reaction:left-5
-                  group-hover/reaction:bg-[#FF6B35]
+                  group-hover/reaction:bg-[var(--response-accent)]
                   group-active/reaction:left-5
                   sm:group-active/reaction:left-6
                 "
-                style={
-                  accentOutlineDotStyle
-                }
+                style={{
+                  ...accentOutlineDotStyle,
+                  ...accentHoverBorderStyle
+                }}
               />
 
             </span>

@@ -55,13 +55,23 @@ type RankingTheme = {
 
   card: string
 
+  cardColor: string
+
   text: string
+
+  textColor: string
 
   accent: string
 
+  accentColor: string
+
   muted: string
 
+  mutedColor: string
+
   border: string
+
+  borderColor: string
 
   itemBorder: string
 
@@ -93,17 +103,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#F3E8D8]",
 
+    cardColor:
+      "#F3E8D8",
+
     text:
       "text-[#211A16]",
+
+    textColor:
+      "#211A16",
 
     accent:
       "text-[#D96B35]",
 
+    accentColor:
+      "#D96B35",
+
     muted:
       "text-[#6E5545]",
 
+    mutedColor:
+      "#6E5545",
+
     border:
       "border-[#211A16]/10",
+
+    borderColor:
+      "#211A16",
 
     itemBorder:
       "divide-[#211A16]/10",
@@ -143,17 +168,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#ECEAE5]",
 
+    cardColor:
+      "#ECEAE5",
+
     text:
       "text-[#151515]",
+
+    textColor:
+      "#151515",
 
     accent:
       "text-[#FF6B35]",
 
+    accentColor:
+      "#FF6B35",
+
     muted:
       "text-[#686560]",
 
+    mutedColor:
+      "#686560",
+
     border:
       "border-[#151515]/10",
+
+    borderColor:
+      "#151515",
 
     itemBorder:
       "divide-[#151515]/10",
@@ -193,17 +233,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E9E3DE]",
 
+    cardColor:
+      "#E9E3DE",
+
     text:
       "text-[#211A1A]",
+
+    textColor:
+      "#211A1A",
 
     accent:
       "text-[#C43D35]",
 
+    accentColor:
+      "#C43D35",
+
     muted:
       "text-[#746562]",
 
+    mutedColor:
+      "#746562",
+
     border:
       "border-[#211A1A]/10",
+
+    borderColor:
+      "#211A1A",
 
     itemBorder:
       "divide-[#211A1A]/10",
@@ -243,17 +298,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E7EBE5]",
 
+    cardColor:
+      "#E7EBE5",
+
     text:
       "text-[#101510]",
+
+    textColor:
+      "#101510",
 
     accent:
       "text-[#E54B2F]",
 
+    accentColor:
+      "#E54B2F",
+
     muted:
       "text-[#586058]",
 
+    mutedColor:
+      "#586058",
+
     border:
       "border-[#101510]/10",
+
+    borderColor:
+      "#101510",
 
     itemBorder:
       "divide-[#101510]/10",
@@ -293,17 +363,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E7ECE9]",
 
+    cardColor:
+      "#E7ECE9",
+
     text:
       "text-[#0E1416]",
+
+    textColor:
+      "#0E1416",
 
     accent:
       "text-[#39A932]",
 
+    accentColor:
+      "#39A932",
+
     muted:
       "text-[#59645F]",
 
+    mutedColor:
+      "#59645F",
+
     border:
       "border-[#0E1416]/10",
+
+    borderColor:
+      "#0E1416",
 
     itemBorder:
       "divide-[#0E1416]/10",
@@ -343,17 +428,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E0ECE8]",
 
+    cardColor:
+      "#E0ECE8",
+
     text:
       "text-[#123B36]",
+
+    textColor:
+      "#123B36",
 
     accent:
       "text-[#087D71]",
 
+    accentColor:
+      "#087D71",
+
     muted:
       "text-[#58736F]",
 
+    mutedColor:
+      "#58736F",
+
     border:
       "border-[#123B36]/10",
+
+    borderColor:
+      "#123B36",
 
     itemBorder:
       "divide-[#123B36]/10",
@@ -393,17 +493,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E9EBE9]",
 
+    cardColor:
+      "#E9EBE9",
+
     text:
       "text-[#111820]",
+
+    textColor:
+      "#111820",
 
     accent:
       "text-[#315AE8]",
 
+    accentColor:
+      "#315AE8",
+
     muted:
       "text-[#69737C]",
 
+    mutedColor:
+      "#69737C",
+
     border:
       "border-[#111820]/10",
+
+    borderColor:
+      "#111820",
 
     itemBorder:
       "divide-[#111820]/10",
@@ -443,17 +558,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#EEE8DE]",
 
+    cardColor:
+      "#EEE8DE",
+
     text:
       "text-[#29241E]",
+
+    textColor:
+      "#29241E",
 
     accent:
       "text-[#A45D3E]",
 
+    accentColor:
+      "#A45D3E",
+
     muted:
       "text-[#766E64]",
 
+    mutedColor:
+      "#766E64",
+
     border:
       "border-[#29241E]/10",
+
+    borderColor:
+      "#29241E",
 
     itemBorder:
       "divide-[#29241E]/10",
@@ -493,17 +623,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#F1EBDD]",
 
+    cardColor:
+      "#F1EBDD",
+
     text:
       "text-[#30251D]",
+
+    textColor:
+      "#30251D",
 
     accent:
       "text-[#9B493D]",
 
+    accentColor:
+      "#9B493D",
+
     muted:
       "text-[#75695E]",
 
+    mutedColor:
+      "#75695E",
+
     border:
       "border-[#30251D]/10",
+
+    borderColor:
+      "#30251D",
 
     itemBorder:
       "divide-[#30251D]/10",
@@ -543,17 +688,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E9E6DF]",
 
+    cardColor:
+      "#E9E6DF",
+
     text:
       "text-[#151515]",
+
+    textColor:
+      "#151515",
 
     accent:
       "text-[#B58B18]",
 
+    accentColor:
+      "#B58B18",
+
     muted:
       "text-[#68645C]",
 
+    mutedColor:
+      "#68645C",
+
     border:
       "border-[#151515]/10",
+
+    borderColor:
+      "#151515",
 
     itemBorder:
       "divide-[#151515]/10",
@@ -593,17 +753,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#ECE3E9]",
 
+    cardColor:
+      "#ECE3E9",
+
     text:
       "text-[#231B22]",
+
+    textColor:
+      "#231B22",
 
     accent:
       "text-[#A52F68]",
 
+    accentColor:
+      "#A52F68",
+
     muted:
       "text-[#786773]",
 
+    mutedColor:
+      "#786773",
+
     border:
       "border-[#231B22]/10",
+
+    borderColor:
+      "#231B22",
 
     itemBorder:
       "divide-[#231B22]/10",
@@ -633,7 +808,7 @@ const themes: Record<string, RankingTheme> = {
       "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em] uppercase",
 
     item:
-      "text-base md:text-lg"
+      "text-base md:text-lg uppercase"
 
   },
 
@@ -643,17 +818,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#F1E5E3]",
 
+    cardColor:
+      "#F1E5E3",
+
     text:
       "text-[#2C1C1F]",
+
+    textColor:
+      "#2C1C1F",
 
     accent:
       "text-[#C34E68]",
 
+    accentColor:
+      "#C34E68",
+
     muted:
       "text-[#856B70]",
 
+    mutedColor:
+      "#856B70",
+
     border:
       "border-[#2C1C1F]/10",
+
+    borderColor:
+      "#2C1C1F",
 
     itemBorder:
       "divide-[#2C1C1F]/10",
@@ -693,17 +883,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E4EEE6]",
 
+    cardColor:
+      "#E4EEE6",
+
     text:
       "text-[#17251B]",
+
+    textColor:
+      "#17251B",
 
     accent:
       "text-[#16824D]",
 
+    accentColor:
+      "#16824D",
+
     muted:
       "text-[#607467]",
 
+    mutedColor:
+      "#607467",
+
     border:
       "border-[#17251B]/10",
+
+    borderColor:
+      "#17251B",
 
     itemBorder:
       "divide-[#17251B]/10",
@@ -743,17 +948,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E5E9EE]",
 
+    cardColor:
+      "#E5E9EE",
+
     text:
       "text-[#14202B]",
+
+    textColor:
+      "#14202B",
 
     accent:
       "text-[#245A91]",
 
+    accentColor:
+      "#245A91",
+
     muted:
       "text-[#64717D]",
 
+    mutedColor:
+      "#64717D",
+
     border:
       "border-[#14202B]/10",
+
+    borderColor:
+      "#14202B",
 
     itemBorder:
       "divide-[#14202B]/10",
@@ -793,17 +1013,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E0EAEC]",
 
+    cardColor:
+      "#E0EAEC",
+
     text:
       "text-[#14272C]",
+
+    textColor:
+      "#14272C",
 
     accent:
       "text-[#157D8C]",
 
+    accentColor:
+      "#157D8C",
+
     muted:
       "text-[#61767C]",
 
+    mutedColor:
+      "#61767C",
+
     border:
       "border-[#14272C]/10",
+
+    borderColor:
+      "#14272C",
 
     itemBorder:
       "divide-[#14272C]/10",
@@ -843,17 +1078,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E9E0CF]",
 
+    cardColor:
+      "#E9E0CF",
+
     text:
       "text-[#2D2419]",
+
+    textColor:
+      "#2D2419",
 
     accent:
       "text-[#86502E]",
 
+    accentColor:
+      "#86502E",
+
     muted:
       "text-[#766A5B]",
 
+    mutedColor:
+      "#766A5B",
+
     border:
       "border-[#2D2419]/10",
+
+    borderColor:
+      "#2D2419",
 
     itemBorder:
       "divide-[#2D2419]/10",
@@ -893,17 +1143,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E0E9DC]",
 
+    cardColor:
+      "#E0E9DC",
+
     text:
       "text-[#172418]",
+
+    textColor:
+      "#172418",
 
     accent:
       "text-[#4C7D3F]",
 
+    accentColor:
+      "#4C7D3F",
+
     muted:
       "text-[#62715E]",
 
+    mutedColor:
+      "#62715E",
+
     border:
       "border-[#172418]/10",
+
+    borderColor:
+      "#172418",
 
     itemBorder:
       "divide-[#172418]/10",
@@ -943,17 +1208,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E2E5E7]",
 
+    cardColor:
+      "#E2E5E7",
+
     text:
       "text-[#141B20]",
+
+    textColor:
+      "#141B20",
 
     accent:
       "text-[#C63D2E]",
 
+    accentColor:
+      "#C63D2E",
+
     muted:
       "text-[#68737B]",
 
+    mutedColor:
+      "#68737B",
+
     border:
       "border-[#141B20]/10",
+
+    borderColor:
+      "#141B20",
 
     itemBorder:
       "divide-[#141B20]/10",
@@ -993,17 +1273,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#E9E7DD]",
 
+    cardColor:
+      "#E9E7DD",
+
     text:
       "text-[#25251E]",
+
+    textColor:
+      "#25251E",
 
     accent:
       "text-[#6E7C45]",
 
+    accentColor:
+      "#6E7C45",
+
     muted:
       "text-[#707064]",
 
+    mutedColor:
+      "#707064",
+
     border:
       "border-[#25251E]/10",
+
+    borderColor:
+      "#25251E",
 
     itemBorder:
       "divide-[#25251E]/10",
@@ -1043,17 +1338,32 @@ const themes: Record<string, RankingTheme> = {
     card:
       "bg-[#F7F4EE]",
 
+    cardColor:
+      "#F7F4EE",
+
     text:
       "text-black",
+
+    textColor:
+      "#000000",
 
     accent:
       "text-[#FF6B35]",
 
+    accentColor:
+      "#FF6B35",
+
     muted:
       "text-black/50",
 
+    mutedColor:
+      "#66615B",
+
     border:
       "border-black/10",
+
+    borderColor:
+      "#000000",
 
     itemBorder:
       "divide-black/10",
@@ -1143,28 +1453,28 @@ export default function RankingCard({
     response,
     setResponse
   ] =
-    useState<
-      "rankd" |
-      "rerankd" |
-      null
-    >(
-      null
-    )
+  useState<
+    "rankd" |
+    "rerankd" |
+    null
+  >(
+    null
+  )
 
 
   const [
     engagement,
     setEngagement
   ] =
-    useState<RankingEngagementData>({
+  useState<RankingEngagementData>({
 
-      views: 0,
+    views: 0,
 
-      rankd: 0,
+    rankd: 0,
 
-      rerankd: 0
+    rerankd: 0
 
-    })
+  })
 
 
   useEffect(() => {
@@ -1393,8 +1703,14 @@ export default function RankingCard({
           leading-none
           font-black
           tracking-[-0.1em]
-          text-[#FF6B35]/[0.08]
         "
+
+        style={{
+
+          color:
+            `${theme.accentColor}14`
+
+        }}
 
       >
 
@@ -1459,13 +1775,13 @@ export default function RankingCard({
 
           <p
 
-            className="
-              text-[#FF6B35]
+            className={`
+              ${theme.accent}
               uppercase
               tracking-[0.25em]
               text-[10px]
               font-black
-            "
+            `}
 
           >
 
@@ -1575,16 +1891,26 @@ export default function RankingCard({
                 gap-2
                 rounded-full
                 border
-                border-black/10
-                bg-black/[0.03]
                 px-3
                 py-1.5
                 text-[9px]
                 font-black
                 uppercase
                 tracking-[0.16em]
-                text-black/55
               "
+
+              style={{
+
+                borderColor:
+                  `${theme.borderColor}1A`,
+
+                backgroundColor:
+                  `${theme.textColor}08`,
+
+                color:
+                  `${theme.mutedColor}`
+
+              }}
 
             >
 
@@ -1600,8 +1926,14 @@ export default function RankingCard({
                   justify-center
                   rounded-full
                   border
-                  border-[#FF6B35]
                 "
+
+                style={{
+
+                  borderColor:
+                    theme.accentColor
+
+                }}
 
                 aria-hidden="true"
 
@@ -1613,8 +1945,14 @@ export default function RankingCard({
                     h-1
                     w-1
                     rounded-full
-                    bg-[#FF6B35]
                   "
+
+                  style={{
+
+                    backgroundColor:
+                      theme.accentColor
+
+                  }}
 
                 />
 
@@ -1816,6 +2154,26 @@ export default function RankingCard({
                 engagement.rerankd
               }
 
+              accentColor={
+                theme.accentColor
+              }
+
+              textColor={
+                theme.textColor
+              }
+
+              mutedColor={
+                theme.mutedColor
+              }
+
+              borderColor={
+                theme.borderColor
+              }
+
+              cardColor={
+                theme.cardColor
+              }
+
             />
 
           </div>
@@ -1839,82 +2197,57 @@ export default function RankingCard({
 
       >
 
-        {
-          response !== null && (
+        <RankingResponse
 
-            <RankingResponse
+          onRankd={
+            handleRankd
+          }
 
-              onRankd={
-                handleRankd
-              }
+          onRerankd={
+            handleRerankd
+          }
 
-              onRerankd={
-                handleRerankd
-              }
+          accent={
+            theme.accent
+          }
 
-              accent={
-                theme.accent
-              }
+          text={
+            theme.text
+          }
 
-              text={
-                theme.text
-              }
+          muted={
+            theme.muted
+          }
 
-              muted={
-                theme.muted
-              }
+          border={
+            theme.border
+          }
 
-              border={
-                theme.border
-              }
+          card={
+            theme.card
+          }
 
-              card={
-                theme.card
-              }
+          accentColor={
+            theme.accentColor
+          }
 
-            />
+          textColor={
+            theme.textColor
+          }
 
-          )
-        }
+          mutedColor={
+            theme.mutedColor
+          }
 
+          borderColor={
+            theme.borderColor
+          }
 
-        {
-          response === null && (
+          cardColor={
+            theme.cardColor
+          }
 
-            <RankingResponse
-
-              onRankd={
-                handleRankd
-              }
-
-              onRerankd={
-                handleRerankd
-              }
-
-              accent={
-                theme.accent
-              }
-
-              text={
-                theme.text
-              }
-
-              muted={
-                theme.muted
-              }
-
-              border={
-                theme.border
-              }
-
-              card={
-                theme.card
-              }
-
-            />
-
-          )
-        }
+        />
 
       </div>
 

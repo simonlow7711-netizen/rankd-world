@@ -16,6 +16,16 @@ type RankingEngagementProps = {
 
   rerankd:number
 
+  accentColor?:string
+
+  textColor?:string
+
+  mutedColor?:string
+
+  borderColor?:string
+
+  cardColor?:string
+
 }
 
 
@@ -25,9 +35,35 @@ export default function RankingEngagement({
 
   rankd,
 
-  rerankd
+  rerankd,
+
+  accentColor = "#FF6B35",
+
+  textColor = "#000000",
+
+  mutedColor = "#66615B",
+
+  borderColor = "#000000",
+
+  cardColor = "#F7F4EE"
 
 }: RankingEngagementProps) {
+
+
+  const iconStyle = {
+    color: accentColor
+  }
+
+
+  const itemStyle = {
+
+    backgroundColor:
+      `${accentColor}12`,
+
+    color:
+      textColor
+
+  }
 
 
   return (
@@ -50,20 +86,24 @@ export default function RankingEngagement({
           items-center
           gap-2
           rounded-2xl
-          bg-black/[0.04]
           px-3
           py-3
           md:px-4
         "
+        style={{
+          ...itemStyle,
+          borderColor:
+            `${borderColor}12`
+        }}
       >
 
         <Eye
           size={19}
           strokeWidth={2.5}
           className="
-            rankd-accent
             shrink-0
           "
+          style={iconStyle}
         />
 
         <span
@@ -74,6 +114,9 @@ export default function RankingEngagement({
             font-black
             leading-none
           "
+          style={{
+            color:textColor
+          }}
         >
 
           {views}
@@ -91,20 +134,24 @@ export default function RankingEngagement({
           items-center
           gap-2
           rounded-2xl
-          bg-black/[0.04]
           px-3
           py-3
           md:px-4
         "
+        style={{
+          ...itemStyle,
+          borderColor:
+            `${borderColor}12`
+        }}
       >
 
         <ThumbsUp
           size={19}
           strokeWidth={2.5}
           className="
-            rankd-accent
             shrink-0
           "
+          style={iconStyle}
         />
 
         <span
@@ -115,6 +162,9 @@ export default function RankingEngagement({
             font-black
             leading-none
           "
+          style={{
+            color:textColor
+          }}
         >
 
           {rankd}
@@ -132,20 +182,24 @@ export default function RankingEngagement({
           items-center
           gap-2
           rounded-2xl
-          bg-black/[0.04]
           px-3
           py-3
           md:px-4
         "
+        style={{
+          ...itemStyle,
+          borderColor:
+            `${borderColor}12`
+        }}
       >
 
         <RefreshCw
           size={19}
           strokeWidth={2.5}
           className="
-            rankd-accent
             shrink-0
           "
+          style={iconStyle}
         />
 
         <span
@@ -156,6 +210,9 @@ export default function RankingEngagement({
             font-black
             leading-none
           "
+          style={{
+            color:textColor
+          }}
         >
 
           {rerankd}

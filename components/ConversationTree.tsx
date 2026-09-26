@@ -86,7 +86,7 @@ export default function ConversationTree({
               top-[-12px]
               bottom-0
               w-px
-              bg-white/20
+              bg-black/10
             "
           />
 
@@ -102,7 +102,7 @@ export default function ConversationTree({
               top-7
               w-4
               h-px
-              bg-white/20
+              bg-black/10
             "
           />
 
@@ -117,9 +117,13 @@ export default function ConversationTree({
 
             rounded-2xl
 
+            border
+
             p-4
 
-            transition
+            transition-all
+
+            duration-200
 
             ${
               isCurrent
@@ -127,15 +131,16 @@ export default function ConversationTree({
                 ? `
                   bg-white
                   text-black
+                  border-black/10
                   shadow-sm
                 `
 
                 : `
-                  bg-zinc-800
-                  text-white
-                  border
-                  border-white/10
-                  hover:bg-zinc-700
+                  bg-[#F7F4EE]
+                  text-black
+                  border-black/10
+                  hover:border-black/20
+                  hover:-translate-y-0.5
                 `
             }
 
@@ -174,28 +179,31 @@ export default function ConversationTree({
                 flex-1
                 text-left
                 font-black
-                hover:opacity-80
+                hover:opacity-70
                 transition
               "
 
             >
 
               <span
-                className="
+                className={`
                   block
-                  text-xs
-                  uppercase
-                  tracking-widest
-                  opacity-60
                   mb-1
-                "
+                  text-[9px]
+                  uppercase
+                  tracking-[0.2em]
+                  font-black
+                  ${
+                    isCurrent
+                      ? "text-[#FF6B35]"
+                      : "text-black/45"
+                  }
+                `}
               >
 
                 {
                   isRoot
-
                     ? "Original RANKD"
-
                     : "Different perspective"
                 }
 
@@ -205,6 +213,7 @@ export default function ConversationTree({
               <span
                 className="
                   block
+                  leading-tight
                 "
               >
 
@@ -231,26 +240,31 @@ export default function ConversationTree({
                 className={`
                   shrink-0
                   rounded-xl
+                  border
                   px-3
                   py-2
-                  text-sm
-                  font-bold
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.08em]
                   transition
                   ${
                     isCurrent
 
                       ? `
-                        bg-black/5
-                        text-black/60
-                        hover:bg-black/10
+                        border-black/10
+                        bg-black/[0.03]
+                        text-black/50
+                        hover:bg-black/[0.06]
                         hover:text-black
                       `
 
                       : `
-                        bg-white/5
-                        text-white/70
-                        hover:bg-white/10
-                        hover:text-white
+                        border-black/10
+                        bg-white/60
+                        text-black/45
+                        hover:border-black/20
+                        hover:text-black
                       `
                   }
                 `}
@@ -286,9 +300,9 @@ export default function ConversationTree({
             <p
               className="
                 mt-2
-                text-xs
+                text-[10px]
                 font-bold
-                text-black/60
+                text-black/45
               "
             >
 
@@ -358,12 +372,13 @@ export default function ConversationTree({
 
     <div
       className="
-        bg-zinc-900
-        text-white
         rounded-3xl
-        p-6
         border
         border-black/10
+        bg-[#F7F4EE]
+        p-6
+        text-black
+        md:p-7
       "
     >
 
@@ -375,11 +390,11 @@ export default function ConversationTree({
 
         <p
           className="
-            text-xs
+            text-[9px]
             uppercase
-            tracking-widest
+            tracking-[0.24em]
             font-black
-            text-white/50
+            text-[#FF6B35]
           "
         >
 
@@ -390,13 +405,14 @@ export default function ConversationTree({
 
         <h2
           className="
+            mt-1
             text-2xl
             font-black
-            mt-1
+            tracking-[-0.04em]
           "
         >
 
-          🌎 Conversation
+          Conversation
 
         </h2>
 
@@ -404,8 +420,10 @@ export default function ConversationTree({
         <p
           className="
             mt-2
+            max-w-xl
             text-sm
-            text-white/60
+            leading-relaxed
+            text-black/50
           "
         >
 
