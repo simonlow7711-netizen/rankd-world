@@ -1875,7 +1875,6 @@ export default function RankClient({
                 {category}
               </p>
 
-
               <h1
                 className={`
                   mt-5
@@ -1985,21 +1984,101 @@ export default function RankClient({
 
                   }}
                   className="
+                    group
+                    relative
                     inline-flex
                     items-center
-                    justify-center
-                    rounded-full
-                    bg-black
-                    px-6
-                    py-3
-                    text-sm
-                    font-black
-                    text-white
-                    transition
+                    gap-3
+                    overflow-hidden
+                    rounded-2xl
+                    border
+                    border-black/10
+                    bg-[#F7F4EE]
+                    px-5
+                    py-3.5
+                    text-black
+                    shadow-sm
+                    transition-all
+                    duration-200
                     hover:-translate-y-0.5
+                    hover:border-black/20
+                    hover:shadow-md
+                    active:translate-y-0
                   "
                 >
-                  Share RANKD
+
+                  <span
+                    className="
+                      relative
+                      z-10
+                      flex
+                      items-center
+                      justify-center
+                      text-[#FF6B35]
+                      text-lg
+                      font-black
+                      leading-none
+                      transition-transform
+                      duration-200
+                      group-hover:translate-x-0.5
+                    "
+                  >
+                    ↗
+                  </span>
+
+
+                  <span
+                    className="
+                      relative
+                      z-10
+                      flex
+                      flex-col
+                      items-start
+                      leading-none
+                    "
+                  >
+
+                    <span
+                      className="
+                        text-[9px]
+                        font-black
+                        uppercase
+                        tracking-[0.2em]
+                        text-black/40
+                      "
+                    >
+                      RANKD
+                    </span>
+
+
+                    <span
+                      className="
+                        mt-1
+                        text-sm
+                        font-black
+                        tracking-tight
+                      "
+                    >
+                      Share this RANKD
+                    </span>
+
+                  </span>
+
+
+                  <span
+                    className="
+                      absolute
+                      bottom-0
+                      left-0
+                      h-px
+                      w-0
+                      bg-[#FF6B35]
+                      transition-all
+                      duration-300
+                      group-hover:w-full
+                    "
+                  />
+
                 </button>
 
 
@@ -2044,7 +2123,6 @@ export default function RankClient({
                           >
                             Share this RANKD
                           </p>
-
 
                           <p
                             className="
@@ -2182,7 +2260,6 @@ export default function RankClient({
                           >
                             💬
                           </span>
-
 
                           <span
                             className="

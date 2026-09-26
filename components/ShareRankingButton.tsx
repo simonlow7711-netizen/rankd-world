@@ -2,9 +2,13 @@
 
 import { useState } from "react"
 
-import { Share2 } from "lucide-react"
+import {
+  Check,
+  Share2
+} from "lucide-react"
 
 import { trackEvent } from "@/utils/analytics"
+
 
 type ShareRankingButtonProps = {
 
@@ -14,6 +18,7 @@ type ShareRankingButtonProps = {
 
 }
 
+
 export default function ShareRankingButton({
 
   rankingId,
@@ -21,6 +26,7 @@ export default function ShareRankingButton({
   title
 
 }: ShareRankingButtonProps) {
+
 
   const [
 
@@ -30,11 +36,13 @@ export default function ShareRankingButton({
 
   ] = useState(false)
 
+
   async function handleShare() {
 
     const url =
 
       `${window.location.origin}/rank/${rankingId}`
+
 
     const shareData = {
 
@@ -49,6 +57,7 @@ export default function ShareRankingButton({
       url
 
     }
+
 
     try {
 
@@ -88,6 +97,7 @@ export default function ShareRankingButton({
 
       }
 
+
       trackEvent(
 
         "ranking_shared",
@@ -118,6 +128,7 @@ export default function ShareRankingButton({
 
   }
 
+
   return (
 
     <button
@@ -128,53 +139,236 @@ export default function ShareRankingButton({
 
       className="
 
+        group
+
+        relative
+
         w-full
+
+        overflow-hidden
 
         rounded-2xl
 
-        border-2
+        border
 
-        border-black
+        border-black/10
 
-        bg-white
+        bg-[#F7F4EE]
 
         px-5
 
         py-4
 
-        flex
+        text-black
 
-        items-center
+        shadow-sm
 
-        justify-center
+        transition-all
 
-        gap-3
+        duration-200
 
-        font-black
+        hover:-translate-y-0.5
 
-        hover:-translate-y-1
+        hover:border-black/20
 
-        transition
+        hover:shadow-md
+
+        active:translate-y-0
 
       "
 
     >
 
-      <Share2
+      <span
 
-        size={20}
+        className="
+
+          relative
+
+          z-10
+
+          flex
+
+          items-center
+
+          justify-center
+
+          gap-3
+
+        "
+
+      >
+
+        <span
+
+          className="
+
+            flex
+
+            h-9
+
+            w-9
+
+            items-center
+
+            justify-center
+
+            rounded-full
+
+            bg-[#FF6B35]
+
+            text-white
+
+            transition-transform
+
+            duration-200
+
+            group-hover:scale-105
+
+          "
+
+        >
+
+          {
+
+            copied
+
+              ? (
+
+                <Check
+
+                  size={18}
+
+                  strokeWidth={3}
+
+                />
+
+              )
+
+              : (
+
+                <Share2
+
+                  size={18}
+
+                  strokeWidth={2.5}
+
+                />
+
+              )
+
+          }
+
+        </span>
+
+
+        <span
+
+          className="
+
+            flex
+
+            flex-col
+
+            items-start
+
+            text-left
+
+            leading-none
+
+          "
+
+        >
+
+          <span
+
+            className="
+
+              text-[11px]
+
+              font-black
+
+              uppercase
+
+              tracking-[0.18em]
+
+              text-black/45
+
+            "
+
+          >
+
+            {
+
+              copied
+
+                ? "READY TO SHARE"
+
+                : "SHARE THIS RANKING"
+
+            }
+
+          </span>
+
+
+          <span
+
+            className="
+
+              mt-1
+
+              text-base
+
+              font-black
+
+              tracking-tight
+
+            "
+
+          >
+
+            {
+
+              copied
+
+                ? "Link copied!"
+
+                : "Share your RANKD →"
+
+            }
+
+          </span>
+
+        </span>
+
+      </span>
+
+
+      <span
+
+        className="
+
+          absolute
+
+          bottom-0
+
+          left-0
+
+          h-1
+
+          w-0
+
+          bg-[#FF6B35]
+
+          transition-all
+
+          duration-300
+
+          group-hover:w-full
+
+        "
 
       />
-
-      {
-
-        copied
-
-          ? "Link copied!"
-
-          : "Share"
-
-      }
 
     </button>
 
