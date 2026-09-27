@@ -40,7 +40,11 @@ function mapRanking(
       item => ({
         position:item.position,
         name:item.name,
-        votes:item.votes ?? 0
+        votes:item.votes ?? 0,
+        externalUrl:
+          item.external_url ??
+          item.externalUrl ??
+          undefined
       })
     ),
     creatorId:row.user_id ?? undefined,
@@ -169,7 +173,8 @@ export async function getSupabaseRankingServer(
       `
         position,
         name,
-        votes
+        votes,
+        external_url
       `
     )
     .eq(

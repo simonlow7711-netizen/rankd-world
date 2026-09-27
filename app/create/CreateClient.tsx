@@ -123,6 +123,9 @@ export default function CreateClient(){
   const [saving,setSaving] =
     useState(false)
 
+  const [addingLinks,setAddingLinks] =
+    useState(false)
+
   const [error,setError] =
     useState("")
 
@@ -211,35 +214,118 @@ export default function CreateClient(){
 
         if(rerankItems){
 
-          const itemNames =
-            rerankItems
-              .split("|")
-              .map(
-                item =>
-                  item.trim()
-              )
-              .filter(
-                item =>
-                  item.length > 0
-              )
-              .slice(
-                0,
-                7
+          let parsedItems:
+            RankingBuilderItem[] = []
+
+
+          try{
+
+            const parsed =
+              JSON.parse(
+                rerankItems
               )
 
+
+            if(
+              Array.isArray(
+                parsed
+              )
+            ){
+
+              parsedItems =
+                parsed
+                  .map(
+                    item => {
+
+                      if(
+                        typeof item ===
+                        "string"
+                      ){
+
+                        return {
+                          id:
+                            crypto.randomUUID(),
+                          name:
+                            item.trim()
+                        }
+
+                      }
+
+
+                      if(
+                        item &&
+                        typeof item.name ===
+                        "string"
+                      ){
+
+                        return {
+                          id:
+                            crypto.randomUUID(),
+                          name:
+                            item.name.trim(),
+                          externalUrl:
+                            typeof item.externalUrl ===
+                            "string"
+                              ? item.externalUrl
+                              : undefined
+                        }
+
+                      }
+
+
+                      return null
+
+                    }
+                  )
+                  .filter(
+                    (
+                      item
+                    ):item is RankingBuilderItem =>
+                      item !== null &&
+                      item.name.length > 0
+                  )
+                  .slice(
+                    0,
+                    7
+                  )
+
+            }
+
+          }catch{
+
+            parsedItems =
+              rerankItems
+                .split("|")
+                .map(
+                  item =>
+                    item.trim()
+                )
+                .filter(
+                  item =>
+                    item.length > 0
+                )
+                .slice(
+                  0,
+                  7
+                )
+                .map(
+                  name => ({
+                    id:
+                      crypto.randomUUID(),
+                    name
+                  })
+                )
+
+          }
+
+
           if(
-            itemNames.length ===
+            parsedItems.length ===
             7
           ){
 
             setItems(
-              itemNames.map(
-                name => ({
-                  id:
-                    crypto.randomUUID(),
-                  name
-                })
-              )
+              parsedItems
             )
 
           }
@@ -360,7 +446,9 @@ export default function CreateClient(){
                 id:
                   crypto.randomUUID(),
                 name:
-                  item.name
+                  item.name,
+                externalUrl:
+                  item.externalUrl
               })
             )
           )
@@ -379,13 +467,10 @@ export default function CreateClient(){
   )
 
 
-  async function handleCreate(){
-
-    if(saving){
-      return
-    }
+  function validateRanking():boolean{
 
     setError("")
+
 
     const cleanTitle =
       stripRankingPrefix(
@@ -403,14 +488,16 @@ export default function CreateClient(){
             name.length > 0
         )
 
+
     if(!cleanTitle){
 
       setError(
         "Please enter a title."
       )
 
-      return
+      return false
     }
+
 
     if(
       !isValidRankingCategory(
@@ -422,8 +509,9 @@ export default function CreateClient(){
         "Please choose a category."
       )
 
-      return
+      return false
     }
+
 
     if(
       cleanItems.length !== 7
@@ -433,8 +521,9 @@ export default function CreateClient(){
         "A RANKD must contain exactly 7 items."
       )
 
-      return
+      return false
     }
+
 
     const uniqueItems =
       new Set(
@@ -443,6 +532,7 @@ export default function CreateClient(){
             item.toLowerCase()
         )
       )
+
 
     if(
       uniqueItems.size !==
@@ -453,22 +543,192 @@ export default function CreateClient(){
         "Each item must be different."
       )
 
+      return false
+    }
+
+
+    return true
+
+  }
+
+
+  function handleContinueToLinks(){
+
+    if(saving){
       return
     }
 
+
+    if(
+      !validateRanking()
+    ){
+
+      return
+
+    }
+
+
+    setAddingLinks(true)
+
+    window.scrollTo(
+      {
+        top:0,
+        behavior:"smooth"
+      }
+    )
+
+  }
+
+
+  function handleSkipLinks(){
+
+    if(saving){
+      return
+    }
+
+
+    setAddingLinks(false)
+
+    void handleCreate()
+
+  }
+
+
+  function updateItemLink(
+    itemId:string,
+    value:string
+  ){
+
+    setItems(
+      currentItems =>
+        currentItems.map(
+          item =>
+            item.id === itemId
+              ? {
+                  ...item,
+                  externalUrl:
+                    value
+                      .trim()
+                      .length > 0
+                      ? value
+                      : undefined
+                }
+              : item
+        )
+    )
+
+  }
+
+
+  function validateLinks():boolean{
+
+    for(
+      const item of items
+    ){
+
+      const url =
+        item.externalUrl?.trim()
+
+
+      if(!url){
+        continue
+      }
+
+
+      try{
+
+        const parsedUrl =
+          new URL(
+            url
+          )
+
+
+        if(
+          parsedUrl.protocol !==
+            "http:"
+          &&
+          parsedUrl.protocol !==
+            "https:"
+        ){
+
+          setError(
+            `Please enter a valid link for "${item.name}".`
+          )
+
+          return false
+
+        }
+
+      }catch{
+
+        setError(
+          `Please enter a valid link for "${item.name}".`
+        )
+
+        return false
+
+      }
+
+    }
+
+
+    return true
+
+  }
+
+
+  async function handleCreate(){
+
+    if(saving){
+      return
+    }
+
+    setError("")
+
+
+    if(
+      !validateRanking()
+    ){
+
+      setAddingLinks(false)
+
+      return
+
+    }
+
+
+    if(
+      !validateLinks()
+    ){
+
+      return
+
+    }
+
+
     setSaving(true)
+
+
+    const cleanTitle =
+      stripRankingPrefix(
+        title.trim()
+      )
+
 
     const finalCategory =
       category.trim()
+
 
     const finalParentId =
       parentRanking?.id ??
       null
 
+
     const finalRootId =
       parentRanking?.rootId ??
       parentRanking?.id ??
       null
+
 
     const selectedLocation =
       locationSlug
@@ -476,6 +736,7 @@ export default function CreateClient(){
             locationSlug
           ]
         : null
+
 
     const ranking:Ranking = {
 
@@ -504,18 +765,32 @@ export default function CreateClient(){
         description.trim(),
 
       items:
-        cleanItems.map(
-          (
-            name,
-            index
-          ) => ({
-            position:
-              index + 1,
-            name,
-            votes:
-              0
-          })
-        ),
+        items
+          .filter(
+            item =>
+              item.name.trim().length > 0
+          )
+          .map(
+            (
+              item,
+              index
+            ) => ({
+              position:
+                index + 1,
+
+              name:
+                item.name.trim(),
+
+              votes:
+                0,
+
+              externalUrl:
+                item.externalUrl?.trim()
+                  ? item.externalUrl.trim()
+                  : undefined
+
+            })
+          ),
 
       createdAt:
         new Date().toISOString(),
@@ -921,6 +1196,374 @@ export default function CreateClient(){
       return country
 
     }
+
+
+  if(addingLinks){
+
+    return (
+
+      <main
+        className="
+          min-h-screen
+          bg-[#F7F4EE]
+          text-black
+        "
+      >
+
+        <div
+          className="
+            mx-auto
+            w-full
+            max-w-4xl
+            px-5
+            py-8
+            sm:px-8
+            sm:py-12
+            lg:py-16
+          "
+        >
+
+          <header
+            className="
+              mb-10
+            "
+          >
+
+            <p
+              className="
+                mb-2
+                text-xs
+                font-black
+                uppercase
+                tracking-[0.18em]
+                text-[#FF6B35]
+              "
+            >
+              {isRerank
+                ? "RE-RANKD"
+                : "CREATE"
+              }
+            </p>
+
+
+            <h1
+              className="
+                max-w-3xl
+                text-4xl
+                font-black
+                leading-[0.95]
+                tracking-[-0.04em]
+                sm:text-6xl
+              "
+            >
+              Add links?
+            </h1>
+
+
+            <p
+              className="
+                mt-4
+                max-w-xl
+                text-sm
+                font-medium
+                leading-6
+                text-black/55
+                sm:text-base
+              "
+            >
+              Make your Top 7 more useful by linking each choice to where people can find it.
+            </p>
+
+          </header>
+
+
+          <section
+            className="
+              border-t-2
+              border-black
+            "
+          >
+
+            <div
+              className="
+                border-b
+                border-black/10
+                py-5
+              "
+            >
+
+              <h2
+                className="
+                  text-lg
+                  font-black
+                "
+              >
+                Your Top 7
+              </h2>
+
+              <p
+                className="
+                  mt-1
+                  text-xs
+                  font-medium
+                  text-black/50
+                "
+              >
+                Links are optional. Add as many or as few as you like.
+              </p>
+
+            </div>
+
+
+            <div
+              className="
+                divide-y
+                divide-black/10
+              "
+            >
+
+              {items.map(
+                (
+                  item,
+                  index
+                ) => (
+
+                  <div
+                    key={item.id}
+                    className="
+                      py-5
+                      sm:py-6
+                    "
+                  >
+
+                    <div
+                      className="
+                        mb-3
+                        flex
+                        items-start
+                        gap-4
+                      "
+                    >
+
+                      <span
+                        className="
+                          shrink-0
+                          text-xs
+                          font-black
+                          uppercase
+                          tracking-[0.12em]
+                          text-[#FF6B35]
+                        "
+                      >
+                        #{index + 1}
+                      </span>
+
+                      <p
+                        className="
+                          text-base
+                          font-black
+                          leading-tight
+                          sm:text-lg
+                        "
+                      >
+                        {item.name}
+                      </p>
+
+                    </div>
+
+
+                    <input
+                      type="url"
+                      value={
+                        item.externalUrl ??
+                        ""
+                      }
+                      onChange={
+                        event =>
+                          updateItemLink(
+                            item.id,
+                            event.target.value
+                          )
+                      }
+                      placeholder="Paste link (optional)"
+                      className="
+                        w-full
+                        border-b-2
+                        border-black/15
+                        bg-transparent
+                        px-0
+                        py-3
+                        text-sm
+                        font-medium
+                        outline-none
+                        transition
+                        placeholder:text-black/25
+                        focus:border-[#FF6B35]
+                      "
+                    />
+
+                  </div>
+
+                )
+              )}
+
+            </div>
+
+          </section>
+
+
+          {error && (
+
+            <div
+              className="
+                mt-6
+                border-l-4
+                border-red-500
+                bg-red-50
+                px-4
+                py-3
+                text-sm
+                font-medium
+                text-red-700
+              "
+            >
+              {error}
+            </div>
+
+          )}
+
+
+          <div
+            className="
+              mt-8
+              grid
+              gap-3
+              sm:grid-cols-2
+            "
+          >
+
+            <button
+              type="button"
+              onClick={
+                handleSkipLinks
+              }
+              disabled={
+                saving
+              }
+              className="
+                w-full
+                border-2
+                border-black
+                bg-transparent
+                px-6
+                py-4
+                text-base
+                font-black
+                text-black
+                transition
+                hover:bg-black
+                hover:text-white
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+                sm:py-5
+              "
+            >
+              {saving
+                ? "Creating..."
+                : "Skip links & publish"
+              }
+            </button>
+
+
+            <button
+              type="button"
+              onClick={
+                handleCreate
+              }
+              disabled={
+                saving
+              }
+              className="
+                w-full
+                bg-[#FF6B35]
+                px-6
+                py-4
+                text-base
+                font-black
+                text-white
+                transition
+                hover:bg-black
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+                sm:py-5
+              "
+            >
+              {saving
+                ? "Creating..."
+                : isRerank
+                  ? "Publish RE-RANKD"
+                  : "Publish RANKD"
+              }
+            </button>
+
+          </div>
+
+
+          <button
+            type="button"
+            onClick={
+              () => {
+                setAddingLinks(false)
+                setError("")
+                window.scrollTo(
+                  {
+                    top:0,
+                    behavior:"smooth"
+                  }
+                )
+              }
+            }
+            disabled={
+              saving
+            }
+            className="
+              mx-auto
+              mt-5
+              block
+              text-xs
+              font-black
+              uppercase
+              tracking-[0.12em]
+              text-black/40
+              transition
+              hover:text-black
+              disabled:cursor-not-allowed
+              disabled:opacity-50
+            "
+          >
+            Back to ranking
+          </button>
+
+
+          <div
+            className="
+              mt-6
+              text-center
+              text-xs
+              font-medium
+              text-black/35
+            "
+          >
+            Seven choices. Your order.
+          </div>
+
+        </div>
+
+      </main>
+
+    )
+
+  }
 
 
   return (
@@ -1410,7 +2053,7 @@ export default function CreateClient(){
         <button
           type="button"
           onClick={
-            handleCreate
+            handleContinueToLinks
           }
           disabled={
             saving
@@ -1431,12 +2074,7 @@ export default function CreateClient(){
           "
         >
 
-          {saving
-            ? "Creating..."
-            : isRerank
-              ? "Publish RE-RANKD"
-              : "Publish RANKD"
-          }
+          Continue · Add links
 
         </button>
 

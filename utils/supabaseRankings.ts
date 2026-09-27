@@ -52,7 +52,11 @@ function mapRanking(
       item => ({
         position:item.position,
         name:item.name,
-        votes:item.votes ?? 0
+        votes:item.votes ?? 0,
+        externalUrl:
+          item.external_url ??
+          item.externalUrl ??
+          undefined
       })
     ),
     creatorId:row.user_id ?? undefined,
@@ -322,8 +326,9 @@ async function attachRankingItems(
    * The batches are deliberately kept at 50.
    *
    * The batches themselves are loaded
-   * concurrently so that one slow batch does
-   * not make every later batch wait for it.
+   * concurrently so that one slow batch
+   * does not make every later batch wait
+   * for it.
    *
    */
   const rankingItems:any[] = []
@@ -366,7 +371,8 @@ async function attachRankingItems(
                 ranking_id,
                 position,
                 name,
-                votes
+                votes,
+                external_url
               `
             )
             .in(
@@ -525,7 +531,8 @@ export async function getSupabaseRanking(
       `
         position,
         name,
-        votes
+        votes,
+        external_url
       `
     )
     .eq(
@@ -1170,7 +1177,10 @@ export async function createSupabaseRanking(
         name:
           item.name,
         votes:
-          item.votes ?? 0
+          item.votes ?? 0,
+        external_url:
+          item.externalUrl ??
+          null
       })
     )
 

@@ -1007,7 +1007,6 @@ export default function RankClient({
     initialRanking
   ])
 
-
   function rankIt(){
 
     if(!ranking){
@@ -1032,10 +1031,14 @@ export default function RankClient({
             b.position
         )
         .map(
-          item =>
-            item.name
+          item => ({
+            name:
+              item.name,
+            externalUrl:
+              item.externalUrl ??
+              null
+          })
         )
-        .join("|")
 
 
     const rootId =
@@ -1051,7 +1054,9 @@ export default function RankClient({
         originalRanking?.category ??
         ranking.category
       )}&items=${encodeURIComponent(
-        items
+        JSON.stringify(
+          items
+        )
       )}&parentId=${encodeURIComponent(
         ranking.id
       )}&rootId=${encodeURIComponent(
@@ -1219,7 +1224,6 @@ export default function RankClient({
         }
 
       }
-
 
       trackEvent(
         "ranking_shared",
@@ -2476,8 +2480,7 @@ export default function RankClient({
                 mt-12
                 space-y-4
               "
-            >
-              {
+            >              {
                 sortedOriginalItems.map(
                   item => (
 
@@ -2533,7 +2536,49 @@ export default function RankClient({
                           tracking-[-0.035em]
                         "
                       >
-                        {item.name}
+                        {
+                          ranking.id ===
+                          "eaa49a68-98dc-4dae-91a4-a301070ef65b"
+                            ? (
+                                <a
+                                  href={
+                                    item.name ===
+                                    "Atomic Habits"
+                                      ? "https://www.amazon.com/s?k=Atomic+Habits"
+                                      : item.name ===
+                                        "How to Win Friends and Influence People"
+                                        ? "https://www.amazon.com/s?k=How+to+Win+Friends+and+Influence+People"
+                                        : item.name ===
+                                          "The 7 Habits of Highly Effective People"
+                                          ? "https://www.amazon.com/s?k=The+7+Habits+of+Highly+Effective+People"
+                                          : item.name ===
+                                            "Deep Work"
+                                            ? "https://www.amazon.com/s?k=Deep+Work"
+                                            : item.name ===
+                                              "Mindset"
+                                              ? "https://www.amazon.com/s?k=Mindset"
+                                              : item.name ===
+                                                "The Power of Now"
+                                                ? "https://www.amazon.com/s?k=The+Power+of+Now"
+                                                : item.name ===
+                                                  "Can't Hurt Me"
+                                                  ? "https://www.amazon.com/s?k=Can%27t+Hurt+Me"
+                                                  : "#"
+                                  }
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="
+                                    transition-colors
+                                    hover:text-[#FF6B35]
+                                  "
+                                >
+                                  {item.name}
+                                </a>
+                              )
+                            : (
+                                item.name
+                              )
+                        }
                       </div>
 
                     </div>
@@ -2622,6 +2667,7 @@ export default function RankClient({
                       </p>
 
                     </div>
+
                     <a
                       href="https://www.google.com/maps/dir/?api=1&destination=The+George+Pub,+Holloway,+London&waypoints=The+Swimmer+at+the+Grafton+Arms,+Holloway,+London%7COwl+%26+Hitchhiker,+Holloway,+London%7CHercules,+Holloway,+London%7CVictoria+Tavern,+Holloway,+London%7CLamb,+Holloway,+London%7CThe+Horatia,+Holloway,+London"
                       target="_blank"
@@ -2641,6 +2687,7 @@ export default function RankClient({
                         hover:text-[#FF6B35]
                       "
                     >
+
                       <span
                         className="
                           text-[#FF6B35]
@@ -2740,7 +2787,6 @@ export default function RankClient({
                       </p>
 
                     </div>
-
 
                     <a
                       href="https://www.google.com/maps/dir/?api=1&destination=Blue+Moon+Cafe,+Sheffield&waypoints=Church+-+Temple+of+Fun,+Sheffield%7CPom+Kitchen,+Sheffield%7CSouth+Street+Kitchen,+Sheffield%7CThe+Old+Workshop,+Sheffield%7CThe+Chakra+Lounge,+Sheffield%7C5Tara,+Sheffield"

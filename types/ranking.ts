@@ -4,6 +4,8 @@ export interface RankingBuilderItem {
 
   name:string
 
+  externalUrl?:string
+
 }
 
 
@@ -17,6 +19,8 @@ export interface RankingItem {
   name:string
 
   votes:number
+
+  externalUrl?:string
 
 }
 
