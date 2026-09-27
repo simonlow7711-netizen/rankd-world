@@ -2366,7 +2366,6 @@ export default function RankClient({
 
                         </button>
 
-
                         <button
                           type="button"
                           onClick={() =>
@@ -2623,10 +2622,128 @@ export default function RankClient({
                       </p>
 
                     </div>
+                    <a
+                      href="https://www.google.com/maps/dir/?api=1&destination=The+George+Pub,+Holloway,+London&waypoints=The+Swimmer+at+the+Grafton+Arms,+Holloway,+London%7COwl+%26+Hitchhiker,+Holloway,+London%7CHercules,+Holloway,+London%7CVictoria+Tavern,+Holloway,+London%7CLamb,+Holloway,+London%7CThe+Horatia,+Holloway,+London"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="
+                        inline-flex
+                        shrink-0
+                        items-center
+                        gap-2
+                        border-b
+                        border-[#FF6B35]
+                        pb-1
+                        text-sm
+                        font-bold
+                        text-black
+                        transition
+                        hover:text-[#FF6B35]
+                      "
+                    >
+                      <span
+                        className="
+                          text-[#FF6B35]
+                        "
+                      >
+                        ↗
+                      </span>
+
+                      <span>
+                        View all 7
+                      </span>
+
+                    </a>
+
+                  </div>
+
+                </div>
+
+              )
+            }
+
+
+            {
+              ranking.id ===
+              "1b31e5d9-f505-4406-bf14-e6dcc1296eb6" && (
+
+                <div
+                  className="
+                    mt-6
+                    overflow-hidden
+                    rounded-[24px]
+                    border
+                    border-black/10
+                    bg-white
+                  "
+                >
+
+                  <div
+                    className="
+                      relative
+                      h-[260px]
+                      overflow-hidden
+                      bg-[#EAE3EC]
+                    "
+                  >
+
+                    <iframe
+                      title="Map of the seven Sheffield vegetarian places"
+                      src="https://www.google.com/maps?q=Sheffield+city+centre&output=embed"
+                      className="
+                        h-full
+                        w-full
+                        border-0
+                      "
+                      loading="lazy"
+                    />
+
+                  </div>
+
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      gap-4
+                      px-5
+                      py-4
+                      md:px-6
+                    "
+                  >
+
+                    <div>
+
+                      <p
+                        className="
+                          text-[10px]
+                          uppercase
+                          tracking-[0.2em]
+                          font-black
+                          text-[#FF6B35]
+                        "
+                      >
+                        Sheffield
+                      </p>
+
+
+                      <p
+                        className="
+                          mt-1
+                          text-sm
+                          font-bold
+                          text-black
+                        "
+                      >
+                        Seven vegetarian places, one map.
+                      </p>
+
+                    </div>
 
 
                     <a
-                      href="https://www.google.com/maps/dir/?api=1&destination=9+Eden+Grove,+London+N7+8EE&waypoints=13+Eburne+Road,+London+N7+6AR%7C471+Holloway+Road,+London+N7+6LE%7C504+Holloway+Road,+London+N7+6JA%7C203+Holloway+Road,+London+N7+8DL%7C54+Holloway+Road,+London+N7+8JL%7C98-102+Holloway+Road,+London+N7+8JE"
+                      href="https://www.google.com/maps/dir/?api=1&destination=Blue+Moon+Cafe,+Sheffield&waypoints=Church+-+Temple+of+Fun,+Sheffield%7CPom+Kitchen,+Sheffield%7CSouth+Street+Kitchen,+Sheffield%7CThe+Old+Workshop,+Sheffield%7CThe+Chakra+Lounge,+Sheffield%7C5Tara,+Sheffield"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="
@@ -2665,8 +2782,6 @@ export default function RankClient({
 
               )
             }
-
-
             <div
               className="
                 mt-8
