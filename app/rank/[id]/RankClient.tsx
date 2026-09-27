@@ -2478,7 +2478,6 @@ export default function RankClient({
                 space-y-4
               "
             >
-
               {
                 sortedOriginalItems.map(
                   item => (
@@ -2545,6 +2544,127 @@ export default function RankClient({
               }
 
             </div>
+
+
+            {
+              ranking.id ===
+              "324b0dd3-c7ef-4c3f-bce0-fac08262be72" && (
+
+                <div
+                  className="
+                    mt-6
+                    overflow-hidden
+                    rounded-[24px]
+                    border
+                    border-black/10
+                    bg-white
+                  "
+                >
+
+                  <div
+                    className="
+                      relative
+                      h-[260px]
+                      overflow-hidden
+                      bg-[#EAE3EC]
+                    "
+                  >
+
+                    <iframe
+                      title="Map of the seven Holloway pubs"
+                      src="https://www.google.com/maps?q=Holloway+Road,+London&output=embed"
+                      className="
+                        h-full
+                        w-full
+                        border-0
+                      "
+                      loading="lazy"
+                    />
+
+                  </div>
+
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      justify-between
+                      gap-4
+                      px-5
+                      py-4
+                      md:px-6
+                    "
+                  >
+
+                    <div>
+
+                      <p
+                        className="
+                          text-[10px]
+                          uppercase
+                          tracking-[0.2em]
+                          font-black
+                          text-[#FF6B35]
+                        "
+                      >
+                        Holloway
+                      </p>
+
+
+                      <p
+                        className="
+                          mt-1
+                          text-sm
+                          font-bold
+                          text-black
+                        "
+                      >
+                        Seven pubs, one map.
+                      </p>
+
+                    </div>
+
+
+                    <a
+                      href="https://www.google.com/maps/dir/?api=1&destination=9+Eden+Grove,+London+N7+8EE&waypoints=13+Eburne+Road,+London+N7+6AR%7C471+Holloway+Road,+London+N7+6LE%7C504+Holloway+Road,+London+N7+6JA%7C203+Holloway+Road,+London+N7+8DL%7C54+Holloway+Road,+London+N7+8JL%7C98-102+Holloway+Road,+London+N7+8JE"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="
+                        inline-flex
+                        shrink-0
+                        items-center
+                        gap-2
+                        border-b
+                        border-[#FF6B35]
+                        pb-1
+                        text-sm
+                        font-bold
+                        text-black
+                        transition
+                        hover:text-[#FF6B35]
+                      "
+                    >
+
+                      <span
+                        className="
+                          text-[#FF6B35]
+                        "
+                      >
+                        ↗
+                      </span>
+
+                      <span>
+                        View all 7
+                      </span>
+
+                    </a>
+
+                  </div>
+
+                </div>
+
+              )
+            }
 
 
             <div
