@@ -906,14 +906,6 @@ export default function CreateClient(){
     }
 
 
-    /*
-     * The RANKD is now published.
-     *
-     * Everything below this point is post-publication
-     * enrichment and should not delay the user seeing
-     * their newly published RANKD.
-     */
-
     const recommendationId =
       searchParams.get(
         "recommendation"
@@ -927,10 +919,6 @@ export default function CreateClient(){
 
     void Promise.all(
       [
-
-        /*
-         * Remix notification
-         */
 
         (
           async () => {
@@ -977,10 +965,6 @@ export default function CreateClient(){
           }
         )(),
 
-
-        /*
-         * Taste Graph baseline
-         */
 
         (
           async () => {
@@ -1035,10 +1019,6 @@ export default function CreateClient(){
           }
         )(),
 
-
-        /*
-         * Recommendation feedback
-         */
 
         (
           async () => {
@@ -1126,13 +1106,6 @@ export default function CreateClient(){
     )
 
 
-    /*
-     * Do not wait for post-publication processing.
-     *
-     * The ranking already exists in Supabase, so take
-     * the user directly to the published RANKD.
-     */
-
     router.push(
       `/rank/${publishedRankingId}`
     )
@@ -1216,44 +1189,68 @@ export default function CreateClient(){
             w-full
             max-w-4xl
             px-5
-            py-8
+            py-10
             sm:px-8
-            sm:py-12
-            lg:py-16
+            sm:py-14
+            lg:py-20
           "
         >
 
           <header
             className="
               mb-10
+              max-w-2xl
             "
           >
 
-            <p
+            <div
               className="
-                mb-2
-                text-xs
-                font-black
-                uppercase
-                tracking-[0.18em]
-                text-[#FF6B35]
+                mb-5
+                flex
+                items-center
+                gap-3
               "
             >
-              {isRerank
-                ? "RE-RANKD"
-                : "CREATE"
-              }
-            </p>
+
+              <span
+                className="
+                  rounded-full
+                  bg-[#FF6B35]/10
+                  px-3
+                  py-1.5
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.18em]
+                  text-[#FF6B35]
+                "
+              >
+                {isRerank
+                  ? "RE-RANKD"
+                  : "CREATE"
+                }
+              </span>
+
+              <span
+                className="
+                  text-xs
+                  font-bold
+                  text-black/30
+                "
+              >
+                Step 2 of 2
+              </span>
+
+            </div>
 
 
             <h1
               className="
-                max-w-3xl
-                text-4xl
+                text-5xl
                 font-black
-                leading-[0.95]
-                tracking-[-0.04em]
-                sm:text-6xl
+                leading-[0.9]
+                tracking-[-0.055em]
+                sm:text-7xl
               "
             >
               Add links?
@@ -1262,13 +1259,13 @@ export default function CreateClient(){
 
             <p
               className="
-                mt-4
+                mt-5
                 max-w-xl
-                text-sm
+                text-base
                 font-medium
-                leading-6
+                leading-7
                 text-black/55
-                sm:text-base
+                sm:text-lg
               "
             >
               Make your Top 7 more useful by linking each choice to where people can find it.
@@ -1279,16 +1276,23 @@ export default function CreateClient(){
 
           <section
             className="
-              border-t-2
-              border-black
+              overflow-hidden
+              rounded-3xl
+              border
+              border-black/[0.08]
+              bg-white/65
+              shadow-[0_18px_50px_rgba(0,0,0,0.05)]
             "
           >
 
             <div
               className="
                 border-b
-                border-black/10
+                border-black/[0.07]
+                px-5
                 py-5
+                sm:px-7
+                sm:py-6
               "
             >
 
@@ -1296,6 +1300,7 @@ export default function CreateClient(){
                 className="
                   text-lg
                   font-black
+                  tracking-tight
                 "
               >
                 Your Top 7
@@ -1304,23 +1309,18 @@ export default function CreateClient(){
               <p
                 className="
                   mt-1
-                  text-xs
+                  text-sm
                   font-medium
-                  text-black/50
+                  text-black/45
                 "
               >
-                Links are optional. Add as many or as few as you like.
+                Add as many or as few as you like.
               </p>
 
             </div>
 
 
-            <div
-              className="
-                divide-y
-                divide-black/10
-              "
-            >
+            <div>
 
               {items.map(
                 (
@@ -1331,7 +1331,12 @@ export default function CreateClient(){
                   <div
                     key={item.id}
                     className="
+                      border-b
+                      border-black/[0.07]
+                      px-5
                       py-5
+                      last:border-b-0
+                      sm:px-7
                       sm:py-6
                     "
                   >
@@ -1340,22 +1345,27 @@ export default function CreateClient(){
                       className="
                         mb-3
                         flex
-                        items-start
+                        items-center
                         gap-4
                       "
                     >
 
                       <span
                         className="
+                          flex
+                          h-8
+                          w-8
                           shrink-0
-                          text-xs
+                          items-center
+                          justify-center
+                          rounded-full
+                          bg-[#FF6B35]/10
+                          text-[11px]
                           font-black
-                          uppercase
-                          tracking-[0.12em]
                           text-[#FF6B35]
                         "
                       >
-                        #{index + 1}
+                        {index + 1}
                       </span>
 
                       <p
@@ -1388,17 +1398,21 @@ export default function CreateClient(){
                       placeholder="Paste link (optional)"
                       className="
                         w-full
-                        border-b-2
-                        border-black/15
-                        bg-transparent
-                        px-0
+                        rounded-xl
+                        border
+                        border-black/[0.08]
+                        bg-[#F7F4EE]/70
+                        px-4
                         py-3
                         text-sm
                         font-medium
                         outline-none
                         transition
                         placeholder:text-black/25
-                        focus:border-[#FF6B35]
+                        focus:border-[#FF6B35]/50
+                        focus:bg-white
+                        focus:ring-4
+                        focus:ring-[#FF6B35]/[0.06]
                       "
                     />
 
@@ -1417,11 +1431,12 @@ export default function CreateClient(){
             <div
               className="
                 mt-6
-                border-l-4
-                border-red-500
+                rounded-2xl
+                border
+                border-red-200
                 bg-red-50
-                px-4
-                py-3
+                px-5
+                py-4
                 text-sm
                 font-medium
                 text-red-700
@@ -1436,122 +1451,135 @@ export default function CreateClient(){
           <div
             className="
               mt-8
-              grid
+              flex
+              flex-col-reverse
               gap-3
-              sm:grid-cols-2
+              sm:flex-row
+              sm:items-center
+              sm:justify-between
             "
           >
 
             <button
               type="button"
               onClick={
-                handleSkipLinks
+                () => {
+                  setAddingLinks(false)
+                  setError("")
+                  window.scrollTo(
+                    {
+                      top:0,
+                      behavior:"smooth"
+                    }
+                  )
+                }
               }
               disabled={
                 saving
               }
               className="
-                w-full
-                border-2
-                border-black
-                bg-transparent
-                px-6
-                py-4
-                text-base
+                rounded-full
+                px-5
+                py-3
+                text-sm
                 font-black
-                text-black
+                text-black/45
                 transition
-                hover:bg-black
-                hover:text-white
+                hover:bg-black/[0.04]
+                hover:text-black
                 disabled:cursor-not-allowed
                 disabled:opacity-50
-                sm:py-5
               "
             >
-              {saving
-                ? "Creating..."
-                : "Skip links & publish"
-              }
+              Back to ranking
             </button>
 
 
-            <button
-              type="button"
-              onClick={
-                handleCreate
-              }
-              disabled={
-                saving
-              }
+            <div
               className="
-                w-full
-                bg-[#FF6B35]
-                px-6
-                py-4
-                text-base
-                font-black
-                text-white
-                transition
-                hover:bg-black
-                disabled:cursor-not-allowed
-                disabled:opacity-50
-                sm:py-5
+                flex
+                flex-col
+                gap-3
+                sm:flex-row
               "
             >
-              {saving
-                ? "Creating..."
-                : isRerank
-                  ? "Publish RE-RANKD"
-                  : "Publish RANKD"
-              }
-            </button>
+
+              <button
+                type="button"
+                onClick={
+                  handleSkipLinks
+                }
+                disabled={
+                  saving
+                }
+                className="
+                  rounded-full
+                  border
+                  border-black/[0.12]
+                  bg-white/60
+                  px-6
+                  py-3.5
+                  text-sm
+                  font-black
+                  text-black
+                  transition
+                  hover:border-black
+                  hover:bg-white
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
+                "
+              >
+                {saving
+                  ? "Creating..."
+                  : "Skip links"
+                }
+              </button>
+
+
+              <button
+                type="button"
+                onClick={
+                  handleCreate
+                }
+                disabled={
+                  saving
+                }
+                className="
+                  rounded-full
+                  bg-[#FF6B35]
+                  px-7
+                  py-3.5
+                  text-sm
+                  font-black
+                  text-white
+                  shadow-[0_8px_24px_rgba(255,107,53,0.18)]
+                  transition
+                  hover:bg-black
+                  hover:shadow-none
+                  disabled:cursor-not-allowed
+                  disabled:opacity-50
+                "
+              >
+                {saving
+                  ? "Creating..."
+                  : isRerank
+                    ? "Publish RE-RANKD"
+                    : "Publish RANKD"
+                }
+              </button>
+
+            </div>
 
           </div>
 
 
-          <button
-            type="button"
-            onClick={
-              () => {
-                setAddingLinks(false)
-                setError("")
-                window.scrollTo(
-                  {
-                    top:0,
-                    behavior:"smooth"
-                  }
-                )
-              }
-            }
-            disabled={
-              saving
-            }
-            className="
-              mx-auto
-              mt-5
-              block
-              text-xs
-              font-black
-              uppercase
-              tracking-[0.12em]
-              text-black/40
-              transition
-              hover:text-black
-              disabled:cursor-not-allowed
-              disabled:opacity-50
-            "
-          >
-            Back to ranking
-          </button>
-
-
           <div
             className="
-              mt-6
+              mt-8
               text-center
               text-xs
               font-medium
-              text-black/35
+              text-black/30
             "
           >
             Seven choices. Your order.
@@ -1580,46 +1608,75 @@ export default function CreateClient(){
         className="
           mx-auto
           w-full
-          max-w-4xl
+          max-w-5xl
           px-5
-          py-8
+          py-10
           sm:px-8
-          sm:py-12
-          lg:py-16
+          sm:py-14
+          lg:py-20
         "
       >
 
         <header
           className="
-            mb-10
+            mb-12
+            max-w-3xl
           "
         >
 
-          <p
+          <div
             className="
-              mb-2
-              text-xs
-              font-black
-              uppercase
-              tracking-[0.18em]
-              text-[#FF6B35]
+              mb-5
+              flex
+              items-center
+              gap-3
             "
           >
-            {isRerank
-              ? "RE-RANKD"
-              : "CREATE"
-            }
-          </p>
+
+            <span
+              className="
+                rounded-full
+                bg-[#FF6B35]/10
+                px-3
+                py-1.5
+                text-[10px]
+                font-black
+                uppercase
+                tracking-[0.18em]
+                text-[#FF6B35]
+              "
+            >
+              {isRerank
+                ? "RE-RANKD"
+                : "CREATE"
+              }
+            </span>
+
+            {isRerank && (
+
+              <span
+                className="
+                  text-xs
+                  font-bold
+                  text-black/30
+                "
+              >
+                Change the order. Make it yours.
+              </span>
+
+            )}
+
+          </div>
 
 
           <h1
             className="
               max-w-3xl
-              text-4xl
+              text-5xl
               font-black
-              leading-[0.95]
-              tracking-[-0.04em]
-              sm:text-6xl
+              leading-[0.9]
+              tracking-[-0.055em]
+              sm:text-7xl
             "
           >
             {isRerank
@@ -1631,13 +1688,13 @@ export default function CreateClient(){
 
           <p
             className="
-              mt-4
+              mt-5
               max-w-xl
-              text-sm
+              text-base
               font-medium
-              leading-6
-              text-black/55
-              sm:text-base
+              leading-7
+              text-black/50
+              sm:text-lg
             "
           >
             {isRerank
@@ -1654,39 +1711,66 @@ export default function CreateClient(){
           <div
             className="
               mb-8
-              border-l-4
-              border-[#FF6B35]
-              bg-white/70
+              flex
+              items-center
+              gap-4
+              rounded-2xl
+              border
+              border-black/[0.07]
+              bg-white/60
               px-5
               py-4
+              shadow-[0_8px_30px_rgba(0,0,0,0.03)]
               sm:px-6
             "
           >
 
-            <p
+            <span
               className="
+                flex
+                h-9
+                w-9
+                shrink-0
+                items-center
+                justify-center
+                rounded-full
+                bg-[#FF6B35]/10
                 text-xs
                 font-black
-                uppercase
-                tracking-[0.14em]
-                text-black/45
+                text-[#FF6B35]
               "
             >
-              You are re-ranking
-            </p>
+              ↻
+            </span>
 
-            <p
-              className="
-                mt-1
-                text-lg
-                font-black
-                leading-tight
-              "
-            >
-              {stripRankingPrefix(
-                title
-              )}
-            </p>
+            <div>
+
+              <p
+                className="
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-black/35
+                "
+              >
+                You are re-ranking
+              </p>
+
+              <p
+                className="
+                  mt-0.5
+                  text-base
+                  font-black
+                  leading-tight
+                "
+              >
+                {stripRankingPrefix(
+                  title
+                )}
+              </p>
+
+            </div>
 
           </div>
 
@@ -1695,273 +1779,294 @@ export default function CreateClient(){
 
         <section
           className="
-            border-t-2
-            border-black
+            rounded-3xl
+            border
+            border-black/[0.08]
+            bg-white/55
+            p-5
+            shadow-[0_18px_50px_rgba(0,0,0,0.04)]
+            sm:p-8
           "
         >
 
           <div
             className="
-              py-6
-              sm:py-8
+              grid
+              gap-7
+              sm:grid-cols-2
             "
           >
 
             <div
               className="
-                grid
-                gap-7
-                sm:grid-cols-2
+                sm:col-span-2
               "
             >
 
-              <div
+              <label
+                htmlFor="title"
                 className="
-                  sm:col-span-2
+                  mb-2
+                  block
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-black/45
                 "
               >
+                Title
+              </label>
 
-                <label
-                  htmlFor="title"
-                  className="
-                    mb-2
-                    block
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.12em]
-                  "
-                >
-                  Title
-                </label>
-
-                <input
-                  id="title"
-                  value={title}
-                  onChange={
-                    event =>
-                      setTitle(
-                        event.target.value
-                      )
-                  }
-                  placeholder="What are you ranking?"
-                  className="
-                    w-full
-                    border-b-2
-                    border-black/15
-                    bg-transparent
-                    px-0
-                    py-3
-                    text-2xl
-                    font-black
-                    outline-none
-                    transition
-                    placeholder:text-black/20
-                    focus:border-[#FF6B35]
-                    sm:text-3xl
-                  "
-                />
-
-              </div>
-
-
-              <div>
-
-                <label
-                  htmlFor="category"
-                  className="
-                    mb-2
-                    block
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.12em]
-                  "
-                >
-                  Category
-                </label>
-
-                <select
-                  id="category"
-                  value={category}
-                  onChange={
-                    event =>
-                      setCategory(
-                        event.target.value
-                      )
-                  }
-                  className="
-                    w-full
-                    border-b-2
-                    border-black/15
-                    bg-transparent
-                    px-0
-                    py-3
-                    text-base
-                    font-bold
-                    outline-none
-                    transition
-                    focus:border-[#FF6B35]
-                  "
-                >
-
-                  <option value="">
-                    Choose a category
-                  </option>
-
-                  {categories.map(
-                    item => (
-                      <option
-                        key={item}
-                        value={item}
-                      >
-                        {item}
-                      </option>
+              <input
+                id="title"
+                value={title}
+                onChange={
+                  event =>
+                    setTitle(
+                      event.target.value
                     )
-                  )}
-
-                </select>
-
-              </div>
-
-
-              <div>
-
-                <label
-                  htmlFor="location"
-                  className="
-                    mb-2
-                    block
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.12em]
-                  "
-                >
-                  Location
-                </label>
-
-                <select
-                  id="location"
-                  value={locationSlug}
-                  onChange={
-                    event =>
-                      setLocationSlug(
-                        event.target.value
-                      )
-                  }
-                  className="
-                    w-full
-                    border-b-2
-                    border-black/15
-                    bg-transparent
-                    px-0
-                    py-3
-                    text-base
-                    font-bold
-                    outline-none
-                    transition
-                    focus:border-[#FF6B35]
-                  "
-                >
-
-                  <option value="">
-                    No location
-                  </option>
-
-                  {Object.entries(
-                    locations
-                  ).map(
-                    (
-                      [
-                        slug,
-                        location
-                      ]
-                    ) => {
-
-                      const locationLabel =
-                        [
-                          location.name,
-                          location.cityLevel
-                            ? ""
-                            : location.city,
-                          location.state,
-                          formatCountry(
-                            location.country
-                          )
-                        ]
-                          .filter(Boolean)
-                          .join(" · ")
-
-                      return (
-
-                        <option
-                          key={slug}
-                          value={slug}
-                        >
-                          {locationLabel}
-                        </option>
-
-                      )
-
-                    }
-                  )}
-
-                </select>
-
-              </div>
-
-
-              <div
+                }
+                placeholder="What are you ranking?"
                 className="
-                  sm:col-span-2
+                  w-full
+                  rounded-2xl
+                  border
+                  border-black/[0.08]
+                  bg-[#F7F4EE]/65
+                  px-4
+                  py-4
+                  text-2xl
+                  font-black
+                  outline-none
+                  transition
+                  placeholder:text-black/20
+                  focus:border-[#FF6B35]/50
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-[#FF6B35]/[0.06]
+                  sm:px-5
+                  sm:py-5
+                  sm:text-3xl
+                "
+              />
+
+            </div>
+
+
+            <div>
+
+              <label
+                htmlFor="category"
+                className="
+                  mb-2
+                  block
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-black/45
+                "
+              >
+                Category
+              </label>
+
+              <select
+                id="category"
+                value={category}
+                onChange={
+                  event =>
+                    setCategory(
+                      event.target.value
+                    )
+                }
+                className="
+                  w-full
+                  appearance-none
+                  rounded-2xl
+                  border
+                  border-black/[0.08]
+                  bg-[#F7F4EE]/65
+                  px-4
+                  py-4
+                  text-sm
+                  font-bold
+                  outline-none
+                  transition
+                  focus:border-[#FF6B35]/50
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-[#FF6B35]/[0.06]
                 "
               >
 
-                <label
-                  htmlFor="description"
-                  className="
-                    mb-2
-                    block
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.12em]
-                  "
-                >
-                  Description
-                </label>
+                <option value="">
+                  Choose a category
+                </option>
 
-                <textarea
-                  id="description"
-                  value={description}
-                  onChange={
-                    event =>
-                      setDescription(
-                        event.target.value
-                      )
+                {categories.map(
+                  item => (
+                    <option
+                      key={item}
+                      value={item}
+                    >
+                      {item}
+                    </option>
+                  )
+                )}
+
+              </select>
+
+            </div>
+
+
+            <div>
+
+              <label
+                htmlFor="location"
+                className="
+                  mb-2
+                  block
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-black/45
+                "
+              >
+                Location
+              </label>
+
+              <select
+                id="location"
+                value={locationSlug}
+                onChange={
+                  event =>
+                    setLocationSlug(
+                      event.target.value
+                    )
+                }
+                className="
+                  w-full
+                  appearance-none
+                  rounded-2xl
+                  border
+                  border-black/[0.08]
+                  bg-[#F7F4EE]/65
+                  px-4
+                  py-4
+                  text-sm
+                  font-bold
+                  outline-none
+                  transition
+                  focus:border-[#FF6B35]/50
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-[#FF6B35]/[0.06]
+                "
+              >
+
+                <option value="">
+                  No location
+                </option>
+
+                {Object.entries(
+                  locations
+                ).map(
+                  (
+                    [
+                      slug,
+                      location
+                    ]
+                  ) => {
+
+                    const locationLabel =
+                      [
+                        location.name,
+                        location.cityLevel
+                          ? ""
+                          : location.city,
+                        location.state,
+                        formatCountry(
+                          location.country
+                        )
+                      ]
+                        .filter(Boolean)
+                        .join(" · ")
+
+                    return (
+
+                      <option
+                        key={slug}
+                        value={slug}
+                      >
+                        {locationLabel}
+                      </option>
+
+                    )
+
                   }
-                  rows={2}
-                  placeholder="Why did you make this RANKD?"
-                  className="
-                    w-full
-                    resize-none
-                    border-b-2
-                    border-black/15
-                    bg-transparent
-                    px-0
-                    py-3
-                    text-base
-                    font-medium
-                    leading-6
-                    outline-none
-                    transition
-                    placeholder:text-black/20
-                    focus:border-[#FF6B35]
-                  "
-                />
+                )}
 
-              </div>
+              </select>
+
+            </div>
+
+
+            <div
+              className="
+                sm:col-span-2
+              "
+            >
+
+              <label
+                htmlFor="description"
+                className="
+                  mb-2
+                  block
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-black/45
+                "
+              >
+                Description
+              </label>
+
+              <textarea
+                id="description"
+                value={description}
+                onChange={
+                  event =>
+                    setDescription(
+                      event.target.value
+                    )
+                }
+                rows={3}
+                placeholder="Why did you make this RANKD?"
+                className="
+                  w-full
+                  resize-none
+                  rounded-2xl
+                  border
+                  border-black/[0.08]
+                  bg-[#F7F4EE]/65
+                  px-4
+                  py-4
+                  text-sm
+                  font-medium
+                  leading-6
+                  outline-none
+                  transition
+                  placeholder:text-black/20
+                  focus:border-[#FF6B35]/50
+                  focus:bg-white
+                  focus:ring-4
+                  focus:ring-[#FF6B35]/[0.06]
+                  sm:px-5
+                "
+              />
 
             </div>
 
@@ -1972,46 +2077,90 @@ export default function CreateClient(){
 
         <section
           className="
-            border-t-2
-            border-black
+            mt-8
           "
         >
 
           <div
             className="
-              border-b
-              border-black/10
-              py-5
+              mb-5
+              flex
+              items-end
+              justify-between
+              gap-4
             "
           >
 
-            <h2
-              className="
-                text-lg
-                font-black
-              "
-            >
-              Your Top 7
-            </h2>
+            <div>
 
-            <p
+              <p
+                className="
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-[#FF6B35]
+                "
+              >
+                The important bit
+              </p>
+
+              <h2
+                className="
+                  mt-1
+                  text-2xl
+                  font-black
+                  tracking-tight
+                "
+              >
+                Your Top 7
+              </h2>
+
+              <p
+                className="
+                  mt-1
+                  text-sm
+                  font-medium
+                  text-black/45
+                "
+              >
+                Put them in the order you believe.
+              </p>
+
+            </div>
+
+
+            <span
               className="
-                mt-1
-                text-xs
-                font-medium
-                text-black/50
+                hidden
+                rounded-full
+                bg-black/[0.04]
+                px-3
+                py-1.5
+                text-[10px]
+                font-black
+                uppercase
+                tracking-[0.12em]
+                text-black/35
+                sm:block
               "
             >
-              Put them in the order you believe.
-            </p>
+              7 choices
+            </span>
 
           </div>
 
 
           <div
             className="
-              py-6
-              sm:py-8
+              overflow-hidden
+              rounded-3xl
+              border
+              border-black/[0.08]
+              bg-white/70
+              p-3
+              shadow-[0_18px_50px_rgba(0,0,0,0.05)]
+              sm:p-4
             "
           >
 
@@ -2033,12 +2182,13 @@ export default function CreateClient(){
 
           <div
             className="
-              mb-6
-              border-l-4
-              border-red-500
+              mt-6
+              rounded-2xl
+              border
+              border-red-200
               bg-red-50
-              px-4
-              py-3
+              px-5
+              py-4
               text-sm
               font-medium
               text-red-700
@@ -2050,42 +2200,95 @@ export default function CreateClient(){
         )}
 
 
-        <button
-          type="button"
-          onClick={
-            handleContinueToLinks
-          }
-          disabled={
-            saving
-          }
+        <div
           className="
-            w-full
-            bg-[#FF6B35]
-            px-6
-            py-4
-            text-base
-            font-black
-            text-white
-            transition
-            hover:bg-black
-            disabled:cursor-not-allowed
-            disabled:opacity-50
-            sm:py-5
+            mt-8
+            rounded-3xl
+            border
+            border-black/[0.07]
+            bg-white/45
+            p-4
+            sm:p-5
           "
         >
 
-          Continue · Add links
+          <div
+            className="
+              flex
+              flex-col
+              gap-4
+              sm:flex-row
+              sm:items-center
+              sm:justify-between
+            "
+          >
 
-        </button>
+            <div>
+
+              <p
+                className="
+                  text-sm
+                  font-black
+                "
+              >
+                Ready?
+
+              </p>
+
+              <p
+                className="
+                  mt-1
+                  text-xs
+                  font-medium
+                  text-black/40
+                "
+              >
+                You can add links to your choices on the next step.
+              </p>
+
+            </div>
+
+
+            <button
+              type="button"
+              onClick={
+                handleContinueToLinks
+              }
+              disabled={
+                saving
+              }
+              className="
+                rounded-full
+                bg-[#FF6B35]
+                px-7
+                py-3.5
+                text-sm
+                font-black
+                text-white
+                shadow-[0_8px_24px_rgba(255,107,53,0.16)]
+                transition
+                hover:bg-black
+                hover:shadow-none
+                disabled:cursor-not-allowed
+                disabled:opacity-50
+                sm:shrink-0
+              "
+            >
+              Continue · Add links
+            </button>
+
+          </div>
+
+        </div>
 
 
         <div
           className="
-            mt-6
+            mt-8
             text-center
             text-xs
             font-medium
-            text-black/35
+            text-black/25
           "
         >
           Seven choices. Your order.
