@@ -31,13 +31,13 @@ const RANKING_CATEGORIES: Record<
   number,
   string
 > = {
-  1: "Lifestyle",
-  2: "Food & Drink",
-  3: "Lifestyle",
-  4: "Lifestyle",
+  1: "Travel",
+  2: "Travel",
+  3: "Food & Drink",
+  4: "Travel",
   5: "Travel",
-  6: "General",
-  7: "Lifestyle"
+  6: "Travel",
+  7: "Travel"
 }
 
 
@@ -50,6 +50,7 @@ type RankdDraft = {
   title: string
   description: string
   items: string[]
+  itemLinks: string[]
   x: number
   y: number
 }
@@ -78,131 +79,120 @@ type PhotoProject = {
 }
 
 
+const emptyItems =
+  (): string[] => [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ]
+
+
+const emptyItemLinks =
+  (): string[] => [
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    ""
+  ]
+
+
 const createInitialRankings =
   (): RankdDraft[] => [
     {
       id: 1,
       title:
-        "Holloway's 7 Pubs Worth Knowing",
+        "Top 7 Useful Croatian Phrases",
       description:
-        "Seven Holloway pubs with character, history, atmosphere or simply a very good reason to pull up a chair.",
-      items: [
-        "The Swimmer at the Grafton Arms",
-        "Owl & Hitchhiker",
-        "The Hercules",
-        "The Victoria Tavern",
-        "The Lamb",
-        "The Horatia",
-        "The George"
-      ],
+        "Seven useful Croatian phrases to know before exploring Dubrovnik.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 18,
       y: 18
     },
     {
       id: 2,
       title:
-        "The 7 Commandments of a Proper Sunday Roast",
+        "Top 7 Historical Facts About Dubrovnik",
       description:
-        "Seven things that turn a Sunday roast from a meal into a proper British institution.",
-      items: [
-        "Roast potatoes with actual crunch",
-        "Gravy that deserves its own spoon",
-        "A Yorkshire pudding big enough to matter",
-        "Properly cooked meat",
-        "Vegetables that haven't been boiled into submission",
-        "Something sharp — horseradish, mustard or mint sauce",
-        "Enough food to make dessert feel like a bad decision"
-      ],
+        "Seven facts that bring Dubrovnik's extraordinary history into focus.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 38,
       y: 18
     },
     {
       id: 3,
       title:
-        "7 Places to Get Your Laughs in Islington",
+        "Top 7 Restaurants in Dubrovnik",
       description:
-        "Seven places around Islington where a good night out can turn into a very good laugh.",
-      items: [
-        "Angel Comedy @ The Camden Head",
-        "The Bill Murray",
-        "Good Ship Comedy @ The Swimmer",
-        "The Old Queen's Head",
-        "The Hope & Anchor",
-        "Downstairs at the King's Head",
-        "Comedy Freaks — Kings Cross"
-      ],
+        "Seven Dubrovnik restaurants worth knowing about.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 62,
       y: 18
     },
     {
       id: 4,
       title:
-        "7 Pub Names That Deserve a Story",
+        "Top 7 Dubrovnik Views You Won't Forget",
       description:
-        "Seven pub names that sound like the beginning of a story — and often are.",
-      items: [
-        "The Blind Beggar",
-        "The Owl & Hitchhiker",
-        "The World's End",
-        "The Flask",
-        "The Black Lion",
-        "The Elephant & Castle",
-        "The Seven Stars"
-      ],
+        "Seven views that capture Dubrovnik from its most memorable angles.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 82,
       y: 35
     },
     {
       id: 5,
       title:
-        "7 Pub Signs You'd Know Anywhere",
+        "Top 7 Day Trips from Dubrovnik",
       description:
-        "Seven unmistakable London pub signs, each with a story, a character and a place in the city's visual memory.",
-      items: [
-        "The Churchill Arms, Kensington",
-        "The Prospect of Whitby, Wapping",
-        "The Seven Stars, Holborn",
-        "The Lamb & Flag, Covent Garden",
-        "The Blind Beggar, Whitechapel",
-        "The Flask, Highgate",
-        "The World's End, Camden"
-      ],
+        "Seven places worth considering when you want to explore beyond Dubrovnik.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 72,
       y: 68
     },
     {
       id: 6,
       title:
-        "The 7 Pub Quiz Questions That Separate the Tables",
+        "Top 7 Dubrovnik Film & TV Locations",
       description:
-        "Seven questions designed to separate the confident table from the table that has already started arguing.",
-      items: [
-        "Which two countries share the world's longest international land border? — Canada and the United States",
-        "Which European capital was historically known as Christiania from 1624 until 1925? — Oslo",
-        "What was the name of the ship on which Charles Darwin made his famous voyage? — HMS Beagle",
-        "Which country has the world's oldest continuously operating parliament? — Iceland",
-        "Which composer wrote The Marriage of Figaro? — Wolfgang Amadeus Mozart",
-        "In heraldry, what colour is represented by “sable”? — Black",
-        "Which London Underground station has the greatest number of different lines serving it? — King's Cross St Pancras"
-      ],
+        "Seven locations around Dubrovnik that have appeared on screen.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 42,
       y: 78
     },
     {
       id: 7,
       title:
-        "7 Unwritten Rules of the British Pub",
+        "Top 7 Dubrovnik Beaches & Swimming Spots",
       description:
-        "Seven small rules that keep the British pub working the way it should.",
-      items: [
-        "Know whose round it is",
-        "Don't queue-jump at the bar",
-        "Don't loudly announce the quiz answer",
-        "Don't occupy a table for six with a single pint",
-        "Return your empty glasses to the bar",
-        "Buy the bar staff a drink",
-        "Treat the pub dog like a VIP"
-      ],
+        "Seven places for swimming, sea views and a proper Dubrovnik dip.",
+      items:
+        emptyItems(),
+      itemLinks:
+        emptyItemLinks(),
       x: 16,
       y: 68
     }
@@ -755,6 +745,77 @@ export default function PhotoRankdPage() {
     }
 
 
+  const updateItemLink =
+    (
+      projectId: string,
+      rankingId: number,
+      itemIndex: number,
+      value: string
+    ) => {
+
+      setProjects(
+        current =>
+          current.map(
+            project => {
+
+              if (
+                project.id !==
+                projectId
+              ) {
+                return project
+              }
+
+
+              return {
+                ...project,
+                rankings:
+                  project.rankings.map(
+                    ranking => {
+
+                      if (
+                        ranking.id !==
+                        rankingId
+                      ) {
+                        return ranking
+                      }
+
+
+                      const itemLinks =
+                        [
+                          ...ranking.itemLinks
+                        ]
+
+
+                      itemLinks[
+                        itemIndex
+                      ] =
+                        value
+
+
+                      return {
+                        ...ranking,
+                        itemLinks
+                      }
+
+                    }
+                  ),
+                publishedPhotoId:
+                  null,
+                publishedPhotoUrl:
+                  null,
+                saveMessage:
+                  "",
+                saveError:
+                  ""
+              }
+
+            }
+          )
+      )
+
+    }
+
+
   const startDragging =
     (
       event:
@@ -1011,7 +1072,12 @@ export default function PhotoRankdPage() {
                   index + 1,
                 name,
                 votes:
-                  0
+                  0,
+                externalUrl:
+                  ranking.itemLinks[
+                    index
+                  ]?.trim() ||
+                  undefined
               })
             ),
           source:
@@ -1648,19 +1714,25 @@ export default function PhotoRankdPage() {
 
     return (
       <main className="min-h-screen bg-[#F7F4EE] px-6 py-16">
+
         <div className="mx-auto max-w-4xl">
+
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-black/45">
             RANKD
           </p>
+
 
           <h1 className="mt-3 text-4xl font-black tracking-[-0.05em] text-black">
             Photo RANKD
           </h1>
 
+
           <p className="mt-4 text-black/55">
             Checking access…
           </p>
+
         </div>
+
       </main>
     )
 
@@ -1673,20 +1745,26 @@ export default function PhotoRankdPage() {
 
     return (
       <main className="min-h-screen bg-[#F7F4EE] px-6 py-16">
+
         <div className="mx-auto max-w-4xl">
+
           <p className="text-sm font-bold uppercase tracking-[0.18em] text-black/45">
             RANKD
           </p>
+
 
           <h1 className="mt-3 text-4xl font-black tracking-[-0.05em] text-black">
             Access restricted
           </h1>
 
+
           <p className="mt-4 max-w-xl text-black/60">
             This Photo RANKD prototype is currently
             available only to RANKD administrators.
           </p>
+
         </div>
+
       </main>
     )
 
@@ -1707,6 +1785,7 @@ export default function PhotoRankdPage() {
               <span className="text-5xl font-black leading-none tracking-[-0.16em] text-[#FF6B35]">
                 7
               </span>
+
 
               <span className="text-3xl font-black tracking-[-0.065em]">
                 RANKD
@@ -1941,6 +2020,7 @@ export default function PhotoRankdPage() {
                   Production queue
                 </p>
 
+
                 <p className="mt-1 text-sm font-black">
                   {projects.length} photograph
                   {projects.length === 1
@@ -2071,6 +2151,7 @@ export default function PhotoRankdPage() {
                           <p className="truncate text-xs font-black">
                             {project.imageFile.name}
                           </p>
+
 
                           <p className="mt-1 text-[11px] text-black/45">
                             7 RANKDs
@@ -2258,7 +2339,7 @@ export default function PhotoRankdPage() {
             )}
 
 
-            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_380px]">
+            <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_420px]">
 
               <section className="min-w-0">
 
@@ -2561,7 +2642,7 @@ export default function PhotoRankdPage() {
 
 
                                     <span className="font-medium leading-5">
-                                      {item}
+                                      {item || "Untitled item"}
                                     </span>
 
                                   </li>
@@ -2768,7 +2849,7 @@ export default function PhotoRankdPage() {
 
                         <div className="mt-5">
 
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between gap-3">
 
                             <span className="text-xs font-black uppercase tracking-[0.14em] text-black/40">
                               Seven items
@@ -2776,13 +2857,13 @@ export default function PhotoRankdPage() {
 
 
                             <span className="text-xs font-bold text-black/35">
-                              Drag 7 on photo
+                              Add links where useful
                             </span>
 
                           </div>
 
 
-                          <div className="mt-2 space-y-2">
+                          <div className="mt-2 space-y-3">
 
                             {selectedRanking.items.map(
                               (
@@ -2794,42 +2875,102 @@ export default function PhotoRankdPage() {
                                   key={
                                     `${selectedRanking.id}-${index}`
                                   }
-                                  className="flex gap-2"
+                                  className="rounded-2xl border border-black/10 bg-[#F7F4EE] p-2"
                                 >
 
-                                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/5 text-xs font-black text-black/45">
-                                    {index + 1}
+                                  <div className="flex gap-2">
+
+                                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-black/5 text-xs font-black text-black/45">
+                                      {index + 1}
+                                    </div>
+
+
+                                    <input
+                                      value={
+                                        item
+                                      }
+                                      placeholder={
+                                        `Item ${index + 1}`
+                                      }
+                                      onChange={
+                                        event =>
+                                          updateItem(
+                                            selectedProject.id,
+                                            selectedRanking.id,
+                                            index,
+                                            event.target.value
+                                          )
+                                      }
+                                      className="
+                                        min-w-0
+                                        flex-1
+                                        rounded-xl
+                                        border
+                                        border-black/10
+                                        bg-white
+                                        px-3
+                                        py-2
+                                        text-sm
+                                        outline-none
+                                        transition
+                                        focus:border-black/30
+                                      "
+                                    />
+
                                   </div>
 
 
-                                  <input
-                                    value={
-                                      item
-                                    }
-                                    onChange={
-                                      event =>
-                                        updateItem(
-                                          selectedProject.id,
-                                          selectedRanking.id,
-                                          index,
-                                          event.target.value
-                                        )
-                                    }
-                                    className="
-                                      min-w-0
-                                      flex-1
-                                      rounded-xl
-                                      border
-                                      border-black/10
-                                      bg-[#F7F4EE]
-                                      px-3
-                                      py-2
-                                      text-sm
-                                      outline-none
-                                      transition
-                                      focus:border-black/30
-                                    "
-                                  />
+                                  <div className="mt-2 flex gap-2">
+
+                                    <span className="flex h-9 shrink-0 items-center rounded-xl bg-black/5 px-3 text-[10px] font-black uppercase tracking-[0.12em] text-black/35">
+                                      LINK
+                                    </span>
+
+
+                                    <input
+                                      type="url"
+                                      value={
+                                        selectedRanking.itemLinks[
+                                          index
+                                        ] ??
+                                        ""
+                                      }
+                                      placeholder="Optional URL"
+                                      onChange={
+                                        event =>
+                                          updateItemLink(
+                                            selectedProject.id,
+                                            selectedRanking.id,
+                                            index,
+                                            event.target.value
+                                          )
+                                      }
+                                      className="
+                                        min-w-0
+                                        flex-1
+                                        rounded-xl
+                                        border
+                                        border-black/10
+                                        bg-white
+                                        px-3
+                                        py-2
+                                        text-xs
+                                        font-medium
+                                        outline-none
+                                        transition
+                                        placeholder:text-black/25
+                                        focus:border-[#FF6B35]/50
+                                        focus:ring-4
+                                        focus:ring-[#FF6B35]/[0.05]
+                                      "
+                                    />
+
+                                  </div>
+
+
+                                  <p className="mt-1.5 pl-12 text-[10px] leading-4 text-black/30">
+                                    Maps, YouTube, Spotify, articles or any other useful destination.
+                                  </p>
 
                                 </div>
 
@@ -3029,27 +3170,66 @@ export default function PhotoRankdPage() {
                               (
                                 item,
                                 index
-                              ) => (
+                              ) => {
 
-                                <li
-                                  key={
-                                    `${openedRanking.id}-${index}`
-                                  }
-                                  className="flex gap-3"
-                                >
-
-                                  <span className="w-5 shrink-0 text-sm font-black text-black/35">
-                                    {index + 1}
-                                  </span>
+                                const link =
+                                  openedRanking.itemLinks[
+                                    index
+                                  ]?.trim()
 
 
-                                  <span className="text-sm font-medium leading-5">
-                                    {item}
-                                  </span>
+                                return (
 
-                                </li>
+                                  <li
+                                    key={
+                                      `${openedRanking.id}-${index}`
+                                    }
+                                    className="flex gap-3"
+                                  >
 
-                              )
+                                    <span className="w-5 shrink-0 text-sm font-black text-black/35">
+                                      {index + 1}
+                                    </span>
+
+
+                                    <div className="min-w-0 flex-1">
+
+                                      <span className="text-sm font-medium leading-5">
+                                        {item || "Untitled item"}
+                                      </span>
+
+
+                                      {link && (
+                                        <a
+                                          href={
+                                            link
+                                          }
+                                          target="_blank"
+                                          rel="noreferrer"
+                                          onClick={event =>
+                                            event.stopPropagation()
+                                          }
+                                          className="
+                                            mt-1
+                                            block
+                                            truncate
+                                            text-[11px]
+                                            font-bold
+                                            text-[#FF6B35]
+                                            hover:underline
+                                          "
+                                        >
+                                          {link}
+                                        </a>
+                                      )}
+
+                                    </div>
+
+                                  </li>
+
+                                )
+
+                              }
                             )}
 
                           </ol>
@@ -3280,7 +3460,19 @@ function createRankingHref(
   params.set(
     "items",
     JSON.stringify(
-      ranking.items
+      ranking.items.map(
+        (
+          name,
+          index
+        ) => ({
+          name,
+          externalUrl:
+            ranking.itemLinks[
+              index
+            ]?.trim() ||
+            undefined
+        })
+      )
     )
   )
 
