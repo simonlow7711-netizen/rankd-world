@@ -51,6 +51,11 @@ import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
+import {
+  getYouTubeThumbnailUrl,
+  getYouTubeVideoId
+} from "@/utils/youtube"
+
 
 type RankClientProps = {
   id:string
@@ -609,6 +614,174 @@ function getTheme(
 }
 
 
+function YouTubeTreatment({
+  url,
+  name
+}:{
+  url?:string
+  name:string
+}){
+
+  const thumbnailUrl =
+    getYouTubeThumbnailUrl(
+      url
+    )
+
+
+  const videoId =
+    getYouTubeVideoId(
+      url
+    )
+
+
+  if(
+    !thumbnailUrl ||
+    !videoId
+  ){
+
+    return null
+
+  }
+
+
+  return (
+
+    <a
+      href={
+        url
+      }
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={
+        `Watch ${name} on YouTube`
+      }
+      className="
+        group/youtube
+        relative
+        mt-5
+        block
+        w-full
+        max-w-2xl
+        overflow-hidden
+        rounded-[20px]
+        border
+        border-black/10
+        bg-black
+        transition-all
+        duration-300
+        hover:-translate-y-0.5
+        hover:shadow-[0_15px_40px_rgba(0,0,0,0.16)]
+      "
+    >
+
+      <div
+        className="
+          relative
+          aspect-video
+          w-full
+          overflow-hidden
+        "
+      >
+
+        <img
+          src={
+            thumbnailUrl
+          }
+          alt=""
+          className="
+            absolute
+            inset-0
+            h-full
+            w-full
+            object-cover
+            transition-transform
+            duration-500
+            group-hover/youtube:scale-[1.03]
+          "
+        />
+
+
+        <div
+          className="
+            absolute
+            inset-0
+            bg-black/10
+            transition
+            group-hover/youtube:bg-black/20
+          "
+        />
+
+
+        <div
+          className="
+            absolute
+            inset-0
+            flex
+            items-center
+            justify-center
+          "
+        >
+
+          <span
+            className="
+              flex
+              h-16
+              w-16
+              items-center
+              justify-center
+              rounded-full
+              bg-[#FF0000]
+              text-white
+              shadow-[0_8px_30px_rgba(0,0,0,0.3)]
+              transition-all
+              duration-300
+              group-hover/youtube:scale-110
+            "
+          >
+
+            <span
+              className="
+                ml-1
+                text-2xl
+              "
+            >
+              ▶
+            </span>
+
+          </span>
+
+        </div>
+
+
+        <div
+          className="
+            absolute
+            bottom-4
+            left-4
+            rounded-full
+            bg-black/75
+            px-3
+            py-1.5
+            text-[10px]
+            font-black
+            uppercase
+            tracking-[0.18em]
+            text-white
+            backdrop-blur-sm
+          "
+        >
+          YouTube
+        </div>
+
+      </div>
+
+    </a>
+
+  )
+
+}
+
+
 export default function RankClient({
   id,
   initialRanking
@@ -1007,6 +1180,7 @@ export default function RankClient({
     initialRanking
   ])
 
+
   function rankIt(){
 
     if(!ranking){
@@ -1034,6 +1208,7 @@ export default function RankClient({
           item => ({
             name:
               item.name,
+
             externalUrl:
               item.externalUrl ??
               null
@@ -1224,6 +1399,7 @@ export default function RankClient({
         }
 
       }
+
 
       trackEvent(
         "ranking_shared",
@@ -1879,6 +2055,7 @@ export default function RankClient({
                 {category}
               </p>
 
+
               <h1
                 className={`
                   mt-5
@@ -2214,7 +2391,6 @@ export default function RankClient({
                             🔗
                           </span>
 
-
                           <span
                             className="
                               mt-1
@@ -2311,7 +2487,6 @@ export default function RankClient({
                             𝕏
                           </span>
 
-
                           <span
                             className="
                               mt-1
@@ -2358,7 +2533,6 @@ export default function RankClient({
                             f
                           </span>
 
-
                           <span
                             className="
                               mt-1
@@ -2369,6 +2543,7 @@ export default function RankClient({
                           </span>
 
                         </button>
+
 
                         <button
                           type="button"
@@ -2403,7 +2578,6 @@ export default function RankClient({
                           >
                             💬
                           </span>
-
 
                           <span
                             className="
@@ -2451,7 +2625,6 @@ export default function RankClient({
                             ✉
                           </span>
 
-
                           <span
                             className="
                               mt-1
@@ -2480,110 +2653,153 @@ export default function RankClient({
                 mt-12
                 space-y-4
               "
-            >              {
+            >
+
+              {
                 sortedOriginalItems.map(
-                  item => (
+                  item => {
 
-                    <div
-                      key={
-                        `original-${item.position}`
-                      }
-                      className="
-                        group
-                        relative
-                        overflow-hidden
-                        rounded-[24px]
-                        border
-                        border-black/10
-                        bg-white/55
-                        p-5
-                        md:p-6
-                        flex
-                        items-center
-                        gap-5
-                        transition-all
-                        duration-300
-                        hover:-translate-y-1
-                        hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)]
-                      "
-                    >
+                    const youtubeThumbnail =
+                      getYouTubeThumbnailUrl(
+                        item.externalUrl
+                      )
+
+
+                    return (
 
                       <div
-                        className={`
-                          shrink-0
-                          text-3xl
-                          md:text-4xl
-                          font-black
-                          ${theme.accent}
-                        `}
-                      >
-                        {String(
-                          item.position
-                        ).padStart(
-                          2,
-                          "0"
-                        )}
-                      </div>
-
-
-                      <div
+                        key={
+                          `original-${item.position}`
+                        }
                         className="
-                          min-w-0
-                          text-2xl
-                          md:text-3xl
-                          font-black
-                          leading-[0.95]
-                          tracking-[-0.035em]
+                          group
+                          relative
+                          overflow-hidden
+                          rounded-[24px]
+                          border
+                          border-black/10
+                          bg-white/55
+                          p-5
+                          md:p-6
+                          transition-all
+                          duration-300
+                          hover:-translate-y-1
+                          hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)]
                         "
                       >
-                        {
-                          ranking.id ===
-                          "eaa49a68-98dc-4dae-91a4-a301070ef65b"
-                            ? (
-                                <a
-                                  href={
-                                    item.name ===
-                                    "Atomic Habits"
-                                      ? "https://www.amazon.com/s?k=Atomic+Habits"
-                                      : item.name ===
-                                        "How to Win Friends and Influence People"
-                                        ? "https://www.amazon.com/s?k=How+to+Win+Friends+and+Influence+People"
-                                        : item.name ===
-                                          "The 7 Habits of Highly Effective People"
-                                          ? "https://www.amazon.com/s?k=The+7+Habits+of+Highly+Effective+People"
-                                          : item.name ===
-                                            "Deep Work"
-                                            ? "https://www.amazon.com/s?k=Deep+Work"
+
+                        <div
+                          className="
+                            flex
+                            items-start
+                            gap-5
+                          "
+                        >
+
+                          <div
+                            className={`
+                              shrink-0
+                              text-3xl
+                              md:text-4xl
+                              font-black
+                              ${theme.accent}
+                            `}
+                          >
+                            {String(
+                              item.position
+                            ).padStart(
+                              2,
+                              "0"
+                            )}
+                          </div>
+
+
+                          <div
+                            className="
+                              min-w-0
+                              flex-1
+                            "
+                          >
+
+                            <div
+                              className="
+                                text-2xl
+                                md:text-3xl
+                                font-black
+                                leading-[0.95]
+                                tracking-[-0.035em]
+                              "
+                            >
+                              {
+                                ranking.id ===
+                                "eaa49a68-98dc-4dae-91a4-a301070ef65b"
+                                  ? (
+                                      <a
+                                        href={
+                                          item.name ===
+                                          "Atomic Habits"
+                                            ? "https://www.amazon.com/s?k=Atomic+Habits"
                                             : item.name ===
-                                              "Mindset"
-                                              ? "https://www.amazon.com/s?k=Mindset"
+                                              "How to Win Friends and Influence People"
+                                              ? "https://www.amazon.com/s?k=How+to+Win+Friends+and+Influence+People"
                                               : item.name ===
-                                                "The Power of Now"
-                                                ? "https://www.amazon.com/s?k=The+Power+of+Now"
+                                                "The 7 Habits of Highly Effective People"
+                                                ? "https://www.amazon.com/s?k=The+7+Habits+of+Highly+Effective+People"
                                                 : item.name ===
-                                                  "Can't Hurt Me"
-                                                  ? "https://www.amazon.com/s?k=Can%27t+Hurt+Me"
-                                                  : "#"
+                                                  "Deep Work"
+                                                  ? "https://www.amazon.com/s?k=Deep+Work"
+                                                  : item.name ===
+                                                    "Mindset"
+                                                    ? "https://www.amazon.com/s?k=Mindset"
+                                                    : item.name ===
+                                                      "The Power of Now"
+                                                      ? "https://www.amazon.com/s?k=The+Power+of+Now"
+                                                      : item.name ===
+                                                        "Can't Hurt Me"
+                                                        ? "https://www.amazon.com/s?k=Can%27t+Hurt+Me"
+                                                        : "#"
+                                        }
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="
+                                          transition-colors
+                                          hover:text-[#FF6B35]
+                                        "
+                                      >
+                                        {item.name}
+                                      </a>
+                                    )
+                                  : (
+                                      item.name
+                                    )
+                              }
+                            </div>
+
+
+                            {
+                              youtubeThumbnail && (
+
+                                <YouTubeTreatment
+                                  url={
+                                    item.externalUrl
                                   }
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="
-                                    transition-colors
-                                    hover:text-[#FF6B35]
-                                  "
-                                >
-                                  {item.name}
-                                </a>
+                                  name={
+                                    item.name
+                                  }
+                                />
+
                               )
-                            : (
-                                item.name
-                              )
-                        }
+                            }
+
+                          </div>
+
+                        </div>
+
                       </div>
 
-                    </div>
+                    )
 
-                  )
+                  }
                 )
               }
 
@@ -2667,6 +2883,7 @@ export default function RankClient({
                       </p>
 
                     </div>
+
 
                     <a
                       href="https://www.google.com/maps/dir/?api=1&destination=The+George+Pub,+Holloway,+London&waypoints=The+Swimmer+at+the+Grafton+Arms,+Holloway,+London%7COwl+%26+Hitchhiker,+Holloway,+London%7CHercules,+Holloway,+London%7CVictoria+Tavern,+Holloway,+London%7CLamb,+Holloway,+London%7CThe+Horatia,+Holloway,+London"
@@ -2788,6 +3005,7 @@ export default function RankClient({
 
                     </div>
 
+
                     <a
                       href="https://www.google.com/maps/dir/?api=1&destination=Blue+Moon+Cafe,+Sheffield&waypoints=Church+-+Temple+of+Fun,+Sheffield%7CPom+Kitchen,+Sheffield%7CSouth+Street+Kitchen,+Sheffield%7CThe+Old+Workshop,+Sheffield%7CThe+Chakra+Lounge,+Sheffield%7C5Tara,+Sheffield"
                       target="_blank"
@@ -2828,6 +3046,8 @@ export default function RankClient({
 
               )
             }
+
+
             <div
               className="
                 mt-8
@@ -2908,7 +3128,7 @@ export default function RankClient({
                               p-5
                               md:p-6
                               flex
-                              items-center
+                              items-start
                               gap-5
                             "
                           >
@@ -2932,14 +3152,33 @@ export default function RankClient({
 
                             <div
                               className="
-                                text-2xl
-                                md:text-3xl
-                                font-black
-                                leading-[0.95]
-                                tracking-[-0.035em]
+                                min-w-0
+                                flex-1
                               "
                             >
-                              {item.name}
+
+                              <div
+                                className="
+                                  text-2xl
+                                  md:text-3xl
+                                  font-black
+                                  leading-[0.95]
+                                  tracking-[-0.035em]
+                                "
+                              >
+                                {item.name}
+                              </div>
+
+
+                              <YouTubeTreatment
+                                url={
+                                  item.externalUrl
+                                }
+                                name={
+                                  item.name
+                                }
+                              />
+
                             </div>
 
                           </div>
