@@ -56,6 +56,10 @@ import {
   getYouTubeVideoId
 } from "@/utils/youtube"
 
+import {
+  getGoogleMapsEmbedUrl
+} from "@/utils/googleMaps"
+
 
 type RankClientProps = {
   id:string
@@ -776,6 +780,156 @@ function YouTubeTreatment({
       </div>
 
     </a>
+
+  )
+
+}
+
+
+function MapsTreatment({
+  url,
+  name
+}:{
+  url?:string
+  name:string
+}){
+
+  const embedUrl =
+    getGoogleMapsEmbedUrl(
+      url
+    )
+
+
+  if(
+    !embedUrl
+  ){
+
+    return null
+
+  }
+
+
+  return (
+
+    <div
+      className="
+        group/maps
+        relative
+        mt-5
+        w-full
+        max-w-2xl
+        overflow-hidden
+        rounded-[20px]
+        border
+        border-black/10
+        bg-white
+        transition-all
+        duration-300
+        hover:-translate-y-0.5
+        hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)]
+      "
+    >
+
+      <div
+        className="
+          relative
+          h-[280px]
+          w-full
+          overflow-hidden
+          bg-[#EAE3EC]
+        "
+      >
+
+        <iframe
+          title={
+            `Map showing ${name}`
+          }
+          src={
+            embedUrl
+          }
+          className="
+            h-full
+            w-full
+            border-0
+          "
+          loading="lazy"
+        />
+
+
+        <div
+          className="
+            pointer-events-none
+            absolute
+            inset-0
+            border
+            border-black/5
+          "
+        />
+
+
+        <div
+          className="
+            absolute
+            bottom-4
+            left-4
+            rounded-full
+            bg-black/75
+            px-3
+            py-1.5
+            text-[10px]
+            font-black
+            uppercase
+            tracking-[0.18em]
+            text-white
+            backdrop-blur-sm
+          "
+        >
+          Google Maps
+        </div>
+
+      </div>
+
+
+      <a
+        href={
+          url
+        }
+        target="_blank"
+        rel="noopener noreferrer"
+        className="
+          flex
+          items-center
+          justify-between
+          gap-4
+          px-4
+          py-3
+          text-sm
+          font-black
+          text-black
+          transition-colors
+          hover:text-[#FF6B35]
+        "
+        aria-label={
+          `Open ${name} in Google Maps`
+        }
+      >
+
+        <span>
+          Open in Google Maps
+        </span>
+
+
+        <span
+          className="
+            text-lg
+          "
+        >
+          ↗
+        </span>
+
+      </a>
+
+    </div>
 
   )
 
@@ -2665,6 +2819,12 @@ export default function RankClient({
                       )
 
 
+                    const mapsEmbedUrl =
+                      getGoogleMapsEmbedUrl(
+                        item.externalUrl
+                      )
+
+
                     return (
 
                       <div
@@ -2780,6 +2940,22 @@ export default function RankClient({
                               youtubeThumbnail && (
 
                                 <YouTubeTreatment
+                                  url={
+                                    item.externalUrl
+                                  }
+                                  name={
+                                    item.name
+                                  }
+                                />
+
+                              )
+                            }
+
+
+                            {
+                              mapsEmbedUrl && (
+
+                                <MapsTreatment
                                   url={
                                     item.externalUrl
                                   }
@@ -3179,6 +3355,16 @@ export default function RankClient({
                                 }
                               />
 
+
+                              <MapsTreatment
+                                url={
+                                  item.externalUrl
+                                }
+                                name={
+                                  item.name
+                                }
+                              />
+
                             </div>
 
                           </div>
@@ -3263,8 +3449,7 @@ export default function RankClient({
                   {String(
                     perspectives.length
                   ).padStart(
-                    2,
-                    "0"
+                    2
                   )}
                 </span>
 
