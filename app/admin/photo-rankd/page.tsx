@@ -27,18 +27,28 @@ const ADMIN_USER_IDS = [
 ]
 
 
-const RANKING_CATEGORIES: Record<
-  number,
-  string
-> = {
-  1: "Travel",
-  2: "Travel",
-  3: "Food & Drink",
-  4: "Travel",
-  5: "Travel",
-  6: "Travel",
-  7: "Travel"
-}
+const RANKING_CATEGORY_OPTIONS = [
+  "Food & Drink",
+  "Film & TV",
+  "Music",
+  "Sport",
+  "Gaming",
+  "Travel",
+  "Technology",
+  "Lifestyle",
+  "Books",
+  "Art & Design",
+  "Fashion",
+  "Beauty",
+  "Health & Fitness",
+  "Business",
+  "Science",
+  "History",
+  "Nature & Animals",
+  "Cars & Transport",
+  "Home & Garden",
+  "General"
+]
 
 
 const PHOTO_RANKD_BUCKET =
@@ -48,6 +58,7 @@ const PHOTO_RANKD_BUCKET =
 type RankdDraft = {
   id: number
   title: string
+  category: string
   description: string
   items: string[]
   itemLinks: string[]
@@ -109,12 +120,28 @@ const createInitialRankings =
       id: 1,
       title:
         "Top 7 Useful Croatian Phrases",
+      category:
+        "Travel",
       description:
         "Seven useful Croatian phrases to know before exploring Dubrovnik.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Dobar dan!",
+        "Hvala",
+        "Molim",
+        "Oprostite",
+        "Gdje je...?",
+        "Koliko košta?",
+        "Račun, molim"
+      ],
+      itemLinks: [
+        "https://www.visit-croatia.co.uk/croatian-for-travellers/chapter-1-croatian-greetings-basics/",
+        "https://www.visit-croatia.co.uk/croatian-for-travellers/chapter-1-croatian-greetings-basics/",
+        "https://www.visit-croatia.co.uk/croatian-for-travellers/chapter-1-croatian-greetings-basics/",
+        "https://www.visit-croatia.co.uk/croatian-for-travellers/chapter-1-croatian-greetings-basics/",
+        "https://www.visit-croatia.co.uk/croatian-for-travellers/chapter-1-croatian-greetings-basics/",
+        "https://www.croatian-guide.com/plan-a-trip/language-basics",
+        "https://www.croatian-guide.com/plan-a-trip/language-basics"
+      ],
       x: 18,
       y: 18
     },
@@ -122,12 +149,28 @@ const createInitialRankings =
       id: 2,
       title:
         "Top 7 Historical Facts About Dubrovnik",
+      category:
+        "History",
       description:
         "Seven facts that bring Dubrovnik's extraordinary history into focus.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Dubrovnik became a major Mediterranean sea power from the 13th century",
+        "The Treaty of Zadar in 1358 ended Venetian rule over Dubrovnik",
+        "The Republic of Ragusa developed into an independent maritime state",
+        "Dubrovnik introduced quarantine legislation in 1377",
+        "The city was devastated by the great earthquake of 1667",
+        "The Republic of Ragusa was abolished by Napoleon in 1808",
+        "The Old City became a UNESCO World Heritage Site in 1979"
+      ],
+      itemLinks: [
+        "https://whc.unesco.org/en/list/095/",
+        "https://tzdubrovnik.hr/lang/en/get/kratka_povijest_dubrovnika/1602/mediji.html",
+        "https://www.dubrovnik.hr/uploads/pages/350/Dubrovnik-Management-plan-ENG.pdf",
+        "https://tzdubrovnik.hr/lang/en/get/dogadjanja_festivali/81221/get/vijesti/81212/lang/en/o_nama.html",
+        "https://whc.unesco.org/en/list/095/",
+        "https://www.dubrovnik.hr/uploads/pages/350/Dubrovnik-Management-plan-ENG.pdf",
+        "https://whc.unesco.org/en/list/095/"
+      ],
       x: 38,
       y: 18
     },
@@ -135,12 +178,28 @@ const createInitialRankings =
       id: 3,
       title:
         "Top 7 Restaurants in Dubrovnik",
+      category:
+        "Food & Drink",
       description:
         "Seven Dubrovnik restaurants worth knowing about.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Restaurant 360",
+        "Nautika",
+        "Proto Fish",
+        "Stara Loza",
+        "Taj Mahal",
+        "Zuzori",
+        "Pjerin"
+      ],
+      itemLinks: [
+        "https://www.google.com/maps/search/?api=1&query=Restaurant+360+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Nautika+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Proto+Fish+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Stara+Loza+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Taj+Mahal+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Zuzori+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Pjerin+Dubrovnik+Croatia"
+      ],
       x: 62,
       y: 18
     },
@@ -148,12 +207,28 @@ const createInitialRankings =
       id: 4,
       title:
         "Top 7 Dubrovnik Views You Won't Forget",
+      category:
+        "Travel",
       description:
         "Seven views that capture Dubrovnik from its most memorable angles.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Mount Srđ",
+        "Dubrovnik City Walls",
+        "Fort Lovrijenac",
+        "Dubrovnik Cable Car",
+        "Buža",
+        "Brsalje & Pile",
+        "St. Jacob's Beach"
+      ],
+      itemLinks: [
+        "https://www.google.com/maps/search/?api=1&query=Mount+Srd+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Dubrovnik+City+Walls+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Fort+Lovrijenac+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Dubrovnik+Cable+Car+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Buze+Bar+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Brsalje+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=St+Jacobs+Beach+Dubrovnik+Croatia"
+      ],
       x: 82,
       y: 35
     },
@@ -161,12 +236,28 @@ const createInitialRankings =
       id: 5,
       title:
         "Top 7 Day Trips from Dubrovnik",
+      category:
+        "Travel",
       description:
         "Seven places worth considering when you want to explore beyond Dubrovnik.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Mljet National Park",
+        "Cavtat",
+        "Mostar",
+        "Kotor Bay",
+        "Elaphiti Islands",
+        "Ston & the Pelješac Peninsula",
+        "Trsteno Arboretum"
+      ],
+      itemLinks: [
+        "https://tzdubrovnik.hr/lang/en/get/prirodne_znamenitosti/53053/mljet_national_park.html",
+        "https://www.google.com/maps/search/?api=1&query=Cavtat+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Mostar+Bosnia+and+Herzegovina",
+        "https://www.google.com/maps/search/?api=1&query=Kotor+Montenegro",
+        "https://www.google.com/maps/search/?api=1&query=Elaphiti+Islands+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Ston+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Trsteno+Arboretum+Croatia"
+      ],
       x: 72,
       y: 68
     },
@@ -174,12 +265,28 @@ const createInitialRankings =
       id: 6,
       title:
         "Top 7 Dubrovnik Film & TV Locations",
+      category:
+        "Film & TV",
       description:
         "Seven locations around Dubrovnik that have appeared on screen.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Pile Gate",
+        "Fort Lovrijenac",
+        "Fort Minčeta",
+        "Jesuit Stairs",
+        "Rector's Palace",
+        "Gradac Park",
+        "Lokrum"
+      ],
+      itemLinks: [
+        "https://tzdubrovnik.hr/lang/en/get/news_kongresni/81606/step_into_kings_landing_through_an_unforgettable_incentive_adventure.html",
+        "https://tzdubrovnik.hr/lang/en/get/news_kongresni/81606/step_into_kings_landing_through_an_unforgettable_incentive_adventure.html",
+        "https://tzdubrovnik.hr/lang/en/get/news_kongresni/81606/step_into_kings_landing_through_an_unforgettable_incentive_adventure.html",
+        "https://tzdubrovnik.hr/lang/en/get/news_kongresni/81606/step_into_kings_landing_through_an_unforgettable_incentive_adventure.html",
+        "https://tzdubrovnik.hr/lang/en/get/news_kongresni/81606/step_into_kings_landing_through_an_unforgettable_incentive_adventure.html",
+        "https://tzdubrovnik.hr/lang/en/get/news_kongresni/81606/step_into_kings_landing_through_an_unforgettable_incentive_adventure.html",
+        "https://tzdubrovnik.hr/lang/en/get/prirodne_znamenitosti/1704/mediji.html"
+      ],
       x: 42,
       y: 78
     },
@@ -187,12 +294,28 @@ const createInitialRankings =
       id: 7,
       title:
         "Top 7 Dubrovnik Beaches & Swimming Spots",
+      category:
+        "Travel",
       description:
         "Seven places for swimming, sea views and a proper Dubrovnik dip.",
-      items:
-        emptyItems(),
-      itemLinks:
-        emptyItemLinks(),
+      items: [
+        "Banje Beach",
+        "St. Jacob's Beach",
+        "Copacabana Beach",
+        "Cava Beach",
+        "Uvala Lapad",
+        "Danče Beach",
+        "Lokrum's Dead Sea"
+      ],
+      itemLinks: [
+        "https://www.google.com/maps/search/?api=1&query=Banje+Beach+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=St+Jacobs+Beach+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Copacabana+Beach+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Cava+Beach+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Uvala+Lapad+Beach+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Dance+Beach+Dubrovnik+Croatia",
+        "https://www.google.com/maps/search/?api=1&query=Dead+Sea+Lokrum+Croatia"
+      ],
       x: 16,
       y: 68
     }
@@ -1054,9 +1177,7 @@ export default function PhotoRankdPage() {
           title:
             ranking.title,
           category:
-            RANKING_CATEGORIES[
-              ranking.id
-            ],
+            ranking.category,
           creator: "",
           creatorId:
             userId,
@@ -1627,6 +1748,7 @@ export default function PhotoRankdPage() {
               ""
           }
         )
+
 
         setIsPreview(
           true
@@ -2806,6 +2928,67 @@ export default function PhotoRankdPage() {
                         <label className="mt-5 block">
 
                           <span className="text-xs font-black uppercase tracking-[0.14em] text-black/40">
+                            Category
+                          </span>
+
+
+                          <select
+                            value={
+                              selectedRanking.category
+                            }
+                            onChange={
+                              event =>
+                                updateRanking(
+                                  selectedProject.id,
+                                  selectedRanking.id,
+                                  {
+                                    category:
+                                      event.target.value
+                                  }
+                                )
+                            }
+                            className="
+                              mt-2
+                              w-full
+                              rounded-2xl
+                              border
+                              border-black/10
+                              bg-[#F7F4EE]
+                              px-4
+                              py-3
+                              text-sm
+                              font-bold
+                              outline-none
+                              transition
+                              focus:border-black/30
+                            "
+                          >
+
+                            {RANKING_CATEGORY_OPTIONS.map(
+                              category => (
+
+                                <option
+                                  key={
+                                    category
+                                  }
+                                  value={
+                                    category
+                                  }
+                                >
+                                  {category}
+                                </option>
+
+                              )
+                            )}
+
+                          </select>
+
+                        </label>
+
+
+                        <label className="mt-5 block">
+
+                          <span className="text-xs font-black uppercase tracking-[0.14em] text-black/40">
                             Description
                           </span>
 
@@ -2995,9 +3178,7 @@ export default function PhotoRankdPage() {
 
                               <p className="mt-1 text-sm font-black">
                                 {
-                                  RANKING_CATEGORIES[
-                                    selectedRanking.id
-                                  ]
+                                  selectedRanking.category
                                 }
                               </p>
 
@@ -3099,8 +3280,17 @@ export default function PhotoRankdPage() {
                                 </span>
 
 
-                                <span className="min-w-0 flex-1 text-sm font-black leading-5">
-                                  {ranking.title}
+                                <span className="min-w-0 flex-1">
+
+                                  <span className="block text-sm font-black leading-5">
+                                    {ranking.title}
+                                  </span>
+
+
+                                  <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-[0.1em] text-black/35">
+                                    {ranking.category}
+                                  </span>
+
                                 </span>
 
 
@@ -3148,6 +3338,11 @@ export default function PhotoRankdPage() {
                               <h2 className="mt-2 text-2xl font-black leading-tight tracking-[-0.04em]">
                                 {openedRanking.title}
                               </h2>
+
+
+                              <p className="mt-2 text-[10px] font-black uppercase tracking-[0.14em] text-black/35">
+                                {openedRanking.category}
+                              </p>
 
                             </div>
 
@@ -3448,6 +3643,12 @@ function createRankingHref(
   params.set(
     "title",
     ranking.title
+  )
+
+
+  params.set(
+    "category",
+    ranking.category
   )
 
 
