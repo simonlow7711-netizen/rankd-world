@@ -126,6 +126,11 @@ export default function CreateClient(){
   const [addingLinks,setAddingLinks] =
     useState(false)
 
+  const [editingLinkId,setEditingLinkId] =
+    useState<string | null>(
+      null
+    )
+
   const [error,setError] =
     useState("")
 
@@ -1253,7 +1258,10 @@ export default function CreateClient(){
                 sm:text-7xl
               "
             >
-              Add links?
+              {isRerank
+                ? "Edit your links."
+                : "Add links?"
+              }
             </h1>
 
 
@@ -1268,7 +1276,10 @@ export default function CreateClient(){
                 sm:text-lg
               "
             >
-              Make your Top 7 more useful by linking each choice to where people can find it.
+              {isRerank
+                ? "Keep, change or remove the links attached to each choice."
+                : "Make your Top 7 more useful by linking each choice to where people can find it."
+              }
             </p>
 
           </header>
@@ -1314,7 +1325,10 @@ export default function CreateClient(){
                   text-black/45
                 "
               >
-                Add as many or as few as you like.
+                {isRerank
+                  ? "Edit any existing link or add one to a choice."
+                  : "Add as many or as few as you like."
+                }
               </p>
 
             </div>
@@ -1326,99 +1340,323 @@ export default function CreateClient(){
                 (
                   item,
                   index
-                ) => (
+                ) => {
 
-                  <div
-                    key={item.id}
-                    className="
-                      border-b
-                      border-black/[0.07]
-                      px-5
-                      py-5
-                      last:border-b-0
-                      sm:px-7
-                      sm:py-6
-                    "
-                  >
+                  const hasLink =
+                    Boolean(
+                      item.externalUrl?.trim()
+                    )
+
+                  const isEditing =
+                    editingLinkId ===
+                    item.id
+
+                  return (
 
                     <div
+                      key={item.id}
                       className="
-                        mb-3
-                        flex
-                        items-center
-                        gap-4
+                        border-b
+                        border-black/[0.07]
+                        px-5
+                        py-5
+                        last:border-b-0
+                        sm:px-7
+                        sm:py-6
                       "
                     >
 
-                      <span
+                      <div
                         className="
                           flex
-                          h-8
-                          w-8
-                          shrink-0
-                          items-center
-                          justify-center
-                          rounded-full
-                          bg-[#FF6B35]/10
-                          text-[11px]
-                          font-black
-                          text-[#FF6B35]
+                          items-start
+                          gap-4
                         "
                       >
-                        {index + 1}
-                      </span>
 
-                      <p
-                        className="
-                          text-base
-                          font-black
-                          leading-tight
-                          sm:text-lg
-                        "
-                      >
-                        {item.name}
-                      </p>
+                        <span
+                          className="
+                            flex
+                            h-8
+                            w-8
+                            shrink-0
+                            items-center
+                            justify-center
+                            rounded-full
+                            bg-[#FF6B35]/10
+                            text-[11px]
+                            font-black
+                            text-[#FF6B35]
+                          "
+                        >
+                          {index + 1}
+                        </span>
+
+
+                        <div
+                          className="
+                            min-w-0
+                            flex-1
+                          "
+                        >
+
+                          <p
+                            className="
+                              text-base
+                              font-black
+                              leading-tight
+                              sm:text-lg
+                            "
+                          >
+                            {item.name}
+                          </p>
+
+
+                          {!hasLink &&
+                            !isEditing && (
+
+                            <button
+                              type="button"
+                              onClick={
+                                () =>
+                                  setEditingLinkId(
+                                    item.id
+                                  )
+                              }
+                              className="
+                                mt-3
+                                rounded-full
+                                border
+                                border-black/[0.10]
+                                bg-white/60
+                                px-4
+                                py-2
+                                text-xs
+                                font-black
+                                text-black/55
+                                transition
+                                hover:border-[#FF6B35]/40
+                                hover:bg-white
+                                hover:text-[#FF6B35]
+                              "
+                            >
+                              + Add link
+                            </button>
+
+                          )}
+
+
+                          {hasLink &&
+                            !isEditing && (
+
+                            <div
+                              className="
+                                mt-3
+                                flex
+                                flex-col
+                                gap-3
+                                sm:flex-row
+                                sm:items-center
+                                sm:justify-between
+                              "
+                            >
+
+                              <div
+                                className="
+                                  min-w-0
+                                  flex-1
+                                "
+                              >
+
+                                <p
+                                  className="
+                                    truncate
+                                    text-xs
+                                    font-medium
+                                    text-black/40
+                                  "
+                                >
+                                  {item.externalUrl}
+                                </p>
+
+                              </div>
+
+
+                              <div
+                                className="
+                                  flex
+                                  shrink-0
+                                  items-center
+                                  gap-2
+                                "
+                              >
+
+                                <button
+                                  type="button"
+                                  onClick={
+                                    () =>
+                                      setEditingLinkId(
+                                        item.id
+                                      )
+                                  }
+                                  className="
+                                    rounded-full
+                                    px-3
+                                    py-2
+                                    text-xs
+                                    font-black
+                                    text-black/45
+                                    transition
+                                    hover:bg-black/[0.04]
+                                    hover:text-black
+                                  "
+                                >
+                                  Edit
+                                </button>
+
+
+                                <button
+                                  type="button"
+                                  onClick={
+                                    () => {
+
+                                      updateItemLink(
+                                        item.id,
+                                        ""
+                                      )
+
+                                      setEditingLinkId(
+                                        null
+                                      )
+
+                                    }
+                                  }
+                                  className="
+                                    rounded-full
+                                    px-3
+                                    py-2
+                                    text-xs
+                                    font-black
+                                    text-black/35
+                                    transition
+                                    hover:bg-red-50
+                                    hover:text-red-600
+                                  "
+                                >
+                                  Remove
+                                </button>
+
+                              </div>
+
+                            </div>
+
+                          )}
+
+
+                          {isEditing && (
+
+                            <div
+                              className="
+                                mt-3
+                              "
+                            >
+
+                              <input
+                                type="url"
+                                autoFocus
+                                value={
+                                  item.externalUrl ??
+                                  ""
+                                }
+                                onChange={
+                                  event =>
+                                    updateItemLink(
+                                      item.id,
+                                      event.target.value
+                                    )
+                                }
+                                placeholder="Paste link"
+                                className="
+                                  w-full
+                                  rounded-xl
+                                  border
+                                  border-black/[0.08]
+                                  bg-[#F7F4EE]/70
+                                  px-4
+                                  py-3
+                                  text-sm
+                                  font-medium
+                                  outline-none
+                                  transition
+                                  placeholder:text-black/25
+                                  focus:border-[#FF6B35]/50
+                                  focus:bg-white
+                                  focus:ring-4
+                                  focus:ring-[#FF6B35]/[0.06]
+                                "
+                              />
+
+
+                              <div
+                                className="
+                                  mt-2
+                                  flex
+                                  items-center
+                                  justify-between
+                                  gap-4
+                                "
+                              >
+
+                                <p
+                                  className="
+                                    text-[11px]
+                                    font-medium
+                                    text-black/30
+                                  "
+                                >
+                                  Paste a YouTube, Spotify, Maps or any other link.
+                                </p>
+
+
+                                <button
+                                  type="button"
+                                  onClick={
+                                    () =>
+                                      setEditingLinkId(
+                                        null
+                                      )
+                                  }
+                                  className="
+                                    shrink-0
+                                    rounded-full
+                                    px-3
+                                    py-1.5
+                                    text-xs
+                                    font-black
+                                    text-black/40
+                                    transition
+                                    hover:bg-black/[0.04]
+                                    hover:text-black
+                                  "
+                                >
+                                  Done
+                                </button>
+
+                              </div>
+
+                            </div>
+
+                          )}
+
+                        </div>
+
+                      </div>
 
                     </div>
 
+                  )
 
-                    <input
-                      type="url"
-                      value={
-                        item.externalUrl ??
-                        ""
-                      }
-                      onChange={
-                        event =>
-                          updateItemLink(
-                            item.id,
-                            event.target.value
-                          )
-                      }
-                      placeholder="Paste link (optional)"
-                      className="
-                        w-full
-                        rounded-xl
-                        border
-                        border-black/[0.08]
-                        bg-[#F7F4EE]/70
-                        px-4
-                        py-3
-                        text-sm
-                        font-medium
-                        outline-none
-                        transition
-                        placeholder:text-black/25
-                        focus:border-[#FF6B35]/50
-                        focus:bg-white
-                        focus:ring-4
-                        focus:ring-[#FF6B35]/[0.06]
-                      "
-                    />
-
-                  </div>
-
-                )
+                }
               )}
 
             </div>
@@ -1464,14 +1702,22 @@ export default function CreateClient(){
               type="button"
               onClick={
                 () => {
+
                   setAddingLinks(false)
+
+                  setEditingLinkId(
+                    null
+                  )
+
                   setError("")
+
                   window.scrollTo(
                     {
                       top:0,
                       behavior:"smooth"
                     }
                   )
+
                 }
               }
               disabled={
@@ -2232,7 +2478,6 @@ export default function CreateClient(){
                 "
               >
                 Ready?
-
               </p>
 
               <p
