@@ -35,10 +35,6 @@ const SITE_URL =
   "https://rankd.world"
 
 
-const PHOTO_RANKD_ID =
-  "c08cfbd3-4a9f-4286-85c0-5daa4cff737b"
-
-
 export const dynamic =
   "force-dynamic"
 
@@ -106,13 +102,26 @@ export const metadata: Metadata = {
 }
 
 
+type PhotoRankd = {
+
+  id: string
+
+  title: string
+
+  description: string | null
+
+  image_url: string
+
+}
+
+
 export default async function ExplorePage() {
 
   const rankingsPromise =
     getAllRankings()
 
 
-  const photoRankdPromise =
+  const photoRankdsPromise =
     supabase
       .from("photo_rankds")
       .select(
@@ -123,11 +132,6 @@ export default async function ExplorePage() {
           image_url
         `
       )
-      .eq(
-        "id",
-        PHOTO_RANKD_ID
-      )
-      .maybeSingle()
 
 
   const allRankings =
@@ -208,9 +212,17 @@ export default async function ExplorePage() {
 
   const {
     data:
-      photoRankd
+      photoRankdData
   } =
-    await photoRankdPromise
+    await photoRankdsPromise
+
+
+  const photoRankds: PhotoRankd[] =
+    Array.isArray(
+      photoRankdData
+    )
+      ? photoRankdData
+      : []
 
 
   return (
@@ -307,7 +319,7 @@ export default async function ExplorePage() {
 
 
         {
-          photoRankd && (
+          photoRankds.length > 0 && (
 
             <section
               className="
@@ -370,15 +382,17 @@ export default async function ExplorePage() {
                       md:text-lg
                     "
                   >
-                    A different way to make
-                    your Top 7 choices.
+                    See it. Rank it differently.
+                    <br />
+                    Explore photographs and discover
+                    the seven RANKDs hidden within them.
                   </p>
 
                 </div>
 
 
                 <Link
-                  href={`/photo-rankd/${PHOTO_RANKD_ID}`}
+                  href="/photo-rankd"
                   className="
                     inline-flex
                     shrink-0
@@ -402,7 +416,7 @@ export default async function ExplorePage() {
                 >
 
                   <span>
-                    Open Photo RANKD
+                    Explore Photo RANKD
                   </span>
 
 
@@ -420,231 +434,232 @@ export default async function ExplorePage() {
               </div>
 
 
-              <Link
-                href={`/photo-rankd/${PHOTO_RANKD_ID}`}
+              <div
                 className="
-                  group
-                  block
-                  overflow-hidden
-                  rounded-2xl
-                  border
-                  border-black/10
-                  bg-white
-                  shadow-sm
-                  transition
-                  hover:border-black/30
-                  hover:shadow-md
+                  grid
+                  gap-8
+                  md:grid-cols-2
                 "
               >
 
-                <div
-                  className="
-                    grid
-                    md:grid-cols-[1.65fr_0.75fr]
-                  "
-                >
+                {
+                  photoRankds.map(
+                    photoRankd => (
 
-                  <div
-                    className="
-                      relative
-                      min-h-[340px]
-                      overflow-hidden
-                      bg-black
-                      md:min-h-[520px]
-                    "
-                  >
-
-                    <img
-                      src={
-                        photoRankd.image_url
-                      }
-                      alt={
-                        "Photo RANKD"
-                      }
-                      className="
-                        absolute
-                        inset-0
-                        h-full
-                        w-full
-                        object-cover
-                        transition
-                        duration-500
-                        group-hover:scale-[1.015]
-                      "
-                    />
-
-
-                    <div
-                      className="
-                        absolute
-                        inset-0
-                        bg-gradient-to-t
-                        from-black/35
-                        via-transparent
-                        to-transparent
-                      "
-                    />
-
-
-                    <div
-                      className="
-                        absolute
-                        left-6
-                        top-6
-                        md:left-8
-                        md:top-8
-                      "
-                    >
-
-                      <span
+                      <Link
+                        key={
+                          photoRankd.id
+                        }
+                        href={
+                          `/photo-rankd/${photoRankd.id}`
+                        }
                         className="
-                          text-xs
-                          font-black
-                          uppercase
-                          tracking-[0.2em]
-                          text-white
-                          drop-shadow
-                        "
-                      >
-                        Photo RANKD
-                      </span>
-
-                    </div>
-
-                  </div>
-
-
-                  <div
-                    className="
-                      flex
-                      flex-col
-                      justify-between
-                      bg-[#F7F4EE]
-                      p-8
-                      md:p-10
-                      lg:p-12
-                    "
-                  >
-
-                    <div>
-
-                      <div
-                        className="
-                          flex
-                          items-start
-                          justify-end
+                          group
+                          block
+                          overflow-hidden
+                          rounded-2xl
+                          border
+                          border-black/10
+                          bg-white
+                          shadow-sm
+                          transition
+                          hover:border-black/30
+                          hover:shadow-md
                         "
                       >
 
-                        <span
+                        <div
                           className="
-                            border
-                            border-black/15
-                            px-3
-                            py-2
-                            text-[10px]
-                            font-black
-                            uppercase
-                            tracking-[0.2em]
-                            text-black/50
-                          "
-                        >
-                          Visual
-                        </span>
-
-                      </div>
-
-
-                      <h3
-                        className="
-                          mt-10
-                          text-4xl
-                          font-black
-                          leading-[0.9]
-                          tracking-[-0.055em]
-                          md:text-5xl
-                        "
-                      >
-                        See it.
-                        <br />
-                        Rank it differently.
-                      </h3>
-
-
-                      <p
-                        className="
-                          mt-6
-                          text-base
-                          leading-relaxed
-                          text-black/50
-                        "
-                      >
-                        Photo RANKD turns photographs
-                        into Top 7 choices. Explore an
-                        image, discover the seven things
-                        hidden within it, and make your
-                        own order.
-                      </p>
-
-                    </div>
-
-
-                    <div
-                      className="
-                        mt-12
-                        border-t
-                        border-black/10
-                        pt-6
-                      "
-                    >
-
-                      <div
-                        className="
-                          flex
-                          items-center
-                          justify-between
-                          gap-4
-                        "
-                      >
-
-                        <span
-                          className="
-                            text-sm
-                            font-black
-                          "
-                        >
-                          Explore Photo RANKD
-                        </span>
-
-
-                        <span
-                          className="
-                            flex
-                            h-10
-                            w-10
-                            items-center
-                            justify-center
-                            rounded-full
+                            relative
+                            aspect-[4/3]
+                            overflow-hidden
                             bg-black
-                            text-lg
-                            text-white
-                            transition
-                            group-hover:bg-[#FF6B35]
-                            group-hover:text-black
                           "
                         >
-                          →
-                        </span>
 
-                      </div>
+                          <img
+                            src={
+                              photoRankd.image_url
+                            }
+                            alt={
+                              photoRankd.title
+                            }
+                            className="
+                              absolute
+                              inset-0
+                              h-full
+                              w-full
+                              object-cover
+                              transition
+                              duration-500
+                              group-hover:scale-[1.015]
+                            "
+                          />
 
-                    </div>
 
-                  </div>
+                          <div
+                            className="
+                              absolute
+                              inset-0
+                              bg-gradient-to-t
+                              from-black/40
+                              via-transparent
+                              to-transparent
+                            "
+                          />
 
-                </div>
 
-              </Link>
+                          <div
+                            className="
+                              absolute
+                              left-5
+                              top-5
+                            "
+                          >
+
+                            <span
+                              className="
+                                text-xs
+                                font-black
+                                uppercase
+                                tracking-[0.2em]
+                                text-white
+                                drop-shadow
+                              "
+                            >
+                              Photo RANKD
+                            </span>
+
+                          </div>
+
+
+                          <div
+                            className="
+                              absolute
+                              bottom-5
+                              right-5
+                              flex
+                              h-11
+                              w-11
+                              items-center
+                              justify-center
+                              rounded-full
+                              bg-[#FF6B35]
+                              text-xl
+                              font-black
+                              text-black
+                              opacity-0
+                              translate-x-1
+                              transition
+                              duration-200
+                              group-hover:translate-x-0
+                              group-hover:opacity-100
+                            "
+                          >
+                            →
+                          </div>
+
+                        </div>
+
+
+                        <div
+                          className="
+                            p-6
+                            md:p-7
+                          "
+                        >
+
+                          <div
+                            className="
+                              text-[10px]
+                              font-black
+                              uppercase
+                              tracking-[0.2em]
+                              text-black/40
+                            "
+                          >
+                            Photo RANKD
+                          </div>
+
+
+                          <h3
+                            className="
+                              mt-3
+                              text-2xl
+                              font-black
+                              leading-[0.95]
+                              tracking-[-0.045em]
+                              md:text-3xl
+                            "
+                          >
+                            {
+                              photoRankd.title
+                            }
+                          </h3>
+
+
+                          {
+                            photoRankd.description && (
+
+                              <p
+                                className="
+                                  mt-4
+                                  text-sm
+                                  leading-relaxed
+                                  text-black/50
+                                "
+                              >
+                                {
+                                  photoRankd.description
+                                }
+                              </p>
+
+                            )
+                          }
+
+
+                          <div
+                            className="
+                              mt-6
+                              flex
+                              items-center
+                              justify-between
+                              border-t
+                              border-black/10
+                              pt-5
+                            "
+                          >
+
+                            <span
+                              className="
+                                text-sm
+                                font-black
+                              "
+                            >
+                              Explore Photo RANKD
+                            </span>
+
+
+                            <span
+                              className="
+                                text-lg
+                                font-black
+                              "
+                            >
+                              →
+                            </span>
+
+                          </div>
+
+                        </div>
+
+                      </Link>
+
+                    )
+                  )
+                }
+
+              </div>
 
             </section>
 
