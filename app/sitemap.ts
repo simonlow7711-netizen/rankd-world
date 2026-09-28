@@ -18,6 +18,11 @@ import {
 } from "@/utils/categorySlug"
 
 
+import {
+  supabase
+} from "@/utils/supabase"
+
+
 const SITE_URL =
   "https://rankd.world"
 
@@ -27,8 +32,23 @@ export default async function sitemap(): Promise<
 > {
 
 
-  const rankings =
-    await getAllRankings()
+  const [
+    rankings,
+    photoRankdResult
+  ] =
+    await Promise.all([
+
+      getAllRankings(),
+
+      supabase
+        .from("photo_rankds")
+        .select(
+          `
+            id
+          `
+        )
+
+    ])
 
 
   const latestRankingDate =
@@ -506,6 +526,47 @@ export default async function sitemap(): Promise<
   ]
 
 
+  const photoRankdUrls: MetadataRoute.Sitemap = [
+
+    {
+      url:
+        `${SITE_URL}/photo-rankd`,
+
+      lastModified:
+        latestRankingDate
+        ?? new Date(),
+
+      changeFrequency:
+        "daily" as const,
+
+      priority:
+        0.9
+
+    },
+
+    ...(
+      photoRankdResult.data
+      ?? []
+    ).map(
+
+      photoRankd => ({
+
+        url:
+          `${SITE_URL}/photo-rankd/${photoRankd.id}`,
+
+        changeFrequency:
+          "weekly" as const,
+
+        priority:
+          0.8
+
+      })
+
+    )
+
+  ]
+
+
   return [
 
     {
@@ -557,6 +618,9 @@ export default async function sitemap(): Promise<
         0.9
 
     },
+
+
+    ...photoRankdUrls,
 
 
     ...categoryUrls,
