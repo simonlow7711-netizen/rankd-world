@@ -2800,8 +2800,6 @@ export default function RankClient({
               </div>
 
             </div>
-
-
             <div
               className="
                 mt-12
@@ -2881,59 +2879,117 @@ export default function RankClient({
                             "
                           >
 
-                            <div
-                              className="
-                                text-2xl
-                                md:text-3xl
-                                font-black
-                                leading-[0.95]
-                                tracking-[-0.035em]
-                              "
-                            >
-                              {
-                                ranking.id ===
-                                "eaa49a68-98dc-4dae-91a4-a301070ef65b"
-                                  ? (
-                                      <a
-                                        href={
-                                          item.name ===
-                                          "Atomic Habits"
-                                            ? "https://www.amazon.com/s?k=Atomic+Habits"
-                                            : item.name ===
-                                              "How to Win Friends and Influence People"
-                                              ? "https://www.amazon.com/s?k=How+to+Win+Friends+and+Influence+People"
-                                              : item.name ===
-                                                "The 7 Habits of Highly Effective People"
-                                                ? "https://www.amazon.com/s?k=The+7+Habits+of+Highly+Effective+People"
-                                                : item.name ===
-                                                  "Deep Work"
-                                                  ? "https://www.amazon.com/s?k=Deep+Work"
-                                                  : item.name ===
-                                                    "Mindset"
-                                                    ? "https://www.amazon.com/s?k=Mindset"
+                            {
+                              ranking.id ===
+                              "da31e636-d2b4-495a-a38c-fd755e7f689b"
+                                ? (
+                                    <div
+                                      className="
+                                        min-w-0
+                                      "
+                                    >
+
+                                      {
+                                        item.name
+                                          .split(
+                                            /\r?\n\s*\r?\n|\s{2,}/
+                                          )
+                                          .map(
+                                            (
+                                              paragraph,
+                                              index
+                                            ) => (
+
+                                              <p
+                                                key={
+                                                  `${item.position}-${index}`
+                                                }
+                                                className={`
+                                                  ${
+                                                    index === 0
+                                                      ? `
+                                                          text-2xl
+                                                          md:text-3xl
+                                                          font-black
+                                                          leading-[0.95]
+                                                          tracking-[-0.035em]
+                                                        `
+                                                      : `
+                                                          mt-4
+                                                          text-base
+                                                          md:text-lg
+                                                          font-normal
+                                                          leading-relaxed
+                                                          text-black/60
+                                                        `
+                                                  }
+                                                `}
+                                              >
+                                                {paragraph}
+                                              </p>
+
+                                            )
+                                          )
+                                      }
+
+                                    </div>
+                                  )
+                                : (
+                                    <div
+                                      className="
+                                        text-2xl
+                                        md:text-3xl
+                                        font-black
+                                        leading-[0.95]
+                                        tracking-[-0.035em]
+                                      "
+                                    >
+                                      {
+                                        ranking.id ===
+                                        "eaa49a68-98dc-4dae-91a4-a301070ef65b"
+                                          ? (
+                                              <a
+                                                href={
+                                                  item.name ===
+                                                  "Atomic Habits"
+                                                    ? "https://www.amazon.com/s?k=Atomic+Habits"
                                                     : item.name ===
-                                                      "The Power of Now"
-                                                      ? "https://www.amazon.com/s?k=The+Power+of+Now"
+                                                      "How to Win Friends and Influence People"
+                                                      ? "https://www.amazon.com/s?k=How+to+Win+Friends+and+Influence+People"
                                                       : item.name ===
-                                                        "Can't Hurt Me"
-                                                        ? "https://www.amazon.com/s?k=Can%27t+Hurt+Me"
-                                                        : "#"
-                                        }
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="
-                                          transition-colors
-                                          hover:text-[#FF6B35]
-                                        "
-                                      >
-                                        {item.name}
-                                      </a>
-                                    )
-                                  : (
-                                      item.name
-                                    )
-                              }
-                            </div>
+                                                        "The 7 Habits of Highly Effective People"
+                                                        ? "https://www.amazon.com/s?k=The+7+Habits+of+Highly+Effective+People"
+                                                        : item.name ===
+                                                          "Deep Work"
+                                                          ? "https://www.amazon.com/s?k=Deep+Work"
+                                                          : item.name ===
+                                                            "Mindset"
+                                                            ? "https://www.amazon.com/s?k=Mindset"
+                                                            : item.name ===
+                                                              "The Power of Now"
+                                                              ? "https://www.amazon.com/s?k=The+Power+of+Now"
+                                                              : item.name ===
+                                                                "Can't Hurt Me"
+                                                                ? "https://www.amazon.com/s?k=Can%27t+Hurt+Me"
+                                                                : "#"
+                                                }
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="
+                                                  transition-colors
+                                                  hover:text-[#FF6B35]
+                                                "
+                                              >
+                                                {item.name}
+                                              </a>
+                                            )
+                                          : (
+                                              item.name
+                                            )
+                                      }
+                                    </div>
+                                  )
+                            }
 
 
                             {
@@ -2996,7 +3052,6 @@ export default function RankClient({
                     bg-white
                   "
                 >
-
                   <div
                     className="
                       relative
