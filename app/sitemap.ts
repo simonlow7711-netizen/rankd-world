@@ -24,7 +24,7 @@ import {
 
 
 const SITE_URL =
-  "https://rankd.world"
+  "https://www.rankd.world"
 
 
 export default async function sitemap(): Promise<

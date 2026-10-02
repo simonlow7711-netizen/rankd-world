@@ -4,7 +4,7 @@ import type {
 
 
 const SITE_URL =
-  "https://rankd.world"
+  "https://www.rankd.world"
 
 
 export default function robots(): MetadataRoute.Robots {
