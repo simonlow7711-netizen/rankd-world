@@ -2139,6 +2139,10 @@ export default function RankingCard({
                                 splitLongFormItemText(
                                   item.name
                                 )
+                                  .slice(
+                                    0,
+                                    2
+                                  )
                                   .map(
                                     (
                                       paragraph,
@@ -2165,6 +2169,7 @@ export default function RankingCard({
                                                   font-normal
                                                   leading-relaxed
                                                   opacity-60
+                                                  line-clamp-2
                                                 `
                                           }
                                         `}
