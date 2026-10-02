@@ -1427,6 +1427,25 @@ function formatLocationCountry(
 }
 
 
+function splitLongFormItemText(
+  text: string
+): string[] {
+
+  return text
+    .split(
+      /\r?\n\s*\r?\n|\s{2,}/
+    )
+    .map(
+      paragraph =>
+        paragraph.trim()
+    )
+    .filter(
+      Boolean
+    )
+
+}
+
+
 export default function RankingCard({
 
   ranking,
@@ -1653,6 +1672,12 @@ export default function RankingCard({
     )
 
   }
+
+
+  const isLongFormChandelierRanking =
+
+    ranking.id ===
+    "da31e636-d2b4-495a-a38c-fd755e7f689b"
 
 
   return (
@@ -2061,12 +2086,16 @@ export default function RankingCard({
                       `${ranking.id}-${item.position}`
                     }
 
-                    className="
+                    className={`
                       flex
-                      items-center
+                      ${
+                        isLongFormChandelierRanking
+                          ? "items-start"
+                          : "items-center"
+                      }
                       gap-4
                       py-3.5
-                    "
+                    `}
 
                   >
 
@@ -2095,27 +2124,85 @@ export default function RankingCard({
                     </span>
 
 
-                    <span
+                    {
+                      isLongFormChandelierRanking
+                        ? (
 
-                      className={`
-                        min-w-0
-                        font-black
-                        ${
-                          ranking.id ===
-                          "da31e636-d2b4-495a-a38c-fd755e7f689b"
-                            ? "whitespace-pre-line leading-relaxed"
-                            : "leading-tight"
-                        }
-                        ${theme.item}
-                      `}
+                            <div
+                              className="
+                                min-w-0
+                                flex-1
+                              "
+                            >
 
-                    >
+                              {
+                                splitLongFormItemText(
+                                  item.name
+                                )
+                                  .map(
+                                    (
+                                      paragraph,
+                                      index
+                                    ) => (
 
-                      {
-                        item.name
-                      }
+                                      <p
+                                        key={
+                                          `${ranking.id}-${item.position}-${index}`
+                                        }
+                                        className={`
+                                          ${
+                                            index === 0
+                                              ? `
+                                                  text-base
+                                                  md:text-lg
+                                                  font-black
+                                                  leading-tight
+                                                `
+                                              : `
+                                                  mt-3
+                                                  text-sm
+                                                  md:text-base
+                                                  font-normal
+                                                  leading-relaxed
+                                                  opacity-60
+                                                `
+                                          }
+                                        `}
+                                      >
 
-                    </span>
+                                        {
+                                          paragraph
+                                        }
+
+                                      </p>
+
+                                    )
+                                  )
+                              }
+
+                            </div>
+
+                          )
+                        : (
+
+                            <span
+
+                              className="
+                                min-w-0
+                                font-black
+                                leading-tight
+                              "
+
+                            >
+
+                              {
+                                item.name
+                              }
+
+                            </span>
+
+                          )
+                    }
 
                   </div>
 
