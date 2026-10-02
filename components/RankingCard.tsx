@@ -2100,7 +2100,12 @@ export default function RankingCard({
                       className={`
                         min-w-0
                         font-black
-                        leading-tight
+                        ${
+                          ranking.id ===
+                          "da31e636-d2b4-495a-a38c-fd755e7f689b"
+                            ? "whitespace-pre-line leading-relaxed"
+                            : "leading-tight"
+                        }
                         ${theme.item}
                       `}
 
@@ -2170,6 +2175,7 @@ export default function RankingCard({
             />
 
           </div>
+
 
         </div>
 
