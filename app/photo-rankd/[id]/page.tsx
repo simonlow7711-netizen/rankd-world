@@ -46,6 +46,36 @@ type PreviewRanking =
   >
 
 
+function splitLongFormItemText(
+  text: string
+): string[] {
+
+  return text
+    .split(
+      /\r?\n\s*\r?\n|\s{2,}/
+    )
+    .map(
+      paragraph =>
+        paragraph.trim()
+    )
+    .filter(
+      Boolean
+    )
+
+}
+
+
+function isLongFormItem(
+  text: string
+): boolean {
+
+  return splitLongFormItemText(
+    text
+  ).length > 1
+
+}
+
+
 export default function PhotoRankdPage() {
 
   const params =
@@ -1048,68 +1078,148 @@ export default function PhotoRankdPage() {
                             (
                               item,
                               index
-                            ) => (
-                              <div
-                                key={
-                                  `${item.name}-${index}`
-                                }
-                                style={{
-                                  display:
-                                    "grid",
-                                  gridTemplateColumns:
-                                    "34px minmax(0, 1fr)",
-                                  gap:
-                                    "10px",
-                                  alignItems:
-                                    "baseline",
-                                  padding:
-                                    "13px 0",
-                                  borderBottom:
-                                    index <
-                                    selectedRanking.items.length - 1
-                                      ? "1px solid #E2DED7"
-                                      : "0"
-                                }}
-                              >
+                            ) => {
 
-                                <span
+                              const paragraphs =
+                                splitLongFormItemText(
+                                  item.name
+                                )
+
+                              const longForm =
+                                isLongFormItem(
+                                  item.name
+                                )
+
+
+                              return (
+                                <div
+                                  key={
+                                    `${item.name}-${index}`
+                                  }
                                   style={{
-                                    color:
-                                      "#FF6B35",
-                                    fontSize:
-                                      "13px",
-                                    fontWeight:
-                                      900
+                                    display:
+                                      "grid",
+                                    gridTemplateColumns:
+                                      "34px minmax(0, 1fr)",
+                                    gap:
+                                      "10px",
+                                    alignItems:
+                                      "start",
+                                    padding:
+                                      longForm
+                                        ? "16px 0 17px"
+                                        : "13px 0",
+                                    borderBottom:
+                                      index <
+                                      selectedRanking.items.length - 1
+                                        ? "1px solid #E2DED7"
+                                        : "0"
                                   }}
                                 >
-                                  {
-                                    String(
-                                      item.position
-                                    ).padStart(
-                                      2,
-                                      "0"
-                                    )
-                                  }
-                                </span>
+
+                                  <span
+                                    style={{
+                                      color:
+                                        "#FF6B35",
+                                      fontSize:
+                                        "13px",
+                                      fontWeight:
+                                        900,
+                                      paddingTop:
+                                        longForm
+                                          ? "5px"
+                                          : "1px"
+                                    }}
+                                  >
+                                    {
+                                      String(
+                                        item.position
+                                      ).padStart(
+                                        2,
+                                        "0"
+                                      )
+                                    }
+                                  </span>
 
 
-                                <span
-                                  style={{
-                                    fontSize:
-                                      "15px",
-                                    lineHeight:
-                                      1.3,
-                                    fontWeight:
-                                      700
-                                  }}
-                                >
-                                  {
-                                    item.name
-                                  }
-                                </span>
+                                  <div
+                                    style={{
+                                      minWidth:
+                                        0
+                                    }}
+                                  >
 
-                              </div>
-                            )
+                                    {
+                                      longForm
+                                        ? (
+                                            paragraphs.map(
+                                              (
+                                                paragraph,
+                                                paragraphIndex
+                                              ) => (
+                                                <p
+                                                  key={
+                                                    `${item.name}-${index}-${paragraphIndex}`
+                                                  }
+                                                  style={{
+                                                    margin:
+                                                      paragraphIndex === 0
+                                                        ? "0"
+                                                        : "14px 0 0",
+                                                    fontSize:
+                                                      paragraphIndex === 0
+                                                        ? "18px"
+                                                        : "14px",
+                                                    lineHeight:
+                                                      paragraphIndex === 0
+                                                        ? 1.08
+                                                        : 1.6,
+                                                    fontWeight:
+                                                      paragraphIndex === 0
+                                                        ? 900
+                                                        : 400,
+                                                    letterSpacing:
+                                                      paragraphIndex === 0
+                                                        ? "-0.025em"
+                                                        : "0",
+                                                    color:
+                                                      paragraphIndex === 0
+                                                        ? "#111"
+                                                        : "rgba(17,17,17,0.60)"
+                                                  }}
+                                                >
+                                                  {
+                                                    paragraph
+                                                  }
+                                                </p>
+                                              )
+                                            )
+                                          )
+                                        : (
+                                            <span
+                                              style={{
+                                                fontSize:
+                                                  "15px",
+                                                lineHeight:
+                                                  1.3,
+                                                fontWeight:
+                                                  700,
+                                                color:
+                                                  "#111"
+                                              }}
+                                            >
+                                              {
+                                                item.name
+                                              }
+                                            </span>
+                                          )
+                                    }
+
+                                  </div>
+
+                                </div>
+                              )
+                            }
                           )
                       }
 
