@@ -8,6 +8,9 @@ import {
 } from "geist/font/sans"
 
 
+import Script from "next/script"
+
+
 import "./globals.css"
 
 
@@ -269,6 +272,17 @@ export default function RootLayout({
 
 
         <GoogleAnalyticsPageView />
+
+
+        <Script
+
+          src="
+            https://s.skimresources.com/js/310317X1798789.skimlinks.js
+          "
+
+          strategy="afterInteractive"
+
+        />
 
 
         <script
