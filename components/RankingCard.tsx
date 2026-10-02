@@ -1,41 +1,32 @@
 "use client"
 
-
 import {
   useEffect,
   useState
 } from "react"
 
-
 import {
   useRouter
 } from "next/navigation"
 
-
 import Link from "next/link"
-
 
 import {
   Ranking
 } from "@/types/ranking"
 
-
 import RankingResponse from "@/components/RankingResponse"
 
-
 import RankingEngagement from "@/components/RankingEngagement"
-
 
 import {
   getRankingEngagement,
   RankingEngagementData
 } from "@/utils/rankingEngagement"
 
-
 import {
   trackEvent
 } from "@/utils/analytics"
-
 
 import {
   formatRankingTitle
@@ -350,10 +341,10 @@ const themes: Record<string, RankingTheme> = {
       "MATCH / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em] uppercase",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em]",
 
     item:
-      "text-base md:text-lg uppercase"
+      "text-base md:text-lg"
 
   },
 
@@ -805,10 +796,10 @@ const themes: Record<string, RankingTheme> = {
       "COLLECTION / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em] uppercase",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.06em]",
 
     item:
-      "text-base md:text-lg uppercase"
+      "text-base md:text-lg"
 
   },
 
@@ -1260,7 +1251,7 @@ const themes: Record<string, RankingTheme> = {
       "ROAD / 07",
 
     title:
-      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.055em] uppercase",
+      "text-3xl md:text-4xl leading-[1.05] tracking-[-0.055em]",
 
     item:
       "text-base md:text-lg"
@@ -1960,10 +1951,12 @@ export default function RankingCard({
 
 
               <span
+
                 className="
                   min-w-0
                   break-words
                 "
+
               >
 
                 {
