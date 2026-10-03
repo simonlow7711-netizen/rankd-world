@@ -2821,8 +2821,6 @@ export default function RankClient({
                       getGoogleMapsEmbedUrl(
                         item.externalUrl
                       )
-
-
                     return (
 
                       <div
@@ -2870,6 +2868,8 @@ export default function RankClient({
                               "0"
                             )}
                           </div>
+
+
                           <div
                             className="
                               min-w-0
@@ -2878,8 +2878,13 @@ export default function RankClient({
                           >
 
                             {
-                              ranking.id ===
-                              "da31e636-d2b4-495a-a38c-fd755e7f689b"
+                              (
+                                ranking.id ===
+                                "da31e636-d2b4-495a-a38c-fd755e7f689b"
+                                ||
+                                ranking.id ===
+                                "c3950c12-3929-42e6-ae79-1983bc2ccbce"
+                              )
                                 ? (
                                     <div
                                       className="
@@ -2942,7 +2947,6 @@ export default function RankClient({
                                         tracking-[-0.035em]
                                       "
                                     >
-
                                       {
                                         item.externalUrl
                                           ? (

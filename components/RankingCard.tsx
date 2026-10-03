@@ -1561,8 +1561,6 @@ export default function RankingCard({
     ) &&
     locationCity.toLowerCase() !==
       locationName.toLowerCase()
-
-
   function handleRankd() {
 
     if (response !== null) {
@@ -1674,10 +1672,13 @@ export default function RankingCard({
   }
 
 
-  const isLongFormChandelierRanking =
+  const isLongFormRanking =
 
     ranking.id ===
     "da31e636-d2b4-495a-a38c-fd755e7f689b"
+    ||
+    ranking.id ===
+    "c3950c12-3929-42e6-ae79-1983bc2ccbce"
 
 
   return (
@@ -2089,7 +2090,7 @@ export default function RankingCard({
                     className={`
                       flex
                       ${
-                        isLongFormChandelierRanking
+                        isLongFormRanking
                           ? "items-start"
                           : "items-center"
                       }
@@ -2125,7 +2126,7 @@ export default function RankingCard({
 
 
                     {
-                      isLongFormChandelierRanking
+                      isLongFormRanking
                         ? (
 
                             <div
