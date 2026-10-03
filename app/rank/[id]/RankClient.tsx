@@ -2870,8 +2870,6 @@ export default function RankClient({
                               "0"
                             )}
                           </div>
-
-
                           <div
                             className="
                               min-w-0
@@ -2944,34 +2942,13 @@ export default function RankClient({
                                         tracking-[-0.035em]
                                       "
                                     >
+
                                       {
-                                        ranking.id ===
-                                        "eaa49a68-98dc-4dae-91a4-a301070ef65b"
+                                        item.externalUrl
                                           ? (
                                               <a
                                                 href={
-                                                  item.name ===
-                                                  "Atomic Habits"
-                                                    ? "https://www.amazon.com/s?k=Atomic+Habits"
-                                                    : item.name ===
-                                                      "How to Win Friends and Influence People"
-                                                      ? "https://www.amazon.com/s?k=How+to+Win+Friends+and+Influence+People"
-                                                      : item.name ===
-                                                        "The 7 Habits of Highly Effective People"
-                                                        ? "https://www.amazon.com/s?k=The+7+Habits+of+Highly+Effective+People"
-                                                        : item.name ===
-                                                          "Deep Work"
-                                                          ? "https://www.amazon.com/s?k=Deep+Work"
-                                                          : item.name ===
-                                                            "Mindset"
-                                                            ? "https://www.amazon.com/s?k=Mindset"
-                                                            : item.name ===
-                                                              "The Power of Now"
-                                                              ? "https://www.amazon.com/s?k=The+Power+of+Now"
-                                                              : item.name ===
-                                                                "Can't Hurt Me"
-                                                                ? "https://www.amazon.com/s?k=Can%27t+Hurt+Me"
-                                                                : "#"
+                                                  item.externalUrl
                                                 }
                                                 target="_blank"
                                                 rel="noopener noreferrer"
@@ -2987,6 +2964,7 @@ export default function RankClient({
                                               item.name
                                             )
                                       }
+
                                     </div>
                                   )
                             }
@@ -3073,8 +3051,6 @@ export default function RankClient({
                     />
 
                   </div>
-
-
                   <div
                     className="
                       flex
