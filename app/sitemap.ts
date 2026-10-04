@@ -24,7 +24,7 @@ import {
 
 
 const SITE_URL =
-  "https://www.rankd.world"
+  "https://rankd.world"
 
 
 export default async function sitemap(): Promise<
@@ -585,7 +585,6 @@ export default async function sitemap(): Promise<
 
     },
 
-
     {
       url:
         `${SITE_URL}/categories`,
@@ -601,7 +600,6 @@ export default async function sitemap(): Promise<
         0.9
 
     },
-
 
     {
       url:
@@ -619,15 +617,11 @@ export default async function sitemap(): Promise<
 
     },
 
-
     ...photoRankdUrls,
-
 
     ...categoryUrls,
 
-
     ...locationUrls,
-
 
     ...rankingUrls
 
