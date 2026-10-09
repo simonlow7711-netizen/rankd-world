@@ -33,6 +33,8 @@ import RankingResponse from "@/components/RankingResponse"
 
 import RankingEngagement from "@/components/RankingEngagement"
 
+import AnimatedRankPreview from "@/components/AnimatedRankPreview"
+
 import {
   getRankingEngagement,
   RankingEngagementData
@@ -1016,6 +1018,13 @@ export default function RankClient({
   const [
     sharing,
     setSharing
+  ] =
+    useState(false)
+
+
+  const [
+    animatedPreviewOpen,
+    setAnimatedPreviewOpen
   ] =
     useState(false)
 
@@ -2502,6 +2511,45 @@ export default function RankClient({
                       </div>
 
 
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setShareOpen(false)
+                            setAnimatedPreviewOpen(true)
+                          }}
+                          className="
+                            mt-5
+                            flex
+                            w-full
+                            items-center
+                            justify-between
+                            gap-4
+                            rounded-2xl
+                            bg-black
+                            px-5
+                            py-4
+                            text-left
+                            text-white
+                            transition
+                            hover:bg-black/85
+                          "
+                        >
+                          <span>
+                            <span className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#FF6B35]">
+                              NEW / SHARE FORMAT
+                            </span>
+
+                            <span className="mt-1 block text-sm font-black">
+                              Preview animated teaser
+                            </span>
+                          </span>
+
+                          <span className="text-xl text-[#FF6B35]">
+                            ↗
+                          </span>
+                        </button>
+
+
                       <div
                         className="
                           mt-5
@@ -2794,6 +2842,25 @@ export default function RankClient({
 
                     </div>
 
+                  )
+                }
+
+
+                {
+                  animatedPreviewOpen && (
+                    <AnimatedRankPreview
+                      title={displayTitle}
+                      items={
+                        sortedOriginalItems.map(item => ({
+                          position: item.position,
+                          name: item.name
+                        }))
+                      }
+                      href={`/rank/${displayRanking.id}`}
+                      onClose={() => {
+                        setAnimatedPreviewOpen(false)
+                      }}
+                    />
                   )
                 }
 
