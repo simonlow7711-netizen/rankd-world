@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -938,10 +939,253 @@ function MapsTreatment({
 }
 
 
+/* Spotify integration */
+
+function getSpotifyEmbedUrl(
+  url?:string
+):{
+  embedUrl:string
+  type:string
+} | null {
+
+  if(!url){
+
+    return null
+
+  }
+
+
+  try {
+
+    const parsedUrl =
+      new URL(
+        url
+      )
+
+
+    if(
+      parsedUrl.hostname !==
+      "open.spotify.com"
+    ){
+
+      return null
+
+    }
+
+
+    const segments =
+      parsedUrl.pathname
+        .split("/")
+        .filter(Boolean)
+
+
+    // Support regional Spotify URLs,
+    // such as /intl-gb/track/...
+    if(
+      segments[0] &&
+      /^intl-[a-z]{2}$/i.test(
+        segments[0]
+      )
+    ){
+
+      segments.shift()
+
+    }
+
+
+    const type =
+      segments[0]
+
+
+    const spotifyId =
+      segments[1]
+
+
+    const supportedTypes = [
+      "track",
+      "album",
+      "playlist",
+      "episode",
+      "show",
+      "artist"
+    ]
+
+
+    if(
+      !type ||
+      !supportedTypes.includes(
+        type
+      ) ||
+      !spotifyId ||
+      !/^[a-zA-Z0-9]+$/.test(
+        spotifyId
+      )
+    ){
+
+      return null
+
+    }
+
+
+    return {
+
+      embedUrl:
+        `https://open.spotify.com/embed/${type}/${spotifyId}?utm_source=generator&theme=0`,
+
+      type
+
+    }
+
+  }
+  catch {
+
+    return null
+
+  }
+
+}
+function SpotifyTreatment({
+  url,
+  name
+}: {
+  url?: string
+  name: string
+}) {
+  if (!url) {
+    return null
+  }
+
+  let embedUrl: string
+  let spotifyType: string
+
+  try {
+    const parsedUrl = new URL(url)
+
+    if (
+      parsedUrl.hostname !== "open.spotify.com" &&
+      parsedUrl.hostname !== "www.open.spotify.com"
+    ) {
+      return null
+    }
+
+    const segments = parsedUrl.pathname
+      .split("/")
+      .filter(Boolean)
+
+    if (
+      segments[0] &&
+      /^intl-[a-z]{2}$/i.test(segments[0])
+    ) {
+      segments.shift()
+    }
+
+    if (segments[0] === "embed") {
+      segments.shift()
+    }
+
+    const type = segments[0]
+    const trackId = segments[1]
+
+    const supportedTypes = [
+      "track",
+      "album",
+      "playlist",
+      "episode",
+      "show",
+      "artist"
+    ]
+
+    if (
+      !type ||
+      !supportedTypes.includes(type) ||
+      !trackId ||
+      !/^[a-zA-Z0-9]+$/.test(trackId)
+    ) {
+      return null
+    }
+
+    spotifyType = type
+
+    embedUrl =
+      `https://open.spotify.com/embed/${type}/${trackId}?utm_source=generator&theme=0`
+  } catch {
+    return null
+  }
+
+  const height =
+    spotifyType === "track" ||
+    spotifyType === "episode"
+      ? 152
+      : 352
+
+  return (
+    <div
+      className="
+        mt-5
+        w-full
+        max-w-2xl
+        overflow-hidden
+        rounded-[20px]
+        border
+        border-black/10
+        bg-white
+      "
+    >
+      <iframe
+        src={embedUrl}
+        width="100%"
+        height={height}
+        style={{
+          border: 0,
+          display: "block",
+          background: "#ffffff"
+        }}
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="eager"
+        title={`Listen to ${name} on Spotify`}
+      />
+
+      <div
+        className="
+          px-4
+          py-3
+        "
+      >
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="
+            inline-flex
+            items-center
+            gap-2
+            text-sm
+            font-semibold
+            text-black
+            transition-opacity
+            hover:opacity-60
+          "
+        >
+          <span aria-hidden="true">
+            ♫
+          </span>
+
+          Open in Spotify
+
+          <span aria-hidden="true">
+            ↗
+          </span>
+        </a>
+      </div>
+    </div>
+  )
+}
+
+
 export default function RankClient({
   id,
   initialRanking
-}:RankClientProps){
+}: RankClientProps) {
 
   const router =
     useRouter()
@@ -963,7 +1207,6 @@ export default function RankClient({
     useState<Ranking | null>(
       initialRanking
     )
-
 
   const [
     perspectives,
@@ -2511,43 +2754,43 @@ export default function RankClient({
                       </div>
 
 
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setShareOpen(false)
-                            setAnimatedPreviewOpen(true)
-                          }}
-                          className="
-                            mt-5
-                            flex
-                            w-full
-                            items-center
-                            justify-between
-                            gap-4
-                            rounded-2xl
-                            bg-black
-                            px-5
-                            py-4
-                            text-left
-                            text-white
-                            transition
-                            hover:bg-black/85
-                          "
-                        >
-                          <span>
-                            <span className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#FF6B35]">
-                              NEW / SHARE FORMAT
-                            </span>
-
-                            <span className="mt-1 block text-sm font-black">
-                              Preview animated teaser
-                            </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setShareOpen(false)
+                          setAnimatedPreviewOpen(true)
+                        }}
+                        className="
+                          mt-5
+                          flex
+                          w-full
+                          items-center
+                          justify-between
+                          gap-4
+                          rounded-2xl
+                          bg-black
+                          px-5
+                          py-4
+                          text-left
+                          text-white
+                          transition
+                          hover:bg-black/85
+                        "
+                      >
+                        <span>
+                          <span className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#FF6B35]">
+                            NEW / SHARE FORMAT
                           </span>
 
-                          <span className="text-xl text-[#FF6B35]">
-                            ↗
+                          <span className="mt-1 block text-sm font-black">
+                            Preview animated teaser
                           </span>
-                        </button>
+                        </span>
+
+                        <span className="text-xl text-[#FF6B35]">
+                          ↗
+                        </span>
+                      </button>
 
 
                       <div
@@ -2867,6 +3110,8 @@ export default function RankClient({
               </div>
 
             </div>
+
+
             <div
               className="
                 mt-12
@@ -2888,6 +3133,8 @@ export default function RankClient({
                       getGoogleMapsEmbedUrl(
                         item.externalUrl
                       )
+
+
                     return (
 
                       <div
@@ -3071,6 +3318,16 @@ export default function RankClient({
 
                               )
                             }
+
+
+                            <SpotifyTreatment
+                              url={
+                                item.externalUrl
+                              }
+                              name={
+                                item.name
+                              }
+                            />
 
                           </div>
 
@@ -3459,6 +3716,16 @@ export default function RankClient({
 
 
                               <MapsTreatment
+                                url={
+                                  item.externalUrl
+                                }
+                                name={
+                                  item.name
+                                }
+                              />
+
+
+                              <SpotifyTreatment
                                 url={
                                   item.externalUrl
                                 }
