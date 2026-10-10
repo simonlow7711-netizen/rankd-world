@@ -621,6 +621,7 @@ function getTheme(
 }
 
 
+
 function YouTubeTreatment({
   url,
   name
@@ -629,12 +630,6 @@ function YouTubeTreatment({
   name:string
 }){
 
-  const thumbnailUrl =
-    getYouTubeThumbnailUrl(
-      url
-    )
-
-
   const videoId =
     getYouTubeVideoId(
       url
@@ -642,8 +637,8 @@ function YouTubeTreatment({
 
 
   if(
-    !thumbnailUrl ||
-    !videoId
+    !videoId ||
+    !url
   ){
 
     return null
@@ -653,15 +648,7 @@ function YouTubeTreatment({
 
   return (
 
-    <a
-      href={
-        url
-      }
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={
-        `Watch ${name} on YouTube`
-      }
+    <div
       className="
         group/youtube
         relative
@@ -674,10 +661,6 @@ function YouTubeTreatment({
         border
         border-black/10
         bg-black
-        transition-all
-        duration-300
-        hover:-translate-y-0.5
-        hover:shadow-[0_15px_40px_rgba(0,0,0,0.16)]
       "
     >
 
@@ -690,99 +673,58 @@ function YouTubeTreatment({
         "
       >
 
-        <img
+        <iframe
           src={
-            thumbnailUrl
+            `https://www.youtube-nocookie.com/embed/${videoId}`
           }
-          alt=""
+          title={
+            `Watch ${name} on YouTube`
+          }
           className="
             absolute
             inset-0
             h-full
             w-full
-            object-cover
-            transition-transform
-            duration-500
-            group-hover/youtube:scale-[1.03]
+            border-0
           "
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerPolicy="strict-origin-when-cross-origin"
+          loading="lazy"
+          allowFullScreen
         />
-
-
-        <div
-          className="
-            absolute
-            inset-0
-            bg-black/10
-            transition
-            group-hover/youtube:bg-black/20
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            inset-0
-            flex
-            items-center
-            justify-center
-          "
-        >
-
-          <span
-            className="
-              flex
-              h-16
-              w-16
-              items-center
-              justify-center
-              rounded-full
-              bg-[#FF0000]
-              text-white
-              shadow-[0_8px_30px_rgba(0,0,0,0.3)]
-              transition-all
-              duration-300
-              group-hover/youtube:scale-110
-            "
-          >
-
-            <span
-              className="
-                ml-1
-                text-2xl
-              "
-            >
-              ▶
-            </span>
-
-          </span>
-
-        </div>
-
-
-        <div
-          className="
-            absolute
-            bottom-4
-            left-4
-            rounded-full
-            bg-black/75
-            px-3
-            py-1.5
-            text-[10px]
-            font-black
-            uppercase
-            tracking-[0.18em]
-            text-white
-            backdrop-blur-sm
-          "
-        >
-          YouTube
-        </div>
 
       </div>
 
-    </a>
+
+      <a
+        href={
+          url
+        }
+        target="_blank"
+        rel="noopener noreferrer"
+        className="
+          inline-flex
+          items-center
+          gap-2
+          px-4
+          py-3
+          text-sm
+          font-bold
+          text-white
+          transition-opacity
+          hover:opacity-70
+        "
+      >
+
+        Open on YouTube
+
+        <span aria-hidden="true">
+          ↗
+        </span>
+
+      </a>
+
+    </div>
 
   )
 
@@ -829,6 +771,7 @@ function MapsTreatment({
         transition-all
         duration-300
         hover:-translate-y-0.5
+
         hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)]
       "
     >
