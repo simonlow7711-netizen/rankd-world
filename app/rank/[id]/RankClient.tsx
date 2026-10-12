@@ -1566,6 +1566,10 @@ export default function RankClient({
 
             externalUrl:
               item.externalUrl ??
+              null,
+
+            commentary:
+              item.commentary ??
               null
           })
         )
@@ -3669,6 +3673,24 @@ const instagramPostUrl =
                               >
                                 {item.name}
                               </div>
+
+
+                              {
+                                item.commentary?.trim() && (
+                                  <p
+                                    className="
+                                      mt-3
+                                      text-sm
+                                      md:text-base
+                                      leading-relaxed
+                                      text-black/65
+                                      whitespace-pre-wrap
+                                    "
+                                  >
+                                    {item.commentary}
+                                  </p>
+                                )
+                              }
 
 
                               <YouTubeTreatment

@@ -1,28 +1,19 @@
+
 export interface RankingBuilderItem {
-
-  id:string
-
-  name:string
-
-  externalUrl?:string
-
+  id: string
+  name: string
+  externalUrl?: string
+  commentary?: string
 }
-
-
-
-
 
 export interface RankingItem {
-
-  position:number
-
-  name:string
-
-  votes:number
-
-  externalUrl?:string
-
+  position: number
+  name: string
+  votes: number
+  externalUrl?: string
+  commentary?: string
 }
+
 
 
 

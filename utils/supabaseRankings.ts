@@ -53,10 +53,15 @@ function mapRanking(
         position:item.position,
         name:item.name,
         votes:item.votes ?? 0,
+        
         externalUrl:
           item.external_url ??
           item.externalUrl ??
+          undefined,
+        commentary:
+          item.commentary ??
           undefined
+
       })
     ),
     creatorId:row.user_id ?? undefined,
@@ -372,7 +377,8 @@ async function attachRankingItems(
                 position,
                 name,
                 votes,
-                external_url
+                external_url,
+                commentary
               `
             )
             .in(
@@ -532,7 +538,8 @@ export async function getSupabaseRanking(
         position,
         name,
         votes,
-        external_url
+        external_url,
+        commentary
       `
     )
     .eq(
@@ -1178,9 +1185,14 @@ export async function createSupabaseRanking(
           item.name,
         votes:
           item.votes ?? 0,
+        
         external_url:
           item.externalUrl ??
+          null,
+        commentary:
+          item.commentary ??
           null
+
       })
     )
 

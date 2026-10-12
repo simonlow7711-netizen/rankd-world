@@ -789,10 +789,17 @@ export default function CreateClient(){
               votes:
                 0,
 
+              
               externalUrl:
                 item.externalUrl?.trim()
                   ? item.externalUrl.trim()
+                  : undefined,
+
+              commentary:
+                item.commentary?.trim()
+                  ? item.commentary.trim()
                   : undefined
+
 
             })
           ),

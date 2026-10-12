@@ -1,3 +1,4 @@
+
 "use client"
 
 import {
@@ -51,7 +52,9 @@ function SortableItem({
 
   index,
 
-  updateRankingItem
+  updateRankingItem,
+
+  updateRankingCommentary
 
 }:{
 
@@ -62,6 +65,12 @@ function SortableItem({
     number
 
   updateRankingItem:
+    (
+      id:string,
+      value:string
+    ) => void
+
+  updateRankingCommentary:
     (
       id:string,
       value:string
@@ -144,6 +153,7 @@ function SortableItem({
           sm:w-9
         "
       >
+
         <span
           aria-hidden="true"
           className="
@@ -152,6 +162,7 @@ function SortableItem({
         >
           ⋮⋮
         </span>
+
       </button>
 
 
@@ -173,40 +184,83 @@ function SortableItem({
       </div>
 
 
-      <input
-        value={
-          item.name
-        }
-        onChange={
-          event =>
-            updateRankingItem(
-              item.id,
-              event.target.value
-            )
-        }
-        placeholder={
-          `Choice ${index + 1}`
-        }
-        aria-label={
-          `Choice ${index + 1}`
-        }
+      <div
         className="
           min-w-0
           flex-1
-          border-0
-          bg-transparent
-          px-0
-          py-2
-          text-lg
-          font-bold
-          leading-tight
-          text-black
-          outline-none
-          placeholder:text-black/20
-          sm:text-xl
-          md:text-2xl
         "
-      />
+      >
+
+        <input
+          value={
+            item.name
+          }
+          onChange={
+            event =>
+              updateRankingItem(
+                item.id,
+                event.target.value
+              )
+          }
+          placeholder={
+            `Choice ${index + 1}`
+          }
+          aria-label={
+            `Choice ${index + 1}`
+          }
+          className="
+            w-full
+            min-w-0
+            border-0
+            bg-transparent
+            px-0
+            py-2
+            text-lg
+            font-bold
+            leading-tight
+            text-black
+            outline-none
+            placeholder:text-black/20
+            sm:text-xl
+            md:text-2xl
+          "
+        />
+
+
+        <input
+          value={
+            item.commentary ?? ""
+          }
+          onChange={
+            event =>
+              updateRankingCommentary(
+                item.id,
+                event.target.value
+              )
+          }
+          placeholder="Add a thought (optional)"
+          aria-label={
+            `Commentary for choice ${index + 1}`
+          }
+          maxLength={500}
+          className="
+            w-full
+            min-w-0
+            border-0
+            bg-transparent
+            px-0
+            pb-2
+            pt-0
+            text-sm
+            leading-relaxed
+            text-black/65
+            outline-none
+            placeholder:text-black/35
+            focus:placeholder:text-black/25
+          "
+        />
+
+      </div>
 
     </div>
 
@@ -347,6 +401,27 @@ export default function SortableRankingList({
   }
 
 
+  function updateRankingCommentary(
+    id:string,
+    value:string
+  ){
+
+    setItems(
+      current =>
+        current.map(
+          item =>
+            item.id === id
+              ? {
+                  ...item,
+                  commentary:value
+                }
+              : item
+        )
+    )
+
+  }
+
+
   if(!hydrated){
 
     return (
@@ -382,6 +457,7 @@ export default function SortableRankingList({
                 "
               />
 
+
               <div
                 className="
                   w-12
@@ -393,6 +469,7 @@ export default function SortableRankingList({
               >
                 {index + 1}
               </div>
+
 
               <div
                 className="
@@ -485,6 +562,9 @@ export default function SortableRankingList({
                   }
                   updateRankingItem={
                     updateRankingItem
+                  }
+                  updateRankingCommentary={
+                    updateRankingCommentary
                   }
                 />
 
