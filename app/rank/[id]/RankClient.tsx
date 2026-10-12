@@ -63,6 +63,12 @@ import {
   getGoogleMapsEmbedUrl
 } from "@/utils/googleMaps"
 
+import {
+  getInstagramPostUrl
+} from "@/utils/instagram"
+
+import InstagramTreatment from "@/components/InstagramTreatment"
+
 
 type RankClientProps = {
   id:string
@@ -3077,6 +3083,11 @@ export default function RankClient({
                         item.externalUrl
                       )
 
+const instagramPostUrl =
+  getInstagramPostUrl(
+    item.externalUrl
+  )
+
 
                     return (
 
@@ -3262,7 +3273,6 @@ export default function RankClient({
                               )
                             }
 
-
                             <SpotifyTreatment
                               url={
                                 item.externalUrl
@@ -3271,6 +3281,19 @@ export default function RankClient({
                                 item.name
                               }
                             />
+
+                            {
+                              instagramPostUrl && (
+                                <InstagramTreatment
+                                  url={
+                                    instagramPostUrl
+                                  }
+                                  name={
+                                    item.name
+                                  }
+                                />
+                              )
+                            }
 
                           </div>
 
