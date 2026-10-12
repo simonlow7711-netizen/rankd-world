@@ -44,6 +44,9 @@ function mapRanking(
         externalUrl:
           item.external_url ??
           item.externalUrl ??
+          undefined,
+        commentary:
+          item.commentary ??
           undefined
       })
     ),
@@ -174,7 +177,8 @@ export async function getSupabaseRankingServer(
         position,
         name,
         votes,
-        external_url
+        external_url,
+        commentary
       `
     )
     .eq(

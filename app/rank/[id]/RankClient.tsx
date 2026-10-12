@@ -3247,6 +3247,24 @@ const instagramPostUrl =
 
 
                             {
+                              item.commentary?.trim() && (
+                                <p
+                                  className="
+                                    mt-3
+                                    text-sm
+                                    md:text-base
+                                    leading-relaxed
+                                    text-black/65
+                                    whitespace-pre-wrap
+                                  "
+                                >
+                                  {item.commentary}
+                                </p>
+                              )
+                            }
+
+
+                            {
                               youtubeThumbnail && (
 
                                 <YouTubeTreatment
