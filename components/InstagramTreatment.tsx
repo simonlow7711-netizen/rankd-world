@@ -24,7 +24,11 @@ export default function InstagramTreatment({
 
   if (embedFailed) {
     return (
-      <div className="mt-4">
+      <div
+        className="
+          mt-4
+        "
+      >
         <a
           href={url}
           target="_blank"
@@ -43,9 +47,14 @@ export default function InstagramTreatment({
             hover:text-[#FF6B35]
           "
         >
-          <span className="text-[#FF6B35]">
+          <span
+            className="
+              text-[#FF6B35]
+            "
+          >
             ↗
           </span>
+
           <span>
             View on Instagram
           </span>
@@ -70,10 +79,11 @@ export default function InstagramTreatment({
         src={`${url}embed/`}
         className="
           block
+          h-[420px]
           w-full
           border-0
+          sm:h-[540px]
         "
-        height="540"
         loading="lazy"
         allowFullScreen
         onError={() => {
