@@ -44,6 +44,10 @@ export function formatRankingTitle(
         /\bUk\b/g,
         "UK"
       )
+      .replace(
+        /\bTv\b/g,
+        "TV"
+      )
 
   return `${RANKD_PREFIX} ${cleanTitle}`
 }
