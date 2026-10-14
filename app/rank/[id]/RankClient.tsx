@@ -84,7 +84,6 @@ type PerspectiveRanking = {
   createdAt:string | null
 }
 
-
 type ShareMethod =
   | "clipboard"
   | "whatsapp"
@@ -205,7 +204,7 @@ const categoryThemes:Record<
       "border-[#101510]/10",
 
     title:
-      "leading-[0.78] tracking-[-0.07em] uppercase",
+      "leading-[0.78] tracking-[-0.07em]",
 
     secondaryLabel:
       "MATCH / 07"
@@ -380,7 +379,7 @@ const categoryThemes:Record<
       "border-[#231B22]/10",
 
     title:
-      "leading-[0.78] tracking-[-0.07em] uppercase",
+      "leading-[0.78] tracking-[-0.07em]",
 
     secondaryLabel:
       "COLLECTION / 07"
@@ -555,7 +554,7 @@ const categoryThemes:Record<
       "border-[#141B20]/10",
 
     title:
-      "leading-[0.8] tracking-[-0.065em] uppercase",
+      "leading-[0.8] tracking-[-0.065em]",
 
     secondaryLabel:
       "ROAD / 07"
