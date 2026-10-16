@@ -2417,12 +2417,17 @@ export default function RankClient({
               <h1
                 className={`
                   mt-5
-                  text-6xl
+                  text-4xl
+                  sm:text-5xl
                   md:text-8xl
                   lg:text-9xl
                   font-black
                   ${theme.title}
-                  max-w-6xl
+                  w-full
+                  max-w-full
+                  min-w-0
+                  break-words
+                  [overflow-wrap:anywhere]
                 `}
               >
                 {displayTitle}
