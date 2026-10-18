@@ -41,6 +41,11 @@ export function formatRankingTitle(
           character.toUpperCase()
       )
       .replace(
+        /'([A-Z])/g,
+        (_, character: string) =>
+          character.toLowerCase()
+      )
+      .replace(
         /\bUk\b/g,
         "UK"
       )
