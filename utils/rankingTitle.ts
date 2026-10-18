@@ -41,9 +41,13 @@ export function formatRankingTitle(
           character.toUpperCase()
       )
       .replace(
-        /'([A-Z])/g,
-        (_, character: string) =>
-          character.toLowerCase()
+        /(['’])([A-Z])/g,
+        (
+          _,
+          apostrophe: string,
+          character: string
+        ) =>
+          apostrophe + character.toLowerCase()
       )
       .replace(
         /\bUk\b/g,
