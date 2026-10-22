@@ -1093,12 +1093,7 @@ function SpotifyTreatment({
         title={`Listen to ${name} on Spotify`}
       />
 
-      <div
-        className="
-          px-4
-          py-3
-        "
-      >
+      <div className="px-4 py-3">
         <a
           href={url}
           target="_blank"
@@ -1114,18 +1109,202 @@ function SpotifyTreatment({
             hover:opacity-60
           "
         >
-          <span aria-hidden="true">
-            ♫
-          </span>
-
+          <span aria-hidden="true">♫</span>
           Open in Spotify
-
-          <span aria-hidden="true">
-            ↗
-          </span>
+          <span aria-hidden="true">↗</span>
         </a>
       </div>
     </div>
+  )
+}
+
+function AmazonTreatment({
+  url,
+  name
+}: {
+  url?: string
+  name: string
+}) {
+  const [coverId, setCoverId] =
+    useState<number | null>(null)
+
+  const [coverFailed, setCoverFailed] =
+    useState(false)
+
+  useEffect(() => {
+    if (!url) {
+      setCoverId(null)
+      return
+    }
+
+    let cancelled = false
+
+    async function findCover() {
+      try {
+        if (!url) {
+          return
+        }
+
+        const amazonUrl = new URL(url)
+
+        if (
+          ![
+            "amazon.com",
+            "www.amazon.com"
+          ].includes(amazonUrl.hostname)
+        ) {
+          return
+        }
+
+        const searchTerm =
+          amazonUrl.searchParams.get("k") ||
+          name
+
+        const query = searchTerm
+          .replace(/\+/g, " ")
+          .replace(/\bbook\b/gi, "")
+          .trim()
+
+        const response = await fetch(
+          `https://openlibrary.org/search.json?title=${encodeURIComponent(query)}&limit=5&fields=cover_i,title`,
+          {
+            signal: AbortSignal.timeout(8000)
+          }
+        )
+
+        if (!response.ok) {
+          return
+        }
+
+        const data = await response.json()
+
+        const result = data.docs?.find(
+          (book: {
+            cover_i?: number
+            title?: string
+          }) => book.cover_i
+        )
+
+        if (!cancelled && result?.cover_i) {
+          setCoverId(result.cover_i)
+          setCoverFailed(false)
+        }
+      } catch {
+        // Keep the existing card if lookup fails.
+      }
+    }
+
+    findCover()
+
+    return () => {
+      cancelled = true
+    }
+  }, [url, name])
+
+  if (!url) {
+    return null
+  }
+
+  let amazonUrl: URL
+
+  try {
+    amazonUrl = new URL(url)
+
+    if (
+      ![
+        "amazon.com",
+        "www.amazon.com"
+      ].includes(amazonUrl.hostname)
+    ) {
+      return null
+    }
+
+    if (
+      !amazonUrl.pathname.startsWith("/s") &&
+      !amazonUrl.pathname.startsWith("/dp/") &&
+      !amazonUrl.pathname.startsWith("/gp/")
+    ) {
+      return null
+    }
+  } catch {
+    return null
+  }
+
+  return (
+    <a
+      href={amazonUrl.toString()}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="
+        mt-5
+        flex
+        w-full
+        max-w-2xl
+        items-center
+        gap-4
+        rounded-[20px]
+        border
+        border-black/10
+        bg-white
+        p-4
+        text-black
+        transition
+        hover:border-black/25
+      "
+    >
+      <div
+        className="
+          flex
+          h-32
+          w-24
+          shrink-0
+          items-center
+          justify-center
+          overflow-hidden
+          rounded-lg
+          bg-[#F7F4EE]
+        "
+      >
+        {
+          coverId && !coverFailed ? (
+            <img
+              src={`https://covers.openlibrary.org/b/id/${coverId}-M.jpg`}
+              alt={`Cover of ${name}`}
+              className="
+                h-full
+                w-full
+                object-cover
+              "
+              loading="lazy"
+              onError={() => {
+                setCoverFailed(true)
+              }}
+            />
+          ) : (
+            <span
+              className="text-3xl"
+              aria-hidden="true"
+            >
+              📚
+            </span>
+          )
+        }
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <p className="text-xs font-semibold uppercase tracking-wider text-black/50">
+          Discover the book
+        </p>
+
+        <p className="mt-1 font-semibold">
+          {name}
+        </p>
+
+        <p className="mt-2 text-sm font-medium text-[#FF6B35]">
+          View on Amazon ↗
+        </p>
+      </div>
+    </a>
   )
 }
 
@@ -1134,10 +1313,8 @@ export default function RankClient({
   id,
   initialRanking
 }: RankClientProps) {
-
   const router =
     useRouter()
-
 
   const [
     ranking,
@@ -1146,7 +1323,6 @@ export default function RankClient({
     useState<Ranking | null>(
       initialRanking
     )
-
 
   const [
     originalRanking,
@@ -3300,6 +3476,15 @@ const instagramPostUrl =
                             }
 
                             <SpotifyTreatment
+                              url={
+                                item.externalUrl
+                              }
+                              name={
+                                item.name
+                              }
+                            />
+
+                            <AmazonTreatment
                               url={
                                 item.externalUrl
                               }
