@@ -129,10 +129,9 @@ export default function ConversationTree({
               isCurrent
 
                 ? `
-                  bg-white
+                  bg-[#F7F4EE]
                   text-black
-                  border-black/10
-                  shadow-sm
+                  border-black
                 `
 
                 : `
@@ -177,7 +176,7 @@ export default function ConversationTree({
               className="
                 min-w-0
                 flex-1
-                text-left
+                text-center
                 font-black
                 hover:opacity-70
                 transition
@@ -261,7 +260,7 @@ export default function ConversationTree({
 
                       : `
                         border-black/10
-                        bg-white/60
+                        bg-[#F7F4EE]
                         text-black/45
                         hover:border-black/20
                         hover:text-black

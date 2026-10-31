@@ -31,16 +31,21 @@ export default function RemixList({
   return (
 
     <div className="
+      rankd-edition
       mt-8
-      bg-zinc-900
-      rounded-3xl
+      rounded-[28px]
+      border
+      border-black
+      bg-[#F7F4EE]
       p-6
+      text-center
+      text-black
     ">
-
 
       <h2 className="
         text-2xl
         font-black
+        tracking-[-0.04em]
       ">
 
         Different Perspectives
@@ -51,10 +56,9 @@ export default function RemixList({
 
 
 
-
       <p className="
         mt-2
-        text-gray-400
+        text-black/50
       ">
 
         Everyone has their own Top 7.
@@ -87,11 +91,13 @@ export default function RemixList({
             <div
 
               className="
-                bg-black
                 rounded-2xl
+                border
+                border-black
+                bg-[#F7F4EE]
                 p-5
-                hover:scale-[1.02]
                 transition
+                hover:bg-[#F7F4EE]
               "
 
             >
@@ -111,8 +117,8 @@ export default function RemixList({
 
               <p className="
                 mt-2
-                text-gray-400
                 text-sm
+                text-black/45
               ">
 
                 Created by {remix.creator || "RANKD User"}
@@ -126,7 +132,7 @@ export default function RemixList({
               <div className="
                 mt-4
                 text-sm
-                text-gray-300
+                text-black/60
               ">
 
 

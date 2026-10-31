@@ -708,7 +708,7 @@ export default function EntryExperience({
                     <div
                       className="
                         shrink-0
-                        self-start
+                        self-center
                         rounded-full
                         px-5
                         py-2.5
@@ -884,7 +884,7 @@ export default function EntryExperience({
                                       "
                                       style={{
                                         backgroundColor:
-                                          "#FFFFFF"
+                                          theme.paper
                                       }}
                                       aria-label="Reveal the number one ranked item"
                                     >
@@ -1040,10 +1040,9 @@ export default function EntryExperience({
                         mb-5
                         flex
                         flex-col
-                        gap-4
-                        md:flex-row
-                        md:items-center
-                        md:justify-between
+                        items-center
+                        gap-2
+                        text-center
                       "
                     >
 
@@ -1107,7 +1106,7 @@ export default function EntryExperience({
                       }
 
                       cardColor={
-                        "#FFFFFF"
+                        theme.paper
                       }
                     />
 
@@ -1462,10 +1461,9 @@ export default function EntryExperience({
                         className="
                           flex
                           flex-col
-                          gap-6
-                          md:flex-row
-                          md:items-end
-                          md:justify-between
+                          items-center
+                          gap-4
+                          text-center
                         "
                       >
 

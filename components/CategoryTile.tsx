@@ -38,10 +38,13 @@ export default function CategoryTile({
         relative
         flex
         min-h-[220px]
+        flex-col
+        items-center
         overflow-hidden
         rounded-[28px]
         border
         p-6
+        text-center
         text-black
         ${
           isIndex
@@ -65,15 +68,17 @@ export default function CategoryTile({
           h-full
           w-full
           flex-col
+          items-center
         "
       >
 
         <div
           className="
             flex
-            items-start
-            justify-between
-            gap-4
+            w-full
+            items-center
+            justify-center
+            gap-3
           "
         >
 
@@ -93,6 +98,14 @@ export default function CategoryTile({
 
           <span
             className="
+              text-black/20
+            "
+          >
+            ·
+          </span>
+
+          <span
+            className="
               text-[10px]
               font-black
               uppercase
@@ -108,14 +121,20 @@ export default function CategoryTile({
         <div
           className="
             mt-auto
+            flex
+            w-full
+            flex-col
+            items-center
             pt-12
           "
         >
 
           <h3
             className={`
-              mt-3
+              mx-auto
+              w-full
               max-w-[92%]
+              text-center
               font-black
               leading-[0.92]
               tracking-[-0.05em]
@@ -131,9 +150,11 @@ export default function CategoryTile({
 
           <p
             className="
+              mx-auto
               mt-4
               line-clamp-2
               max-w-md
+              text-center
               text-sm
               leading-relaxed
               text-black/50
@@ -146,8 +167,10 @@ export default function CategoryTile({
             className="
               mt-6
               flex
+              w-full
               items-center
-              justify-between
+              justify-center
+              gap-3
               border-t
               border-black/10
               pt-4

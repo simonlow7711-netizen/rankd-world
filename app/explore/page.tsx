@@ -254,7 +254,9 @@ export default async function ExplorePage() {
 
           <div
             className="
+              mx-auto
               max-w-3xl
+              text-center
             "
           >
 
@@ -287,6 +289,7 @@ export default async function ExplorePage() {
 
             <p
               className="
+                mx-auto
                 mt-4
                 max-w-xl
                 text-base
@@ -335,11 +338,10 @@ export default async function ExplorePage() {
                   mb-10
                   flex
                   flex-col
+                  items-center
                   gap-6
+                  text-center
                   md:mb-12
-                  md:flex-row
-                  md:items-end
-                  md:justify-between
                 "
               >
 
@@ -459,12 +461,10 @@ export default async function ExplorePage() {
                           overflow-hidden
                           rounded-2xl
                           border
-                          border-black/10
-                          bg-white
-                          shadow-sm
+                          border-black
+                          bg-[#F7F4EE]
                           transition
-                          hover:border-black/30
-                          hover:shadow-md
+                          hover:border-black
                         "
                       >
 
@@ -565,6 +565,7 @@ export default async function ExplorePage() {
                         <div
                           className="
                             p-6
+                            text-center
                             md:p-7
                           "
                         >
@@ -620,13 +621,14 @@ export default async function ExplorePage() {
 
                           <div
                             className="
-                              mt-6
-                              flex
-                              items-center
-                              justify-between
-                              border-t
-                              border-black/10
-                              pt-5
+                            mt-6
+                            flex
+                            items-center
+                            justify-center
+                            gap-3
+                            border-t
+                            border-black/10
+                            pt-5
                             "
                           >
 
@@ -681,11 +683,10 @@ export default async function ExplorePage() {
               mb-10
               flex
               flex-col
+              items-center
               gap-6
+              text-center
               md:mb-12
-              md:flex-row
-              md:items-end
-              md:justify-between
             "
           >
 
@@ -782,7 +783,7 @@ export default async function ExplorePage() {
                   className="
                     border
                     border-black/10
-                    bg-white/30
+                    bg-[#F7F4EE]
                     p-8
                   "
                 >
@@ -829,11 +830,10 @@ export default async function ExplorePage() {
               mb-10
               flex
               flex-col
+              items-center
               gap-6
+              text-center
               md:mb-12
-              md:flex-row
-              md:items-end
-              md:justify-between
             "
           >
 
@@ -930,7 +930,7 @@ export default async function ExplorePage() {
                   className="
                     border
                     border-black/10
-                    bg-white/30
+                    bg-[#F7F4EE]
                     p-8
                   "
                 >
@@ -964,10 +964,9 @@ export default async function ExplorePage() {
             className="
               flex
               flex-col
+              items-center
               gap-8
-              md:flex-row
-              md:items-end
-              md:justify-between
+              text-center
             "
           >
 

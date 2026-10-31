@@ -1298,7 +1298,7 @@ export default function CreateClient(){
               rounded-3xl
               border
               border-black/[0.08]
-              bg-white/65
+              bg-[#F7F4EE]
               shadow-[0_18px_50px_rgba(0,0,0,0.05)]
             "
           >
@@ -1435,7 +1435,7 @@ export default function CreateClient(){
                                 rounded-full
                                 border
                                 border-black/[0.10]
-                                bg-white/60
+                                bg-[#F7F4EE]
                                 px-4
                                 py-2
                                 text-xs
@@ -1443,7 +1443,7 @@ export default function CreateClient(){
                                 text-black/55
                                 transition
                                 hover:border-[#FF6B35]/40
-                                hover:bg-white
+                                hover:bg-[#F7F4EE]
                                 hover:text-[#FF6B35]
                               "
                             >
@@ -1597,7 +1597,7 @@ export default function CreateClient(){
                                   transition
                                   placeholder:text-black/25
                                   focus:border-[#FF6B35]/50
-                                  focus:bg-white
+                                  focus:bg-[#F7F4EE]
                                   focus:ring-4
                                   focus:ring-[#FF6B35]/[0.06]
                                 "
@@ -1769,7 +1769,7 @@ export default function CreateClient(){
                   rounded-full
                   border
                   border-black/[0.12]
-                  bg-white/60
+                  bg-[#F7F4EE]
                   px-6
                   py-3.5
                   text-sm
@@ -1777,7 +1777,7 @@ export default function CreateClient(){
                   text-black
                   transition
                   hover:border-black
-                  hover:bg-white
+                  hover:bg-[#F7F4EE]
                   disabled:cursor-not-allowed
                   disabled:opacity-50
                 "
@@ -1970,7 +1970,7 @@ export default function CreateClient(){
               rounded-2xl
               border
               border-black/[0.07]
-              bg-white/60
+              bg-[#F7F4EE]
               px-5
               py-4
               shadow-[0_8px_30px_rgba(0,0,0,0.03)]
@@ -2035,7 +2035,7 @@ export default function CreateClient(){
             rounded-3xl
             border
             border-black/[0.08]
-            bg-white/55
+            bg-[#F7F4EE]
             p-5
             shadow-[0_18px_50px_rgba(0,0,0,0.04)]
             sm:p-8
@@ -2095,7 +2095,7 @@ export default function CreateClient(){
                   transition
                   placeholder:text-black/20
                   focus:border-[#FF6B35]/50
-                  focus:bg-white
+                  focus:bg-[#F7F4EE]
                   focus:ring-4
                   focus:ring-[#FF6B35]/[0.06]
                   sm:px-5
@@ -2147,7 +2147,7 @@ export default function CreateClient(){
                   outline-none
                   transition
                   focus:border-[#FF6B35]/50
-                  focus:bg-white
+                  focus:bg-[#F7F4EE]
                   focus:ring-4
                   focus:ring-[#FF6B35]/[0.06]
                 "
@@ -2213,7 +2213,7 @@ export default function CreateClient(){
                   outline-none
                   transition
                   focus:border-[#FF6B35]/50
-                  focus:bg-white
+                  focus:bg-[#F7F4EE]
                   focus:ring-4
                   focus:ring-[#FF6B35]/[0.06]
                 "
@@ -2314,7 +2314,7 @@ export default function CreateClient(){
                   transition
                   placeholder:text-black/20
                   focus:border-[#FF6B35]/50
-                  focus:bg-white
+                  focus:bg-[#F7F4EE]
                   focus:ring-4
                   focus:ring-[#FF6B35]/[0.06]
                   sm:px-5
@@ -2410,7 +2410,7 @@ export default function CreateClient(){
               rounded-3xl
               border
               border-black/[0.08]
-              bg-white/70
+              bg-[#F7F4EE]
               p-3
               shadow-[0_18px_50px_rgba(0,0,0,0.05)]
               sm:p-4
@@ -2459,7 +2459,7 @@ export default function CreateClient(){
             rounded-3xl
             border
             border-black/[0.07]
-            bg-white/45
+            bg-[#F7F4EE]
             p-4
             sm:p-5
           "

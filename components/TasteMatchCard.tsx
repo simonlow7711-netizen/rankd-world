@@ -278,8 +278,10 @@ export default function TasteMatchCard({
           w-24
           h-24
           rounded-full
-          bg-black
-          text-white
+          border
+          border-black
+          bg-[#F7F4EE]
+          text-black
           flex
           items-center
           justify-center
@@ -456,11 +458,13 @@ export default function TasteMatchCard({
 
 
           <div className="
-            bg-black
-            text-white
             rounded-2xl
+            border
+            border-black
+            bg-[#F7F4EE]
             p-4
             text-center
+            text-black
           ">
 
             <p className="
@@ -492,11 +496,13 @@ export default function TasteMatchCard({
 
 
           <div className="
-            bg-black
-            text-white
             rounded-2xl
+            border
+            border-black
+            bg-[#F7F4EE]
             p-4
             text-center
+            text-black
           ">
 
             <p className="
@@ -529,11 +535,13 @@ export default function TasteMatchCard({
 
 
           <div className="
-            bg-black
-            text-white
             rounded-2xl
+            border
+            border-black
+            bg-[#F7F4EE]
             p-4
             text-center
+            text-black
           ">
 
             <p className="

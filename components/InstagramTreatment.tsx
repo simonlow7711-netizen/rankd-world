@@ -44,7 +44,7 @@ export default function InstagramTreatment({
           rounded-[22px]
           border
           border-black/10
-          bg-white
+          bg-[#F7F4EE]
           px-4
           py-3.5
           text-sm
@@ -69,7 +69,7 @@ export default function InstagramTreatment({
         rounded-[22px]
         border
         border-black/10
-        bg-white
+        bg-[#F7F4EE]
       "
     >
       <FitEmbed

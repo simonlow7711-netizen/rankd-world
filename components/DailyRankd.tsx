@@ -113,6 +113,7 @@ export default function DailyRankd({
             className="
               relative
               z-10
+              text-center
             "
           >
 
@@ -120,12 +121,10 @@ export default function DailyRankd({
               className="
                 flex
                 flex-col
-                gap-5
+                items-center
+                gap-3
                 border-b
                 pb-7
-                md:flex-row
-                md:items-start
-                md:justify-between
               "
               style={{
                 borderColor:
@@ -133,57 +132,40 @@ export default function DailyRankd({
               }}
             >
 
-              <div>
-
-                <p
-                  className="
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.28em]
-                  "
-                  style={{
-                    color:
-                      theme.accent
-                  }}
-                >
-                  RANKD OF THE DAY
-                </p>
+              <p
+                className="
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.28em]
+                "
+                style={{
+                  color:
+                    theme.accent
+                }}
+              >
+                RANKD OF THE DAY
+              </p>
 
 
-                <p
-                  className="
-                    mt-2
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.22em]
-                    opacity-60
-                  "
-                >
-                  {theme.label}
-                </p>
-
-              </div>
-
-
-              <div
+              <p
                 className="
                   text-xs
                   font-black
                   uppercase
                   tracking-[0.22em]
-                  opacity-50
+                  opacity-60
                 "
               >
-                DAILY EDITION
-              </div>
+                {theme.label} · DAILY EDITION
+              </p>
 
             </div>
 
 
             <div
               className="
+                mx-auto
                 max-w-5xl
                 py-10
                 md:py-14
@@ -206,6 +188,7 @@ export default function DailyRankd({
 
               <h2
                 className="
+                  mx-auto
                   max-w-5xl
                   text-4xl
                   font-black
@@ -237,15 +220,14 @@ export default function DailyRankd({
                   mt-7
                   flex
                   flex-col
+                  items-center
                   gap-6
-                  md:flex-row
-                  md:items-end
-                  md:justify-between
                 "
               >
 
                 <div
                   className="
+                    mx-auto
                     max-w-2xl
                   "
                 >
@@ -329,7 +311,8 @@ export default function DailyRankd({
               className="
                 flex
                 flex-col
-                gap-3
+                items-center
+                gap-2
                 border-t
                 pt-5
                 text-xs
@@ -337,9 +320,6 @@ export default function DailyRankd({
                 uppercase
                 tracking-[0.18em]
                 opacity-55
-                md:flex-row
-                md:items-center
-                md:justify-between
               "
               style={{
                 borderColor:

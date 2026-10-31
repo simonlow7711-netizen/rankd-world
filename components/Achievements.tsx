@@ -17,10 +17,15 @@ export default function Achievements({
 
     <section
       className="
-        bg-zinc-900
-        rounded-3xl
-        p-8
+        rankd-edition
         mb-12
+        rounded-[28px]
+        border
+        border-black
+        bg-[#F7F4EE]
+        p-8
+        text-center
+        text-black
       "
     >
 
@@ -29,9 +34,10 @@ export default function Achievements({
         className="
           text-3xl
           font-black
+          tracking-[-0.04em]
         "
       >
-        🏆 Achievements
+        Achievements
       </h2>
 
 
@@ -42,11 +48,10 @@ export default function Achievements({
         className="
           mt-6
           grid
-          md:grid-cols-2
           gap-4
+          md:grid-cols-2
         "
       >
-
 
         {achievements.map((achievement:any)=>(
           
@@ -56,8 +61,10 @@ export default function Achievements({
             key={achievement.title}
 
             className="
-              bg-black
               rounded-2xl
+              border
+              border-black
+              bg-[#F7F4EE]
               p-5
             "
 
@@ -75,8 +82,8 @@ export default function Achievements({
 
             <p
               className="
-                text-gray-400
                 mt-2
+                text-black/50
               "
             >
               {achievement.description}

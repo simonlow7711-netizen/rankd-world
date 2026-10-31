@@ -33,7 +33,7 @@ export default function MapsTreatment({
         rounded-[22px]
         border
         border-black/10
-        bg-white
+        bg-[#F7F4EE]
         shadow-[0_14px_32px_rgba(0,0,0,0.08)]
       "
     >

@@ -102,7 +102,7 @@ export default function AmazonTreatment({
         rounded-[22px]
         border
         border-black/10
-        bg-white
+        bg-[#F7F4EE]
         p-3.5
         pr-5
         text-left

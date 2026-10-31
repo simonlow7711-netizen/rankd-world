@@ -274,16 +274,14 @@ export default function ShareButton({
               max-w-md
               rounded-t-[28px]
               border
-              border-black/10
-              bg-white
+              border-black
+              bg-[#F7F4EE]
               p-5
               pb-[max(1.25rem,env(safe-area-inset-bottom))]
               text-left
               text-black
-              shadow-[0_-12px_40px_rgba(0,0,0,0.18)]
               sm:mb-0
               sm:rounded-[28px]
-              sm:shadow-[0_20px_50px_rgba(0,0,0,0.16)]
             "
             role="dialog"
             aria-label="Share"
@@ -551,14 +549,12 @@ export default function ShareButton({
           gap-2.5
           rounded-full
           border
-          border-black/10
-          bg-white
+          border-black
+          bg-[#F7F4EE]
           text-black
-          shadow-sm
           transition
           hover:-translate-y-0.5
-          hover:border-black/20
-          hover:shadow-md
+          hover:border-black
           ${
             compact
               ? "px-3 py-2"

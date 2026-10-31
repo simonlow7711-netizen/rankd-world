@@ -100,7 +100,7 @@ function SortableItem({
         flex
         items-center
         gap-4
-        bg-white
+        bg-[#F7F4EE]
         rounded-2xl
         p-4
       "

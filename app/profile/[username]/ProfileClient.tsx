@@ -247,7 +247,7 @@ function Stat({
 }){
   return (
     <div className="
-      bg-white
+      bg-[#F7F4EE]
       rounded-2xl
       p-5
     ">

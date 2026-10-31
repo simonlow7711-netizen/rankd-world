@@ -231,7 +231,7 @@ export default function ContactPage() {
               className="
                 mt-12
                 rounded-[32px]
-                bg-white
+                bg-[#F7F4EE]
                 p-8
                 md:p-10
                 shadow-sm
@@ -295,7 +295,7 @@ export default function ContactPage() {
               className="
                 mt-12
                 rounded-[32px]
-                bg-white
+                bg-[#F7F4EE]
                 p-8
                 md:p-10
                 shadow-sm

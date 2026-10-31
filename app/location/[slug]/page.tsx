@@ -380,7 +380,7 @@ export default async function LocationPage({
                 rounded-full
                 border
                 border-black/10
-                bg-white
+                bg-[#F7F4EE]
                 px-3
                 py-1
                 text-xs
@@ -533,7 +533,7 @@ export default async function LocationPage({
                 rounded-2xl
                 border
                 border-black/10
-                bg-white
+                bg-[#F7F4EE]
               "
 
             >
@@ -699,7 +699,7 @@ export default async function LocationPage({
                     rounded-2xl
                     border
                     border-black/10
-                    bg-white
+                    bg-[#F7F4EE]
                     px-6
                     py-12
                     text-center

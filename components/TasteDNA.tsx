@@ -19,16 +19,19 @@ export default function TasteDNA({
 
 
 
-
-
   return (
 
     <section
       className="
-        bg-zinc-900
-        rounded-3xl
-        p-8
+        rankd-edition
         mb-12
+        rounded-[28px]
+        border
+        border-black
+        bg-[#F7F4EE]
+        p-8
+        text-center
+        text-black
       "
     >
 
@@ -37,6 +40,7 @@ export default function TasteDNA({
         className="
           text-3xl
           font-black
+          tracking-[-0.04em]
         "
       >
         Your Taste DNA
@@ -47,8 +51,10 @@ export default function TasteDNA({
 
       <p
         className="
+          mx-auto
           mt-3
-          text-gray-400
+          max-w-md
+          text-black/50
         "
       >
 
@@ -60,11 +66,13 @@ export default function TasteDNA({
 
 
 
-
       <div
         className="
+          mx-auto
           mt-8
+          max-w-xl
           space-y-5
+          text-left
         "
       >
 
@@ -79,9 +87,9 @@ export default function TasteDNA({
 
             <div
               className="
+                mb-2
                 flex
                 justify-between
-                mb-2
               "
             >
 
@@ -96,7 +104,7 @@ export default function TasteDNA({
 
               <span
                 className="
-                  text-gray-400
+                  text-black/40
                 "
               >
                 {item.count}
@@ -112,9 +120,11 @@ export default function TasteDNA({
             <div
               className="
                 h-4
-                bg-black
-                rounded-full
                 overflow-hidden
+                rounded-full
+                border
+                border-black/10
+                bg-[#F7F4EE]
               "
             >
 
@@ -122,8 +132,8 @@ export default function TasteDNA({
 
                 className="
                   h-full
-                  bg-white
                   rounded-full
+                  bg-[#FF6B35]
                 "
 
                 style={{
@@ -153,16 +163,24 @@ export default function TasteDNA({
 
         <div
           className="
+            mx-auto
             mt-10
-            bg-black
+            max-w-xl
             rounded-2xl
+            border
+            border-black
+            bg-[#F7F4EE]
             p-5
           "
         >
 
           <p
             className="
-              text-gray-400
+              text-[10px]
+              font-black
+              uppercase
+              tracking-[0.18em]
+              text-black/40
             "
           >
             Your strongest taste:
@@ -171,9 +189,9 @@ export default function TasteDNA({
 
           <p
             className="
+              mt-2
               text-3xl
               font-black
-              mt-2
             "
           >
             {data.strongestCategory}

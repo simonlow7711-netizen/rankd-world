@@ -218,7 +218,7 @@ function SearchResults() {
                 rounded-3xl
                 border
                 border-black/[0.07]
-                bg-white/60
+                bg-[#F7F4EE]
                 px-6
                 py-12
                 text-center

@@ -19,24 +19,29 @@ export default function DebateCard({
 
 
 
-
   return (
 
     <div className="
-      bg-zinc-900
-      rounded-3xl
+      rankd-edition
+      rounded-[28px]
+      border
+      border-black
+      bg-[#F7F4EE]
       p-8
-      text-white
+      text-center
+      text-black
     ">
 
 
       <p className="
-        text-orange-400
+        text-[11px]
         font-black
-        text-xl
+        uppercase
+        tracking-[0.22em]
+        text-[#FF6B35]
       ">
 
-        🔥 BIGGEST DEBATE
+        Biggest debate
 
       </p>
 
@@ -45,9 +50,10 @@ export default function DebateCard({
 
 
       <h3 className="
+        mt-4
         text-3xl
         font-black
-        mt-4
+        tracking-[-0.04em]
       ">
 
         {debate.item}
@@ -60,8 +66,10 @@ export default function DebateCard({
 
 
       <p className="
+        mx-auto
         mt-4
-        text-gray-400
+        max-w-md
+        text-black/50
       ">
 
         This is where opinions differ most.
@@ -73,11 +81,14 @@ export default function DebateCard({
 
 
 
-
       <div className="
+        mx-auto
         mt-6
-        bg-black
+        max-w-md
         rounded-2xl
+        border
+        border-black
+        bg-[#F7F4EE]
         p-5
       ">
 
@@ -116,8 +127,8 @@ export default function DebateCard({
 
         <p className="
           mt-4
-          text-orange-400
           font-black
+          text-[#FF6B35]
         ">
 
           Moved {debate.difference} places
@@ -127,7 +138,6 @@ export default function DebateCard({
 
 
       </div>
-
 
 
 
@@ -144,12 +154,17 @@ export default function DebateCard({
 
           className="
             mt-8
-            bg-white
-            text-black
+            rounded-full
+            border
+            border-black
+            bg-black
             px-8
             py-4
-            rounded-full
             font-black
+            text-white
+            transition
+            hover:bg-[#FF6B35]
+            hover:text-black
           "
 
         >

@@ -684,7 +684,7 @@ export default function RankClient({
               rounded-[28px]
               border
               border-black
-              bg-white
+              bg-[#F7F4EE]
               p-8
               md:p-12
             "
@@ -1024,56 +1024,21 @@ export default function RankClient({
                 flex
                 items-center
                 justify-center
-                gap-4
+                gap-3
+                text-center
               "
             >
 
               <span
-                className="
-                  inline-flex
-                  items-center
-                  gap-2
+                className={`
                   text-[11px]
                   uppercase
                   tracking-[0.2em]
                   font-black
-                "
-              >
-
-                <span
-                  className={theme.accent}
-                >
-                  {theme.index} · RANKD
-                </span>
-
-
-                <span
-                  className="
-                    opacity-30
-                  "
-                >
-                  /
-                </span>
-
-
-                <span
-                  className={theme.accent}
-                >
-                  {theme.secondaryLabel}
-                </span>
-
-              </span>
-
-
-              <span
-                className={`
-                  text-xl
-                  font-black
                   ${theme.accent}
-                  opacity-50
                 `}
               >
-                07
+                {theme.index} · RANKD / {theme.secondaryLabel}
               </span>
 
             </div>
@@ -1234,12 +1199,13 @@ export default function RankClient({
                           flex
                           w-full
                           items-center
-                          justify-between
+                          justify-center
+                          gap-3
                           rounded-2xl
                           bg-black
                           px-4
                           py-3
-                          text-left
+                          text-center
                           text-sm
                           font-black
                           text-white
@@ -1501,7 +1467,7 @@ export default function RankClient({
                     rounded-[24px]
                     border
                     border-black
-                    bg-white
+                    bg-[#F7F4EE]
                   "
                 >
                   <div
@@ -1619,7 +1585,7 @@ export default function RankClient({
                     rounded-[24px]
                     border
                     border-black
-                    bg-white
+                    bg-[#F7F4EE]
                   "
                 >
 
@@ -1935,8 +1901,9 @@ export default function RankClient({
                 rounded-[28px]
                 border
                 border-black
-                bg-white
+                bg-[#F7F4EE]
                 p-7
+                text-center
                 md:p-8
               "
             >
@@ -1944,9 +1911,9 @@ export default function RankClient({
               <div
                 className="
                   flex
+                  flex-col
                   items-center
-                  justify-between
-                  gap-4
+                  gap-2
                 "
               >
 
@@ -1983,6 +1950,7 @@ export default function RankClient({
 
               <h2
                 className="
+                  mx-auto
                   mt-8
                   text-3xl
                   md:text-4xl
@@ -2146,9 +2114,10 @@ export default function RankClient({
                 rounded-[28px]
                 border
                 border-black
-                bg-white
+                bg-[#F7F4EE]
                 p-7
                 md:p-8
+                text-center
                 text-black
               "
             >
@@ -2162,24 +2131,24 @@ export default function RankClient({
 
                 <div
                   className="
-                    flex
-                    items-center
-                    justify-between
-                    gap-4
+                  flex
+                  items-center
+                  justify-center
+                  gap-3
+                "
+              >
+
+                <span
+                  className="
+                    text-[11px]
+                    uppercase
+                    tracking-[0.2em]
+                    font-black
+                    text-[#FF6B35]
                   "
                 >
-
-                  <span
-                    className="
-                      text-[11px]
-                      uppercase
-                      tracking-[0.2em]
-                      font-black
-                      text-[#FF6B35]
-                    "
-                  >
-                    RANKD / EXPLORE
-                  </span>
+                  RANKD / EXPLORE
+                </span>
 
 
                   <span

@@ -187,9 +187,9 @@ export default function Hero() {
         <Link
           href="/explore"
           className="
-            bg-white
+            bg-[#F7F4EE]
             border
-            border-black/10
+            border-black
             text-black
             px-8
             py-4

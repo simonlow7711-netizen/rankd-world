@@ -177,6 +177,7 @@ export default function WhyRankd() {
                   border-t
                   border-black/10
                   py-8
+                  text-center
                   transition
                   md:border-t-0
                   md:border-l
@@ -190,9 +191,9 @@ export default function WhyRankd() {
                 <div
                   className="
                     flex
-                    items-start
-                    justify-between
-                    gap-6
+                    items-center
+                    justify-center
+                    gap-4
                   "
                 >
 
@@ -233,6 +234,7 @@ export default function WhyRankd() {
 
                 <h3
                   className="
+                    mx-auto
                     mt-8
                     text-2xl
                     font-black
@@ -247,6 +249,7 @@ export default function WhyRankd() {
 
                 <p
                   className="
+                    mx-auto
                     mt-4
                     max-w-sm
                     leading-relaxed

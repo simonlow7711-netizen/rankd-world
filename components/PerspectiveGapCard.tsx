@@ -25,18 +25,26 @@ export default function PerspectiveGapCard({
   return (
 
     <div className="
-      bg-zinc-900
-      rounded-3xl
+      rankd-edition
+      rounded-[28px]
+      border
+      border-black
+      bg-[#F7F4EE]
       p-6
+      text-center
+      text-black
     ">
 
 
       <p className="
-        text-xl
+        text-[11px]
         font-black
+        uppercase
+        tracking-[0.22em]
+        text-[#FF6B35]
       ">
 
-        🔥 Perspective Gap
+        Perspective Gap
 
       </p>
 
@@ -46,7 +54,7 @@ export default function PerspectiveGapCard({
 
       <p className="
         mt-3
-        text-gray-400
+        text-black/50
       ">
 
         Everyone has their own Top 7.
@@ -71,9 +79,8 @@ export default function PerspectiveGapCard({
 
 
 
-
       <p className="
-        text-gray-400
+        text-black/50
       ">
 
         {remixCount === 1
@@ -88,7 +95,6 @@ export default function PerspectiveGapCard({
 
 
 
-
       {remixCount > 0 && (
 
         <Link
@@ -96,14 +102,19 @@ export default function PerspectiveGapCard({
           href={`/rank/${rankingId}/debate`}
 
           className="
-            block
             mt-6
-            bg-white
-            text-black
-            text-center
+            block
             rounded-full
+            border
+            border-black
+            bg-black
             py-3
+            text-center
             font-black
+            text-white
+            transition
+            hover:bg-[#FF6B35]
+            hover:text-black
           "
 
         >
@@ -119,13 +130,12 @@ export default function PerspectiveGapCard({
 
 
 
-
       {remixCount === 0 && (
 
         <p className="
           mt-6
           text-sm
-          text-gray-500
+          text-black/40
         ">
 
           Be the first person to create a different perspective.

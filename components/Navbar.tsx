@@ -372,11 +372,11 @@ export default function Navbar() {
                 rounded-full
                 border
                 border-black/[0.10]
-                bg-white/70
+                bg-[#F7F4EE]
                 px-4
                 transition
                 focus-within:border-black/25
-                focus-within:bg-white
+                focus-within:bg-[#F7F4EE]
               "
             >
 
@@ -696,11 +696,11 @@ export default function Navbar() {
               rounded-full
               border
               border-black/[0.10]
-              bg-white/70
+              bg-[#F7F4EE]
               px-4
               transition
               focus-within:border-black/25
-              focus-within:bg-white
+              focus-within:bg-[#F7F4EE]
             "
           >
 

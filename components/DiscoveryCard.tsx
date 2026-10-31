@@ -17,7 +17,7 @@ export default function DiscoveryCard({
       <div
 
         className="
-          bg-white
+          bg-[#F7F4EE]
           text-black
           rounded-3xl
           p-6

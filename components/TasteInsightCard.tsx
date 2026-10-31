@@ -109,13 +109,15 @@ export default function TasteInsightCard({
                   key={trait}
 
                   className="
-                    bg-black
-                    text-white
                     rounded-full
+                    border
+                    border-black
+                    bg-[#F7F4EE]
                     px-5
                     py-2
                     text-sm
                     font-black
+                    text-black
                   "
 
                 >
@@ -359,7 +361,7 @@ function Metric({
   return (
 
     <div className="
-      bg-white
+      bg-[#F7F4EE]
       rounded-2xl
       p-5
     ">

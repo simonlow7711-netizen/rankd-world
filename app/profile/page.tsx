@@ -282,7 +282,7 @@ export default function ProfilePage() {
             rounded-[28px]
             border
             border-black/[0.06]
-            bg-white/30
+            bg-[#F7F4EE]
             px-7
             py-8
             md:px-10
@@ -502,12 +502,13 @@ export default function ProfilePage() {
           <div
             className="
               flex
-              items-end
-              justify-between
-              gap-6
+              flex-col
+              items-center
+              gap-3
               border-b
               border-black/[0.08]
               pb-5
+              text-center
             "
           >
 
@@ -544,11 +545,9 @@ export default function ProfilePage() {
 
             <p
               className="
-                hidden
                 text-sm
                 font-bold
                 text-black/35
-                sm:block
               "
             >
               {rankings.length}
@@ -568,7 +567,7 @@ export default function ProfilePage() {
                   rounded-[28px]
                   border
                   border-black/[0.06]
-                  bg-white/30
+                  bg-[#F7F4EE]
                   p-10
                   text-center
                   md:p-14
@@ -678,6 +677,7 @@ export default function ProfilePage() {
                         className="
                           relative
                           z-10
+                          text-center
                         "
                       >
 
@@ -685,8 +685,8 @@ export default function ProfilePage() {
                           className="
                             flex
                             items-center
-                            justify-between
-                            gap-4
+                            justify-center
+                            gap-3
                           "
                         >
 
@@ -727,6 +727,7 @@ export default function ProfilePage() {
 
                         <h3
                           className="
+                            mx-auto
                             mt-5
                             max-w-xl
                             text-3xl
@@ -770,8 +771,8 @@ export default function ProfilePage() {
                             mt-7
                             flex
                             items-center
-                            justify-between
-                            gap-4
+                            justify-center
+                            gap-3
                             border-t
                             pt-5
                           "

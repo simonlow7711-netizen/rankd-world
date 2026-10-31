@@ -251,7 +251,7 @@ export default async function NotificationsPage() {
             rounded-[28px]
             border
             border-black/10
-            bg-white/30
+            bg-[#F7F4EE]
             px-6
             py-8
             md:px-10
@@ -410,7 +410,7 @@ export default async function NotificationsPage() {
                 rounded-[28px]
                 border
                 border-black/10
-                bg-white/40
+                bg-[#F7F4EE]
                 p-8
                 md:p-10
               "
@@ -514,12 +514,12 @@ export default async function NotificationsPage() {
                         overflow-hidden
                         rounded-[28px]
                         border
-                        bg-white/50
+                        bg-[#F7F4EE]
                         transition
                         ${
                           notification.read
                             ? "border-black/10"
-                            : "border-[#FF6B35]/30 bg-white/70"
+                            : "border-[#FF6B35]/30 bg-[#F7F4EE]"
                         }
                       `}
                     >

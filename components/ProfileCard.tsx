@@ -68,61 +68,78 @@ export default function ProfileCard({
   }
 
   return (
-    <div className="
-      bg-white
-      text-black
-      rounded-3xl
-      p-8
-      mb-12
-    ">
+    <div
+      className="
+        rankd-edition
+        mb-12
+        rounded-[28px]
+        border
+        border-black
+        bg-[#F7F4EE]
+        p-8
+        text-center
+        text-black
+      "
+    >
       <h2 className="
         text-4xl
         font-black
+        tracking-[-0.04em]
       ">
         @{username}
       </h2>
 
       <p className="
         mt-3
-        text-gray-600
+        text-black/50
       ">
         My RANKD identity
       </p>
 
       <div className="
+        mx-auto
         mt-8
+        max-w-xs
+        rounded-2xl
+        border
+        border-black
+        bg-[#F7F4EE]
+        p-5
       ">
-        <div className="
-          bg-black
-          text-white
-          rounded-2xl
-          p-5
+        <p className="
+          text-[10px]
+          font-black
+          uppercase
+          tracking-[0.18em]
+          text-black/40
         ">
-          <p className="text-gray-400">
-            RANKDs
-          </p>
+          RANKDs
+        </p>
 
-          <p className="
-            text-3xl
-            font-black
-          ">
-            {rankings.length}
-          </p>
-        </div>
+        <p className="
+          mt-2
+          text-3xl
+          font-black
+        ">
+          {rankings.length}
+        </p>
       </div>
 
       <button
         onClick={shareProfile}
         className="
           mt-8
+          rounded-full
+          border
+          border-black
           bg-black
-          text-white
           px-8
           py-4
-          rounded-full
           font-black
-          hover:scale-105
+          text-white
           transition
+          hover:bg-[#FF6B35]
+          hover:text-black
         "
       >
         {copied

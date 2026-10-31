@@ -19,13 +19,16 @@ export default function PeopleCard({
       <div
 
         className="
-          bg-white
-          text-black
-          rounded-3xl
-          p-6
-          hover:scale-105
-          transition
+          rankd-edition
           cursor-pointer
+          rounded-[28px]
+          border
+          border-black
+          bg-[#F7F4EE]
+          p-6
+          text-center
+          text-black
+          transition
         "
 
       >
@@ -49,7 +52,7 @@ export default function PeopleCard({
         <p
 
           className="
-            text-gray-500
+            text-black/50
             mt-2
           "
 
@@ -79,15 +82,17 @@ export default function PeopleCard({
           <div
 
             className="
-              bg-black
-              text-white
               rounded-2xl
+              border
+              border-black
+              bg-[#F7F4EE]
               p-4
+              text-black
             "
 
           >
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-black/40">
 
               RANKDs
 
@@ -110,15 +115,17 @@ export default function PeopleCard({
           <div
 
             className="
-              bg-black
-              text-white
               rounded-2xl
+              border
+              border-black
+              bg-[#F7F4EE]
               p-4
+              text-black
             "
 
           >
 
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-black/40">
 
               Achievements
 
@@ -146,13 +153,15 @@ export default function PeopleCard({
 
           className="
             mt-6
-            bg-black
-            text-white
             rounded-full
+            border
+            border-black
+            bg-black
             px-5
             py-3
             text-center
             font-black
+            text-white
           "
 
         >

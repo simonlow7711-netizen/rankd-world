@@ -228,7 +228,7 @@ export default function Trending() {
             className="
               border
               border-black/10
-              bg-white/30
+              bg-[#F7F4EE]
               p-8
               text-center
               text-sm
@@ -244,7 +244,7 @@ export default function Trending() {
             className="
               border
               border-black/10
-              bg-white/30
+              bg-[#F7F4EE]
               p-8
               text-center
               text-sm

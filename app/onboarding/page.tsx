@@ -418,7 +418,7 @@ export default function OnboardingPage() {
             rounded-[28px]
             border
             border-black/[0.06]
-            bg-white/30
+            bg-[#F7F4EE]
             px-7
             py-9
             md:px-12
@@ -546,7 +546,7 @@ export default function OnboardingPage() {
                     transition
                     placeholder:text-black/25
                     focus:border-black/25
-                    focus:bg-white
+                    focus:bg-[#F7F4EE]
                   "
                   placeholder="Your name"
                   value={
@@ -595,7 +595,7 @@ export default function OnboardingPage() {
                     px-5
                     transition
                     focus-within:border-black/25
-                    focus-within:bg-white
+                    focus-within:bg-[#F7F4EE]
                   "
                 >
 
