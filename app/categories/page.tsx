@@ -176,7 +176,7 @@ export default function CategoriesPage() {
             rounded-[28px]
             border
             border-[#FF6B35]
-            bg-[#FFF9F3]
+            bg-white
             px-6
             py-12
             text-center

@@ -38,7 +38,7 @@ type ThemeInput = {
 }
 
 
-const PAPER = "#FFF9F3"
+const PAPER = "#FFFFFF"
 const INK = "#111111"
 const MUTED = "#6B6B6B"
 
@@ -65,7 +65,7 @@ function makeTheme(
     line:
       input.accent,
     paperClass:
-      "bg-[#FFF9F3]",
+      "bg-white",
     inkClass:
       "text-black",
     accentClass:
@@ -95,7 +95,7 @@ function makeTheme(
     border:
       input.accent,
     background:
-      "bg-[#FFF9F3]",
+      "bg-white",
     secondaryLabel:
       input.label
   }

@@ -597,7 +597,7 @@ export default async function CategoryPage(
                     rankd-edition
                     rounded-[28px]
                     border
-                    bg-[#FFF9F3]
+                    bg-white
                     p-8
                     text-center
                     text-black
@@ -733,7 +733,7 @@ export default async function CategoryPage(
                     rankd-edition
                     rounded-[28px]
                     border
-                    bg-[#FFF9F3]
+                    bg-white
                     px-7
                     py-12
                     text-center
