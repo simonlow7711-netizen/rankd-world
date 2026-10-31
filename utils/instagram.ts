@@ -25,7 +25,8 @@ export function getInstagramPostUrl(
         )
 
     if (
-      hostname !== "instagram.com"
+      hostname !== "instagram.com" &&
+      hostname !== "instagr.am"
     ) {
       return null
     }

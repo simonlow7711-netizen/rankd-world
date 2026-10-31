@@ -9,6 +9,8 @@ import {
   supabase
 } from "@/utils/supabase"
 
+import ShareButton from "@/components/ShareButton"
+
 
 type PhotoRankd = {
 
@@ -153,10 +155,13 @@ export default function PhotoRankdIndexPage() {
         <header
           style={{
             maxWidth:
-              "900px",
+              "720px",
 
             margin:
-              "0 auto 56px"
+              "0 auto 56px",
+
+            textAlign:
+              "center"
           }}
         >
 
@@ -166,6 +171,9 @@ export default function PhotoRankdIndexPage() {
                 "flex",
 
               alignItems:
+                "center",
+
+              justifyContent:
                 "center",
 
               gap:
@@ -234,10 +242,7 @@ export default function PhotoRankdIndexPage() {
                 900,
 
               letterSpacing:
-                "-0.065em",
-
-              maxWidth:
-                "850px"
+                "-0.065em"
             }}
           >
             See it.
@@ -249,7 +254,7 @@ export default function PhotoRankdIndexPage() {
           <p
             style={{
               margin:
-                "26px 0 0",
+                "26px auto 0",
 
               maxWidth:
                 "700px",
@@ -398,6 +403,25 @@ export default function PhotoRankdIndexPage() {
                             </p>
                           )
                         }
+
+                        <div
+                          className="photo-rankd-card-share"
+                        >
+                          <ShareButton
+                            url={
+                              `/photo-rankd/${photoRankd.id}`
+                            }
+                            title={
+                              photoRankd.title
+                            }
+                            compact
+                            align="center"
+                            eventProps={{
+                              rankingId:
+                                photoRankd.id
+                            }}
+                          />
+                        </div>
 
                       </div>
 
@@ -586,6 +610,17 @@ export default function PhotoRankdIndexPage() {
         .photo-rankd-card-content {
           padding:
             18px 0 0;
+          text-align:
+            center;
+        }
+
+        .photo-rankd-card-share {
+          display:
+            flex;
+          justify-content:
+            center;
+          margin-top:
+            14px;
         }
 
 

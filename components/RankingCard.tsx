@@ -32,6 +32,8 @@ import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
+import ShareButton from "@/components/ShareButton"
+
 
 type RankingCardProps = {
 
@@ -2340,6 +2342,31 @@ export default function RankingCard({
           }
 
         />
+
+        <div
+          className="
+            mt-4
+            flex
+            justify-center
+          "
+        >
+          <ShareButton
+            url={
+              `/rank/${ranking.id}`
+            }
+            title={
+              formatRankingTitle(
+                ranking.title
+              )
+            }
+            eventProps={{
+              rankingId:
+                ranking.id
+            }}
+            compact
+            align="center"
+          />
+        </div>
 
       </div>
 

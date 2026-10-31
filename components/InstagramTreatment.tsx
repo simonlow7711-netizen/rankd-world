@@ -1,4 +1,3 @@
-
 "use client"
 
 import {
@@ -24,54 +23,50 @@ export default function InstagramTreatment({
 
   if (embedFailed) {
     return (
-      <div
+      <a
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
         className="
-          mt-4
+          mx-auto
+          mt-5
+          flex
+          w-full
+          max-w-[328px]
+          items-center
+          justify-between
+          rounded-[22px]
+          border
+          border-black/10
+          bg-white
+          px-4
+          py-3.5
+          text-sm
+          font-bold
+          shadow-[0_12px_28px_rgba(0,0,0,0.06)]
+          transition
+          hover:text-[#FF6B35]
         "
       >
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            inline-flex
-            items-center
-            gap-2
-            border-b
-            border-[#FF6B35]
-            pb-1
-            text-sm
-            font-bold
-            text-black
-            transition
-            hover:text-[#FF6B35]
-          "
-        >
-          <span
-            className="
-              text-[#FF6B35]
-            "
-          >
-            ↗
-          </span>
-
-          <span>
-            View on Instagram
-          </span>
-        </a>
-      </div>
+        <span>View on Instagram</span>
+        <span aria-hidden="true">↗</span>
+      </a>
     )
   }
 
   return (
-    <div
+    <figure
       className="
-        mt-4
+        mx-auto
+        mt-5
+        w-full
+        max-w-[328px]
         overflow-hidden
-        rounded-2xl
+        rounded-[22px]
         border
         border-black/10
         bg-white
+        shadow-[0_14px_32px_rgba(0,0,0,0.08)]
       "
     >
       <iframe
@@ -79,36 +74,39 @@ export default function InstagramTreatment({
         src={`${url}embed/`}
         className="
           block
-          h-[420px]
+          h-[460px]
           w-full
           border-0
-          sm:h-[540px]
+          bg-[#FAFAFA]
         "
         loading="lazy"
         allowFullScreen
+        scrolling="no"
         onError={() => {
           setEmbedFailed(true)
         }}
       />
 
-      <div
+      <figcaption
         className="
           flex
           items-center
           justify-between
           gap-3
           px-4
-          py-3
+          py-2.5
         "
       >
         <span
           className="
-            text-xs
-            font-bold
-            text-black/60
+            text-[10px]
+            font-black
+            uppercase
+            tracking-[0.2em]
+            text-black/40
           "
         >
-          INSTAGRAM
+          Instagram
         </span>
 
         <a
@@ -116,16 +114,16 @@ export default function InstagramTreatment({
           target="_blank"
           rel="noopener noreferrer"
           className="
-            text-sm
+            text-xs
             font-bold
             text-black
             transition
             hover:text-[#FF6B35]
           "
         >
-          Open original ↗
+          Open ↗
         </a>
-      </div>
-    </div>
+      </figcaption>
+    </figure>
   )
 }

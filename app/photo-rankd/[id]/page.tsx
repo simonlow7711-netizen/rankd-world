@@ -17,6 +17,8 @@ import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
+import ShareButton from "@/components/ShareButton"
+
 
 type Hotspot = {
   rankingId?: number
@@ -451,9 +453,11 @@ export default function PhotoRankdPage() {
         <header
           style={{
             maxWidth:
-              "1180px",
+              "720px",
             margin:
-              "0 auto 36px"
+              "0 auto 36px",
+            textAlign:
+              "center"
           }}
         >
 
@@ -462,6 +466,8 @@ export default function PhotoRankdPage() {
               display:
                 "flex",
               alignItems:
+                "center",
+              justifyContent:
                 "center",
               gap:
                 "10px",
@@ -515,9 +521,7 @@ export default function PhotoRankdPage() {
               fontWeight:
                 900,
               letterSpacing:
-                "-0.055em",
-              maxWidth:
-                "900px"
+                "-0.055em"
             }}
           >
             {photoRankd.title}
@@ -529,7 +533,7 @@ export default function PhotoRankdPage() {
               <p
                 style={{
                   margin:
-                    "16px 0 0",
+                    "16px auto 0",
                   maxWidth:
                     "760px",
                   fontSize:
@@ -546,6 +550,36 @@ export default function PhotoRankdPage() {
               </p>
             )
           }
+
+          <div
+            style={{
+              display:
+                "flex",
+              justifyContent:
+                "center",
+              marginTop:
+                "20px"
+            }}
+          >
+            <ShareButton
+              url={
+                `/photo-rankd/${photoRankd.id}`
+              }
+              title={
+                photoRankd.title
+              }
+              text={
+                photoRankd.description
+                  ? `${photoRankd.title} — ${photoRankd.description}`
+                  : `${photoRankd.title} — Photo RANKD`
+              }
+              eventProps={{
+                rankingId:
+                  photoRankd.id
+              }}
+              align="center"
+            />
+          </div>
 
         </header>
 

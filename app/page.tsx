@@ -42,8 +42,9 @@ export default async function HomePage() {
       <div
         className="
           mx-auto
-          max-w-7xl
+          max-w-3xl
           px-6
+          md:max-w-7xl
         "
       >
 

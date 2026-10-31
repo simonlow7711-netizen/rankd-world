@@ -54,20 +54,9 @@ import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
-import {
-  getYouTubeThumbnailUrl,
-  getYouTubeVideoId
-} from "@/utils/youtube"
+import EntryEmbeds from "@/components/EntryEmbeds"
 
-import {
-  getGoogleMapsEmbedUrl
-} from "@/utils/googleMaps"
-
-import {
-  getInstagramPostUrl
-} from "@/utils/instagram"
-
-import InstagramTreatment from "@/components/InstagramTreatment"
+import ShareButton from "@/components/ShareButton"
 
 
 type RankClientProps = {
@@ -83,15 +72,6 @@ type PerspectiveRanking = {
   rootId:string | null
   createdAt:string | null
 }
-
-type ShareMethod =
-  | "clipboard"
-  | "whatsapp"
-  | "x"
-  | "facebook"
-  | "messages"
-  | "email"
-
 
 type CategoryTheme = {
 
@@ -627,688 +607,6 @@ function getTheme(
 
 
 
-function YouTubeTreatment({
-  url,
-  name
-}:{
-  url?:string
-  name:string
-}){
-
-  const videoId =
-    getYouTubeVideoId(
-      url
-    )
-
-
-  if(
-    !videoId ||
-    !url
-  ){
-
-    return null
-
-  }
-
-
-  return (
-
-    <div
-      className="
-        group/youtube
-        relative
-        mt-5
-        block
-        w-full
-        max-w-2xl
-        overflow-hidden
-        rounded-[20px]
-        border
-        border-black/10
-        bg-black
-      "
-    >
-
-      <div
-        className="
-          relative
-          aspect-video
-          w-full
-          overflow-hidden
-        "
-      >
-
-        <iframe
-          src={
-            `https://www.youtube-nocookie.com/embed/${videoId}`
-          }
-          title={
-            `Watch ${name} on YouTube`
-          }
-          className="
-            absolute
-            inset-0
-            h-full
-            w-full
-            border-0
-          "
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-          referrerPolicy="strict-origin-when-cross-origin"
-          loading="lazy"
-          allowFullScreen
-        />
-
-      </div>
-
-
-      <a
-        href={
-          url
-        }
-        target="_blank"
-        rel="noopener noreferrer"
-        className="
-          inline-flex
-          items-center
-          gap-2
-          px-4
-          py-3
-          text-sm
-          font-bold
-          text-white
-          transition-opacity
-          hover:opacity-70
-        "
-      >
-
-        Open on YouTube
-
-        <span aria-hidden="true">
-          ↗
-        </span>
-
-      </a>
-
-    </div>
-
-  )
-
-}
-
-
-function MapsTreatment({
-  url,
-  name
-}:{
-  url?:string
-  name:string
-}){
-
-  const embedUrl =
-    getGoogleMapsEmbedUrl(
-      url
-    )
-
-
-  if(
-    !embedUrl
-  ){
-
-    return null
-
-  }
-
-
-  return (
-
-    <div
-      className="
-        group/maps
-        relative
-        mt-5
-        w-full
-        max-w-2xl
-        overflow-hidden
-        rounded-[20px]
-        border
-        border-black/10
-        bg-white
-        transition-all
-        duration-300
-        hover:-translate-y-0.5
-
-        hover:shadow-[0_15px_40px_rgba(0,0,0,0.12)]
-      "
-    >
-
-      <div
-        className="
-          relative
-          h-[280px]
-          w-full
-          overflow-hidden
-          bg-[#EAE3EC]
-        "
-      >
-
-        <iframe
-          title={
-            `Map showing ${name}`
-          }
-          src={
-            embedUrl
-          }
-          className="
-            h-full
-            w-full
-            border-0
-          "
-          loading="lazy"
-        />
-
-
-        <div
-          className="
-            pointer-events-none
-            absolute
-            inset-0
-            border
-            border-black/5
-          "
-        />
-
-
-        <div
-          className="
-            absolute
-            bottom-4
-            left-4
-            rounded-full
-            bg-black/75
-            px-3
-            py-1.5
-            text-[10px]
-            font-black
-            uppercase
-            tracking-[0.18em]
-            text-white
-            backdrop-blur-sm
-          "
-        >
-          Google Maps
-        </div>
-
-      </div>
-
-
-      <a
-        href={
-          url
-        }
-        target="_blank"
-        rel="noopener noreferrer"
-        className="
-          flex
-          items-center
-          justify-between
-          gap-4
-          px-4
-          py-3
-          text-sm
-          font-black
-          text-black
-          transition-colors
-          hover:text-[#FF6B35]
-        "
-        aria-label={
-          `Open ${name} in Google Maps`
-        }
-      >
-
-        <span>
-          Open in Google Maps
-        </span>
-
-
-        <span
-          className="
-            text-lg
-          "
-        >
-          ↗
-        </span>
-
-      </a>
-
-    </div>
-
-  )
-
-}
-
-
-/* Spotify integration */
-
-function getSpotifyEmbedUrl(
-  url?:string
-):{
-  embedUrl:string
-  type:string
-} | null {
-
-  if(!url){
-
-    return null
-
-  }
-
-
-  try {
-
-    const parsedUrl =
-      new URL(
-        url
-      )
-
-
-    if(
-      parsedUrl.hostname !==
-      "open.spotify.com"
-    ){
-
-      return null
-
-    }
-
-
-    const segments =
-      parsedUrl.pathname
-        .split("/")
-        .filter(Boolean)
-
-
-    // Support regional Spotify URLs,
-    // such as /intl-gb/track/...
-    if(
-      segments[0] &&
-      /^intl-[a-z]{2}$/i.test(
-        segments[0]
-      )
-    ){
-
-      segments.shift()
-
-    }
-
-
-    const type =
-      segments[0]
-
-
-    const spotifyId =
-      segments[1]
-
-
-    const supportedTypes = [
-      "track",
-      "album",
-      "playlist",
-      "episode",
-      "show",
-      "artist"
-    ]
-
-
-    if(
-      !type ||
-      !supportedTypes.includes(
-        type
-      ) ||
-      !spotifyId ||
-      !/^[a-zA-Z0-9]+$/.test(
-        spotifyId
-      )
-    ){
-
-      return null
-
-    }
-
-
-    return {
-
-      embedUrl:
-        `https://open.spotify.com/embed/${type}/${spotifyId}?utm_source=generator&theme=0`,
-
-      type
-
-    }
-
-  }
-  catch {
-
-    return null
-
-  }
-
-}
-function SpotifyTreatment({
-  url,
-  name
-}: {
-  url?: string
-  name: string
-}) {
-  if (!url) {
-    return null
-  }
-
-  let embedUrl: string
-  let spotifyType: string
-
-  try {
-    const parsedUrl = new URL(url)
-
-    if (
-      parsedUrl.hostname !== "open.spotify.com" &&
-      parsedUrl.hostname !== "www.open.spotify.com"
-    ) {
-      return null
-    }
-
-    const segments = parsedUrl.pathname
-      .split("/")
-      .filter(Boolean)
-
-    if (
-      segments[0] &&
-      /^intl-[a-z]{2}$/i.test(segments[0])
-    ) {
-      segments.shift()
-    }
-
-    if (segments[0] === "embed") {
-      segments.shift()
-    }
-
-    const type = segments[0]
-    const trackId = segments[1]
-
-    const supportedTypes = [
-      "track",
-      "album",
-      "playlist",
-      "episode",
-      "show",
-      "artist"
-    ]
-
-    if (
-      !type ||
-      !supportedTypes.includes(type) ||
-      !trackId ||
-      !/^[a-zA-Z0-9]+$/.test(trackId)
-    ) {
-      return null
-    }
-
-    spotifyType = type
-
-    embedUrl =
-      `https://open.spotify.com/embed/${type}/${trackId}?utm_source=generator&theme=0`
-  } catch {
-    return null
-  }
-
-  const height =
-    spotifyType === "track" ||
-    spotifyType === "episode"
-      ? 152
-      : 352
-
-  return (
-    <div
-      className="
-        mt-5
-        w-full
-        max-w-2xl
-        overflow-hidden
-        rounded-[20px]
-        border
-        border-black/10
-        bg-white
-      "
-    >
-      <iframe
-        src={embedUrl}
-        width="100%"
-        height={height}
-        style={{
-          border: 0,
-          display: "block",
-          background: "#ffffff"
-        }}
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="eager"
-        title={`Listen to ${name} on Spotify`}
-      />
-
-      <div className="px-4 py-3">
-        <a
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="
-            inline-flex
-            items-center
-            gap-2
-            text-sm
-            font-semibold
-            text-black
-            transition-opacity
-            hover:opacity-60
-          "
-        >
-          <span aria-hidden="true">♫</span>
-          Open in Spotify
-          <span aria-hidden="true">↗</span>
-        </a>
-      </div>
-    </div>
-  )
-}
-
-function AmazonTreatment({
-  url,
-  name
-}: {
-  url?: string
-  name: string
-}) {
-  const [coverId, setCoverId] =
-    useState<number | null>(null)
-
-  const [coverFailed, setCoverFailed] =
-    useState(false)
-
-  useEffect(() => {
-    if (!url) {
-      setCoverId(null)
-      return
-    }
-
-    let cancelled = false
-
-    async function findCover() {
-      try {
-        if (!url) {
-          return
-        }
-
-        const amazonUrl = new URL(url)
-
-        if (
-          ![
-            "amazon.com",
-            "www.amazon.com"
-          ].includes(amazonUrl.hostname)
-        ) {
-          return
-        }
-
-        const searchTerm =
-          amazonUrl.searchParams.get("k") ||
-          name
-
-        const query = searchTerm
-          .replace(/\+/g, " ")
-          .replace(/\bbook\b/gi, "")
-          .trim()
-
-        const response = await fetch(
-          `https://openlibrary.org/search.json?title=${encodeURIComponent(query)}&limit=5&fields=cover_i,title`,
-          {
-            signal: AbortSignal.timeout(8000)
-          }
-        )
-
-        if (!response.ok) {
-          return
-        }
-
-        const data = await response.json()
-
-        const result = data.docs?.find(
-          (book: {
-            cover_i?: number
-            title?: string
-          }) => book.cover_i
-        )
-
-        if (!cancelled && result?.cover_i) {
-          setCoverId(result.cover_i)
-          setCoverFailed(false)
-        }
-      } catch {
-        // Keep the existing card if lookup fails.
-      }
-    }
-
-    findCover()
-
-    return () => {
-      cancelled = true
-    }
-  }, [url, name])
-
-  if (!url) {
-    return null
-  }
-
-  let amazonUrl: URL
-
-  try {
-    amazonUrl = new URL(url)
-
-    if (
-      ![
-        "amazon.com",
-        "www.amazon.com"
-      ].includes(amazonUrl.hostname)
-    ) {
-      return null
-    }
-
-    if (
-      !amazonUrl.pathname.startsWith("/s") &&
-      !amazonUrl.pathname.startsWith("/dp/") &&
-      !amazonUrl.pathname.startsWith("/gp/")
-    ) {
-      return null
-    }
-  } catch {
-    return null
-  }
-
-  return (
-    <a
-      href={amazonUrl.toString()}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="
-        mt-5
-        flex
-        w-full
-        max-w-2xl
-        items-center
-        gap-4
-        rounded-[20px]
-        border
-        border-black/10
-        bg-white
-        p-4
-        text-black
-        transition
-        hover:border-black/25
-      "
-    >
-      <div
-        className="
-          flex
-          h-32
-          w-24
-          shrink-0
-          items-center
-          justify-center
-          overflow-hidden
-          rounded-lg
-          bg-[#F7F4EE]
-        "
-      >
-        {
-          coverId && !coverFailed ? (
-            <img
-              src={`https://covers.openlibrary.org/b/id/${coverId}-M.jpg`}
-              alt={`Cover of ${name}`}
-              className="
-                h-full
-                w-full
-                object-cover
-              "
-              loading="lazy"
-              onError={() => {
-                setCoverFailed(true)
-              }}
-            />
-          ) : (
-            <span
-              className="text-3xl"
-              aria-hidden="true"
-            >
-              📚
-            </span>
-          )
-        }
-      </div>
-
-      <div className="min-w-0 flex-1">
-        <p className="text-xs font-semibold uppercase tracking-wider text-black/50">
-          Discover the book
-        </p>
-
-        <p className="mt-1 font-semibold">
-          {name}
-        </p>
-
-        <p className="mt-2 text-sm font-medium text-[#FF6B35]">
-          View on Amazon ↗
-        </p>
-      </div>
-    </a>
-  )
-}
-
-
 export default function RankClient({
   id,
   initialRanking
@@ -1364,27 +662,6 @@ export default function RankClient({
   const [
     loading,
     setLoading
-  ] =
-    useState(false)
-
-
-  const [
-    shareOpen,
-    setShareOpen
-  ] =
-    useState(false)
-
-
-  const [
-    shareComplete,
-    setShareComplete
-  ] =
-    useState(false)
-
-
-  const [
-    sharing,
-    setSharing
   ] =
     useState(false)
 
@@ -1860,276 +1137,6 @@ export default function RankClient({
   }
 
 
-  async function copyRankingLink(){
-
-    if(!ranking){
-      return false
-    }
-
-
-    const shareUrl =
-      `${window.location.origin}/rank/${ranking.id}`
-
-
-    try{
-
-      if(
-        navigator.clipboard &&
-        window.isSecureContext
-      ){
-
-        await navigator.clipboard.writeText(
-          shareUrl
-        )
-
-      }
-      else{
-
-        const textarea =
-          document.createElement(
-            "textarea"
-          )
-
-
-        textarea.value =
-          shareUrl
-
-
-        textarea.style.position =
-          "fixed"
-
-
-        textarea.style.left =
-          "-9999px"
-
-
-        document.body.appendChild(
-          textarea
-        )
-
-
-        textarea.focus()
-
-        textarea.select()
-
-
-        const copied =
-          document.execCommand(
-            "copy"
-          )
-
-
-        document.body.removeChild(
-          textarea
-        )
-
-
-        if(!copied){
-
-          throw new Error(
-            "Unable to copy link"
-          )
-
-        }
-
-      }
-
-
-      trackEvent(
-        "ranking_shared",
-        {
-          rankingId:
-            ranking.id,
-
-          method:
-            "clipboard"
-        }
-      )
-
-
-      setShareComplete(
-        true
-      )
-
-
-      window.setTimeout(
-        () => {
-
-          setShareComplete(
-            false
-          )
-
-        },
-        2000
-      )
-
-
-      return true
-
-    }
-    catch(error){
-
-      console.error(
-        "RANKD COPY LINK ERROR",
-        error
-      )
-
-
-      return false
-
-    }
-
-  }
-
-
-  function shareRanking(
-    method:ShareMethod
-  ){
-
-    if(
-      !ranking ||
-      sharing
-    ){
-
-      return
-
-    }
-
-
-    if(
-      method ===
-      "clipboard"
-    ){
-
-      copyRankingLink()
-
-      return
-
-    }
-
-
-    const shareUrl =
-      `${window.location.origin}/rank/${ranking.id}`
-
-
-    const shareTitle =
-      formatRankingTitle(
-        ranking.title
-      )
-
-
-    const shareText =
-      `${shareTitle} — RANKD`
-
-
-    const encodedUrl =
-      encodeURIComponent(
-        shareUrl
-      )
-
-
-    const encodedText =
-      encodeURIComponent(
-        shareText
-      )
-
-
-    let destination = ""
-
-
-    switch(method){
-
-      case "whatsapp":
-
-        destination =
-          `https://wa.me/?text=${encodedText}%20${encodedUrl}`
-
-        break
-
-
-      case "x":
-
-        destination =
-          `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
-
-        break
-
-
-      case "facebook":
-
-        destination =
-          `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
-
-        break
-
-
-      case "messages":
-
-        destination =
-          `sms:?&body=${encodedText}%20${encodedUrl}`
-
-        break
-
-
-      case "email":
-
-        destination =
-          `mailto:?subject=${encodeURIComponent(
-            `${shareTitle} — RANKD`
-          )}&body=${encodedText}%0A%0A${encodedUrl}`
-
-        break
-
-    }
-
-
-    if(!destination){
-      return
-    }
-
-
-    trackEvent(
-      "ranking_shared",
-      {
-        rankingId:
-          ranking.id,
-
-        method
-      }
-    )
-
-
-    setSharing(
-      true
-    )
-
-
-    window.open(
-      destination,
-      "_blank",
-      "noopener,noreferrer"
-    )
-
-
-    setShareOpen(
-      false
-    )
-
-
-    window.setTimeout(
-      () => {
-
-        setSharing(
-          false
-        )
-
-      },
-      500
-    )
-
-  }
-
-
   if(loading){
 
     return null
@@ -2155,8 +1162,9 @@ export default function RankClient({
 
         <div
           className="
-            max-w-7xl
+            max-w-3xl
             mx-auto
+            text-center
           "
         >
 
@@ -2281,7 +1289,7 @@ export default function RankClient({
 
       <div
         className="
-          max-w-7xl
+          max-w-3xl
           mx-auto
         "
       >
@@ -2571,9 +1579,11 @@ export default function RankClient({
 
             <div
               className="
+                mx-auto
                 mt-16
+                max-w-3xl
+                text-center
                 md:mt-24
-                max-w-5xl
               "
             >
 
@@ -2615,11 +1625,12 @@ export default function RankClient({
 
                   <p
                     className={`
+                      mx-auto
                       mt-7
-                      max-w-3xl
+                      max-w-2xl
                       text-xl
-                      md:text-2xl
                       leading-relaxed
+                      md:text-2xl
                       ${theme.muted}
                     `}
                   >
@@ -2636,6 +1647,7 @@ export default function RankClient({
                   flex
                   flex-wrap
                   items-center
+                  justify-center
                   gap-x-5
                   gap-y-2
                   text-sm
@@ -2664,6 +1676,8 @@ export default function RankClient({
               <div
                 className="
                   mt-5
+                  flex
+                  justify-center
                 "
               >
 
@@ -2689,537 +1703,54 @@ export default function RankClient({
                 "
               >
 
-                <button
-                  type="button"
-                  onClick={() => {
-
-                    setShareOpen(
-                      current =>
-                        !current
-                    )
-
-                    setShareComplete(
-                      false
-                    )
-
-                  }}
+                <div
                   className="
-                    group
-                    relative
-                    inline-flex
-                    items-center
-                    gap-3
-                    overflow-hidden
-                    rounded-2xl
-                    border
-                    border-black/10
-                    bg-[#F7F4EE]
-                    px-5
-                    py-3.5
-                    text-black
-                    shadow-sm
-                    transition-all
-                    duration-200
-                    hover:-translate-y-0.5
-                    hover:border-black/20
-                    hover:shadow-md
-                    active:translate-y-0
+                    flex
+                    justify-center
                   "
                 >
-
-                  <span
-                    className="
-                      relative
-                      z-10
-                      flex
-                      items-center
-                      justify-center
-                      text-[#FF6B35]
-                      text-lg
-                      font-black
-                      leading-none
-                      transition-transform
-                      duration-200
-                      group-hover:translate-x-0.5
-                    "
-                  >
-                    ↗
-                  </span>
-
-
-                  <span
-                    className="
-                      relative
-                      z-10
-                      flex
-                      flex-col
-                      items-start
-                      leading-none
-                    "
-                  >
-
-                    <span
-                      className="
-                        text-[9px]
-                        font-black
-                        uppercase
-                        tracking-[0.2em]
-                        text-black/40
-                      "
-                    >
-                      RANKD
-                    </span>
-
-
-                    <span
-                      className="
-                        mt-1
-                        text-sm
-                        font-black
-                        tracking-tight
-                      "
-                    >
-                      Share this RANKD
-                    </span>
-
-                  </span>
-
-
-                  <span
-                    className="
-                      absolute
-                      bottom-0
-                      left-0
-                      h-px
-                      w-0
-                      bg-[#FF6B35]
-                      transition-all
-                      duration-300
-                      group-hover:w-full
-                    "
-                  />
-
-                </button>
-
-
-                {
-                  shareOpen && (
-
-                    <div
-                      className="
-                        absolute
-                        z-30
-                        left-0
-                        top-full
-                        mt-3
-                        w-full
-                        max-w-sm
-                        rounded-[28px]
-                        border
-                        border-black/10
-                        bg-white
-                        p-5
-                        text-black
-                        shadow-[0_20px_50px_rgba(0,0,0,0.12)]
-                      "
-                    >
-
-                      <div
-                        className="
-                          flex
-                          items-center
-                          justify-between
-                          gap-4
-                        "
-                      >
-
-                        <div>
-
-                          <p
-                            className="
-                              text-lg
-                              font-black
-                            "
-                          >
-                            Share this RANKD
-                          </p>
-
-                          <p
-                            className="
-                              mt-1
-                              text-sm
-                              text-black/50
-                            "
-                          >
-                            Choose where you want to share it.
-                          </p>
-
-                        </div>
-
-
-                        <button
-                          type="button"
-                          onClick={() => {
-
-                            setShareOpen(
-                              false
-                            )
-
-                            setShareComplete(
-                              false
-                            )
-
-                          }}
-                          className="
-                            h-9
-                            w-9
-                            rounded-full
-                            bg-black/[0.05]
-                            font-black
-                            transition
-                            hover:bg-black/[0.1]
-                          "
-                          aria-label="Close sharing options"
-                        >
-                          ×
-                        </button>
-
-                      </div>
-
-
+                  <ShareButton
+                    url={
+                      `/rank/${displayRanking.id}`
+                    }
+                    title={displayTitle}
+                    text={
+                      `Would you rank this the same?\n\n${displayTitle}\n\nDo you agree, or would you RE-RANK it?`
+                    }
+                    eventProps={{
+                      rankingId:
+                        displayRanking.id
+                    }}
+                    align="center"
+                    extra={
                       <button
                         type="button"
                         onClick={() => {
-                          setShareOpen(false)
                           setAnimatedPreviewOpen(true)
                         }}
                         className="
-                          mt-5
                           flex
                           w-full
                           items-center
                           justify-between
-                          gap-4
                           rounded-2xl
                           bg-black
-                          px-5
-                          py-4
+                          px-4
+                          py-3
                           text-left
+                          text-sm
+                          font-black
                           text-white
                           transition
                           hover:bg-black/85
                         "
                       >
-                        <span>
-                          <span className="block text-[10px] font-black uppercase tracking-[0.18em] text-[#FF6B35]">
-                            NEW / SHARE FORMAT
-                          </span>
-
-                          <span className="mt-1 block text-sm font-black">
-                            Preview animated teaser
-                          </span>
-                        </span>
-
-                        <span className="text-xl text-[#FF6B35]">
-                          ↗
-                        </span>
+                        <span>Preview animated teaser</span>
+                        <span className="text-[#FF6B35]">↗</span>
                       </button>
-
-
-                      <div
-                        className="
-                          mt-5
-                          grid
-                          grid-cols-2
-                          gap-3
-                        "
-                      >
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            shareRanking(
-                              "clipboard"
-                            )
-                          }
-                          disabled={
-                            sharing
-                          }
-                          className="
-                            rounded-2xl
-                            border
-                            border-black/10
-                            bg-[#F7F4EE]
-                            px-4
-                            py-4
-                            text-left
-                            font-black
-                            transition
-                            hover:bg-black/[0.05]
-                            disabled:opacity-50
-                          "
-                        >
-
-                          <span
-                            className="
-                              block
-                              text-xl
-                            "
-                          >
-                            🔗
-                          </span>
-
-                          <span
-                            className="
-                              mt-1
-                              block
-                            "
-                          >
-                            {
-                              shareComplete
-                                ? "Link copied ✓"
-                                : "Copy link"
-                            }
-                          </span>
-
-                        </button>
-
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            shareRanking(
-                              "whatsapp"
-                            )
-                          }
-                          disabled={
-                            sharing
-                          }
-                          className="
-                            rounded-2xl
-                            border
-                            border-black/10
-                            bg-[#F7F4EE]
-                            px-4
-                            py-4
-                            text-left
-                            font-black
-                            transition
-                            hover:bg-black/[0.05]
-                            disabled:opacity-50
-                          "
-                        >
-
-                          <span
-                            className="
-                              block
-                              text-xl
-                            "
-                          >
-                            💬
-                          </span>
-
-                          <span
-                            className="
-                              mt-1
-                              block
-                            "
-                          >
-                            WhatsApp
-                          </span>
-
-                        </button>
-
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            shareRanking(
-                              "x"
-                            )
-                          }
-                          disabled={
-                            sharing
-                          }
-                          className="
-                            rounded-2xl
-                            border
-                            border-black/10
-                            bg-[#F7F4EE]
-                            px-4
-                            py-4
-                            text-left
-                            font-black
-                            transition
-                            hover:bg-black/[0.05]
-                            disabled:opacity-50
-                          "
-                        >
-
-                          <span
-                            className="
-                              block
-                              text-xl
-                            "
-                          >
-                            𝕏
-                          </span>
-
-                          <span
-                            className="
-                              mt-1
-                              block
-                            "
-                          >
-                            X
-                          </span>
-
-                        </button>
-
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            shareRanking(
-                              "facebook"
-                            )
-                          }
-                          disabled={
-                            sharing
-                          }
-                          className="
-                            rounded-2xl
-                            border
-                            border-black/10
-                            bg-[#F7F4EE]
-                            px-4
-                            py-4
-                            text-left
-                            font-black
-                            transition
-                            hover:bg-black/[0.05]
-                            disabled:opacity-50
-                          "
-                        >
-
-                          <span
-                            className="
-                              block
-                              text-xl
-                            "
-                          >
-                            f
-                          </span>
-
-                          <span
-                            className="
-                              mt-1
-                              block
-                            "
-                          >
-                            Facebook
-                          </span>
-
-                        </button>
-
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            shareRanking(
-                              "messages"
-                            )
-                          }
-                          disabled={
-                            sharing
-                          }
-                          className="
-                            rounded-2xl
-                            border
-                            border-black/10
-                            bg-[#F7F4EE]
-                            px-4
-                            py-4
-                            text-left
-                            font-black
-                            transition
-                            hover:bg-black/[0.05]
-                            disabled:opacity-50
-                          "
-                        >
-
-                          <span
-                            className="
-                              block
-                              text-xl
-                            "
-                          >
-                            💬
-                          </span>
-
-                          <span
-                            className="
-                              mt-1
-                              block
-                            "
-                          >
-                            Messages
-                          </span>
-
-                        </button>
-
-
-                        <button
-                          type="button"
-                          onClick={() =>
-                            shareRanking(
-                              "email"
-                            )
-                          }
-                          disabled={
-                            sharing
-                          }
-                          className="
-                            rounded-2xl
-                            border
-                            border-black/10
-                            bg-[#F7F4EE]
-                            px-4
-                            py-4
-                            text-left
-                            font-black
-                            transition
-                            hover:bg-black/[0.05]
-                            disabled:opacity-50
-                          "
-                        >
-
-                          <span
-                            className="
-                              block
-                              text-xl
-                            "
-                          >
-                            ✉
-                          </span>
-
-                          <span
-                            className="
-                              mt-1
-                              block
-                            "
-                          >
-                            Email
-                          </span>
-
-                        </button>
-
-                      </div>
-
-                    </div>
-
-                  )
-                }
+                    }
+                  />
+                </div>
 
 
                 {
@@ -3255,23 +1786,6 @@ export default function RankClient({
               {
                 sortedOriginalItems.map(
                   item => {
-
-                    const youtubeThumbnail =
-                      getYouTubeThumbnailUrl(
-                        item.externalUrl
-                      )
-
-
-                    const mapsEmbedUrl =
-                      getGoogleMapsEmbedUrl(
-                        item.externalUrl
-                      )
-
-const instagramPostUrl =
-  getInstagramPostUrl(
-    item.externalUrl
-  )
-
 
                     return (
 
@@ -3444,38 +1958,7 @@ const instagramPostUrl =
                             }
 
 
-                            {
-                              youtubeThumbnail && (
-
-                                <YouTubeTreatment
-                                  url={
-                                    item.externalUrl
-                                  }
-                                  name={
-                                    item.name
-                                  }
-                                />
-
-                              )
-                            }
-
-
-                            {
-                              mapsEmbedUrl && (
-
-                                <MapsTreatment
-                                  url={
-                                    item.externalUrl
-                                  }
-                                  name={
-                                    item.name
-                                  }
-                                />
-
-                              )
-                            }
-
-                            <SpotifyTreatment
+                            <EntryEmbeds
                               url={
                                 item.externalUrl
                               }
@@ -3483,28 +1966,6 @@ const instagramPostUrl =
                                 item.name
                               }
                             />
-
-                            <AmazonTreatment
-                              url={
-                                item.externalUrl
-                              }
-                              name={
-                                item.name
-                              }
-                            />
-
-                            {
-                              instagramPostUrl && (
-                                <InstagramTreatment
-                                  url={
-                                    instagramPostUrl
-                                  }
-                                  name={
-                                    item.name
-                                  }
-                                />
-                              )
-                            }
 
                           </div>
 
@@ -3900,27 +2361,7 @@ const instagramPostUrl =
                               }
 
 
-                              <YouTubeTreatment
-                                url={
-                                  item.externalUrl
-                                }
-                                name={
-                                  item.name
-                                }
-                              />
-
-
-                              <MapsTreatment
-                                url={
-                                  item.externalUrl
-                                }
-                                name={
-                                  item.name
-                                }
-                              />
-
-
-                              <SpotifyTreatment
+                              <EntryEmbeds
                                 url={
                                   item.externalUrl
                                 }
