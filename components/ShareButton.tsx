@@ -8,11 +8,16 @@ import {
 } from "react"
 
 import {
+  createPortal
+} from "react-dom"
+
+import {
   Check,
   Link2,
   Mail,
   MessageCircle,
-  Share2
+  Share2,
+  X
 } from "lucide-react"
 
 import {
@@ -66,6 +71,13 @@ function copyText(
 
 }
 
+function canUseNativeShare() {
+  return (
+    typeof navigator !== "undefined" &&
+    typeof navigator.share === "function"
+  )
+}
+
 export default function ShareButton({
   url,
   title,
@@ -88,18 +100,15 @@ export default function ShareButton({
   ] = useState(false)
 
   const [
-    canNativeShare,
-    setCanNativeShare
+    mounted,
+    setMounted
   ] = useState(false)
 
   const rootRef =
     useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
-    setCanNativeShare(
-      typeof navigator !== "undefined" &&
-      typeof navigator.share === "function"
-    )
+    setMounted(true)
   }, [])
 
   useEffect(() => {
@@ -107,28 +116,30 @@ export default function ShareButton({
       return
     }
 
-    function onPointerDown(
-      event: MouseEvent
+    const previousOverflow =
+      document.body.style.overflow
+
+    document.body.style.overflow = "hidden"
+
+    function onKeyDown(
+      event: KeyboardEvent
     ) {
-      if (
-        rootRef.current &&
-        !rootRef.current.contains(
-          event.target as Node
-        )
-      ) {
+      if (event.key === "Escape") {
         setOpen(false)
       }
     }
 
     document.addEventListener(
-      "mousedown",
-      onPointerDown
+      "keydown",
+      onKeyDown
     )
 
     return () => {
+      document.body.style.overflow =
+        previousOverflow
       document.removeEventListener(
-        "mousedown",
-        onPointerDown
+        "keydown",
+        onKeyDown
       )
     }
   }, [open])
@@ -169,13 +180,11 @@ export default function ShareButton({
   }
 
   async function shareNative() {
-    const destination = shareUrl()
-
     try {
       await navigator.share({
         title,
         text: shareText(),
-        url: destination
+        url: shareUrl()
       })
 
       track("native")
@@ -188,7 +197,7 @@ export default function ShareButton({
         return
       }
 
-      await copyLink()
+      setOpen(true)
     }
   }
 
@@ -219,11 +228,307 @@ export default function ShareButton({
     setOpen(false)
   }
 
+  function handleShareClick(
+    event: React.MouseEvent<HTMLButtonElement>
+  ) {
+    event.preventDefault()
+    event.stopPropagation()
+    setOpen(current => !current)
+  }
+
   const destination = shareUrl()
   const encodedUrl =
     encodeURIComponent(destination)
   const encodedText =
     encodeURIComponent(shareText())
+
+  const sheet = open && mounted
+    ? createPortal(
+        <div
+          className="
+            fixed
+            inset-0
+            z-[80]
+            flex
+            items-end
+            justify-center
+            sm:items-center
+          "
+          onClick={() => {
+            setOpen(false)
+          }}
+        >
+          <div
+            className="
+              absolute
+              inset-0
+              bg-black/40
+            "
+          />
+
+          <div
+            className="
+              relative
+              z-10
+              w-full
+              max-w-md
+              rounded-t-[28px]
+              border
+              border-black/10
+              bg-white
+              p-5
+              pb-[max(1.25rem,env(safe-area-inset-bottom))]
+              text-left
+              text-black
+              shadow-[0_-12px_40px_rgba(0,0,0,0.18)]
+              sm:mb-0
+              sm:rounded-[28px]
+              sm:shadow-[0_20px_50px_rgba(0,0,0,0.16)]
+            "
+            role="dialog"
+            aria-label="Share"
+            onClick={event => {
+              event.stopPropagation()
+            }}
+          >
+            <div
+              className="
+                mb-4
+                flex
+                items-start
+                justify-between
+                gap-4
+              "
+            >
+              <div>
+                <p
+                  className="
+                    text-[10px]
+                    font-black
+                    uppercase
+                    tracking-[0.2em]
+                    text-black/40
+                  "
+                >
+                  Share this RANKD
+                </p>
+
+                <p
+                  className="
+                    mt-1
+                    text-lg
+                    font-black
+                    leading-tight
+                    tracking-[-0.03em]
+                  "
+                >
+                  {title}
+                </p>
+              </div>
+
+              <button
+                type="button"
+                aria-label="Close share options"
+                onClick={() => {
+                  setOpen(false)
+                }}
+                className="
+                  flex
+                  h-9
+                  w-9
+                  shrink-0
+                  items-center
+                  justify-center
+                  rounded-full
+                  bg-black/[0.06]
+                "
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <div
+              className="
+                grid
+                gap-2
+              "
+            >
+              {
+                canUseNativeShare() && (
+                  <button
+                    type="button"
+                    onClick={shareNative}
+                    className="
+                      flex
+                      w-full
+                      items-center
+                      justify-between
+                      rounded-2xl
+                      bg-black
+                      px-4
+                      py-3.5
+                      text-left
+                      text-sm
+                      font-black
+                      text-white
+                    "
+                  >
+                    <span>Share</span>
+                    <Share2 size={16} />
+                  </button>
+                )
+              }
+
+              <button
+                type="button"
+                onClick={copyLink}
+                className="
+                  flex
+                  w-full
+                  items-center
+                  justify-between
+                  rounded-2xl
+                  border
+                  border-black/10
+                  bg-[#F7F4EE]
+                  px-4
+                  py-3.5
+                  text-left
+                  text-sm
+                  font-black
+                "
+              >
+                <span>
+                  {copied ? "Link copied" : "Copy link"}
+                </span>
+                {
+                  copied ? (
+                    <Check size={16} />
+                  ) : (
+                    <Link2 size={16} />
+                  )
+                }
+              </button>
+            </div>
+
+            <div
+              className="
+                mt-3
+                grid
+                grid-cols-4
+                gap-2
+              "
+            >
+              <button
+                type="button"
+                aria-label="Share on WhatsApp"
+                onClick={() =>
+                  openChannel(
+                    "whatsapp",
+                    `https://wa.me/?text=${encodedText}%20${encodedUrl}`
+                  )
+                }
+                className="
+                  flex
+                  h-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-black/10
+                  text-sm
+                  font-black
+                "
+              >
+                Wa
+              </button>
+
+              <button
+                type="button"
+                aria-label="Share on X"
+                onClick={() =>
+                  openChannel(
+                    "x",
+                    `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
+                  )
+                }
+                className="
+                  flex
+                  h-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-black/10
+                  text-sm
+                  font-black
+                "
+              >
+                𝕏
+              </button>
+
+              <button
+                type="button"
+                aria-label="Share by message"
+                onClick={() =>
+                  openChannel(
+                    "messages",
+                    `sms:?&body=${encodedText}%20${encodedUrl}`
+                  )
+                }
+                className="
+                  flex
+                  h-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-black/10
+                "
+              >
+                <MessageCircle size={16} />
+              </button>
+
+              <button
+                type="button"
+                aria-label="Share by email"
+                onClick={() =>
+                  openChannel(
+                    "email",
+                    `mailto:?subject=${encodeURIComponent(title)}&body=${encodedText}%0A%0A${encodedUrl}`
+                  )
+                }
+                className="
+                  flex
+                  h-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-black/10
+                "
+              >
+                <Mail size={16} />
+              </button>
+            </div>
+
+            {
+              extra && (
+                <div
+                  className="mt-3"
+                  onClick={() => {
+                    setOpen(false)
+                  }}
+                >
+                  {extra}
+                </div>
+              )
+            }
+          </div>
+        </div>,
+        document.body
+      )
+    : null
 
   return (
     <div
@@ -233,19 +538,12 @@ export default function ShareButton({
         ${align === "center" ? "mx-auto" : ""}
       `}
       onClick={event => {
-        event.preventDefault()
-        event.stopPropagation()
-      }}
-      onMouseDown={event => {
-        event.preventDefault()
         event.stopPropagation()
       }}
     >
       <button
         type="button"
-        onClick={() => {
-          setOpen(current => !current)
-        }}
+        onClick={handleShareClick}
         className={`
           group
           inline-flex
@@ -313,254 +611,7 @@ export default function ShareButton({
         }
       </button>
 
-      {
-        open && (
-          <div
-            className={`
-              absolute
-              z-40
-              top-full
-              mt-3
-              w-[min(calc(100vw-2.5rem),20rem)]
-              rounded-[24px]
-              border
-              border-black/10
-              bg-white
-              p-4
-              text-left
-              text-black
-              shadow-[0_20px_50px_rgba(0,0,0,0.12)]
-              ${
-                align === "center"
-                  ? "left-1/2 -translate-x-1/2"
-                  : "left-0"
-              }
-            `}
-            role="dialog"
-            aria-label="Share"
-          >
-            <p
-              className="
-                text-[10px]
-                font-black
-                uppercase
-                tracking-[0.2em]
-                text-black/40
-              "
-            >
-              Share this RANKD
-            </p>
-
-            <p
-              className="
-                mt-1
-                text-base
-                font-black
-                leading-tight
-                tracking-[-0.03em]
-              "
-            >
-              {title}
-            </p>
-
-            <div
-              className="
-                mt-4
-                grid
-                gap-2
-              "
-            >
-              {
-                canNativeShare && (
-                  <button
-                    type="button"
-                    onClick={shareNative}
-                    className="
-                      flex
-                      w-full
-                      items-center
-                      justify-between
-                      rounded-2xl
-                      bg-black
-                      px-4
-                      py-3
-                      text-left
-                      text-sm
-                      font-black
-                      text-white
-                      transition
-                      hover:bg-black/85
-                    "
-                  >
-                    <span>Share</span>
-                    <Share2 size={16} />
-                  </button>
-                )
-              }
-
-              <button
-                type="button"
-                onClick={copyLink}
-                className="
-                  flex
-                  w-full
-                  items-center
-                  justify-between
-                  rounded-2xl
-                  border
-                  border-black/10
-                  bg-[#F7F4EE]
-                  px-4
-                  py-3
-                  text-left
-                  text-sm
-                  font-black
-                  transition
-                  hover:bg-black/[0.04]
-                "
-              >
-                <span>
-                  {copied ? "Link copied" : "Copy link"}
-                </span>
-                {
-                  copied ? (
-                    <Check size={16} />
-                  ) : (
-                    <Link2 size={16} />
-                  )
-                }
-              </button>
-            </div>
-
-            <div
-              className="
-                mt-3
-                flex
-                items-center
-                justify-between
-                gap-2
-              "
-            >
-              <button
-                type="button"
-                aria-label="Share on WhatsApp"
-                onClick={() =>
-                  openChannel(
-                    "whatsapp",
-                    `https://wa.me/?text=${encodedText}%20${encodedUrl}`
-                  )
-                }
-                className="
-                  flex
-                  h-11
-                  flex-1
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-black/10
-                  text-sm
-                  font-black
-                  transition
-                  hover:bg-black/[0.04]
-                "
-              >
-                Wa
-              </button>
-
-              <button
-                type="button"
-                aria-label="Share on X"
-                onClick={() =>
-                  openChannel(
-                    "x",
-                    `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`
-                  )
-                }
-                className="
-                  flex
-                  h-11
-                  flex-1
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-black/10
-                  text-sm
-                  font-black
-                  transition
-                  hover:bg-black/[0.04]
-                "
-              >
-                𝕏
-              </button>
-
-              <button
-                type="button"
-                aria-label="Share by message"
-                onClick={() =>
-                  openChannel(
-                    "messages",
-                    `sms:?&body=${encodedText}%20${encodedUrl}`
-                  )
-                }
-                className="
-                  flex
-                  h-11
-                  flex-1
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-black/10
-                  transition
-                  hover:bg-black/[0.04]
-                "
-              >
-                <MessageCircle size={16} />
-              </button>
-
-              <button
-                type="button"
-                aria-label="Share by email"
-                onClick={() =>
-                  openChannel(
-                    "email",
-                    `mailto:?subject=${encodeURIComponent(title)}&body=${encodedText}%0A%0A${encodedUrl}`
-                  )
-                }
-                className="
-                  flex
-                  h-11
-                  flex-1
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-black/10
-                  transition
-                  hover:bg-black/[0.04]
-                "
-              >
-                <Mail size={16} />
-              </button>
-            </div>
-
-            {
-              extra && (
-                <div
-                  className="mt-3"
-                  onClick={() => {
-                    setOpen(false)
-                  }}
-                >
-                  {extra}
-                </div>
-              )
-            }
-          </div>
-        )
-      }
+      {sheet}
     </div>
   )
 }
