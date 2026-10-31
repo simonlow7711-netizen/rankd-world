@@ -32,7 +32,8 @@ export default function InstagramTreatment({
           mt-5
           flex
           w-full
-          max-w-[328px]
+          min-w-0
+          max-w-[min(100%,20.5rem)]
           items-center
           justify-between
           rounded-[22px]
@@ -60,7 +61,8 @@ export default function InstagramTreatment({
         mx-auto
         mt-5
         w-full
-        max-w-[328px]
+        min-w-0
+        max-w-[min(100%,20.5rem)]
         overflow-hidden
         rounded-[22px]
         border
@@ -74,8 +76,10 @@ export default function InstagramTreatment({
         src={`${url}embed/`}
         className="
           block
-          h-[460px]
+          h-[min(460px,70vh)]
           w-full
+          max-w-full
+          min-w-0
           border-0
           bg-[#FAFAFA]
         "

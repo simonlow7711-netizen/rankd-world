@@ -27,7 +27,8 @@ export default function YouTubeTreatment({
         mx-auto
         mt-5
         w-full
-        max-w-xl
+        min-w-0
+        max-w-[min(100%,36rem)]
         overflow-hidden
         rounded-[22px]
         bg-black
@@ -51,6 +52,7 @@ export default function YouTubeTreatment({
             inset-0
             h-full
             w-full
+            max-w-full
             border-0
           "
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

@@ -31,7 +31,8 @@ export default function SpotifyTreatment({
         mx-auto
         mt-5
         w-full
-        max-w-xl
+        min-w-0
+        max-w-[min(100%,36rem)]
         overflow-hidden
         rounded-[22px]
         border
@@ -45,10 +46,17 @@ export default function SpotifyTreatment({
         title={`Listen to ${name} on Spotify`}
         className="
           block
+          h-auto
           w-full
+          max-w-full
+          min-w-0
           border-0
         "
+        width="100%"
         height={compact ? 152 : 352}
+        style={{
+          maxWidth: "100%"
+        }}
         allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
         loading="lazy"
       />

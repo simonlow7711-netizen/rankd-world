@@ -28,8 +28,11 @@ export default function EntryEmbeds({
       className="
         flex
         w-full
+        min-w-0
+        max-w-full
         flex-col
         items-center
+        overflow-x-hidden
       "
     >
       <YouTubeTreatment

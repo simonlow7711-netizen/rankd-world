@@ -1151,10 +1151,11 @@ export default function RankClient({
       <main
         className="
           min-h-screen
+          overflow-x-hidden
           bg-[#F7F4EE]
-          text-black
-          px-5
+          px-4
           py-12
+          text-black
           md:px-8
           md:py-20
         "
@@ -1290,6 +1291,8 @@ export default function RankClient({
       <div
         className="
           mx-auto
+          w-full
+          min-w-0
           max-w-3xl
           text-center
         "
@@ -1482,10 +1485,12 @@ export default function RankClient({
         <section
           className={`
             relative
+            min-w-0
             overflow-hidden
             rounded-[28px]
             border
-            p-7
+            px-4
+            py-7
             md:p-10
             lg:p-12
             ${theme.background}
@@ -1804,12 +1809,14 @@ export default function RankClient({
                         className="
                           group
                           relative
+                          min-w-0
+                          max-w-full
                           overflow-hidden
                           rounded-[24px]
                           border
                           border-black/10
                           bg-white/55
-                          p-5
+                          p-4
                           md:p-6
                           transition-all
                           duration-300
@@ -1821,6 +1828,8 @@ export default function RankClient({
                         <div
                           className="
                             flex
+                            w-full
+                            min-w-0
                             flex-col
                             items-center
                             text-center
@@ -2307,13 +2316,17 @@ export default function RankClient({
                             }
                             className="
                               flex
+                              w-full
+                              min-w-0
+                              max-w-full
                               flex-col
                               items-center
+                              overflow-hidden
                               rounded-[24px]
                               border
                               border-black/10
                               bg-white/55
-                              p-5
+                              p-4
                               text-center
                               md:p-6
                             "

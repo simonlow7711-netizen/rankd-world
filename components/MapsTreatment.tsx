@@ -27,7 +27,8 @@ export default function MapsTreatment({
         mx-auto
         mt-5
         w-full
-        max-w-xl
+        min-w-0
+        max-w-[min(100%,36rem)]
         overflow-hidden
         rounded-[22px]
         border
@@ -52,6 +53,7 @@ export default function MapsTreatment({
           className="
             h-full
             w-full
+            max-w-full
             border-0
           "
           loading="lazy"
