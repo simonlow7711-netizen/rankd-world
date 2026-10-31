@@ -102,7 +102,9 @@ export default function WhyRankd() {
 
         <div
           className="
+            mx-auto
             max-w-3xl
+            text-center
           "
         >
 
@@ -135,6 +137,7 @@ export default function WhyRankd() {
 
           <p
             className="
+              mx-auto
               mt-5
               max-w-2xl
               text-lg

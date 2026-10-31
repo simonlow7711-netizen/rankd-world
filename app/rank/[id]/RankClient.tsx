@@ -1289,8 +1289,9 @@ export default function RankClient({
 
       <div
         className="
-          max-w-3xl
           mx-auto
+          max-w-3xl
+          text-center
         "
       >
 
@@ -1337,19 +1338,26 @@ export default function RankClient({
                   z-10
                   flex
                   flex-col
-                  md:flex-row
-                  md:items-end
-                  md:justify-between
+                  items-center
                   gap-8
+                  text-center
                 "
               >
 
-                <div>
+                <div
+                  className="
+                    flex
+                    w-full
+                    flex-col
+                    items-center
+                  "
+                >
 
                   <div
                     className="
                       flex
                       items-center
+                      justify-center
                       gap-2
                       text-[11px]
                       uppercase
@@ -1519,7 +1527,7 @@ export default function RankClient({
               className="
                 flex
                 items-center
-                justify-between
+                justify-center
                 gap-4
               "
             >
@@ -1813,17 +1821,17 @@ export default function RankClient({
                         <div
                           className="
                             flex
-                            items-start
-                            gap-5
+                            flex-col
+                            items-center
+                            text-center
                           "
                         >
 
                           <div
                             className={`
-                              shrink-0
                               text-3xl
-                              md:text-4xl
                               font-black
+                              md:text-4xl
                               ${theme.accent}
                             `}
                           >
@@ -1838,8 +1846,9 @@ export default function RankClient({
 
                           <div
                             className="
+                              mt-3
                               min-w-0
-                              flex-1
+                              w-full
                             "
                           >
 
@@ -2248,6 +2257,7 @@ export default function RankClient({
                     border-t
                     border-black/10
                     pt-12
+                    text-center
                   "
                 >
 
@@ -2266,12 +2276,14 @@ export default function RankClient({
 
                   <h3
                     className="
+                      mx-auto
                       mt-3
+                      max-w-2xl
                       text-4xl
-                      md:text-5xl
                       font-black
                       leading-[0.9]
                       tracking-[-0.05em]
+                      md:text-5xl
                     "
                   >
                     {creatorName} would rank it differently.
@@ -2294,21 +2306,21 @@ export default function RankClient({
                               `perspective-${item.position}`
                             }
                             className="
+                              flex
+                              flex-col
+                              items-center
                               rounded-[24px]
                               border
                               border-black/10
                               bg-white/55
                               p-5
+                              text-center
                               md:p-6
-                              flex
-                              items-start
-                              gap-5
                             "
                           >
 
                             <div
                               className={`
-                                shrink-0
                                 text-3xl
                                 font-black
                                 ${theme.accent}
@@ -2325,8 +2337,9 @@ export default function RankClient({
 
                             <div
                               className="
+                                mt-3
                                 min-w-0
-                                flex-1
+                                w-full
                               "
                             >
 
@@ -2721,6 +2734,7 @@ export default function RankClient({
 
                   <p
                     className="
+                      mx-auto
                       mt-5
                       max-w-md
                       leading-relaxed

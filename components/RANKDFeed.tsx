@@ -63,14 +63,14 @@ export default function RANKDFeed({
 
 
         <div className="
-          flex
-          justify-between
-          items-end
           mb-10
+          text-center
         ">
 
 
-          <div>
+          <div className="
+            mx-auto
+          ">
 
 
             <p className="
@@ -99,9 +99,10 @@ export default function RANKDFeed({
 
 
             <p className="
+              mx-auto
               mt-4
-              text-gray-500
               max-w-xl
+              text-gray-500
             ">
 
               Fresh perspectives from the community.
@@ -117,11 +118,11 @@ export default function RANKDFeed({
             href="/explore"
 
             className="
-              hidden
-              md:block
+              mt-5
+              inline-block
               font-black
-              hover:opacity-60
               transition
+              hover:opacity-60
             "
 
           >

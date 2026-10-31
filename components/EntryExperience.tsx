@@ -778,6 +778,7 @@ export default function EntryExperience({
 
                   <h1
                     className="
+                      mx-auto
                       mt-3
                       max-w-3xl
                       text-4xl
@@ -881,12 +882,11 @@ export default function EntryExperience({
                     className="
                       flex
                       flex-col
+                      items-center
                       gap-7
                       border-b
                       pb-8
-                      md:flex-row
-                      md:items-start
-                      md:justify-between
+                      text-center
                     "
                     style={{
                       borderColor:
@@ -896,6 +896,7 @@ export default function EntryExperience({
 
                     <div
                       className="
+                        mx-auto
                         max-w-4xl
                       "
                     >
@@ -1048,23 +1049,21 @@ export default function EntryExperience({
                                 <div
                                   className="
                                     flex
+                                    flex-col
                                     items-center
-                                    gap-5
+                                    gap-3
                                     py-5
-                                    md:gap-8
+                                    text-center
                                     md:py-6
                                   "
                                 >
 
                                   <div
                                     className="
-                                      w-10
-                                      shrink-0
                                       text-2xl
                                       font-black
                                       leading-none
                                       tracking-[-0.04em]
-                                      md:w-16
                                       md:text-4xl
                                     "
                                     style={{
@@ -1079,8 +1078,7 @@ export default function EntryExperience({
                                   <div
                                     className="
                                       min-w-0
-                                      flex-1
-                                      truncate
+                                      w-full
                                       text-xl
                                       font-black
                                       leading-tight
@@ -1195,11 +1193,12 @@ export default function EntryExperience({
                               }
                               className="
                                 flex
+                                flex-col
                                 items-center
-                                gap-5
+                                gap-3
                                 border-b
                                 py-5
-                                md:gap-8
+                                text-center
                                 md:py-6
                               "
                               style={{
@@ -1210,13 +1209,10 @@ export default function EntryExperience({
 
                               <div
                                 className="
-                                  w-10
-                                  shrink-0
                                   text-2xl
                                   font-black
                                   leading-none
                                   tracking-[-0.04em]
-                                  md:w-16
                                   md:text-4xl
                                 "
                                 style={{
@@ -1238,7 +1234,7 @@ export default function EntryExperience({
                               <div
                                 className="
                                   min-w-0
-                                  flex-1
+                                  w-full
                                   text-xl
                                   font-black
                                   leading-tight
@@ -1472,6 +1468,7 @@ export default function EntryExperience({
                   className="
                     border-b
                     pb-8
+                    text-center
                   "
                   style={{
                     borderColor:
@@ -1499,6 +1496,7 @@ export default function EntryExperience({
 
                   <h1
                     className="
+                      mx-auto
                       mt-4
                       max-w-4xl
                       text-5xl
@@ -1514,6 +1512,7 @@ export default function EntryExperience({
 
                   <p
                     className="
+                      mx-auto
                       mt-5
                       max-w-2xl
                       text-lg
@@ -1557,15 +1556,15 @@ export default function EntryExperience({
                         className="
                           flex
                           flex-col
+                          items-center
                           gap-6
-                          md:flex-row
-                          md:items-start
-                          md:justify-between
+                          text-center
                         "
                       >
 
                         <div
                           className="
+                            mx-auto
                             max-w-3xl
                           "
                         >

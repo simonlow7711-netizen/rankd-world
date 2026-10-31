@@ -221,7 +221,9 @@ export default function RankingResponse({
 
         <div
           className="
+              mx-auto
             max-w-2xl
+            text-center
           "
         >
 
@@ -397,7 +399,9 @@ export default function RankingResponse({
 
         <div
           className="
+              mx-auto
             max-w-2xl
+            text-center
           "
         >
 

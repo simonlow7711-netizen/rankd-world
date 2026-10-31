@@ -1748,6 +1748,7 @@ export default function RankingCard({
           relative
           z-10
           block
+          text-center
         "
 
       >
@@ -1783,7 +1784,7 @@ export default function RankingCard({
           className={`
             flex
             items-center
-            justify-between
+            justify-center
             gap-4
             pb-5
             border-b
@@ -1878,6 +1879,7 @@ export default function RankingCard({
             <p
 
               className={`
+                mx-auto
                 mt-5
                 max-w-xl
                 leading-relaxed
@@ -1902,11 +1904,13 @@ export default function RankingCard({
             <div
 
               className="
+                mx-auto
                 mt-3
                 inline-flex
                 max-w-full
                 min-w-0
                 items-center
+                justify-center
                 gap-2
                 rounded-full
                 border
@@ -2024,11 +2028,11 @@ export default function RankingCard({
           <div
 
             className="
+              mb-4
               flex
               items-center
-              justify-between
+              justify-center
               gap-4
-              mb-4
             "
 
           >
@@ -2089,16 +2093,14 @@ export default function RankingCard({
                       `${ranking.id}-${item.position}`
                     }
 
-                    className={`
+                    className="
                       flex
-                      ${
-                        isLongFormRanking
-                          ? "items-start"
-                          : "items-center"
-                      }
-                      gap-4
+                      flex-col
+                      items-center
+                      gap-2
                       py-3.5
-                    `}
+                      text-center
+                    "
 
                   >
 
@@ -2226,8 +2228,11 @@ export default function RankingCard({
 
             className={`
               mt-5
-              pt-5
+              flex
+              flex-col
+              items-center
               border-t
+              pt-5
               ${theme.border}
             `}
 

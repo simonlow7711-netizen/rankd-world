@@ -134,14 +134,13 @@ export default function Trending() {
             mb-10
             flex
             flex-col
+            items-center
             gap-6
             border-b
             border-black/10
             pb-8
+            text-center
             md:mb-12
-            md:flex-row
-            md:items-end
-            md:justify-between
           "
         >
 
@@ -176,6 +175,7 @@ export default function Trending() {
 
             <p
               className="
+                mx-auto
                 mt-4
                 max-w-xl
                 text-base
