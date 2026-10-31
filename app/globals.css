@@ -150,13 +150,10 @@ button {
     var(--rankd-card);
 
   border:
-    1px solid var(--rankd-border);
+    1px solid #111111;
 
   border-radius:
     32px;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.04);
 
 }
 
@@ -221,4 +218,13 @@ button {
   color:
     var(--rankd-muted);
 
+}
+
+
+.rankd-edition {
+  position: relative;
+  background: #fff9f3;
+  border-width: 1px;
+  border-style: solid;
+  box-shadow: none;
 }

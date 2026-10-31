@@ -27,6 +27,10 @@ import {
   categoryToSlug
 } from "@/utils/categorySlug"
 
+import {
+  getCategoryTheme
+} from "@/utils/categoryTheme"
+
 
 const SITE_URL =
   "https://rankd.world"
@@ -41,185 +45,13 @@ type Props = {
 }
 
 
-type CategoryTheme = {
+function getTheme(
+  category: RankingCategory
+) {
 
-  bg: string
-
-  text: string
-
-  accent: string
-
-  muted: string
-
-  label: string
-
-}
-
-
-const categoryThemes: Record<
-  string,
-  CategoryTheme
-> = {
-
-  "Food & Drink": {
-    bg: "#F3E8D8",
-    text: "#211A16",
-    accent: "#D96B35",
-    muted: "#6E5545",
-    label: "MENU / 07"
-  },
-
-  "Film & TV": {
-    bg: "#ECEAE5",
-    text: "#151515",
-    accent: "#FF6B35",
-    muted: "#686560",
-    label: "FRAME / 07"
-  },
-
-  "Music": {
-    bg: "#E9E3DE",
-    text: "#211A1A",
-    accent: "#C43D35",
-    muted: "#746562",
-    label: "SIDE A / 07"
-  },
-
-  "Sport": {
-    bg: "#E7EBE5",
-    text: "#101510",
-    accent: "#E54B2F",
-    muted: "#586058",
-    label: "MATCH / 07"
-  },
-
-  "Gaming": {
-    bg: "#E7ECE9",
-    text: "#0E1416",
-    accent: "#39A932",
-    muted: "#59645F",
-    label: "PLAYER 1 / 07"
-  },
-
-  "Travel": {
-    bg: "#E0ECE8",
-    text: "#123B36",
-    accent: "#087D71",
-    muted: "#58736F",
-    label: "FIELD NOTES / 07"
-  },
-
-  "Technology": {
-    bg: "#E9EBE9",
-    text: "#111820",
-    accent: "#315AE8",
-    muted: "#69737C",
-    label: "SYSTEM / 07"
-  },
-
-  "Lifestyle": {
-    bg: "#EEE8DE",
-    text: "#29241E",
-    accent: "#A45D3E",
-    muted: "#766E64",
-    label: "EDIT / 07"
-  },
-
-  "Books": {
-    bg: "#F1EBDD",
-    text: "#30251D",
-    accent: "#9B493D",
-    muted: "#75695E",
-    label: "PUBLISHING / 07"
-  },
-
-  "Art & Design": {
-    bg: "#E9E6DF",
-    text: "#151515",
-    accent: "#B58B18",
-    muted: "#68645C",
-    label: "CATALOGUE / 07"
-  },
-
-  "Fashion": {
-    bg: "#ECE3E9",
-    text: "#231B22",
-    accent: "#A52F68",
-    muted: "#786773",
-    label: "COLLECTION / 07"
-  },
-
-  "Beauty": {
-    bg: "#F1E5E3",
-    text: "#2C1C1F",
-    accent: "#C34E68",
-    muted: "#856B70",
-    label: "EDIT / 07"
-  },
-
-  "Health & Fitness": {
-    bg: "#E4EEE6",
-    text: "#17251B",
-    accent: "#16824D",
-    muted: "#607467",
-    label: "ENERGY / 07"
-  },
-
-  "Business": {
-    bg: "#E5E9EE",
-    text: "#14202B",
-    accent: "#245A91",
-    muted: "#64717D",
-    label: "BRIEFING / 07"
-  },
-
-  "Science": {
-    bg: "#E0EAEC",
-    text: "#14272C",
-    accent: "#157D8C",
-    muted: "#61767C",
-    label: "FIELD NOTES / 07"
-  },
-
-  "History": {
-    bg: "#E9E0CF",
-    text: "#2D2419",
-    accent: "#86502E",
-    muted: "#766A5B",
-    label: "ARCHIVE / 07"
-  },
-
-  "Nature & Animals": {
-    bg: "#E0E9DC",
-    text: "#172418",
-    accent: "#4C7D3F",
-    muted: "#62715E",
-    label: "FIELD GUIDE / 07"
-  },
-
-  "Cars & Transport": {
-    bg: "#E2E5E7",
-    text: "#141B20",
-    accent: "#C63D2E",
-    muted: "#68737B",
-    label: "ROAD / 07"
-  },
-
-  "Home & Garden": {
-    bg: "#E9E7DD",
-    text: "#25251E",
-    accent: "#6E7C45",
-    muted: "#707064",
-    label: "LIVING / 07"
-  },
-
-  "General": {
-    bg: "#F7F4EE",
-    text: "#000000",
-    accent: "#FF6B35",
-    muted: "#000000",
-    label: "TOP 7"
-  }
+  return getCategoryTheme(
+    category
+  )
 
 }
 
@@ -242,20 +74,6 @@ function slugToCategory(
 
 
   return match ?? null
-
-}
-
-
-function getTheme(
-  category: RankingCategory
-): CategoryTheme {
-
-  return (
-    categoryThemes[
-      category
-    ] ??
-    categoryThemes.General
-  )
 
 }
 
@@ -620,44 +438,34 @@ export default async function CategoryPage(
 
           <header
             className="
+              rankd-edition
               relative
               mb-12
               overflow-hidden
-              md:mb-14
+              rounded-[28px]
+              border
+              px-6
+              py-10
+              text-center
+              text-black
+              md:mb-16
+              md:px-12
+              md:py-16
             "
+            style={{
+              backgroundColor:
+                theme.paper,
+              borderColor:
+                theme.accent
+            }}
           >
-
-            <div
-              className="
-                pointer-events-none
-                absolute
-                -right-8
-                -top-16
-                select-none
-                text-[16rem]
-                font-black
-                leading-none
-                tracking-[-0.16em]
-                opacity-[0.055]
-                md:-right-16
-                md:-top-28
-                md:text-[25rem]
-              "
-              style={{
-                color:
-                  theme.accent
-              }}
-              aria-hidden="true"
-            >
-              7
-            </div>
-
 
             <div
               className="
                 relative
                 z-10
-                max-w-4xl
+                mx-auto
+                max-w-3xl
               "
             >
 
@@ -665,7 +473,7 @@ export default async function CategoryPage(
                 className="
                   flex
                   items-center
-                  justify-between
+                  justify-center
                   gap-4
                 "
               >
@@ -683,24 +491,9 @@ export default async function CategoryPage(
                   }}
                 >
 
-                  RANKD / {theme.label}
+                  {theme.index} · RANKD / {theme.label}
 
                 </p>
-
-
-                <span
-                  className="
-                    text-[11px]
-                    font-black
-                    uppercase
-                    tracking-[0.16em]
-                    opacity-40
-                  "
-                >
-
-                  Category
-
-                </span>
 
               </div>
 
@@ -714,10 +507,6 @@ export default async function CategoryPage(
                   tracking-[-0.06em]
                   md:text-7xl
                 "
-                style={{
-                  color:
-                    theme.text
-                }}
               >
 
                 {category}
@@ -727,6 +516,7 @@ export default async function CategoryPage(
 
               <p
                 className="
+                  mx-auto
                   mt-5
                   max-w-2xl
                   text-lg
@@ -741,6 +531,20 @@ export default async function CategoryPage(
 
                 {metadata.description}
 
+              </p>
+
+
+              <p
+                className="
+                  mt-6
+                  text-[11px]
+                  font-black
+                  uppercase
+                  tracking-[0.2em]
+                  opacity-50
+                "
+              >
+                {rankings.length} RANKD{rankings.length === 1 ? "" : "s"} in this edition
               </p>
 
             </div>
@@ -790,17 +594,18 @@ export default async function CategoryPage(
 
                 <div
                   className="
-                    rounded-[32px]
+                    rankd-edition
+                    rounded-[28px]
+                    border
+                    bg-[#FFF9F3]
                     p-8
                     text-center
+                    text-black
                     md:p-14
                   "
                   style={{
-                    backgroundColor:
-                      theme.bg,
-
-                    color:
-                      theme.text
+                    borderColor:
+                      theme.accent
                   }}
                 >
 
@@ -811,30 +616,6 @@ export default async function CategoryPage(
                       max-w-2xl
                     "
                   >
-
-                    <div
-                      className="
-                        pointer-events-none
-                        absolute
-                        left-1/2
-                        top-1/2
-                        -translate-x-1/2
-                        -translate-y-1/2
-                        select-none
-                        text-[12rem]
-                        font-black
-                        leading-none
-                        tracking-[-0.16em]
-                        opacity-[0.06]
-                      "
-                      style={{
-                        color:
-                          theme.accent
-                      }}
-                      aria-hidden="true"
-                    >
-                      7
-                    </div>
 
 
                     <div
@@ -949,15 +730,21 @@ export default async function CategoryPage(
 
                 <div
                   className="
-                    rounded-[32px]
-                    bg-black
+                    rankd-edition
+                    rounded-[28px]
+                    border
+                    bg-[#FFF9F3]
                     px-7
                     py-12
                     text-center
-                    text-white
+                    text-black
                     md:px-12
                     md:py-14
                   "
+                  style={{
+                    borderColor:
+                      theme.accent
+                  }}
                 >
 
                   <p
@@ -998,7 +785,7 @@ export default async function CategoryPage(
                       max-w-xl
                       text-sm
                       leading-relaxed
-                      text-white/60
+                      text-black/50
                       md:text-base
                     "
                   >
@@ -1020,14 +807,18 @@ export default async function CategoryPage(
                       items-center
                       justify-center
                       rounded-full
-                      bg-white
+                      border
+                      border-black
+                      bg-black
                       px-7
                       py-4
                       text-sm
                       font-black
-                      text-black
+                      text-white
                       transition
                       hover:bg-[#FF6B35]
+                      hover:text-black
+                      hover:border-[#FF6B35]
                     "
                   >
 

@@ -176,9 +176,7 @@ export default function RankingResponse({
     accentColor
       ? {
           backgroundColor:
-            accentColor,
-          boxShadow:
-            `0 0 0 3px ${accentColor}14`
+            accentColor
         }
       : undefined
 

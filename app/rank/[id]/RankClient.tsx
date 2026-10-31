@@ -37,6 +37,10 @@ import RankingEngagement from "@/components/RankingEngagement"
 import AnimatedRankPreview from "@/components/AnimatedRankPreview"
 
 import {
+  getCategoryTheme
+} from "@/utils/categoryTheme"
+
+import {
   getRankingEngagement,
   RankingEngagementData
 } from "@/utils/rankingEngagement"
@@ -73,535 +77,41 @@ type PerspectiveRanking = {
   createdAt:string | null
 }
 
-type CategoryTheme = {
-
-  background:string
-  text:string
-  accent:string
-  muted:string
-  border:string
-  title:string
-  secondaryLabel:string
-
-}
-
-
-const categoryThemes:Record<
-  string,
-  CategoryTheme
-> = {
-
-  "Food & Drink": {
-
-    background:
-      "bg-[#F3E8D8]",
-
-    text:
-      "text-[#211A16]",
-
-    accent:
-      "text-[#D96B35]",
-
-    muted:
-      "text-[#6E5545]",
-
-    border:
-      "border-[#211A16]/10",
-
-    title:
-      "leading-[0.9] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "MENU / 07"
-
-  },
-
-  "Film & TV": {
-
-    background:
-      "bg-[#ECEAE5]",
-
-    text:
-      "text-[#151515]",
-
-    accent:
-      "text-[#FF6B35]",
-
-    muted:
-      "text-[#686560]",
-
-    border:
-      "border-[#151515]/10",
-
-    title:
-      "leading-[0.86] tracking-[-0.06em]",
-
-    secondaryLabel:
-      "FRAME / 07"
-
-  },
-
-  "Music": {
-
-    background:
-      "bg-[#E9E3DE]",
-
-    text:
-      "text-[#211A1A]",
-
-    accent:
-      "text-[#C43D35]",
-
-    muted:
-      "text-[#746562]",
-
-    border:
-      "border-[#211A1A]/10",
-
-    title:
-      "leading-[0.82] tracking-[-0.06em]",
-
-    secondaryLabel:
-      "SIDE A / 07"
-
-  },
-
-  "Sport": {
-
-    background:
-      "bg-[#E7EBE5]",
-
-    text:
-      "text-[#101510]",
-
-    accent:
-      "text-[#E54B2F]",
-
-    muted:
-      "text-[#586058]",
-
-    border:
-      "border-[#101510]/10",
-
-    title:
-      "leading-[0.78] tracking-[-0.07em]",
-
-    secondaryLabel:
-      "MATCH / 07"
-
-  },
-
-  "Gaming": {
-
-    background:
-      "bg-[#E7ECE9]",
-
-    text:
-      "text-[#0E1416]",
-
-    accent:
-      "text-[#39A932]",
-
-    muted:
-      "text-[#59645F]",
-
-    border:
-      "border-[#0E1416]/10",
-
-    title:
-      "leading-[0.9] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "PLAYER 1 / 07"
-
-  },
-
-  "Travel": {
-
-    background:
-      "bg-[#E0ECE8]",
-
-    text:
-      "text-[#123B36]",
-
-    accent:
-      "text-[#087D71]",
-
-    muted:
-      "text-[#58736F]",
-
-    border:
-      "border-[#123B36]/10",
-
-    title:
-      "leading-[0.88] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "FIELD NOTES / 07"
-
-  },
-
-  "Technology": {
-
-    background:
-      "bg-[#E9EBE9]",
-
-    text:
-      "text-[#111820]",
-
-    accent:
-      "text-[#315AE8]",
-
-    muted:
-      "text-[#69737C]",
-
-    border:
-      "border-[#111820]/10",
-
-    title:
-      "leading-[0.9] tracking-[-0.06em]",
-
-    secondaryLabel:
-      "SYSTEM / 07"
-
-  },
-
-  "Lifestyle": {
-
-    background:
-      "bg-[#EEE8DE]",
-
-    text:
-      "text-[#29241E]",
-
-    accent:
-      "text-[#A45D3E]",
-
-    muted:
-      "text-[#766E64]",
-
-    border:
-      "border-[#29241E]/10",
-
-    title:
-      "leading-[0.92] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "EDIT / 07"
-
-  },
-
-  "Books": {
-
-    background:
-      "bg-[#F1EBDD]",
-
-    text:
-      "text-[#30251D]",
-
-    accent:
-      "text-[#9B493D]",
-
-    muted:
-      "text-[#75695E]",
-
-    border:
-      "border-[#30251D]/10",
-
-    title:
-      "leading-[0.94] tracking-[-0.035em]",
-
-    secondaryLabel:
-      "PUBLISHING / 07"
-
-  },
-
-  "Art & Design": {
-
-    background:
-      "bg-[#E9E6DF]",
-
-    text:
-      "text-[#151515]",
-
-    accent:
-      "text-[#B58B18]",
-
-    muted:
-      "text-[#68645C]",
-
-    border:
-      "border-[#151515]/10",
-
-    title:
-      "leading-[0.82] tracking-[-0.07em]",
-
-    secondaryLabel:
-      "CATALOGUE / 07"
-
-  },
-
-  "Fashion": {
-
-    background:
-      "bg-[#ECE3E9]",
-
-    text:
-      "text-[#231B22]",
-
-    accent:
-      "text-[#A52F68]",
-
-    muted:
-      "text-[#786773]",
-
-    border:
-      "border-[#231B22]/10",
-
-    title:
-      "leading-[0.78] tracking-[-0.07em]",
-
-    secondaryLabel:
-      "COLLECTION / 07"
-
-  },
-
-  "Beauty": {
-
-    background:
-      "bg-[#F1E5E3]",
-
-    text:
-      "text-[#2C1C1F]",
-
-    accent:
-      "text-[#C34E68]",
-
-    muted:
-      "text-[#856B70]",
-
-    border:
-      "border-[#2C1C1F]/10",
-
-    title:
-      "leading-[0.88] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "EDIT / 07"
-
-  },
-
-  "Health & Fitness": {
-
-    background:
-      "bg-[#E4EEE6]",
-
-    text:
-      "text-[#17251B]",
-
-    accent:
-      "text-[#16824D]",
-
-    muted:
-      "text-[#607467]",
-
-    border:
-      "border-[#17251B]/10",
-
-    title:
-      "leading-[0.86] tracking-[-0.06em]",
-
-    secondaryLabel:
-      "ENERGY / 07"
-
-  },
-
-  "Business": {
-
-    background:
-      "bg-[#E5E9EE]",
-
-    text:
-      "text-[#14202B]",
-
-    accent:
-      "text-[#245A91]",
-
-    muted:
-      "text-[#64717D]",
-
-    border:
-      "border-[#14202B]/10",
-
-    title:
-      "leading-[0.94] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "BRIEFING / 07"
-
-  },
-
-  "Science": {
-
-    background:
-      "bg-[#E0EAEC]",
-
-    text:
-      "text-[#14272C]",
-
-    accent:
-      "text-[#157D8C]",
-
-    muted:
-      "text-[#61767C]",
-
-    border:
-      "border-[#14272C]/10",
-
-    title:
-      "leading-[0.92] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "FIELD NOTES / 07"
-
-  },
-
-  "History": {
-
-    background:
-      "bg-[#E9E0CF]",
-
-    text:
-      "text-[#2D2419]",
-
-    accent:
-      "text-[#86502E]",
-
-    muted:
-      "text-[#766A5B]",
-
-    border:
-      "border-[#2D2419]/10",
-
-    title:
-      "leading-[0.94] tracking-[-0.04em]",
-
-    secondaryLabel:
-      "ARCHIVE / 07"
-
-  },
-
-  "Nature & Animals": {
-
-    background:
-      "bg-[#E0E9DC]",
-
-    text:
-      "text-[#172418]",
-
-    accent:
-      "text-[#4C7D3F]",
-
-    muted:
-      "text-[#62715E]",
-
-    border:
-      "border-[#172418]/10",
-
-    title:
-      "leading-[0.88] tracking-[-0.055em]",
-
-    secondaryLabel:
-      "FIELD GUIDE / 07"
-
-  },
-
-  "Cars & Transport": {
-
-    background:
-      "bg-[#E2E5E7]",
-
-    text:
-      "text-[#141B20]",
-
-    accent:
-      "text-[#C63D2E]",
-
-    muted:
-      "text-[#68737B]",
-
-    border:
-      "border-[#141B20]/10",
-
-    title:
-      "leading-[0.8] tracking-[-0.065em]",
-
-    secondaryLabel:
-      "ROAD / 07"
-
-  },
-
-  "Home & Garden": {
-
-    background:
-      "bg-[#E9E7DD]",
-
-    text:
-      "text-[#25251E]",
-
-    accent:
-      "text-[#6E7C45]",
-
-    muted:
-      "text-[#707064]",
-
-    border:
-      "border-[#25251E]/10",
-
-    title:
-      "leading-[0.92] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "LIVING / 07"
-
-  },
-
-  "General": {
-
-    background:
-      "bg-[#F7F4EE]",
-
-    text:
-      "text-black",
-
-    accent:
-      "text-[#FF6B35]",
-
-    muted:
-      "text-black/50",
-
-    border:
-      "border-black/10",
-
-    title:
-      "leading-[0.9] tracking-[-0.05em]",
-
-    secondaryLabel:
-      "TOP 7"
-
-  }
-
-}
-
-
 function getTheme(
   category:string
-):CategoryTheme {
+) {
 
-  return (
-    categoryThemes[category] ??
-    categoryThemes.General
-  )
+  const theme =
+    getCategoryTheme(
+      category
+    )
+
+  return {
+    background:
+      theme.paperClass,
+    text:
+      "text-black",
+    accent:
+      theme.accentClass,
+    muted:
+      "text-black/50",
+    border:
+      theme.borderClass,
+    title:
+      theme.titleClass,
+    secondaryLabel:
+      theme.label,
+    paper:
+      theme.paper,
+    ink:
+      theme.ink,
+    accentHex:
+      theme.accent,
+    mutedHex:
+      theme.muted,
+    index:
+      theme.index
+  }
 
 }
 
@@ -1173,7 +683,7 @@ export default function RankClient({
             className="
               rounded-[28px]
               border
-              border-black/10
+              border-black
               bg-white
               p-8
               md:p-12
@@ -1485,6 +995,7 @@ export default function RankClient({
 
         <section
           className={`
+            rankd-edition
             relative
             min-w-0
             max-w-full
@@ -1500,28 +1011,6 @@ export default function RankClient({
             ${theme.border}
           `}
         >
-
-          <div
-            className="
-              absolute
-              right-2
-              top-0
-              text-[12rem]
-              md:text-[18rem]
-              leading-none
-              font-black
-              tracking-[-0.1em]
-              text-[#FF6B35]/[0.08]
-              select-none
-              pointer-events-none
-              transition-transform
-              duration-500
-              hover:scale-105
-            "
-          >
-            7
-          </div>
-
 
           <div
             className="
@@ -1552,11 +1041,9 @@ export default function RankClient({
               >
 
                 <span
-                  className="
-                    text-[#FF6B35]
-                  "
+                  className={theme.accent}
                 >
-                  RANKD
+                  {theme.index} · RANKD
                 </span>
 
 
@@ -1809,6 +1296,7 @@ export default function RankClient({
                           `original-${item.position}`
                         }
                         className="
+                          rankd-edition
                           group
                           relative
                           min-w-0
@@ -1816,15 +1304,15 @@ export default function RankClient({
                           overflow-hidden
                           rounded-[24px]
                           border
-                          border-black/10
-                          bg-white/55
                           p-3
                           md:p-6
-                          transition-all
-                          duration-300
-                          hover:-translate-y-1
-                          hover:shadow-[0_15px_40px_rgba(0,0,0,0.08)]
                         "
+                        style={{
+                          backgroundColor:
+                            theme.paper,
+                          borderColor:
+                            theme.accentHex
+                        }}
                       >
 
                         <div
@@ -2012,7 +1500,7 @@ export default function RankClient({
                     overflow-hidden
                     rounded-[24px]
                     border
-                    border-black/10
+                    border-black
                     bg-white
                   "
                 >
@@ -2130,7 +1618,7 @@ export default function RankClient({
                     overflow-hidden
                     rounded-[24px]
                     border
-                    border-black/10
+                    border-black
                     bg-white
                   "
                 >
@@ -2326,12 +1814,16 @@ export default function RankClient({
                               overflow-hidden
                               rounded-[24px]
                               border
-                              border-black/10
-                              bg-white/55
                               p-4
                               text-center
                               md:p-6
                             "
+                            style={{
+                              backgroundColor:
+                                theme.paper,
+                              borderColor:
+                                theme.accentHex
+                            }}
                           >
 
                             <div
@@ -2442,7 +1934,7 @@ export default function RankClient({
               className="
                 rounded-[28px]
                 border
-                border-black/10
+                border-black
                 bg-white
                 p-7
                 md:p-8
@@ -2653,36 +2145,13 @@ export default function RankClient({
                 overflow-hidden
                 rounded-[28px]
                 border
-                border-black/10
-                bg-[#EAE3EC]
+                border-black
+                bg-white
                 p-7
                 md:p-8
-                text-[#25152F]
-                transition-all
-                duration-300
-                hover:-translate-y-1
-                hover:shadow-[0_20px_50px_rgba(0,0,0,0.09)]
+                text-black
               "
             >
-
-              <div
-                className="
-                  absolute
-                  right-0
-                  top-0
-                  text-[10rem]
-                  leading-none
-                  font-black
-                  tracking-[-0.1em]
-                  text-[#FF6B35]/[0.08]
-                  transition-transform
-                  duration-500
-                  group-hover:scale-110
-                "
-              >
-                7
-              </div>
-
 
               <div
                 className="

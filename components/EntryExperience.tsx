@@ -26,6 +26,10 @@ import {
 
 import RankingResponse from "@/components/RankingResponse"
 
+import {
+  getCategoryTheme
+} from "@/utils/categoryTheme"
+
 
 type EntryExperienceProps = {
   rankings: Ranking[]
@@ -35,215 +39,6 @@ type EntryExperienceProps = {
 type ExperienceState =
   | "ranking"
   | "insight"
-
-
-type CategoryTheme = {
-  bg: string
-  text: string
-  accent: string
-  muted: string
-  border: string
-  label: string
-}
-
-
-const categoryThemes: Record<
-  string,
-  CategoryTheme
-> = {
-  "Food & Drink": {
-    bg: "#F3E8D8",
-    text: "#211A16",
-    accent: "#D96B35",
-    muted: "#6E5545",
-    border: "#211A16",
-    label: "MENU / 07"
-  },
-
-  "Film & TV": {
-    bg: "#ECEAE5",
-    text: "#151515",
-    accent: "#FF6B35",
-    muted: "#686560",
-    border: "#151515",
-    label: "FRAME / 07"
-  },
-
-  Music: {
-    bg: "#E9E3DE",
-    text: "#211A1A",
-    accent: "#C43D35",
-    muted: "#746562",
-    border: "#211A1A",
-    label: "SIDE A / 07"
-  },
-
-  Sport: {
-    bg: "#E7EBE5",
-    text: "#101510",
-    accent: "#E54B2F",
-    muted: "#586058",
-    border: "#101510",
-    label: "MATCH / 07"
-  },
-
-  Gaming: {
-    bg: "#E7ECE9",
-    text: "#0E1416",
-    accent: "#39A932",
-    muted: "#59645F",
-    border: "#0E1416",
-    label: "PLAYER 1 / 07"
-  },
-
-  Travel: {
-    bg: "#E0ECE8",
-    text: "#123B36",
-    accent: "#087D71",
-    muted: "#58736F",
-    border: "#123B36",
-    label: "FIELD NOTES / 07"
-  },
-
-  Technology: {
-    bg: "#E9EBE9",
-    text: "#111820",
-    accent: "#315AE8",
-    muted: "#69737C",
-    border: "#111820",
-    label: "SYSTEM / 07"
-  },
-
-  Lifestyle: {
-    bg: "#EEE8DE",
-    text: "#29241E",
-    accent: "#A45D3E",
-    muted: "#766E64",
-    border: "#29241E",
-    label: "EDIT / 07"
-  },
-
-  Books: {
-    bg: "#F1EBDD",
-    text: "#30251D",
-    accent: "#9B493D",
-    muted: "#75695E",
-    border: "#30251D",
-    label: "PUBLISHING / 07"
-  },
-
-  "Art & Design": {
-    bg: "#E9E6DF",
-    text: "#151515",
-    accent: "#B58B18",
-    muted: "#68645C",
-    border: "#151515",
-    label: "CATALOGUE / 07"
-  },
-
-  Fashion: {
-    bg: "#ECE3E9",
-    text: "#231B22",
-    accent: "#A52F68",
-    muted: "#786773",
-    border: "#231B22",
-    label: "COLLECTION / 07"
-  },
-
-  Beauty: {
-    bg: "#F1E5E3",
-    text: "#2C1C1F",
-    accent: "#C34E68",
-    muted: "#856B70",
-    border: "#2C1C1F",
-    label: "EDIT / 07"
-  },
-
-  "Health & Fitness": {
-    bg: "#E4EEE6",
-    text: "#17251B",
-    accent: "#16824D",
-    muted: "#607467",
-    border: "#17251B",
-    label: "ENERGY / 07"
-  },
-
-  Business: {
-    bg: "#E5E9EE",
-    text: "#14202B",
-    accent: "#245A91",
-    muted: "#64717D",
-    border: "#14202B",
-    label: "BRIEFING / 07"
-  },
-
-  Science: {
-    bg: "#E0EAEC",
-    text: "#14272C",
-    accent: "#157D8C",
-    muted: "#61767C",
-    border: "#14272C",
-    label: "FIELD NOTES / 07"
-  },
-
-  History: {
-    bg: "#E9E0CF",
-    text: "#2D2419",
-    accent: "#86502E",
-    muted: "#766A5B",
-    border: "#2D2419",
-    label: "ARCHIVE / 07"
-  },
-
-  "Nature & Animals": {
-    bg: "#E0E9DC",
-    text: "#172418",
-    accent: "#4C7D3F",
-    muted: "#62715E",
-    border: "#172418",
-    label: "FIELD GUIDE / 07"
-  },
-
-  "Cars & Transport": {
-    bg: "#E2E5E7",
-    text: "#141B20",
-    accent: "#C63D2E",
-    muted: "#68737B",
-    border: "#141B20",
-    label: "ROAD / 07"
-  },
-
-  "Home & Garden": {
-    bg: "#E9E7DD",
-    text: "#25251E",
-    accent: "#6E7C45",
-    muted: "#707064",
-    border: "#25251E",
-    label: "LIVING / 07"
-  },
-
-  General: {
-    bg: "#F7F4EE",
-    text: "#000000",
-    accent: "#FF6B35",
-    muted: "#66615B",
-    border: "#000000",
-    label: "TOP 7"
-  }
-}
-
-
-function getCategoryTheme(
-  category?: string
-) {
-  return (
-    categoryThemes[
-      category ??
-      "General"
-    ] ??
-    categoryThemes.General
-  )
-}
 
 
 export default function EntryExperience({
@@ -712,18 +507,13 @@ export default function EntryExperience({
     <section
       className="
         min-h-screen
+        bg-[#F7F4EE]
         px-5
         py-10
+        text-black
         md:px-8
         md:py-16
       "
-      style={{
-        backgroundColor:
-          theme.bg,
-
-        color:
-          theme.text
-      }}
     >
 
       <div
@@ -824,6 +614,7 @@ export default function EntryExperience({
 
               <article
                 className="
+                  rankd-edition
                   relative
                   overflow-hidden
                   rounded-[32px]
@@ -832,41 +623,15 @@ export default function EntryExperience({
                 "
                 style={{
                   backgroundColor:
-                    theme.bg,
+                    theme.paper,
 
                   color:
-                    theme.text,
+                    "#111111",
 
                   borderColor:
-                    theme.border
+                    theme.accent
                 }}
               >
-
-                <div
-                  className="
-                    pointer-events-none
-                    absolute
-                    -right-8
-                    -top-24
-                    select-none
-                    text-[18rem]
-                    font-black
-                    leading-none
-                    tracking-[-0.16em]
-                    opacity-[0.06]
-                    md:-right-12
-                    md:-top-32
-                    md:text-[28rem]
-                  "
-                  style={{
-                    color:
-                      theme.accent
-                  }}
-                  aria-hidden="true"
-                >
-                  7
-                </div>
-
 
                 <div
                   className="
@@ -913,7 +678,7 @@ export default function EntryExperience({
                             theme.accent
                         }}
                       >
-                        RANKD / {
+                        {theme.index} · RANKD / {
                           theme.label
                         }
                       </p>
@@ -1119,7 +884,7 @@ export default function EntryExperience({
                                       "
                                       style={{
                                         backgroundColor:
-                                          theme.bg
+                                          "#FFFFFF"
                                       }}
                                       aria-label="Reveal the number one ranked item"
                                     >
@@ -1342,7 +1107,7 @@ export default function EntryExperience({
                       }
 
                       cardColor={
-                        theme.bg
+                        "#FFFFFF"
                       }
                     />
 
@@ -1409,50 +1174,22 @@ export default function EntryExperience({
 
             <div
               className="
+                rankd-edition
                 relative
                 min-h-[65vh]
                 overflow-hidden
-                rounded-[32px]
+                rounded-[28px]
                 border
-                md:rounded-[40px]
+                text-black
+                md:rounded-[32px]
               "
               style={{
                 backgroundColor:
-                  theme.bg,
-
-                color:
-                  theme.text,
-
+                  theme.paper,
                 borderColor:
-                  theme.border
+                  theme.accent
               }}
             >
-
-              <div
-                className="
-                  pointer-events-none
-                  absolute
-                  -right-8
-                  -top-24
-                  select-none
-                  text-[18rem]
-                  font-black
-                  leading-none
-                  tracking-[-0.16em]
-                  opacity-[0.06]
-                  md:-right-12
-                  md:-top-32
-                  md:text-[28rem]
-                "
-                style={{
-                  color:
-                    theme.accent
-                }}
-                aria-hidden="true"
-              >
-                7
-              </div>
-
 
               <div
                 className="
@@ -1886,7 +1623,7 @@ export default function EntryExperience({
                               theme.accent,
 
                             color:
-                              theme.bg
+                              "#FFFFFF"
                           }}
                         >
                           Rank this one too →
@@ -1925,7 +1662,7 @@ export default function EntryExperience({
                           theme.text,
 
                         color:
-                          theme.bg
+                          "#FFFFFF"
                       }}
                     >
                       Explore more RANKDs →
