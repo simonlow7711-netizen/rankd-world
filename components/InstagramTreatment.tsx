@@ -4,10 +4,15 @@ import {
   useState
 } from "react"
 
+import FitEmbed from "@/components/FitEmbed"
+
 type InstagramTreatmentProps = {
   url: string | null
   name: string
 }
+
+const INSTAGRAM_WIDTH = 326
+const INSTAGRAM_HEIGHT = 540
 
 export default function InstagramTreatment({
   url,
@@ -33,7 +38,7 @@ export default function InstagramTreatment({
           flex
           w-full
           min-w-0
-          max-w-[min(100%,20.5rem)]
+          max-w-full
           items-center
           justify-between
           rounded-[22px]
@@ -44,9 +49,6 @@ export default function InstagramTreatment({
           py-3.5
           text-sm
           font-bold
-          shadow-[0_12px_28px_rgba(0,0,0,0.06)]
-          transition
-          hover:text-[#FF6B35]
         "
       >
         <span>View on Instagram</span>
@@ -62,34 +64,36 @@ export default function InstagramTreatment({
         mt-5
         w-full
         min-w-0
-        max-w-[min(100%,20.5rem)]
+        max-w-full
         overflow-hidden
         rounded-[22px]
         border
         border-black/10
         bg-white
-        shadow-[0_14px_32px_rgba(0,0,0,0.08)]
       "
     >
-      <iframe
-        title={`${name} on Instagram`}
-        src={`${url}embed/`}
-        className="
-          block
-          h-[min(460px,70vh)]
-          w-full
-          max-w-full
-          min-w-0
-          border-0
-          bg-[#FAFAFA]
-        "
-        loading="lazy"
-        allowFullScreen
-        scrolling="no"
-        onError={() => {
-          setEmbedFailed(true)
-        }}
-      />
+      <FitEmbed
+        width={INSTAGRAM_WIDTH}
+        height={INSTAGRAM_HEIGHT}
+      >
+        <iframe
+          title={`${name} on Instagram`}
+          src={`${url}embed/`}
+          width={INSTAGRAM_WIDTH}
+          height={INSTAGRAM_HEIGHT}
+          className="
+            block
+            border-0
+            bg-[#FAFAFA]
+          "
+          loading="lazy"
+          allowFullScreen
+          scrolling="no"
+          onError={() => {
+            setEmbedFailed(true)
+          }}
+        />
+      </FitEmbed>
 
       <figcaption
         className="
@@ -121,8 +125,6 @@ export default function InstagramTreatment({
             text-xs
             font-bold
             text-black
-            transition
-            hover:text-[#FF6B35]
           "
         >
           Open ↗

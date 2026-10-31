@@ -28,7 +28,7 @@ export default function MapsTreatment({
         mt-5
         w-full
         min-w-0
-        max-w-[min(100%,36rem)]
+        max-w-full
         overflow-hidden
         rounded-[22px]
         border

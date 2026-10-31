@@ -28,11 +28,10 @@ export default function YouTubeTreatment({
         mt-5
         w-full
         min-w-0
-        max-w-[min(100%,36rem)]
+        max-w-full
         overflow-hidden
         rounded-[22px]
         bg-black
-        shadow-[0_18px_40px_rgba(0,0,0,0.18)]
       "
     >
       <div
@@ -40,6 +39,7 @@ export default function YouTubeTreatment({
           relative
           aspect-video
           w-full
+          min-w-0
           overflow-hidden
           bg-black
         "
@@ -52,9 +52,16 @@ export default function YouTubeTreatment({
             inset-0
             h-full
             w-full
+            min-w-0
             max-w-full
             border-0
           "
+          style={{
+            width: "100%",
+            minWidth: 0,
+            maxWidth: "100%",
+            height: "100%"
+          }}
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
           referrerPolicy="strict-origin-when-cross-origin"
           loading="lazy"

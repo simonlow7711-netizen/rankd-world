@@ -1,5 +1,7 @@
 "use client"
 
+import FitEmbed from "@/components/FitEmbed"
+
 import {
   getSpotifyEmbed
 } from "@/utils/spotify"
@@ -8,6 +10,8 @@ type SpotifyTreatmentProps = {
   url?: string | null
   name: string
 }
+
+const SPOTIFY_WIDTH = 300
 
 export default function SpotifyTreatment({
   url,
@@ -25,6 +29,9 @@ export default function SpotifyTreatment({
     embed.type === "track" ||
     embed.type === "episode"
 
+  const height =
+    compact ? 152 : 352
+
   return (
     <figure
       className="
@@ -32,34 +39,31 @@ export default function SpotifyTreatment({
         mt-5
         w-full
         min-w-0
-        max-w-[min(100%,36rem)]
+        max-w-full
         overflow-hidden
         rounded-[22px]
         border
         border-black/10
         bg-[#191414]
-        shadow-[0_14px_32px_rgba(0,0,0,0.12)]
       "
     >
-      <iframe
-        src={embed.embedUrl}
-        title={`Listen to ${name} on Spotify`}
-        className="
-          block
-          h-auto
-          w-full
-          max-w-full
-          min-w-0
-          border-0
-        "
-        width="100%"
-        height={compact ? 152 : 352}
-        style={{
-          maxWidth: "100%"
-        }}
-        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-        loading="lazy"
-      />
+      <FitEmbed
+        width={SPOTIFY_WIDTH}
+        height={height}
+      >
+        <iframe
+          src={embed.embedUrl}
+          title={`Listen to ${name} on Spotify`}
+          width={SPOTIFY_WIDTH}
+          height={height}
+          className="
+            block
+            border-0
+          "
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+        />
+      </FitEmbed>
 
       <figcaption
         className="
@@ -91,8 +95,6 @@ export default function SpotifyTreatment({
             text-xs
             font-bold
             text-white/80
-            transition
-            hover:text-white
           "
         >
           Listen ↗

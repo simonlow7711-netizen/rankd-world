@@ -1279,10 +1279,11 @@ export default function RankClient({
     <main
       className="
         min-h-screen
+        overflow-x-hidden
         bg-[#F7F4EE]
+        px-3
+        py-10
         text-black
-        px-5
-        py-12
         md:px-8
         md:py-20
       "
@@ -1486,11 +1487,12 @@ export default function RankClient({
           className={`
             relative
             min-w-0
+            max-w-full
             overflow-hidden
             rounded-[28px]
             border
-            px-4
-            py-7
+            px-3
+            py-6
             md:p-10
             lg:p-12
             ${theme.background}
@@ -1816,7 +1818,7 @@ export default function RankClient({
                           border
                           border-black/10
                           bg-white/55
-                          p-4
+                          p-3
                           md:p-6
                           transition-all
                           duration-300

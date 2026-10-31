@@ -95,7 +95,7 @@ export default function AmazonTreatment({
         flex
         w-full
         min-w-0
-        max-w-[min(100%,36rem)]
+        max-w-full
         items-center
         gap-4
         overflow-hidden
