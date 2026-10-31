@@ -629,7 +629,7 @@ export default function EntryExperience({
                     "#111111",
 
                   borderColor:
-                    theme.accent
+                    "#111111"
                 }}
               >
 
@@ -1187,7 +1187,7 @@ export default function EntryExperience({
                 backgroundColor:
                   theme.paper,
                 borderColor:
-                  theme.accent
+                  "#111111"
               }}
             >
 

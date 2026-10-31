@@ -31,14 +31,14 @@ type ThemeInput = {
   name: string
   index: string
   label: string
+  paper: string
+  paperClass: string
   accent: string
   accentClass: string
-  borderClass: string
   titleClass: string
 }
 
 
-const PAPER = "#FFFFFF"
 const INK = "#111111"
 const MUTED = "#6B6B6B"
 
@@ -55,7 +55,7 @@ function makeTheme(
     label:
       input.label,
     paper:
-      PAPER,
+      input.paper,
     ink:
       INK,
     accent:
@@ -65,7 +65,7 @@ function makeTheme(
     line:
       input.accent,
     paperClass:
-      "bg-white",
+      input.paperClass,
     inkClass:
       "text-black",
     accentClass:
@@ -73,7 +73,7 @@ function makeTheme(
     mutedClass:
       "text-black/50",
     borderClass:
-      input.borderClass,
+      "border-black",
     itemBorderClass:
       "divide-black/10",
     numberBgClass:
@@ -89,13 +89,13 @@ function makeTheme(
     titleClass:
       input.titleClass,
     bg:
-      PAPER,
+      input.paper,
     text:
       INK,
     border:
-      input.accent,
+      INK,
     background:
-      "bg-white",
+      input.paperClass,
     secondaryLabel:
       input.label
   }
@@ -109,9 +109,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Food & Drink",
     index: "01",
     label: "MENU / 07",
-    accent: "#E56A2A",
-    accentClass: "text-[#E56A2A]",
-    borderClass: "border-[#E56A2A]",
+    paper: "#E8C9A0",
+    paperClass: "bg-[#E8C9A0]",
+    accent: "#C45A24",
+    accentClass: "text-[#C45A24]",
     titleClass: "leading-[0.9] tracking-[-0.05em]"
   }),
 
@@ -119,9 +120,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Film & TV",
     index: "02",
     label: "FRAME / 07",
+    paper: "#DDD6C8",
+    paperClass: "bg-[#DDD6C8]",
     accent: "#FF6B35",
     accentClass: "text-[#FF6B35]",
-    borderClass: "border-[#FF6B35]",
     titleClass: "leading-[0.86] tracking-[-0.06em]"
   }),
 
@@ -129,9 +131,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Music",
     index: "03",
     label: "SIDE A / 07",
-    accent: "#D4453A",
-    accentClass: "text-[#D4453A]",
-    borderClass: "border-[#D4453A]",
+    paper: "#E0C4BC",
+    paperClass: "bg-[#E0C4BC]",
+    accent: "#C43D35",
+    accentClass: "text-[#C43D35]",
     titleClass: "leading-[0.82] tracking-[-0.06em]"
   }),
 
@@ -139,9 +142,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Sport",
     index: "04",
     label: "MATCH / 07",
-    accent: "#FF4B2A",
-    accentClass: "text-[#FF4B2A]",
-    borderClass: "border-[#FF4B2A]",
+    paper: "#D4DEC8",
+    paperClass: "bg-[#D4DEC8]",
+    accent: "#E54B2F",
+    accentClass: "text-[#E54B2F]",
     titleClass: "leading-[0.78] tracking-[-0.07em]"
   }),
 
@@ -149,9 +153,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Gaming",
     index: "05",
     label: "PLAYER 1 / 07",
-    accent: "#FF8C2A",
-    accentClass: "text-[#FF8C2A]",
-    borderClass: "border-[#FF8C2A]",
+    paper: "#CDE0D4",
+    paperClass: "bg-[#CDE0D4]",
+    accent: "#1F9A48",
+    accentClass: "text-[#1F9A48]",
     titleClass: "leading-[0.9] tracking-[-0.05em]"
   }),
 
@@ -159,9 +164,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Travel",
     index: "06",
     label: "ITINERARY / 07",
-    accent: "#E07A45",
-    accentClass: "text-[#E07A45]",
-    borderClass: "border-[#E07A45]",
+    paper: "#C5DDD6",
+    paperClass: "bg-[#C5DDD6]",
+    accent: "#0A7A6E",
+    accentClass: "text-[#0A7A6E]",
     titleClass: "leading-[0.88] tracking-[-0.05em]"
   }),
 
@@ -169,9 +175,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Technology",
     index: "07",
     label: "SYSTEM / 07",
-    accent: "#FF5E3A",
-    accentClass: "text-[#FF5E3A]",
-    borderClass: "border-[#FF5E3A]",
+    paper: "#D4DAE4",
+    paperClass: "bg-[#D4DAE4]",
+    accent: "#315AE8",
+    accentClass: "text-[#315AE8]",
     titleClass: "leading-[0.9] tracking-[-0.06em]"
   }),
 
@@ -179,9 +186,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Lifestyle",
     index: "08",
     label: "RITUAL / 07",
-    accent: "#D9784A",
-    accentClass: "text-[#D9784A]",
-    borderClass: "border-[#D9784A]",
+    paper: "#E6D4B8",
+    paperClass: "bg-[#E6D4B8]",
+    accent: "#A45D3E",
+    accentClass: "text-[#A45D3E]",
     titleClass: "leading-[0.92] tracking-[-0.05em]"
   }),
 
@@ -189,9 +197,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Books",
     index: "09",
     label: "FOLIO / 07",
-    accent: "#C45C3A",
-    accentClass: "text-[#C45C3A]",
-    borderClass: "border-[#C45C3A]",
+    paper: "#E6D2A8",
+    paperClass: "bg-[#E6D2A8]",
+    accent: "#8A342C",
+    accentClass: "text-[#8A342C]",
     titleClass: "leading-[0.94] tracking-[-0.035em]"
   }),
 
@@ -199,9 +208,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Art & Design",
     index: "10",
     label: "CATALOGUE / 07",
-    accent: "#E0A020",
-    accentClass: "text-[#E0A020]",
-    borderClass: "border-[#E0A020]",
+    paper: "#E2D8C0",
+    paperClass: "bg-[#E2D8C0]",
+    accent: "#B58B18",
+    accentClass: "text-[#B58B18]",
     titleClass: "leading-[0.82] tracking-[-0.07em]"
   }),
 
@@ -209,9 +219,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Fashion",
     index: "11",
     label: "COLLECTION / 07",
-    accent: "#E04A6A",
-    accentClass: "text-[#E04A6A]",
-    borderClass: "border-[#E04A6A]",
+    paper: "#E4C8D4",
+    paperClass: "bg-[#E4C8D4]",
+    accent: "#A52F68",
+    accentClass: "text-[#A52F68]",
     titleClass: "leading-[0.78] tracking-[-0.07em]"
   }),
 
@@ -219,9 +230,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Beauty",
     index: "12",
     label: "VANITY / 07",
-    accent: "#F06A7A",
-    accentClass: "text-[#F06A7A]",
-    borderClass: "border-[#F06A7A]",
+    paper: "#F0D0CC",
+    paperClass: "bg-[#F0D0CC]",
+    accent: "#C34E68",
+    accentClass: "text-[#C34E68]",
     titleClass: "leading-[0.88] tracking-[-0.05em]"
   }),
 
@@ -229,9 +241,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Health & Fitness",
     index: "13",
     label: "ENERGY / 07",
-    accent: "#E86B2E",
-    accentClass: "text-[#E86B2E]",
-    borderClass: "border-[#E86B2E]",
+    paper: "#C8E0D0",
+    paperClass: "bg-[#C8E0D0]",
+    accent: "#16824D",
+    accentClass: "text-[#16824D]",
     titleClass: "leading-[0.86] tracking-[-0.06em]"
   }),
 
@@ -239,9 +252,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Business",
     index: "14",
     label: "BRIEFING / 07",
-    accent: "#C45A32",
-    accentClass: "text-[#C45A32]",
-    borderClass: "border-[#C45A32]",
+    paper: "#D0D8E4",
+    paperClass: "bg-[#D0D8E4]",
+    accent: "#245A91",
+    accentClass: "text-[#245A91]",
     titleClass: "leading-[0.94] tracking-[-0.05em]"
   }),
 
@@ -249,9 +263,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Science",
     index: "15",
     label: "JOURNAL / 07",
-    accent: "#D46A48",
-    accentClass: "text-[#D46A48]",
-    borderClass: "border-[#D46A48]",
+    paper: "#C8DCE4",
+    paperClass: "bg-[#C8DCE4]",
+    accent: "#157D8C",
+    accentClass: "text-[#157D8C]",
     titleClass: "leading-[0.92] tracking-[-0.05em]"
   }),
 
@@ -259,9 +274,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "History",
     index: "16",
     label: "ARCHIVE / 07",
-    accent: "#C46A32",
-    accentClass: "text-[#C46A32]",
-    borderClass: "border-[#C46A32]",
+    paper: "#E4D0A8",
+    paperClass: "bg-[#E4D0A8]",
+    accent: "#86502E",
+    accentClass: "text-[#86502E]",
     titleClass: "leading-[0.94] tracking-[-0.04em]"
   }),
 
@@ -269,9 +285,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Nature & Animals",
     index: "17",
     label: "FIELD GUIDE / 07",
-    accent: "#C47A2A",
-    accentClass: "text-[#C47A2A]",
-    borderClass: "border-[#C47A2A]",
+    paper: "#C8D8B8",
+    paperClass: "bg-[#C8D8B8]",
+    accent: "#4C7D3F",
+    accentClass: "text-[#4C7D3F]",
     titleClass: "leading-[0.88] tracking-[-0.055em]"
   }),
 
@@ -279,9 +296,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Cars & Transport",
     index: "18",
     label: "ROAD / 07",
-    accent: "#FF3B20",
-    accentClass: "text-[#FF3B20]",
-    borderClass: "border-[#FF3B20]",
+    paper: "#D4D8DC",
+    paperClass: "bg-[#D4D8DC]",
+    accent: "#C63D2E",
+    accentClass: "text-[#C63D2E]",
     titleClass: "leading-[0.8] tracking-[-0.065em]"
   }),
 
@@ -289,9 +307,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "Home & Garden",
     index: "19",
     label: "LIVING / 07",
-    accent: "#C48A40",
-    accentClass: "text-[#C48A40]",
-    borderClass: "border-[#C48A40]",
+    paper: "#DED8C0",
+    paperClass: "bg-[#DED8C0]",
+    accent: "#6E7C45",
+    accentClass: "text-[#6E7C45]",
     titleClass: "leading-[0.92] tracking-[-0.05em]"
   }),
 
@@ -299,9 +318,10 @@ const themes: Record<string, CategoryTheme> = {
     name: "General",
     index: "20",
     label: "TOP 7",
+    paper: "#F7F4EE",
+    paperClass: "bg-[#F7F4EE]",
     accent: "#FF6B35",
     accentClass: "text-[#FF6B35]",
-    borderClass: "border-[#FF6B35]",
     titleClass: "leading-[0.9] tracking-[-0.05em]"
   })
 

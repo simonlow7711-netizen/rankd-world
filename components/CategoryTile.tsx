@@ -53,7 +53,7 @@ export default function CategoryTile({
         backgroundColor:
           theme.paper,
         borderColor:
-          theme.accent
+          "#111111"
       }}
     >
 

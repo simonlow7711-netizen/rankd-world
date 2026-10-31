@@ -96,7 +96,7 @@ function getTheme(
     muted:
       "text-black/50",
     border:
-      theme.borderClass,
+      "border-black",
     title:
       theme.titleClass,
     secondaryLabel:
@@ -1311,7 +1311,7 @@ export default function RankClient({
                           backgroundColor:
                             theme.paper,
                           borderColor:
-                            theme.accentHex
+                            "#111111"
                         }}
                       >
 
@@ -1821,8 +1821,8 @@ export default function RankClient({
                             style={{
                               backgroundColor:
                                 theme.paper,
-                              borderColor:
-                                theme.accentHex
+                                borderColor:
+                                "#111111"
                             }}
                           >
 

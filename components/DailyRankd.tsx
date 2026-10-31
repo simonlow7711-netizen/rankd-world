@@ -105,7 +105,7 @@ export default function DailyRankd({
             backgroundColor:
               theme.paper,
             borderColor:
-              theme.accent
+              "#111111"
           }}
         >
 

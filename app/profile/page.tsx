@@ -670,7 +670,7 @@ export default function ProfilePage() {
                         backgroundColor:
                           theme.paper,
                         borderColor:
-                          theme.accent
+                          "#111111"
                       }}
                     >
 

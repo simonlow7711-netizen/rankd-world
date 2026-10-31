@@ -223,8 +223,6 @@ button {
 
 .rankd-edition {
   position: relative;
-  background: #ffffff;
-  border-width: 1px;
-  border-style: solid;
+  border: 1px solid #111111;
   box-shadow: none;
 }

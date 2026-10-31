@@ -122,9 +122,9 @@ function getTheme(
     mutedColor:
       "#6B6B6B",
     border:
-      theme.borderClass,
+      "border-black",
     borderColor:
-      theme.accent,
+      "#111111",
     itemBorder:
       "divide-black/10",
     numberBackground:

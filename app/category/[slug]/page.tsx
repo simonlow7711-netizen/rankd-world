@@ -456,7 +456,7 @@ export default async function CategoryPage(
               backgroundColor:
                 theme.paper,
               borderColor:
-                theme.accent
+                "#111111"
             }}
           >
 
@@ -597,15 +597,16 @@ export default async function CategoryPage(
                     rankd-edition
                     rounded-[28px]
                     border
-                    bg-white
                     p-8
                     text-center
                     text-black
                     md:p-14
                   "
                   style={{
+                    backgroundColor:
+                      theme.paper,
                     borderColor:
-                      theme.accent
+                      "#111111"
                   }}
                 >
 
@@ -733,7 +734,6 @@ export default async function CategoryPage(
                     rankd-edition
                     rounded-[28px]
                     border
-                    bg-white
                     px-7
                     py-12
                     text-center
@@ -742,8 +742,10 @@ export default async function CategoryPage(
                     md:py-14
                   "
                   style={{
+                    backgroundColor:
+                      theme.paper,
                     borderColor:
-                      theme.accent
+                      "#111111"
                   }}
                 >
 
