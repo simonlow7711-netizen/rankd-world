@@ -1283,6 +1283,9 @@ export default function RankClient({
                         }))
                       }
                       href={`/rank/${displayRanking.id}`}
+                      category={category}
+                      paper={theme.paper}
+                      accent={theme.accentHex}
                       onClose={() => {
                         setAnimatedPreviewOpen(false)
                       }}
