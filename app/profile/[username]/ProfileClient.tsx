@@ -5,52 +5,81 @@ import {
   useState
 } from "react"
 
-import Link from "next/link"
+import ProfileIdentity from "@/components/ProfileIdentity"
+
+import ProfileRankingTile from "@/components/ProfileRankingTile"
 
 import {
   supabase
 } from "@/utils/supabase"
 
-import ProfileCard from "@/components/ProfileCard"
-
-import ShareCard from "@/components/ShareCard"
-
 import {
-  formatRankingTitle
-} from "@/utils/rankingTitle"
+  getRankingEngagement,
+  RankingEngagementData
+} from "@/utils/rankingEngagement"
+
 
 type Props = {
-  username:string
+  username: string
 }
+
+
+type Profile = {
+  id: string
+  username: string
+  display_name: string
+}
+
+
+type Ranking = {
+  id: string
+  title: string
+  category: string | null
+  engagement: RankingEngagementData
+}
+
 
 export default function ProfileClient({
   username
-}:Props){
-  const [profile,setProfile] =
-    useState<any>(null)
+}: Props) {
 
-  const [rankings,setRankings] =
-    useState<any[]>([])
+  const [
+    profile,
+    setProfile
+  ] =
+    useState<Profile | null>(null)
 
-  const [loading,setLoading] =
+  const [
+    rankings,
+    setRankings
+  ] =
+    useState<Ranking[]>([])
+
+  const [
+    loading,
+    setLoading
+  ] =
     useState(true)
 
-  useEffect(()=>{
-    async function load(){
-      const {
-        data:profileData
-      } = await supabase
-        .from("profiles")
-        .select(
-          "id,username,display_name"
-        )
-        .eq(
-          "username",
-          username
-        )
-        .single()
+  useEffect(() => {
 
-      if(!profileData){
+    async function load() {
+
+      const {
+        data: profileData
+      } =
+        await supabase
+          .from("profiles")
+          .select(
+            "id,username,display_name"
+          )
+          .eq(
+            "username",
+            username
+          )
+          .single()
+
+      if (!profileData) {
         setLoading(false)
         return
       }
@@ -60,210 +89,262 @@ export default function ProfileClient({
       )
 
       const {
-        data:rankingData
-      } = await supabase
-        .from("rankings")
-        .select(
-          `
-          id,
-          title,
-          category,
-          description,
-          views,
-          created_at
-          `
-        )
-        .eq(
-          "user_id",
-          profileData.id
-        )
-        .order(
-          "created_at",
-          {
-            ascending:false
-          }
+        data: rankingData
+      } =
+        await supabase
+          .from("rankings")
+          .select(
+            `
+            id,
+            title,
+            category,
+            description,
+            views,
+            created_at
+            `
+          )
+          .eq(
+            "user_id",
+            profileData.id
+          )
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          )
+
+      const rankingsWithEngagement =
+        await Promise.all(
+          (
+            rankingData ??
+            []
+          ).map(
+            async ranking => {
+
+              const engagement =
+                await getRankingEngagement(
+                  ranking.id
+                )
+
+              return {
+                id:
+                  ranking.id,
+                title:
+                  ranking.title,
+                category:
+                  ranking.category,
+                engagement
+              }
+
+            }
+          )
         )
 
       setRankings(
-        rankingData ?? []
+        rankingsWithEngagement
       )
 
       setLoading(false)
+
     }
 
     load()
 
-  },[username])
+  }, [username])
 
-  if(loading){
+  if (loading) {
     return (
-      <main className="
-        min-h-screen
-        bg-[#F7F4EE]
-        flex
-        items-center
-        justify-center
-        font-black
-      ">
-        Loading profile...
+      <main
+        className="
+          flex
+          min-h-screen
+          items-center
+          justify-center
+          bg-[#F7F4EE]
+          px-6
+        "
+      >
+        <p
+          className="
+            text-lg
+            font-black
+            tracking-[-0.03em]
+          "
+        >
+          Loading profile...
+        </p>
       </main>
     )
   }
 
-  if(!profile){
+  if (!profile) {
     return (
-      <main className="
-        min-h-screen
-        bg-[#F7F4EE]
-        flex
-        items-center
-        justify-center
-        font-black
-      ">
-        Profile not found
+      <main
+        className="
+          flex
+          min-h-screen
+          items-center
+          justify-center
+          bg-[#F7F4EE]
+          px-6
+        "
+      >
+        <p
+          className="
+            text-lg
+            font-black
+            tracking-[-0.03em]
+          "
+        >
+          Profile not found
+        </p>
       </main>
     )
   }
 
   return (
-    <main className="
-      min-h-screen
-      bg-[#F7F4EE]
-      text-black
-      px-6
-      py-16
-    ">
-      <div className="
-        max-w-5xl
-        mx-auto
-      ">
-        <section className="
-          rankd-card
-          p-10
-          mb-12
-          text-center
-        ">
-          <div className="
-            text-7xl
-            font-black
-            opacity-10
-          ">
-            7
-          </div>
+    <main
+      className="
+        min-h-screen
+        bg-[#F7F4EE]
+        px-6
+        py-10
+        text-black
+        md:py-14
+      "
+    >
+      <div
+        className="
+          mx-auto
+          max-w-6xl
+        "
+      >
 
-          <h1 className="
-            text-5xl
-            font-black
-            -mt-10
-          ">
-            {profile.display_name}
-          </h1>
-
-          <p className="
-            mt-3
-            rankd-muted
-          ">
-            @{profile.username}
-          </p>
-
-          <div className="
-            mt-10
-            max-w-xs
-            mx-auto
-          ">
-            <Stat
-              label="RANKDs"
-              value={rankings.length}
-            />
-          </div>
-        </section>
-
-        <ShareCard
-          username={profile.username}
-          rankings={rankings}
+        <ProfileIdentity
+          displayName={
+            profile.display_name
+          }
+          username={
+            profile.username
+          }
+          rankingCount={
+            rankings.length
+          }
+          tagline="Discover my Top 7 everything."
+          shareable
         />
 
-        <ProfileCard
-          username={profile.username}
-          rankings={rankings}
-        />
+        <section
+          className="
+            mt-14
+            md:mt-16
+          "
+        >
 
-        <h2 className="
-          text-4xl
-          font-black
-          mt-12
-          mb-8
-        ">
-          Rankings
-        </h2>
+          <div
+            className="
+              flex
+              flex-col
+              items-center
+              gap-3
+              border-b
+              border-black
+              pb-5
+              text-center
+            "
+          >
 
-        <div className="
-          space-y-5
-        ">
-          {rankings.map(ranking=>(
-            <Link
-              key={ranking.id}
-              href={`/rank/${ranking.id}`}
+            <p
               className="
-                block
+                text-[11px]
+                font-black
+                uppercase
+                tracking-[0.22em]
+                text-[#FF6B35]
               "
             >
-              <div className="
-                rankd-card
-                p-6
-              ">
-                <p className="
-                  rankd-accent
-                  font-black
-                  uppercase
-                ">
-                  {ranking.category || "General"}
-                </p>
+              RANKD / THEIRS
+            </p>
 
-                <h3 className="
-                  text-3xl
-                  font-black
-                  mt-3
-                ">
-                  {formatRankingTitle(
-                    ranking.title
-                  )}
-                </h3>
+            <h2
+              className="
+                text-4xl
+                font-black
+                leading-none
+                tracking-[-0.045em]
+                md:text-5xl
+              "
+            >
+              RANKDs
+            </h2>
+
+          </div>
+
+          {
+            rankings.length === 0 && (
+              <div
+                className="
+                  mt-8
+                  rounded-[28px]
+                  border
+                  border-black
+                  bg-[#F7F4EE]
+                  p-10
+                  text-center
+                  md:p-14
+                "
+              >
+                <p
+                  className="
+                    text-xl
+                    font-black
+                    tracking-[-0.025em]
+                  "
+                >
+                  No RANKDs yet.
+                </p>
               </div>
-            </Link>
-          ))}
-        </div>
+            )
+          }
+
+          <div
+            className="
+              mt-8
+              grid
+              gap-5
+              md:grid-cols-2
+            "
+          >
+            {
+              rankings.map(
+                ranking => (
+                  <ProfileRankingTile
+                    key={
+                      ranking.id
+                    }
+                    id={
+                      ranking.id
+                    }
+                    title={
+                      ranking.title
+                    }
+                    category={
+                      ranking.category
+                    }
+                    engagement={
+                      ranking.engagement
+                    }
+                  />
+                )
+              )
+            }
+          </div>
+
+        </section>
+
       </div>
     </main>
   )
-}
 
-function Stat({
-  label,
-  value
-}:{
-  label:string
-  value:number
-}){
-  return (
-    <div className="
-      bg-[#F7F4EE]
-      rounded-2xl
-      p-5
-    ">
-      <p className="
-        rankd-muted
-      ">
-        {label}
-      </p>
-
-      <p className="
-        text-4xl
-        font-black
-        mt-2
-      ">
-        {value}
-      </p>
-    </div>
-  )
 }
