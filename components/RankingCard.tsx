@@ -38,6 +38,11 @@ import RevealTopCover from "@/components/RevealTopCover"
 
 import EditionChrome from "@/components/EditionChrome"
 
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -476,6 +481,16 @@ export default function RankingCard({
 
       >
 
+        <EditionHeader
+          theme={
+            edition
+          }
+          category={
+            ranking.category
+          }
+          bleed="card"
+        >
+
         {
           discoveryReason && (
 
@@ -492,9 +507,17 @@ export default function RankingCard({
 
             >
 
-              {
-                discoveryReason
-              }
+              <EditionMark
+                theme={
+                  edition
+                }
+              >
+
+                {
+                  discoveryReason
+                }
+
+              </EditionMark>
 
             </p>
 
@@ -528,7 +551,15 @@ export default function RankingCard({
 
           >
 
-            {theme.index} · RANKD
+            <EditionMark
+              theme={
+                edition
+              }
+            >
+
+              {theme.index} · RANKD
+
+            </EditionMark>
 
           </p>
 
@@ -545,9 +576,17 @@ export default function RankingCard({
 
           >
 
-            {
-              theme.secondaryLabel
-            }
+            <EditionMark
+              theme={
+                edition
+              }
+            >
+
+              {
+                theme.secondaryLabel
+              }
+
+            </EditionMark>
 
           </span>
 
@@ -567,9 +606,17 @@ export default function RankingCard({
 
         >
 
-          {
-            theme.categoryLabel
-          }
+          <EditionMark
+            theme={
+              edition
+            }
+          >
+
+            {
+              theme.categoryLabel
+            }
+
+          </EditionMark>
 
         </p>
 
@@ -577,23 +624,32 @@ export default function RankingCard({
         <h3
 
           className={`
-            mt-3
+            mt-2
             font-black
             max-w-full
-            overflow-hidden
             break-words
             ${theme.title}
           `}
 
         >
 
-          {
-            formatRankingTitle(
-              ranking.title
-            )
-          }
+          <EditionTitle
+            theme={
+              edition
+            }
+          >
+
+            {
+              formatRankingTitle(
+                ranking.title
+              )
+            }
+
+          </EditionTitle>
 
         </h3>
+
+        </EditionHeader>
 
 
         {
@@ -602,8 +658,10 @@ export default function RankingCard({
             <p
 
               className={`
+                relative
+                z-10
                 mx-auto
-                mt-5
+                -mt-12
                 max-w-xl
                 leading-relaxed
                 ${theme.muted}

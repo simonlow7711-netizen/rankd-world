@@ -66,6 +66,11 @@ import RevealTopCover from "@/components/RevealTopCover"
 
 import EditionChrome from "@/components/EditionChrome"
 
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
 
 type RankClientProps = {
   id:string
@@ -1061,6 +1066,16 @@ export default function RankClient({
             "
           >
 
+            <EditionHeader
+              theme={
+                theme.edition
+              }
+              category={
+                category
+              }
+              bleed="rank"
+            >
+
             <div
               className="
                 flex
@@ -1080,7 +1095,13 @@ export default function RankClient({
                   ${theme.accent}
                 `}
               >
-                {theme.index} · RANKD / {theme.secondaryLabel}
+                <EditionMark
+                  theme={
+                    theme.edition
+                  }
+                >
+                  {theme.index} · RANKD / {theme.secondaryLabel}
+                </EditionMark>
               </span>
 
             </div>
@@ -1089,10 +1110,10 @@ export default function RankClient({
             <div
               className="
                 mx-auto
-                mt-16
+                mt-8
                 max-w-3xl
                 text-center
-                md:mt-24
+                md:mt-10
               "
             >
 
@@ -1105,13 +1126,19 @@ export default function RankClient({
                   ${theme.accent}
                 `}
               >
-                {category}
+                <EditionMark
+                  theme={
+                    theme.edition
+                  }
+                >
+                  {category}
+                </EditionMark>
               </p>
 
 
               <h1
                 className={`
-                  mt-5
+                  mt-4
                   text-4xl
                   sm:text-5xl
                   md:text-8xl
@@ -1125,18 +1152,39 @@ export default function RankClient({
                   [overflow-wrap:anywhere]
                 `}
               >
-                {displayTitle}
+                <EditionTitle
+                  theme={
+                    theme.edition
+                  }
+                >
+                  {displayTitle}
+                </EditionTitle>
               </h1>
 
+            </div>
+
+            </EditionHeader>
+
+
+            <div
+              className="
+                mx-auto
+                max-w-3xl
+                text-center
+              "
+            >
 
               {
                 displayDescription && (
 
                   <p
                     className={`
+                      relative
+                      z-10
                       mx-auto
-                      mt-7
+                      -mt-12
                       max-w-2xl
+                      text-center
                       text-xl
                       leading-relaxed
                       md:text-2xl

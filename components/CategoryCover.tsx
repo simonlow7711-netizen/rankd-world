@@ -1,3 +1,8 @@
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
 import {
   CategoryTheme
 } from "@/utils/categoryTheme"
@@ -44,7 +49,6 @@ export default function CategoryCover({
         h-full
         w-full
         flex-col
-        items-center
         text-center
         ${
           isMasthead
@@ -58,10 +62,20 @@ export default function CategoryCover({
         className="
           flex
           w-full
+          min-w-0
           flex-col
-          items-center
         "
       >
+
+        <EditionHeader
+          theme={theme}
+          category={theme.name}
+          bleed={
+            isMasthead
+              ? "page"
+              : "tile"
+          }
+        >
 
         <p
           className="
@@ -75,16 +89,40 @@ export default function CategoryCover({
               theme.accent
           }}
         >
-          {
-            kicker ??
-            `${theme.index} · ${theme.label}`
-          }
+          <EditionMark
+            theme={theme}
+          >
+            {
+              kicker ??
+              `${theme.index} · ${theme.label}`
+            }
+          </EditionMark>
         </p>
 
         {
           isMasthead
             ? (
                 <h1
+                  className={`
+                    mx-auto
+                    mt-4
+                    w-full
+                    max-w-[16ch]
+                    text-center
+                    font-black
+                    ${theme.titleClass}
+                    ${titleSize}
+                  `}
+                >
+                  <EditionTitle
+                    theme={theme}
+                  >
+                    {title}
+                  </EditionTitle>
+                </h1>
+              )
+            : (
+                <h3
                   className={`
                     mx-auto
                     mt-6
@@ -96,42 +134,33 @@ export default function CategoryCover({
                     ${titleSize}
                   `}
                 >
-                  {title}
-                </h1>
-              )
-            : (
-                <h3
-                  className={`
-                    mx-auto
-                    mt-8
-                    w-full
-                    max-w-[16ch]
-                    text-center
-                    font-black
-                    ${theme.titleClass}
-                    ${titleSize}
-                  `}
-                >
-                  {title}
+                  <EditionTitle
+                    theme={theme}
+                  >
+                    {title}
+                  </EditionTitle>
                 </h3>
               )
         }
+
+        </EditionHeader>
 
         {
           description && (
             <p
               className={`
+                relative
+                z-10
                 mx-auto
-                mt-4
+                ${
+                  isMasthead
+                    ? "-mt-12 text-lg md:text-xl"
+                    : "-mt-10 line-clamp-2 text-sm"
+                }
                 max-w-md
                 text-center
                 leading-relaxed
                 text-black/50
-                ${
-                  isMasthead
-                    ? "text-lg md:text-xl"
-                    : "line-clamp-2 text-sm"
-                }
               `}
             >
               {description}

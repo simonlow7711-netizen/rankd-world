@@ -30,6 +30,11 @@ import RevealTopCover from "@/components/RevealTopCover"
 
 import EditionChrome from "@/components/EditionChrome"
 
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -664,20 +669,24 @@ export default function EntryExperience({
                   "
                 >
 
+                  <EditionHeader
+                    theme={
+                      theme
+                    }
+                    category={
+                      ranking.category
+                    }
+                    bleed="hero"
+                  >
+
                   <div
                     className="
                       flex
                       flex-col
                       items-center
                       gap-7
-                      border-b
-                      pb-8
                       text-center
                     "
-                    style={{
-                      borderColor:
-                        `${theme.border}1A`
-                    }}
                   >
 
                     <div
@@ -699,15 +708,21 @@ export default function EntryExperience({
                             theme.accent
                         }}
                       >
-                        {theme.index} · RANKD / {
-                          theme.label
-                        }
+                        <EditionMark
+                          theme={
+                            theme
+                          }
+                        >
+                          {theme.index} · RANKD / {
+                            theme.label
+                          }
+                        </EditionMark>
                       </p>
 
 
                       <h2
                         className="
-                          mt-4
+                          mt-3
                           text-4xl
                           font-black
                           leading-[0.86]
@@ -716,11 +731,17 @@ export default function EntryExperience({
                           lg:text-7xl
                         "
                       >
-                        {
-                          formatRankingTitle(
-                            ranking.title
-                          )
-                        }
+                        <EditionTitle
+                          theme={
+                            theme
+                          }
+                        >
+                          {
+                            formatRankingTitle(
+                              ranking.title
+                            )
+                          }
+                        </EditionTitle>
                       </h2>
 
                     </div>
@@ -740,7 +761,7 @@ export default function EntryExperience({
                       "
                       style={{
                         backgroundColor:
-                          "transparent",
+                          `color-mix(in srgb, ${theme.paper} 62%, transparent)`,
 
                         border:
                           `1px solid ${theme.accent}`,
@@ -754,14 +775,20 @@ export default function EntryExperience({
 
                   </div>
 
+                  </EditionHeader>
+
 
                   {
                     ranking.description && (
 
                       <p
                         className="
-                          mt-7
+                          relative
+                          z-10
+                          mx-auto
+                          -mt-12
                           max-w-3xl
+                          text-center
                           text-lg
                           font-medium
                           leading-relaxed
@@ -1087,15 +1114,19 @@ export default function EntryExperience({
 
                 <header
                   className="
-                    border-b
-                    pb-8
                     text-center
                   "
-                  style={{
-                    borderColor:
-                      `${theme.border}1A`
-                  }}
                 >
+
+                  <EditionHeader
+                    theme={
+                      theme
+                    }
+                    category={
+                      ranking.category
+                    }
+                    bleed="hero"
+                  >
 
                   <p
                     className="
@@ -1109,16 +1140,22 @@ export default function EntryExperience({
                         theme.accent
                     }}
                   >
-                    RANKD / {
-                      theme.label
-                    }
+                    <EditionMark
+                      theme={
+                        theme
+                      }
+                    >
+                      RANKD / {
+                        theme.label
+                      }
+                    </EditionMark>
                   </p>
 
 
                   <h1
                     className="
                       mx-auto
-                      mt-4
+                      mt-3
                       max-w-4xl
                       text-5xl
                       font-black
@@ -1127,14 +1164,24 @@ export default function EntryExperience({
                       md:text-7xl
                     "
                   >
-                    You RANKD it.
+                    <EditionTitle
+                      theme={
+                        theme
+                      }
+                    >
+                      You RANKD it.
+                    </EditionTitle>
                   </h1>
+
+                  </EditionHeader>
 
 
                   <p
                     className="
+                      relative
+                      z-10
                       mx-auto
-                      mt-5
+                      -mt-12
                       max-w-2xl
                       text-lg
                       font-medium

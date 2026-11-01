@@ -7,6 +7,11 @@ import {
 
 import EditionChrome from "@/components/EditionChrome"
 
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -123,19 +128,19 @@ export default function DailyRankd({
             "
           >
 
+            <EditionHeader
+              theme={theme}
+              category={activeCategory}
+              bleed="hero"
+            >
+
             <div
               className="
                 flex
                 flex-col
                 items-center
                 gap-3
-                border-b
-                pb-7
               "
-              style={{
-                borderColor:
-                  "rgba(0,0,0,0.10)"
-              }}
             >
 
               <p
@@ -150,7 +155,11 @@ export default function DailyRankd({
                     theme.accent
                 }}
               >
-                RANKD OF THE DAY
+                <EditionMark
+                  theme={theme}
+                >
+                  RANKD OF THE DAY
+                </EditionMark>
               </p>
 
 
@@ -163,7 +172,11 @@ export default function DailyRankd({
                   opacity-60
                 "
               >
-                {theme.label} · DAILY EDITION
+                <EditionMark
+                  theme={theme}
+                >
+                  {theme.label} · DAILY EDITION
+                </EditionMark>
               </p>
 
             </div>
@@ -173,8 +186,8 @@ export default function DailyRankd({
               className="
                 mx-auto
                 max-w-5xl
-                py-10
-                md:py-14
+                py-8
+                md:py-10
               "
             >
 
@@ -188,7 +201,11 @@ export default function DailyRankd({
                   opacity-55
                 "
               >
-                TOP 7
+                <EditionMark
+                  theme={theme}
+                >
+                  TOP 7
+                </EditionMark>
               </p>
 
 
@@ -204,26 +221,23 @@ export default function DailyRankd({
                   lg:text-8xl
                 "
               >
-                {activeTitle}
+                <EditionTitle
+                  theme={theme}
+                >
+                  {activeTitle}
+                </EditionTitle>
               </h2>
 
+            </div>
 
-              <div
-                className="
-                  mt-9
-                  h-px
-                  w-full
-                "
-                style={{
-                  backgroundColor:
-                    "rgba(0,0,0,0.10)"
-                }}
-              />
+            </EditionHeader>
 
 
               <div
                 className="
-                  mt-7
+                  relative
+                  z-10
+                  -mt-12
                   flex
                   flex-col
                   items-center
@@ -309,8 +323,6 @@ export default function DailyRankd({
                 </Link>
 
               </div>
-
-            </div>
 
 
             <div
