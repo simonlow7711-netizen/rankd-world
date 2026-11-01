@@ -295,6 +295,8 @@ export default function ShareButton({
               z-10
               w-full
               max-w-md
+              max-h-[min(92dvh,100%)]
+              overflow-y-auto
               rounded-t-[28px]
               border
               border-black
@@ -434,6 +436,19 @@ export default function ShareButton({
               </button>
             </div>
 
+            {
+              extra && (
+                <div
+                  className="mt-3"
+                  onClick={() => {
+                    setOpen(false)
+                  }}
+                >
+                  {extra}
+                </div>
+              )
+            }
+
             <div
               className={`
                 mt-3
@@ -568,19 +583,6 @@ export default function ShareButton({
                 <Mail size={16} />
               </button>
             </div>
-
-            {
-              extra && (
-                <div
-                  className="mt-3"
-                  onClick={() => {
-                    setOpen(false)
-                  }}
-                >
-                  {extra}
-                </div>
-              )
-            }
           </div>
         </div>,
         document.body

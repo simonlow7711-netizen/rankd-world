@@ -8,6 +8,10 @@ import {
 } from "react"
 
 import {
+  createPortal
+} from "react-dom"
+
+import {
   ArrayBufferTarget,
   Muxer
 } from "mp4-muxer"
@@ -475,6 +479,28 @@ export default function AnimatedRankPreview({
   const [needsSoundTap, setNeedsSoundTap] = useState(false)
   const previewRef = useRef<HTMLCanvasElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const onCloseRef = useRef(onClose)
+
+  onCloseRef.current = onClose
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+
+    document.body.style.overflow = "hidden"
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        onCloseRef.current()
+      }
+    }
+
+    document.addEventListener("keydown", onKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      document.removeEventListener("keydown", onKeyDown)
+    }
+  }, [])
 
   const teaserSignature = JSON.stringify(
     items.map(item => ({
@@ -943,13 +969,19 @@ export default function AnimatedRankPreview({
     }
   }
 
-  return (
+  if (typeof document === "undefined") {
+    return null
+  }
+
+  return createPortal(
     <div
       className="
-        fixed inset-0 z-[100]
-        flex items-center justify-center
+        fixed inset-0 z-[120]
+        flex items-start justify-center
         overflow-y-auto
         bg-black/70 p-3
+        pb-[max(0.75rem,env(safe-area-inset-bottom))]
+        sm:items-center
       "
       role="dialog"
       aria-modal="true"
@@ -960,7 +992,7 @@ export default function AnimatedRankPreview({
         className="
           relative flex w-full max-w-[390px]
           min-h-0 flex-col items-center
-          gap-3 py-2
+          gap-2.5 py-2
         "
         onClick={event => event.stopPropagation()}
       >
@@ -993,10 +1025,12 @@ export default function AnimatedRankPreview({
             ref={previewRef}
             width={540}
             height={960}
-            className="block w-full bg-[#F7F4EE]"
+            className="mx-auto block bg-[#F7F4EE]"
             style={{
               aspectRatio: "9 / 16",
-              border: "1px solid #111"
+              border: "1px solid #111",
+              width: "min(100%, calc(52dvh * 9 / 16))",
+              height: "auto"
             }}
           />
 
@@ -1088,7 +1122,8 @@ export default function AnimatedRankPreview({
           View full RANKD →
         </a>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }
 
