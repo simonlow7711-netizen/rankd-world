@@ -625,9 +625,10 @@ export default function RankingCard({
 
           className={`
             mt-2
-            font-black
             max-w-full
-            break-words
+            font-black
+            text-balance
+            hyphens-none
             ${theme.title}
           `}
 

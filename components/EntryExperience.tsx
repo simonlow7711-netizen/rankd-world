@@ -727,6 +727,8 @@ export default function EntryExperience({
                           font-black
                           leading-[0.86]
                           tracking-[-0.06em]
+                          text-balance
+                          hyphens-none
                           md:text-6xl
                           lg:text-7xl
                         "

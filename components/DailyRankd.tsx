@@ -217,8 +217,10 @@ export default function DailyRankd({
                   font-black
                   leading-[0.94]
                   tracking-[-0.055em]
+                  text-balance
+                  hyphens-none
                   md:text-6xl
-                  lg:text-8xl
+                  lg:text-7xl
                 "
               >
                 <EditionTitle

@@ -42,7 +42,7 @@ export function EditionMark({
         max-w-full
         ${
           isTitle
-            ? "rounded-[1.25rem] px-[0.55em] py-[0.34em]"
+            ? "rounded-[1.25rem] px-[0.55em] py-[0.34em] text-balance hyphens-none"
             : "rounded-full px-[0.72em] py-[0.3em]"
         }
       `}

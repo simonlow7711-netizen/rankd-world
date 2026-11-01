@@ -1111,7 +1111,8 @@ export default function RankClient({
               className="
                 mx-auto
                 mt-8
-                max-w-3xl
+                w-full
+                max-w-5xl
                 text-center
                 md:mt-10
               "
@@ -1139,17 +1140,17 @@ export default function RankClient({
               <h1
                 className={`
                   mt-4
-                  text-4xl
-                  sm:text-5xl
-                  md:text-8xl
-                  lg:text-9xl
-                  font-black
-                  ${theme.title}
                   w-full
                   max-w-full
                   min-w-0
-                  break-words
-                  [overflow-wrap:anywhere]
+                  text-4xl
+                  sm:text-5xl
+                  md:text-5xl
+                  lg:text-6xl
+                  font-black
+                  text-balance
+                  hyphens-none
+                  ${theme.title}
                 `}
               >
                 <EditionTitle
