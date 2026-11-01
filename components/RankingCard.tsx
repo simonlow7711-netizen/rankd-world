@@ -74,23 +74,11 @@ type RankingTheme = {
 
   itemBorder: string
 
-  numberBackground: string
-
-  numberText: string
-
-  buttonPrimary: string
-
-  buttonSecondary: string
-
-  buttonSecondaryText: string
-
   categoryLabel: string
 
   secondaryLabel: string
 
   title: string
-
-  item: string
 
   index: string
 
@@ -129,24 +117,12 @@ function getTheme(
       "#111111",
     itemBorder:
       "divide-black/10",
-    numberBackground:
-      "bg-transparent",
-    numberText:
-      "text-black",
-    buttonPrimary:
-      theme.buttonPrimaryClass,
-    buttonSecondary:
-      theme.buttonSecondaryClass,
-    buttonSecondaryText:
-      theme.buttonSecondaryTextClass,
     categoryLabel:
       theme.name,
     secondaryLabel:
       theme.label,
     title:
       `text-3xl md:text-4xl ${theme.titleClass}`,
-    item:
-      "text-base md:text-lg",
     index:
       theme.index
   }

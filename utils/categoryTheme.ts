@@ -338,7 +338,3 @@ export function getCategoryTheme(
   )
 
 }
-
-
-export const categoryThemes =
-  themes
