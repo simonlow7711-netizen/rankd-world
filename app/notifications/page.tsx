@@ -1,15 +1,21 @@
-import Link from "next/link"
-
-
 import {
   redirect
 } from "next/navigation"
 
+import EditionChrome from "@/components/EditionChrome"
+
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
+import NotificationCard, {
+  NotificationCardData
+} from "@/components/NotificationCard"
 
 import {
   createSupabaseServerClient
 } from "@/utils/supabaseServer"
-
 
 import {
   getServerNotifications,
@@ -17,80 +23,19 @@ import {
   markServerNotificationAsRead
 } from "@/utils/notificationsServer"
 
-
 import {
   getSupabaseRanking
 } from "@/utils/supabaseRankings"
 
-
-type NotificationView = {
-
-  id: string
-
-  type: string
-
-  read: boolean
-
-  createdAt: string
-
-  actorUserId: string
-
-  actorName: string
-
-  originalRankingId: string | null
-
-  originalRankingTitle: string | null
-
-  remixRankingId: string | null
-
-  remixRankingTitle: string | null
-
-}
-
-
-function formatNotificationDate(
-  value: string
-) {
-
-  const date =
-    new Date(
-      value
-    )
-
-
-  if (
-    Number.isNaN(
-      date.getTime()
-    )
-  ) {
-
-    return ""
-
-  }
-
-
-  return date.toLocaleDateString(
-    "en-GB",
-    {
-      day:
-        "numeric",
-
-      month:
-        "short",
-
-      year:
-        "numeric"
-    }
-  )
-
-}
+import {
+  getCategoryTheme
+} from "@/utils/categoryTheme"
 
 
 export default async function NotificationsPage() {
 
   const serverSupabase =
     await createSupabaseServerClient()
-
 
   const {
     data: {
@@ -99,26 +44,20 @@ export default async function NotificationsPage() {
   } =
     await serverSupabase.auth.getUser()
 
-
-  if (
-    !user
-  ) {
-
-    redirect(
-      "/"
-    )
-
+  if (!user) {
+    redirect("/")
   }
 
+  const userId =
+    user.id
 
   const notifications =
     await getServerNotifications(
-      user.id
+      userId
     )
 
-
   const notificationViews:
-    NotificationView[] =
+    NotificationCardData[] =
       await Promise.all(
 
         notifications.map(
@@ -129,92 +68,73 @@ export default async function NotificationsPage() {
               string | null =
                 null
 
+            let originalRankingCategory:
+              string | null =
+                null
 
             let remixRankingTitle:
               string | null =
                 null
 
+            let remixRankingCategory:
+              string | null =
+                null
 
-            if (
-              notification.rankingId
-            ) {
-
+            if (notification.rankingId) {
               try {
-
                 const originalRanking =
                   await getSupabaseRanking(
                     notification.rankingId
                   )
 
-
                 originalRankingTitle =
                   originalRanking?.title ??
                   null
 
+                originalRankingCategory =
+                  originalRanking?.category ??
+                  null
+              } catch {
               }
-
-              catch {
-
-              }
-
             }
 
-
-            if (
-              notification.remixRankingId
-            ) {
-
+            if (notification.remixRankingId) {
               try {
-
                 const remixRanking =
                   await getSupabaseRanking(
                     notification.remixRankingId
                   )
 
-
                 remixRankingTitle =
                   remixRanking?.title ??
                   null
 
+                remixRankingCategory =
+                  remixRanking?.category ??
+                  null
+              } catch {
               }
-
-              catch {
-
-              }
-
             }
 
-
             return {
-
               id:
                 notification.id,
-
               type:
                 notification.type,
-
               read:
                 notification.read,
-
               createdAt:
                 notification.createdAt,
-
-              actorUserId:
-                notification.actorUserId,
-
               actorName:
                 "Another RANKD user",
-
               originalRankingId:
                 notification.rankingId,
-
               originalRankingTitle,
-
+              originalRankingCategory,
               remixRankingId:
                 notification.remixRankingId,
-
-              remixRankingTitle
-
+              remixRankingTitle,
+              remixRankingCategory
             }
 
           }
@@ -223,6 +143,18 @@ export default async function NotificationsPage() {
 
       )
 
+  const theme =
+    getCategoryTheme("General")
+
+  async function markAllRead() {
+
+    "use server"
+
+    await markAllServerNotificationsAsRead(
+      userId
+    )
+
+  }
 
   return (
 
@@ -232,6 +164,7 @@ export default async function NotificationsPage() {
         bg-[#F7F4EE]
         px-4
         py-10
+        text-black
         md:px-8
         md:py-14
       "
@@ -244,198 +177,168 @@ export default async function NotificationsPage() {
         "
       >
 
-        <div
+        <section
           className="
+            rankd-edition
             relative
             overflow-hidden
             rounded-[28px]
             border
-            border-black/10
-            bg-[#F7F4EE]
             px-6
-            py-8
-            md:px-10
-            md:py-10
+            py-10
+            text-center
+            md:px-12
+            md:py-16
           "
+          style={{
+            backgroundColor:
+              theme.paper,
+            borderColor:
+              "#111111"
+          }}
         >
 
-          <div
-            className="
-              pointer-events-none
-              absolute
-              right-[-1rem]
-              top-[-2.5rem]
-              select-none
-              text-[11rem]
-              font-black
-              leading-none
-              tracking-[-0.12em]
-              text-[#FF6B35]/[0.10]
-              md:right-4
-              md:top-[-3.5rem]
-              md:text-[14rem]
-            "
-            aria-hidden="true"
-          >
-
-            7
-
-          </div>
-
+          <EditionChrome
+            theme={theme}
+          />
 
           <div
             className="
               relative
               z-10
-              flex
-              flex-col
-              gap-8
-              md:flex-row
-              md:items-end
-              md:justify-between
             "
           >
 
-            <div>
+            <EditionHeader
+              theme={theme}
+              category="General"
+              bleed="page"
+            >
 
               <p
                 className="
-                  text-xs
+                  text-[11px]
                   font-black
                   uppercase
                   tracking-[0.22em]
-                  text-[#FF6B35]
                 "
+                style={{
+                  color:
+                    theme.accent
+                }}
               >
-
-                RANKD / ACTIVITY
-
+                <EditionMark
+                  theme={theme}
+                >
+                  RANKD / ACTIVITY
+                </EditionMark>
               </p>
-
 
               <h1
-                className="
-                  mt-3
+                className={`
+                  mx-auto
+                  mt-5
+                  max-w-3xl
                   text-4xl
                   font-black
-                  leading-[0.95]
-                  tracking-[-0.05em]
-                  text-black
+                  text-balance
                   md:text-6xl
-                "
+                  ${theme.titleClass}
+                `}
               >
-
-                Notifications.
-
+                <EditionTitle
+                  theme={theme}
+                >
+                  Notifications
+                </EditionTitle>
               </h1>
 
+            </EditionHeader>
 
-              <p
-                className="
-                  mt-4
-                  max-w-xl
-                  text-sm
-                  leading-relaxed
-                  text-black/60
-                  md:text-base
-                "
-              >
-
-                See when someone ranks or remixes one of
-                your RANKDs.
-
-              </p>
-
-            </div>
-
+            <p
+              className="
+                relative
+                z-10
+                mx-auto
+                -mt-12
+                max-w-md
+                text-lg
+                leading-relaxed
+                text-black/50
+                md:text-xl
+              "
+            >
+              See when someone ranks or remixes one of your RANKDs.
+            </p>
 
             {
               notifications.length > 0 && (
-
-                <form
-                  action={
-                    async () => {
-
-                      "use server"
-
-
-                      await markAllServerNotificationsAsRead(
-                        user.id
-                      )
-
-                    }
-                  }
+                <div
+                  className="
+                    relative
+                    z-10
+                    mt-8
+                    flex
+                    justify-center
+                    border-t
+                    border-black
+                    pt-8
+                  "
                 >
-
-                  <button
-                    type="submit"
-                    className="
-                      inline-flex
-                      items-center
-                      justify-center
-                      rounded-full
-                      bg-black
-                      px-5
-                      py-3
-                      text-sm
-                      font-black
-                      text-white
-                      transition
-                      hover:bg-[#FF6B35]
-                    "
-                  >
-
-                    Mark all as read
-
-                  </button>
-
-                </form>
-
+                  <form action={markAllRead}>
+                    <button
+                      type="submit"
+                      className="
+                        inline-flex
+                        items-center
+                        justify-center
+                        rounded-full
+                        bg-black
+                        px-7
+                        py-3.5
+                        text-sm
+                        font-black
+                        text-white
+                      "
+                    >
+                      Mark all as read
+                    </button>
+                  </form>
+                </div>
               )
             }
 
           </div>
 
-        </div>
-
+        </section>
 
         {
           notificationViews.length === 0 ? (
 
             <div
               className="
+                rankd-edition
                 relative
                 mt-6
                 overflow-hidden
                 rounded-[28px]
                 border
-                border-black/10
-                bg-[#F7F4EE]
-                p-8
-                md:p-10
+                px-6
+                py-10
+                text-center
+                md:px-12
               "
+              style={{
+                backgroundColor:
+                  theme.paper,
+                borderColor:
+                  "#111111"
+              }}
             >
 
-              <div
-                className="
-                  pointer-events-none
-                  absolute
-                  right-5
-                  top-2
-                  select-none
-                  text-8xl
-                  font-black
-                  leading-none
-                  tracking-[-0.12em]
-                  text-[#FF6B35]/[0.08]
-                "
-                aria-hidden="true"
-              >
-
-                7
-
-              </div>
-
+              <EditionChrome
+                theme={theme}
+              />
 
               <div
                 className="
@@ -444,48 +347,64 @@ export default async function NotificationsPage() {
                 "
               >
 
-                <p
-                  className="
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.2em]
-                    text-[#FF6B35]
-                  "
+                <EditionHeader
+                  theme={theme}
+                  category="General"
+                  bleed="tile"
                 >
 
-                  Nothing yet
+                  <p
+                    className="
+                      text-[10px]
+                      font-black
+                      uppercase
+                      tracking-[0.22em]
+                    "
+                    style={{
+                      color:
+                        theme.accent
+                    }}
+                  >
+                    <EditionMark
+                      theme={theme}
+                    >
+                      Nothing yet
+                    </EditionMark>
+                  </p>
 
-                </p>
+                  <h2
+                    className={`
+                      mx-auto
+                      mt-4
+                      max-w-xl
+                      text-3xl
+                      font-black
+                      text-balance
+                      md:text-4xl
+                      ${theme.titleClass}
+                    `}
+                  >
+                    <EditionTitle
+                      theme={theme}
+                    >
+                      No notifications yet.
+                    </EditionTitle>
+                  </h2>
 
-
-                <h2
-                  className="
-                    mt-3
-                    text-2xl
-                    font-black
-                    tracking-[-0.03em]
-                    text-black
-                  "
-                >
-
-                  No notifications yet.
-
-                </h2>
-
+                </EditionHeader>
 
                 <p
                   className="
-                    mt-3
-                    max-w-lg
+                    relative
+                    z-10
+                    mx-auto
+                    -mt-10
+                    max-w-md
                     leading-relaxed
-                    text-black/60
+                    text-black/50
                   "
                 >
-
-                  When someone ranks or remixes one of
-                  your RANKDs, you will see it here.
-
+                  When someone ranks or remixes one of your RANKDs, you will see it here.
                 </p>
 
               </div>
@@ -497,788 +416,33 @@ export default async function NotificationsPage() {
             <div
               className="
                 mt-6
-                space-y-4
+                space-y-5
               "
             >
 
               {
                 notificationViews.map(
-
                   notification => (
-
-                    <div
+                    <NotificationCard
                       key={
                         notification.id
                       }
-                      className={`
-                        overflow-hidden
-                        rounded-[28px]
-                        border
-                        bg-[#F7F4EE]
-                        transition
-                        ${
-                          notification.read
-                            ? "border-black/10"
-                            : "border-[#FF6B35]/30 bg-[#F7F4EE]"
-                        }
-                      `}
-                    >
-
-                      {
-                        notification.type ===
-                        "remix" ? (
-
-                          <div
-                            className="
-                              p-6
-                              md:p-8
-                            "
-                          >
-
-                            <div
-                              className="
-                                flex
-                                items-start
-                                justify-between
-                                gap-5
-                              "
-                            >
-
-                              <div>
-
-                                <div
-                                  className="
-                                    flex
-                                    items-center
-                                    gap-3
-                                  "
-                                >
-
-                                  <p
-                                    className="
-                                      text-xs
-                                      font-black
-                                      uppercase
-                                      tracking-[0.2em]
-                                      text-[#FF6B35]
-                                    "
-                                  >
-
-                                    Remix
-
-                                  </p>
-
-
-                                  {
-                                    !notification.read && (
-
-                                      <span
-                                        className="
-                                          rounded-full
-                                          bg-[#FF6B35]
-                                          px-2.5
-                                          py-1
-                                          text-[10px]
-                                          font-black
-                                          uppercase
-                                          tracking-[0.14em]
-                                          text-white
-                                        "
-                                      >
-
-                                        New
-
-                                      </span>
-
-                                    )
-                                  }
-
-                                </div>
-
-
-                                <h2
-                                  className="
-                                    mt-3
-                                    max-w-2xl
-                                    text-xl
-                                    font-black
-                                    leading-tight
-                                    tracking-[-0.03em]
-                                    text-black
-                                    md:text-2xl
-                                  "
-                                >
-
-                                  {notification.actorName}
-
-                                  {" "}
-                                  remixed your RANKD.
-
-                                </h2>
-
-                              </div>
-
-
-                              <span
-                                className="
-                                  hidden
-                                  shrink-0
-                                  select-none
-                                  text-5xl
-                                  font-black
-                                  leading-none
-                                  tracking-[-0.1em]
-                                  text-[#FF6B35]/20
-                                  md:block
-                                "
-                                aria-hidden="true"
-                              >
-
-                                7
-
-                              </span>
-
-                            </div>
-
-
-                            {
-                              notification.originalRankingTitle && (
-
-                                <div
-                                  className="
-                                    mt-7
-                                    rounded-[22px]
-                                    border
-                                    border-black/10
-                                    bg-[#F7F4EE]/70
-                                    p-5
-                                    md:p-6
-                                  "
-                                >
-
-                                  <p
-                                    className="
-                                      text-[10px]
-                                      font-black
-                                      uppercase
-                                      tracking-[0.18em]
-                                      text-black/45
-                                    "
-                                  >
-
-                                    Your original RANKD
-
-                                  </p>
-
-
-                                  <p
-                                    className="
-                                      mt-2
-                                      font-black
-                                      leading-tight
-                                      tracking-[-0.02em]
-                                      text-black
-                                    "
-                                  >
-
-                                    {notification.originalRankingTitle}
-
-                                  </p>
-
-
-                                  {
-                                    notification.originalRankingId && (
-
-                                      <Link
-                                        href={
-                                          `/rank/${notification.originalRankingId}`
-                                        }
-                                        className="
-                                          mt-3
-                                          inline-flex
-                                          text-sm
-                                          font-black
-                                          text-black
-                                          underline
-                                          decoration-[#FF6B35]
-                                          decoration-2
-                                          underline-offset-4
-                                          transition
-                                          hover:text-[#FF6B35]
-                                        "
-                                      >
-
-                                        View original
-
-                                      </Link>
-
-                                    )
-                                  }
-
-                                </div>
-
-                              )
-                            }
-
-
-                            {
-                              notification.remixRankingTitle && (
-
-                                <div
-                                  className="
-                                    mt-3
-                                    rounded-[22px]
-                                    border
-                                    border-[#FF6B35]/20
-                                    bg-[#FF6B35]/[0.05]
-                                    p-5
-                                    md:p-6
-                                  "
-                                >
-
-                                  <div
-                                    className="
-                                      flex
-                                      items-start
-                                      justify-between
-                                      gap-4
-                                    "
-                                  >
-
-                                    <div>
-
-                                      <p
-                                        className="
-                                          text-[10px]
-                                          font-black
-                                          uppercase
-                                          tracking-[0.18em]
-                                          text-[#FF6B35]
-                                        "
-                                      >
-
-                                        Their remix
-
-                                      </p>
-
-
-                                      <p
-                                        className="
-                                          mt-2
-                                          text-lg
-                                          font-black
-                                          leading-tight
-                                          tracking-[-0.02em]
-                                          text-black
-                                          md:text-xl
-                                        "
-                                      >
-
-                                        {notification.remixRankingTitle}
-
-                                      </p>
-
-                                    </div>
-
-
-                                    <span
-                                      className="
-                                        select-none
-                                        text-4xl
-                                        font-black
-                                        leading-none
-                                        tracking-[-0.1em]
-                                        text-[#FF6B35]/15
-                                      "
-                                      aria-hidden="true"
-                                    >
-
-                                      07
-
-                                    </span>
-
-                                  </div>
-
-
-                                  {
-                                    notification.remixRankingId && (
-
-                                      <Link
-                                        href={
-                                          `/rank/${notification.remixRankingId}`
-                                        }
-                                        className="
-                                          mt-5
-                                          inline-flex
-                                          items-center
-                                          justify-center
-                                          rounded-full
-                                          bg-black
-                                          px-5
-                                          py-3
-                                          text-sm
-                                          font-black
-                                          text-white
-                                          transition
-                                          hover:bg-[#FF6B35]
-                                        "
-                                      >
-
-                                        View Remix →
-
-                                      </Link>
-
-                                    )
-                                  }
-
-                                </div>
-
-                              )
-                            }
-
-
-                            {
-                              !notification.remixRankingTitle
-                              &&
-                              notification.remixRankingId && (
-
-                                <Link
-                                  href={
-                                    `/rank/${notification.remixRankingId}`
-                                  }
-                                  className="
-                                    mt-6
-                                    inline-flex
-                                    items-center
-                                    justify-center
-                                    rounded-full
-                                    bg-black
-                                    px-5
-                                    py-3
-                                    text-sm
-                                    font-black
-                                    text-white
-                                    transition
-                                    hover:bg-[#FF6B35]
-                                  "
-                                >
-
-                                  View Remix →
-
-                                </Link>
-
-                              )
-                            }
-
-
-                            <div
-                              className="
-                                mt-6
-                                flex
-                                flex-col
-                                gap-3
-                                border-t
-                                border-black/10
-                                pt-4
-                                text-xs
-                                text-black/45
-                                sm:flex-row
-                                sm:items-center
-                                sm:justify-between
-                              "
-                            >
-
-                              <span
-                                className="
-                                  font-medium
-                                "
-                              >
-
-                                {
-                                  formatNotificationDate(
-                                    notification.createdAt
-                                  )
-                                }
-
-                              </span>
-
-
-                              {
-                                !notification.read && (
-
-                                  <form
-                                    action={
-                                      async () => {
-
-                                        "use server"
-
-
-                                        await markServerNotificationAsRead(
-                                          notification.id
-                                        )
-
-                                      }
-                                    }
-                                  >
-
-                                    <button
-                                      type="submit"
-                                      className="
-                                        font-black
-                                        text-black
-                                        transition
-                                        hover:text-[#FF6B35]
-                                      "
-                                    >
-
-                                      Mark as read
-
-                                    </button>
-
-                                  </form>
-
-                                )
-                              }
-
-                            </div>
-
-                          </div>
-
-                        ) : notification.type ===
-                        "rank" ? (
-
-                          <div
-                            className="
-                              p-6
-                              md:p-8
-                            "
-                          >
-
-                            <div
-                              className="
-                                flex
-                                items-start
-                                justify-between
-                                gap-5
-                              "
-                            >
-
-                              <div>
-
-                                <div
-                                  className="
-                                    flex
-                                    items-center
-                                    gap-3
-                                  "
-                                >
-
-                                  <p
-                                    className="
-                                      text-xs
-                                      font-black
-                                      uppercase
-                                      tracking-[0.2em]
-                                      text-[#FF6B35]
-                                    "
-                                  >
-
-                                    RANKD
-
-                                  </p>
-
-
-                                  {
-                                    !notification.read && (
-
-                                      <span
-                                        className="
-                                          rounded-full
-                                          bg-[#FF6B35]
-                                          px-2.5
-                                          py-1
-                                          text-[10px]
-                                          font-black
-                                          uppercase
-                                          tracking-[0.14em]
-                                          text-white
-                                        "
-                                      >
-
-                                        New
-
-                                      </span>
-
-                                    )
-                                  }
-
-                                </div>
-
-
-                                <h2
-                                  className="
-                                    mt-3
-                                    max-w-2xl
-                                    text-xl
-                                    font-black
-                                    leading-tight
-                                    tracking-[-0.03em]
-                                    text-black
-                                    md:text-2xl
-                                  "
-                                >
-
-                                  {notification.actorName}
-
-                                  {" "}
-                                  ranked your RANKD.
-
-                                </h2>
-
-                              </div>
-
-
-                              <span
-                                className="
-                                  hidden
-                                  shrink-0
-                                  select-none
-                                  text-5xl
-                                  font-black
-                                  leading-none
-                                  tracking-[-0.1em]
-                                  text-[#FF6B35]/20
-                                  md:block
-                                "
-                                aria-hidden="true"
-                              >
-
-                                7
-
-                              </span>
-
-                            </div>
-
-
-                            {
-                              notification.originalRankingTitle && (
-
-                                <div
-                                  className="
-                                    mt-7
-                                    rounded-[22px]
-                                    border
-                                    border-black/10
-                                    bg-[#F7F4EE]/70
-                                    p-5
-                                    md:p-6
-                                  "
-                                >
-
-                                  <p
-                                    className="
-                                      text-[10px]
-                                      font-black
-                                      uppercase
-                                      tracking-[0.18em]
-                                      text-black/45
-                                    "
-                                  >
-
-                                    Your RANKD
-
-                                  </p>
-
-
-                                  <p
-                                    className="
-                                      mt-2
-                                      font-black
-                                      leading-tight
-                                      tracking-[-0.02em]
-                                      text-black
-                                    "
-                                  >
-
-                                    {notification.originalRankingTitle}
-
-                                  </p>
-
-
-                                  {
-                                    notification.originalRankingId && (
-
-                                      <Link
-                                        href={
-                                          `/rank/${notification.originalRankingId}`
-                                        }
-                                        className="
-                                          mt-4
-                                          inline-flex
-                                          items-center
-                                          justify-center
-                                          rounded-full
-                                          bg-black
-                                          px-5
-                                          py-3
-                                          text-sm
-                                          font-black
-                                          text-white
-                                          transition
-                                          hover:bg-[#FF6B35]
-                                        "
-                                      >
-
-                                        View RANKD →
-
-                                      </Link>
-
-                                    )
-                                  }
-
-                                </div>
-
-                              )
-                            }
-
-
-                            <div
-                              className="
-                                mt-6
-                                flex
-                                flex-col
-                                gap-3
-                                border-t
-                                border-black/10
-                                pt-4
-                                text-xs
-                                text-black/45
-                                sm:flex-row
-                                sm:items-center
-                                sm:justify-between
-                              "
-                            >
-
-                              <span
-                                className="
-                                  font-medium
-                                "
-                              >
-
-                                {
-                                  formatNotificationDate(
-                                    notification.createdAt
-                                  )
-                                }
-
-                              </span>
-
-
-                              {
-                                !notification.read && (
-
-                                  <form
-                                    action={
-                                      async () => {
-
-                                        "use server"
-
-
-                                        await markServerNotificationAsRead(
-                                          notification.id
-                                        )
-
-                                      }
-                                    }
-                                  >
-
-                                    <button
-                                      type="submit"
-                                      className="
-                                        font-black
-                                        text-black
-                                        transition
-                                        hover:text-[#FF6B35]
-                                      "
-                                    >
-
-                                      Mark as read
-
-                                    </button>
-
-                                  </form>
-
-                                )
-                              }
-
-                            </div>
-
-                          </div>
-
-                        ) : (
-
-                          <div
-                            className="
-                              p-6
-                              md:p-8
-                            "
-                          >
-
-                            <p
-                              className="
-                                text-xs
-                                font-black
-                                uppercase
-                                tracking-[0.2em]
-                                text-[#FF6B35]
-                              "
-                            >
-
-                              Activity
-
-                            </p>
-
-
-                            <p
-                              className="
-                                mt-3
-                                text-lg
-                                font-black
-                                tracking-[-0.02em]
-                                text-black
-                              "
-                            >
-
-                              You have a new notification.
-
-                            </p>
-
-
-                            <p
-                              className="
-                                mt-3
-                                text-xs
-                                text-black/45
-                              "
-                            >
-
-                              {
-                                formatNotificationDate(
-                                  notification.createdAt
-                                )
-                              }
-
-                            </p>
-
-                          </div>
-
-                        )
+                      notification={
+                        notification
                       }
+                      markReadAction={
+                        notification.read
+                          ? undefined
+                          : async () => {
+                              "use server"
 
-                    </div>
-
+                              await markServerNotificationAsRead(
+                                notification.id
+                              )
+                            }
+                      }
+                    />
                   )
-
                 )
               }
 
