@@ -34,6 +34,8 @@ import {
 
 import ShareButton from "@/components/ShareButton"
 
+import RevealTopCover from "@/components/RevealTopCover"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -268,6 +270,24 @@ export default function RankingCard({
       cancelled = true
 
     }
+
+  }, [ranking.id])
+
+
+  const [
+    topItemRevealed,
+    setTopItemRevealed
+  ] =
+    useState(
+      false
+    )
+
+
+  useEffect(() => {
+
+    setTopItemRevealed(
+      false
+    )
 
   }, [ranking.id])
 
@@ -727,6 +747,8 @@ export default function RankingCard({
           )
         }
 
+      </Link>
+
 
         <div
 
@@ -802,13 +824,11 @@ export default function RankingCard({
             {
               sortedItems.map(
 
-                item => (
+                item => {
+
+                  const row = (
 
                   <div
-
-                    key={
-                      `${ranking.id}-${item.position}`
-                    }
 
                     className="
                       flex
@@ -943,7 +963,53 @@ export default function RankingCard({
 
                   </div>
 
-                )
+                  )
+
+                  if (
+                    item.position === 1
+                  ) {
+
+                    return (
+
+                      <RevealTopCover
+                        key={
+                          `${ranking.id}-${item.position}`
+                        }
+                        revealed={
+                          topItemRevealed
+                        }
+                        onReveal={() => {
+                          setTopItemRevealed(
+                            true
+                          )
+                        }}
+                        accent={
+                          theme.accentColor
+                        }
+                        ink={
+                          theme.textColor
+                        }
+                      >
+                        {row}
+                      </RevealTopCover>
+
+                    )
+
+                  }
+
+                  return (
+
+                    <div
+                      key={
+                        `${ranking.id}-${item.position}`
+                      }
+                    >
+                      {row}
+                    </div>
+
+                  )
+
+                }
 
               )
             }
@@ -1005,9 +1071,6 @@ export default function RankingCard({
 
 
         </div>
-
-
-      </Link>
 
 
       <div

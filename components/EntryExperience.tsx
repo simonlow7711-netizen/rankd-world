@@ -26,6 +26,8 @@ import {
 
 import RankingResponse from "@/components/RankingResponse"
 
+import RevealTopCover from "@/components/RevealTopCover"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -123,6 +125,17 @@ export default function EntryExperience({
 
   }, [
     eligibleRankings.length
+  ])
+
+
+  useEffect(() => {
+
+    setTopItemRevealed(
+      false
+    )
+
+  }, [
+    rankingIndex
   ])
 
 
@@ -770,193 +783,9 @@ export default function EntryExperience({
                       sortedItems.map(
                         item => {
 
-                          const isTopItem =
-                            item.position === 1
-
-
-                          if (
-                            isTopItem
-                          ) {
-
-                            return (
-
-                              <div
-                                key={
-                                  `${ranking.id}-${item.position}`
-                                }
-                                className="
-                                  relative
-                                  overflow-hidden
-                                  border-b
-                                  transition-all
-                                  duration-300
-                                "
-                                style={{
-                                  borderColor:
-                                    topItemRevealed
-                                      ? `${theme.border}1A`
-                                      : theme.accent,
-
-                                  borderWidth:
-                                    topItemRevealed
-                                      ? undefined
-                                      : "2px",
-
-                                  borderRadius:
-                                    topItemRevealed
-                                      ? undefined
-                                      : "20px",
-
-                                  backgroundColor:
-                                    "transparent"
-                                }}
-                              >
-
-                                <div
-                                  className="
-                                    flex
-                                    flex-col
-                                    items-center
-                                    gap-3
-                                    py-5
-                                    text-center
-                                    md:py-6
-                                  "
-                                >
-
-                                  <div
-                                    className="
-                                      text-2xl
-                                      font-black
-                                      leading-none
-                                      tracking-[-0.04em]
-                                      md:text-4xl
-                                    "
-                                    style={{
-                                      color:
-                                        theme.accent
-                                    }}
-                                  >
-                                    01
-                                  </div>
-
-
-                                  <div
-                                    className="
-                                      min-w-0
-                                      w-full
-                                      text-xl
-                                      font-black
-                                      leading-tight
-                                      tracking-[-0.025em]
-                                      md:text-3xl
-                                    "
-                                  >
-                                    {
-                                      item.name
-                                    }
-                                  </div>
-
-                                </div>
-
-
-                                {
-                                  !topItemRevealed && (
-
-                                    <button
-                                      type="button"
-                                      onClick={
-                                        handleRevealTopItem
-                                      }
-                                      className="
-                                        absolute
-                                        inset-0
-                                        flex
-                                        w-full
-                                        max-w-full
-                                        items-center
-                                        justify-center
-                                        rounded-[18px]
-                                        px-4
-                                        text-center
-                                        transition
-                                        bg-transparent
-                                        md:px-6
-                                      "
-                                      style={{
-                                        backgroundColor:
-                                          "transparent"
-                                      }}
-                                      aria-label="Reveal the number one ranked item"
-                                    >
-
-                                      <div
-                                        className="
-                                          w-full
-                                          max-w-full
-                                          min-w-0
-                                          flex
-                                          flex-col
-                                          items-center
-                                          justify-center
-                                        "
-                                      >
-
-                                        <p
-                                          className="
-                                            whitespace-nowrap
-                                            text-base
-                                            font-black
-                                            leading-tight
-                                            tracking-[-0.03em]
-                                            md:text-2xl
-                                          "
-                                          style={{
-                                            color:
-                                              theme.text
-                                          }}
-                                        >
-                                          Would you have RANKD this #1?
-                                        </p>
-
-
-                                        <span
-                                          className="
-                                            mt-3
-                                            max-w-full
-                                            text-xs
-                                            font-black
-                                            uppercase
-                                            tracking-[0.22em]
-                                          "
-                                          style={{
-                                            color:
-                                              theme.accent
-                                          }}
-                                        >
-                                          Click to reveal →
-                                        </span>
-
-                                      </div>
-
-                                    </button>
-
-                                  )
-                                }
-
-                              </div>
-
-                            )
-
-                          }
-
-
-                          return (
+                          const row = (
 
                             <div
-                              key={
-                                `${ranking.id}-${item.position}`
-                              }
                               className="
                                 flex
                                 flex-col
@@ -1013,6 +842,48 @@ export default function EntryExperience({
                                 }
                               </div>
 
+                            </div>
+
+                          )
+
+                          if (
+                            item.position === 1
+                          ) {
+
+                            return (
+
+                              <RevealTopCover
+                                key={
+                                  `${ranking.id}-${item.position}`
+                                }
+                                revealed={
+                                  topItemRevealed
+                                }
+                                onReveal={
+                                  handleRevealTopItem
+                                }
+                                accent={
+                                  theme.accent
+                                }
+                                ink={
+                                  theme.text
+                                }
+                              >
+                                {row}
+                              </RevealTopCover>
+
+                            )
+
+                          }
+
+                          return (
+
+                            <div
+                              key={
+                                `${ranking.id}-${item.position}`
+                              }
+                            >
+                              {row}
                             </div>
 
                           )

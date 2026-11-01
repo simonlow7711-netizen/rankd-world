@@ -62,6 +62,8 @@ import EntryEmbeds from "@/components/EntryEmbeds"
 
 import ShareButton from "@/components/ShareButton"
 
+import RevealTopCover from "@/components/RevealTopCover"
+
 
 type RankClientProps = {
   id:string
@@ -181,6 +183,33 @@ export default function RankClient({
     setAnimatedPreviewOpen
   ] =
     useState(false)
+
+
+  const [
+    originalTopRevealed,
+    setOriginalTopRevealed
+  ] =
+    useState(false)
+
+
+  const [
+    perspectiveTopRevealed,
+    setPerspectiveTopRevealed
+  ] =
+    useState(false)
+
+
+  useEffect(() => {
+
+    setOriginalTopRevealed(
+      false
+    )
+
+    setPerspectiveTopRevealed(
+      false
+    )
+
+  }, [id])
 
 
   useEffect(() => {
@@ -1260,12 +1289,9 @@ export default function RankClient({
                 sortedOriginalItems.map(
                   item => {
 
-                    return (
+                    const row = (
 
                       <div
-                        key={
-                          `original-${item.position}`
-                        }
                         className="
                           rankd-edition
                           group
@@ -1450,6 +1476,50 @@ export default function RankClient({
 
                         </div>
 
+                      </div>
+
+                    )
+
+                    if (
+                      item.position === 1
+                    ) {
+
+                      return (
+
+                        <RevealTopCover
+                          key={
+                            `original-${item.position}`
+                          }
+                          revealed={
+                            originalTopRevealed
+                          }
+                          onReveal={() => {
+                            setOriginalTopRevealed(
+                              true
+                            )
+                          }}
+                          accent={
+                            theme.accentHex
+                          }
+                          ink={
+                            theme.ink
+                          }
+                        >
+                          {row}
+                        </RevealTopCover>
+
+                      )
+
+                    }
+
+                    return (
+
+                      <div
+                        key={
+                          `original-${item.position}`
+                        }
+                      >
+                        {row}
                       </div>
 
                     )
@@ -1774,12 +1844,11 @@ export default function RankClient({
 
                     {
                       sortedPerspectiveItems.map(
-                        item => (
+                        item => {
+
+                          const row = (
 
                           <div
-                            key={
-                              `perspective-${item.position}`
-                            }
                             className="
                               flex
                               w-full
@@ -1871,6 +1940,52 @@ export default function RankClient({
                           </div>
 
                         )
+
+                          if (
+                            item.position === 1
+                          ) {
+
+                            return (
+
+                              <RevealTopCover
+                                key={
+                                  `perspective-${item.position}`
+                                }
+                                revealed={
+                                  perspectiveTopRevealed
+                                }
+                                onReveal={() => {
+                                  setPerspectiveTopRevealed(
+                                    true
+                                  )
+                                }}
+                                accent={
+                                  theme.accentHex
+                                }
+                                ink={
+                                  theme.ink
+                                }
+                              >
+                                {row}
+                              </RevealTopCover>
+
+                            )
+
+                          }
+
+                          return (
+
+                            <div
+                              key={
+                                `perspective-${item.position}`
+                              }
+                            >
+                              {row}
+                            </div>
+
+                          )
+
+                        }
                       )
                     }
 

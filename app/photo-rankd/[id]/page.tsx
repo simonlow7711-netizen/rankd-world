@@ -19,6 +19,8 @@ import {
 
 import ShareButton from "@/components/ShareButton"
 
+import RevealTopCover from "@/components/RevealTopCover"
+
 
 type Hotspot = {
   rankingId?: number
@@ -122,6 +124,27 @@ export default function PhotoRankdPage() {
     setPreviewLoading
   ] =
     useState(false)
+
+
+  const [
+    topItemRevealed,
+    setTopItemRevealed
+  ] =
+    useState(false)
+
+
+  useEffect(
+    () => {
+
+      setTopItemRevealed(
+        false
+      )
+
+    },
+    [
+      selectedRanking?.id
+    ]
+  )
 
 
   useEffect(
@@ -1125,11 +1148,8 @@ export default function PhotoRankdPage() {
                                 )
 
 
-                              return (
+                              const row = (
                                 <div
-                                  key={
-                                    `${item.name}-${index}`
-                                  }
                                   style={{
                                     display:
                                       "grid",
@@ -1251,6 +1271,44 @@ export default function PhotoRankdPage() {
 
                                   </div>
 
+                                </div>
+                              )
+
+                              if (
+                                item.position === 1
+                              ) {
+
+                                return (
+
+                                  <RevealTopCover
+                                    key={
+                                      `${item.name}-${index}`
+                                    }
+                                    revealed={
+                                      topItemRevealed
+                                    }
+                                    onReveal={() => {
+                                      setTopItemRevealed(
+                                        true
+                                      )
+                                    }}
+                                    accent="#FF6B35"
+                                    ink="#111111"
+                                  >
+                                    {row}
+                                  </RevealTopCover>
+
+                                )
+
+                              }
+
+                              return (
+                                <div
+                                  key={
+                                    `${item.name}-${index}`
+                                  }
+                                >
+                                  {row}
                                 </div>
                               )
                             }
