@@ -12,8 +12,6 @@ import RankingCard from "@/components/RankingCard"
 
 import CategoryCover from "@/components/CategoryCover"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import {
   getAllRankings
 } from "@/utils/supabaseRankings"
@@ -490,15 +488,11 @@ export default async function CategoryPage(
             }}
           >
 
-            <EditionChrome
-              theme={theme}
-            />
-
             <CategoryCover
               theme={theme}
               title={category}
               description={metadata.description}
-              kicker={`${theme.index} · RANKD / ${theme.label}`}
+              kicker={category}
               footer={`${rankings.length} RANKD${rankings.length === 1 ? "" : "s"} in this edition`}
               size="masthead"
             />
@@ -593,7 +587,7 @@ export default async function CategoryPage(
                         }}
                       >
 
-                        {theme.label}
+                        {category}
 
                       </p>
 

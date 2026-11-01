@@ -5,8 +5,6 @@ import {
   getDailyRankd
 } from "@/utils/dailyRankd"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -116,10 +114,6 @@ export default function DailyRankd({
           }}
         >
 
-          <EditionChrome
-            theme={theme}
-          />
-
           <div
             className="
               relative
@@ -163,22 +157,6 @@ export default function DailyRankd({
               </p>
 
 
-              <p
-                className="
-                  text-xs
-                  font-black
-                  uppercase
-                  tracking-[0.22em]
-                  opacity-60
-                "
-              >
-                <EditionMark
-                  theme={theme}
-                >
-                  {theme.label} · DAILY EDITION
-                </EditionMark>
-              </p>
-
             </div>
 
 
@@ -189,24 +167,6 @@ export default function DailyRankd({
                 md:py-10
               "
             >
-
-              <p
-                className="
-                  mb-5
-                  text-xs
-                  font-black
-                  uppercase
-                  tracking-[0.22em]
-                  opacity-55
-                "
-              >
-                <EditionMark
-                  theme={theme}
-                >
-                  TOP 7
-                </EditionMark>
-              </p>
-
 
               <h2
                 className="

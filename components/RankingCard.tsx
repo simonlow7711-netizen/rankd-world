@@ -36,8 +36,6 @@ import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -85,8 +83,6 @@ type RankingTheme = {
 
   categoryLabel: string
 
-  secondaryLabel: string
-
   title: string
 
   index: string
@@ -128,8 +124,6 @@ function getTheme(
       "divide-black/10",
     categoryLabel:
       theme.name,
-    secondaryLabel:
-      theme.label,
     title:
       `text-3xl md:text-4xl ${theme.titleClass}`,
     index:
@@ -462,12 +456,6 @@ export default function RankingCard({
 
     >
 
-      <EditionChrome
-        theme={
-          edition
-        }
-      />
-
       <Link
 
         href={
@@ -525,74 +513,6 @@ export default function RankingCard({
 
           )
         }
-
-
-        <div
-
-          className={`
-            flex
-            items-center
-            justify-start
-            gap-4
-            pb-5
-            border-b
-            ${theme.border}
-          `}
-
-        >
-
-          <p
-
-            className={`
-              ${theme.accent}
-              uppercase
-              tracking-[0.25em]
-              text-[10px]
-              font-black
-            `}
-
-          >
-
-            <EditionMark
-              theme={
-                edition
-              }
-            >
-
-              {theme.index} · RANKD
-
-            </EditionMark>
-
-          </p>
-
-
-          <span
-
-            className={`
-              ${theme.accent}
-              text-[9px]
-              uppercase
-              tracking-[0.2em]
-              font-black
-            `}
-
-          >
-
-            <EditionMark
-              theme={
-                edition
-              }
-            >
-
-              {
-                theme.secondaryLabel
-              }
-
-            </EditionMark>
-
-          </span>
-
-        </div>
 
 
         <p

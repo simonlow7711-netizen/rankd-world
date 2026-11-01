@@ -94,7 +94,7 @@ export default function CategoryCover({
           >
             {
               kicker ??
-              `${theme.index} · ${theme.label}`
+              theme.name
             }
           </EditionMark>
         </p>

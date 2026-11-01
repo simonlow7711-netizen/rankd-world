@@ -68,8 +68,6 @@ import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -112,8 +110,6 @@ function getTheme(
       "border-black",
     title:
       theme.titleClass,
-    secondaryLabel:
-      theme.label,
     paper:
       theme.paper,
     ink:
@@ -943,7 +939,7 @@ export default function RankClient({
                     <span
                       className={theme.accent}
                     >
-                      {theme.secondaryLabel}
+                      {category}
                     </span>
 
                   </div>
@@ -1057,12 +1053,6 @@ export default function RankClient({
           `}
         >
 
-          <EditionChrome
-            theme={
-              theme.edition
-            }
-          />
-
           <div
             className="
               relative
@@ -1082,37 +1072,6 @@ export default function RankClient({
 
             <div
               className="
-                flex
-                items-center
-                justify-start
-                gap-3
-              "
-            >
-
-              <span
-                className={`
-                  text-[11px]
-                  uppercase
-                  tracking-[0.2em]
-                  font-black
-                  ${theme.accent}
-                `}
-              >
-                <EditionMark
-                  theme={
-                    theme.edition
-                  }
-                >
-                  {theme.index} · RANKD / {theme.secondaryLabel}
-                </EditionMark>
-              </span>
-
-            </div>
-
-
-            <div
-              className="
-                mt-2
                 w-full
                 min-w-0
               "

@@ -5,8 +5,6 @@ import {
   useState
 } from "react"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -113,10 +111,6 @@ export default function ProfileIdentity({
           "#111111"
       }}
     >
-
-      <EditionChrome
-        theme={theme}
-      />
 
       <div
         className="

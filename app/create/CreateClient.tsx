@@ -69,8 +69,6 @@ import {
   isHttpUrl
 } from "@/utils/linkText"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -1312,10 +1310,6 @@ export default function CreateClient(){
             }}
           >
 
-            <EditionChrome
-              theme={theme}
-            />
-
             <div
               className="
                 relative
@@ -1420,10 +1414,6 @@ export default function CreateClient(){
                 "#111111"
             }}
           >
-
-            <EditionChrome
-              theme={theme}
-            />
 
             <div
               className="
@@ -1992,10 +1982,6 @@ export default function CreateClient(){
           }}
         >
 
-          <EditionChrome
-            theme={theme}
-          />
-
           <div
             className="
               relative
@@ -2106,10 +2092,6 @@ export default function CreateClient(){
             }}
           >
 
-            <EditionChrome
-              theme={theme}
-            />
-
             <div
               className="
                 relative
@@ -2169,10 +2151,6 @@ export default function CreateClient(){
               "#111111"
           }}
         >
-
-          <EditionChrome
-            theme={theme}
-          />
 
           <div
             className="
@@ -2452,10 +2430,6 @@ export default function CreateClient(){
           }}
         >
 
-          <EditionChrome
-            theme={theme}
-          />
-
           <div
             className="
               relative
@@ -2572,10 +2546,6 @@ export default function CreateClient(){
               "#111111"
           }}
         >
-
-          <EditionChrome
-            theme={theme}
-          />
 
           <div
             className="

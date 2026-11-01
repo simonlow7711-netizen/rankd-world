@@ -2,8 +2,6 @@ import Link from "next/link"
 
 import CategoryCover from "@/components/CategoryCover"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -62,10 +60,6 @@ export default function CategoryTile({
           "#111111"
       }}
     >
-
-      <EditionChrome
-        theme={theme}
-      />
 
       <CategoryCover
         theme={theme}

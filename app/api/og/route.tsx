@@ -169,7 +169,6 @@ export async function GET(
       <OgCard
         title={title}
         category={theme.name}
-        label={theme.label}
         paper={theme.paper}
         accent={theme.accent}
       />,
@@ -214,7 +213,6 @@ export async function GET(
       <OgCard
         title="RANKD"
         category="General"
-        label="TOP 7"
         paper={PAPER}
         accent="#FF6B35"
       />,
@@ -232,13 +230,11 @@ export async function GET(
 function OgCard({
   title,
   category,
-  label,
   paper,
   accent
 }: {
   title: string
   category: string
-  label: string
   paper: string
   accent: string
 }) {
@@ -331,19 +327,6 @@ function OgCard({
             >
               RANKD
             </div>
-          </div>
-
-          <div
-            style={{
-              display: "flex",
-              fontSize: "16px",
-              fontWeight: 900,
-              letterSpacing: "0.18em",
-              textTransform: "uppercase",
-              color: accent
-            }}
-          >
-            {label}
           </div>
 
         </div>

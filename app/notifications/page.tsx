@@ -2,8 +2,6 @@ import {
   redirect
 } from "next/navigation"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -198,10 +196,6 @@ export default async function NotificationsPage() {
           }}
         >
 
-          <EditionChrome
-            theme={theme}
-          />
-
           <div
             className="
               relative
@@ -335,10 +329,6 @@ export default async function NotificationsPage() {
                   "#111111"
               }}
             >
-
-              <EditionChrome
-                theme={theme}
-              />
 
               <div
                 className="

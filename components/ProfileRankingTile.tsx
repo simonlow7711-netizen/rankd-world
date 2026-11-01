@@ -1,7 +1,5 @@
 import Link from "next/link"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -67,10 +65,6 @@ export default function ProfileRankingTile({
       }}
     >
 
-      <EditionChrome
-        theme={theme}
-      />
-
       <div
         className="
           relative
@@ -93,26 +87,6 @@ export default function ProfileRankingTile({
               font-black
               uppercase
               tracking-[0.22em]
-            "
-            style={{
-              color:
-                theme.accent
-            }}
-          >
-            <EditionMark
-              theme={theme}
-            >
-              {theme.index} · RANKD / {theme.label}
-            </EditionMark>
-          </p>
-
-          <p
-            className="
-              mt-3
-              text-[10px]
-              font-black
-              uppercase
-              tracking-[0.2em]
             "
             style={{
               color:

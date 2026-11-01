@@ -1,7 +1,5 @@
 import Link from "next/link"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -143,10 +141,6 @@ export default function NotificationCard({
           "#111111"
       }}
     >
-
-      <EditionChrome
-        theme={theme}
-      />
 
       <div
         className="

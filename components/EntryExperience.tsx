@@ -28,8 +28,6 @@ import RankingResponse from "@/components/RankingResponse"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
-import EditionChrome from "@/components/EditionChrome"
-
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -655,12 +653,6 @@ export default function EntryExperience({
                 }}
               >
 
-                <EditionChrome
-                  theme={
-                    theme
-                  }
-                />
-
                 <div
                   className="
                     relative
@@ -715,9 +707,7 @@ export default function EntryExperience({
                             theme
                           }
                         >
-                          {theme.index} · RANKD / {
-                            theme.label
-                          }
+                          {ranking.category}
                         </EditionMark>
                       </p>
 
@@ -1099,12 +1089,6 @@ export default function EntryExperience({
               }}
             >
 
-              <EditionChrome
-                theme={
-                  theme
-                }
-              />
-
               <div
                 className="
                   relative
@@ -1148,9 +1132,7 @@ export default function EntryExperience({
                         theme
                       }
                     >
-                      RANKD / {
-                        theme.label
-                      }
+                      {ranking.category}
                     </EditionMark>
                   </p>
 
