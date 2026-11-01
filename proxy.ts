@@ -126,7 +126,7 @@ export const config = {
 
   matcher: [
 
-    "/((?!_next/static|_next/image|favicon.ico|api/og|api/amazon).*)"
+    "/((?!_next/static|_next/image|favicon.ico|api/og|api/amazon|api/unfurl).*)"
 
   ]
 

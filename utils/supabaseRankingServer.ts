@@ -7,6 +7,10 @@ import {
   Ranking
 } from "@/types/ranking"
 
+import {
+  parseRankingDescription
+} from "@/utils/rankingMedia"
+
 
 type RankingRow = {
   id:string
@@ -30,12 +34,18 @@ function mapRanking(
   items:any[]
 ):Ranking{
 
+  const parsedDescription =
+    parseRankingDescription(
+      row.description
+    )
+
   const ranking:Ranking = {
     id:row.id,
     title:row.title,
     category:row.category,
     creator:"",
-    description:row.description ?? "",
+    description:parsedDescription.text,
+    mediaUrl:parsedDescription.mediaUrl,
     items:items.map(
       item => ({
         position:item.position,

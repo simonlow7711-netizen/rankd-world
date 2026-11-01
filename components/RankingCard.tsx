@@ -43,6 +43,8 @@ import EditionHeader, {
   EditionTitle
 } from "@/components/EditionHeader"
 
+import RankingDescription from "@/components/RankingDescription"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -653,31 +655,29 @@ export default function RankingCard({
         </EditionHeader>
 
 
-        {
-          ranking.description && (
-
-            <p
-
-              className={`
-                relative
-                z-10
-                mx-auto
-                -mt-12
-                max-w-xl
-                leading-relaxed
-                ${theme.muted}
-              `}
-
-            >
-
-              {
-                ranking.description
-              }
-
-            </p>
-
-          )
-        }
+        <RankingDescription
+          text={
+            ranking.description
+          }
+          mediaUrl={
+            ranking.mediaUrl
+          }
+          name={
+            formatRankingTitle(
+              ranking.title
+            )
+          }
+          className={`
+            relative
+            z-10
+            mx-auto
+            -mt-12
+            max-w-xl
+            whitespace-pre-wrap
+            leading-relaxed
+            ${theme.muted}
+          `}
+        />
 
 
         {

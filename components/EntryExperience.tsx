@@ -35,6 +35,8 @@ import EditionHeader, {
   EditionTitle
 } from "@/components/EditionHeader"
 
+import RankingDescription from "@/components/RankingDescription"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -780,34 +782,33 @@ export default function EntryExperience({
                   </EditionHeader>
 
 
-                  {
-                    ranking.description && (
-
-                      <p
-                        className="
-                          relative
-                          z-10
-                          mx-auto
-                          -mt-12
-                          max-w-3xl
-                          text-center
-                          text-lg
-                          font-medium
-                          leading-relaxed
-                          md:text-xl
-                        "
-                        style={{
-                          color:
-                            theme.muted
-                        }}
-                      >
-                        {
-                          ranking.description
-                        }
-                      </p>
-
-                    )
-                  }
+                  <RankingDescription
+                    text={
+                      ranking.description
+                    }
+                    mediaUrl={
+                      ranking.mediaUrl
+                    }
+                    name={
+                      formatRankingTitle(
+                        ranking.title
+                      )
+                    }
+                    className="
+                      relative
+                      z-10
+                      mx-auto
+                      -mt-12
+                      max-w-3xl
+                      whitespace-pre-wrap
+                      text-center
+                      text-lg
+                      font-medium
+                      leading-relaxed
+                      text-black/50
+                      md:text-xl
+                    "
+                  />
 
 
                   <div

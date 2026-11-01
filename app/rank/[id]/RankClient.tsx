@@ -60,6 +60,10 @@ import {
 
 import EntryEmbeds from "@/components/EntryEmbeds"
 
+import LinkText from "@/components/LinkText"
+
+import RankingDescription from "@/components/RankingDescription"
+
 import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
@@ -1175,28 +1179,30 @@ export default function RankClient({
               "
             >
 
-              {
-                displayDescription && (
-
-                  <p
-                    className={`
-                      relative
-                      z-10
-                      mx-auto
-                      -mt-12
-                      max-w-2xl
-                      text-center
-                      text-xl
-                      leading-relaxed
-                      md:text-2xl
-                      ${theme.muted}
-                    `}
-                  >
-                    {displayDescription}
-                  </p>
-
-                )
-              }
+              <RankingDescription
+                text={
+                  displayDescription
+                }
+                mediaUrl={
+                  displayRanking.mediaUrl
+                }
+                name={
+                  displayTitle
+                }
+                className={`
+                  relative
+                  z-10
+                  mx-auto
+                  -mt-12
+                  max-w-2xl
+                  whitespace-pre-wrap
+                  text-center
+                  text-xl
+                  leading-relaxed
+                  md:text-2xl
+                  ${theme.muted}
+                `}
+              />
 
 
               <div
@@ -1516,7 +1522,11 @@ export default function RankClient({
                                     whitespace-pre-wrap
                                   "
                                 >
-                                  {item.commentary}
+                                  <LinkText
+                                    text={
+                                      item.commentary
+                                    }
+                                  />
                                 </p>
                               )
                             }
@@ -1979,7 +1989,11 @@ export default function RankClient({
                                       whitespace-pre-wrap
                                     "
                                   >
-                                    {item.commentary}
+                                    <LinkText
+                                      text={
+                                        item.commentary
+                                      }
+                                    />
                                   </p>
                                 )
                               }

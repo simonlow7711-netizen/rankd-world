@@ -83,6 +83,9 @@ export interface Ranking {
   description:string
 
 
+  mediaUrl?:string | null
+
+
   items:RankingItem[]
 
 

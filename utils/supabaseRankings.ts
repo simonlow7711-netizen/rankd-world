@@ -7,6 +7,11 @@ import {
   Ranking
 } from "@/types/ranking"
 
+import {
+  parseRankingDescription,
+  serializeRankingDescription
+} from "@/utils/rankingMedia"
+
 
 import {
   LocationConfig
@@ -42,12 +47,18 @@ function mapRanking(
   items:any[]
 ):Ranking{
 
+  const parsedDescription =
+    parseRankingDescription(
+      row.description
+    )
+
   const ranking:Ranking = {
     id:row.id,
     title:row.title,
     category:row.category,
     creator:"",
-    description:row.description ?? "",
+    description:parsedDescription.text,
+    mediaUrl:parsedDescription.mediaUrl,
     items:items.map(
       item => ({
         position:item.position,
@@ -1103,7 +1114,11 @@ export async function createSupabaseRanking(
       {
         title:ranking.title,
         category:ranking.category,
-        description:ranking.description,
+        description:
+          serializeRankingDescription(
+            ranking.description,
+            ranking.mediaUrl
+          ),
         views:ranking.views ?? 0,
         user_id:userId,
         parent_id:ranking.parentId,

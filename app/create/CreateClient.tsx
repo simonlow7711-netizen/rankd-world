@@ -65,6 +65,12 @@ import {
   locations
 } from "@/utils/locations"
 
+import {
+  isHttpUrl
+} from "@/utils/linkText"
+
+import EntryEmbeds from "@/components/EntryEmbeds"
+
 
 export default function CreateClient(){
 
@@ -84,6 +90,9 @@ export default function CreateClient(){
     useState("")
 
   const [description,setDescription] =
+    useState("")
+
+  const [mediaUrl,setMediaUrl] =
     useState("")
 
   const [items,setItems] =
@@ -677,6 +686,21 @@ export default function CreateClient(){
     }
 
 
+    const heroMedia =
+      mediaUrl.trim()
+
+    if (
+      heroMedia &&
+      !isHttpUrl(heroMedia)
+    ) {
+      setError(
+        "Please enter a valid hero media link, or leave it blank."
+      )
+
+      return false
+    }
+
+
     return true
 
   }
@@ -768,6 +792,11 @@ export default function CreateClient(){
 
       description:
         description.trim(),
+
+      mediaUrl:
+        mediaUrl.trim()
+          ? mediaUrl.trim()
+          : null,
 
       items:
         items
@@ -2297,7 +2326,7 @@ export default function CreateClient(){
                     )
                 }
                 rows={3}
-                placeholder="Why did you make this RANKD?"
+                placeholder="Why did you make this RANKD? Links in this text will open in a new tab."
                 className="
                   w-full
                   resize-none
@@ -2320,6 +2349,77 @@ export default function CreateClient(){
                   sm:px-5
                 "
               />
+
+            </div>
+
+
+            <div
+              className="
+                sm:col-span-2
+              "
+            >
+
+              <label
+                htmlFor="hero-media"
+                className="
+                  mb-2
+                  block
+                  text-[10px]
+                  font-black
+                  uppercase
+                  tracking-[0.15em]
+                  text-black/45
+                "
+              >
+                Hero media (optional)
+              </label>
+
+              <input
+                id="hero-media"
+                type="url"
+                value={mediaUrl}
+                onChange={
+                  event =>
+                    setMediaUrl(
+                      event.target.value
+                    )
+                }
+                placeholder="YouTube, Spotify, Instagram, Amazon, Maps or any link"
+                className="
+                  w-full
+                  rounded-2xl
+                  border
+                  border-black/[0.08]
+                  bg-[#F7F4EE]/65
+                  px-4
+                  py-4
+                  text-sm
+                  font-medium
+                  outline-none
+                  transition
+                  placeholder:text-black/20
+                  focus:border-[#FF6B35]/50
+                  focus:bg-[#F7F4EE]
+                  focus:ring-4
+                  focus:ring-[#FF6B35]/[0.06]
+                  sm:px-5
+                "
+              />
+
+              {
+                mediaUrl.trim() &&
+                isHttpUrl(mediaUrl.trim()) && (
+                  <EntryEmbeds
+                    url={
+                      mediaUrl.trim()
+                    }
+                    name={
+                      title.trim() ||
+                      "Hero media"
+                    }
+                  />
+                )
+              }
 
             </div>
 
