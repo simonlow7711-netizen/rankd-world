@@ -31,6 +31,7 @@ type ShareButtonProps = {
   eventName?: string
   eventProps?: Record<string, string>
   extra?: ReactNode
+  onTeaser?: () => void
   align?: "start" | "center"
   compact?: boolean
 }
@@ -108,6 +109,7 @@ export default function ShareButton({
   eventName = "ranking_shared",
   eventProps,
   extra,
+  onTeaser,
   align = "start",
   compact = false
 }: ShareButtonProps) {
@@ -129,6 +131,9 @@ export default function ShareButton({
 
   const rootRef =
     useRef<HTMLDivElement | null>(null)
+
+  const teaserLock =
+    useRef(0)
 
   useEffect(() => {
     setMounted(true)
@@ -259,6 +264,23 @@ export default function ShareButton({
     setOpen(current => !current)
   }
 
+  function launchTeaser(
+    event: React.SyntheticEvent
+  ) {
+    event.preventDefault()
+    event.stopPropagation()
+
+    const now = Date.now()
+
+    if (now - teaserLock.current < 400) {
+      return
+    }
+
+    teaserLock.current = now
+    onTeaser?.()
+    setOpen(false)
+  }
+
   const destination = shareUrl()
   const encodedUrl =
     encodeURIComponent(destination)
@@ -377,6 +399,35 @@ export default function ShareButton({
               "
             >
               {
+                onTeaser && (
+                  <button
+                    type="button"
+                    onPointerUp={launchTeaser}
+                    onClick={launchTeaser}
+                    className="
+                      flex
+                      w-full
+                      items-center
+                      justify-between
+                      rounded-full
+                      border
+                      border-black
+                      bg-[#FF6B35]
+                      px-4
+                      py-3.5
+                      text-left
+                      text-sm
+                      font-black
+                      text-black
+                    "
+                  >
+                    <span>Animated teaser</span>
+                    <span aria-hidden="true">↗</span>
+                  </button>
+                )
+              }
+
+              {
                 canUseNativeShare() && (
                   <button
                     type="button"
@@ -398,7 +449,7 @@ export default function ShareButton({
                       text-black
                     "
                   >
-                    <span>Share</span>
+                    <span>Share to apps</span>
                     <Share2 size={16} />
                   </button>
                 )
@@ -438,12 +489,7 @@ export default function ShareButton({
 
             {
               extra && (
-                <div
-                  className="mt-3"
-                  onClick={() => {
-                    setOpen(false)
-                  }}
-                >
+                <div className="mt-3">
                   {extra}
                 </div>
               )

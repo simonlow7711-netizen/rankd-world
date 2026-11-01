@@ -5,6 +5,8 @@ import {
   useState
 } from "react"
 
+import dynamic from "next/dynamic"
+
 import {
   useRouter
 } from "next/navigation"
@@ -46,6 +48,13 @@ import RankingDescription from "@/components/RankingDescription"
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
+
+const AnimatedRankPreview = dynamic(
+  () => import("@/components/AnimatedRankPreview"),
+  {
+    ssr: false
+  }
+)
 
 
 type RankingCardProps = {
@@ -256,6 +265,14 @@ export default function RankingCard({
   const [
     topItemRevealed,
     setTopItemRevealed
+  ] =
+    useState(
+      false
+    )
+
+  const [
+    animatedPreviewOpen,
+    setAnimatedPreviewOpen
   ] =
     useState(
       false
@@ -1126,8 +1143,36 @@ export default function RankingCard({
             }}
             compact
             align="center"
+            onTeaser={() => {
+              setAnimatedPreviewOpen(true)
+            }}
           />
         </div>
+
+        {
+          animatedPreviewOpen && (
+            <AnimatedRankPreview
+              title={
+                formatRankingTitle(
+                  ranking.title
+                )
+              }
+              items={
+                sortedItems.map(item => ({
+                  position: item.position,
+                  name: item.name
+                }))
+              }
+              href={`/rank/${ranking.id}`}
+              category={ranking.category}
+              paper={edition.paper}
+              accent={edition.accent}
+              onClose={() => {
+                setAnimatedPreviewOpen(false)
+              }}
+            />
+          )
+        }
 
       </div>
 

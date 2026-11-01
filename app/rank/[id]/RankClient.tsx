@@ -1238,36 +1238,9 @@ export default function RankClient({
                         displayRanking.id
                     }}
                     align="center"
-                    extra={
-                      <button
-                        type="button"
-                        onClick={() => {
-                          setAnimatedPreviewOpen(true)
-                        }}
-                        className="
-                          flex
-                          w-full
-                          items-center
-                          justify-center
-                          gap-3
-                          rounded-full
-                          border
-                          border-black
-                          bg-transparent
-                          px-4
-                          py-3
-                          text-center
-                          text-sm
-                          font-black
-                          text-black
-                          transition
-                          hover:border-[#FF6B35]
-                        "
-                      >
-                        <span>Preview animated teaser</span>
-                        <span className="text-[#FF6B35]">↗</span>
-                      </button>
-                    }
+                    onTeaser={() => {
+                      setAnimatedPreviewOpen(true)
+                    }}
                   />
                 </div>
 
