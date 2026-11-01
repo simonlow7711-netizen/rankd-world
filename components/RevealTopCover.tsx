@@ -36,7 +36,9 @@ export default function RevealTopCover({
               border:
                 `2px solid ${accent}`,
               borderRadius:
-                "20px"
+                "20px",
+              minHeight:
+                136
             }
       }
     >
@@ -95,7 +97,7 @@ export default function RevealTopCover({
                   font-black
                   leading-tight
                   tracking-[-0.03em]
-                  md:text-2xl
+                  md:text-xl
                 "
                 style={{
                   color:

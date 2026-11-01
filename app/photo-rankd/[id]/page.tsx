@@ -1148,8 +1148,88 @@ export default function PhotoRankdPage() {
                                 )
 
 
-                              const row = (
+                              const nameCell = (
                                 <div
+                                  style={{
+                                    minWidth:
+                                      0
+                                  }}
+                                >
+
+                                  {
+                                    longForm
+                                      ? (
+                                          paragraphs.map(
+                                            (
+                                              paragraph,
+                                              paragraphIndex
+                                            ) => (
+                                              <p
+                                                key={
+                                                  `${item.name}-${index}-${paragraphIndex}`
+                                                }
+                                                style={{
+                                                  margin:
+                                                    paragraphIndex === 0
+                                                      ? "0"
+                                                      : "14px 0 0",
+                                                  fontSize:
+                                                    paragraphIndex === 0
+                                                      ? "18px"
+                                                      : "14px",
+                                                  lineHeight:
+                                                    paragraphIndex === 0
+                                                      ? 1.08
+                                                      : 1.6,
+                                                  fontWeight:
+                                                    paragraphIndex === 0
+                                                      ? 900
+                                                      : 400,
+                                                  letterSpacing:
+                                                    paragraphIndex === 0
+                                                      ? "-0.025em"
+                                                      : "0",
+                                                  color:
+                                                    paragraphIndex === 0
+                                                      ? "#111"
+                                                      : "rgba(17,17,17,0.60)"
+                                                }}
+                                              >
+                                                {
+                                                  paragraph
+                                                }
+                                              </p>
+                                            )
+                                          )
+                                        )
+                                      : (
+                                          <span
+                                            style={{
+                                              fontSize:
+                                                "15px",
+                                              lineHeight:
+                                                1.3,
+                                              fontWeight:
+                                                700,
+                                              color:
+                                                "#111"
+                                            }}
+                                          >
+                                            {
+                                              item.name
+                                            }
+                                          </span>
+                                        )
+                                  }
+
+                                </div>
+                              )
+
+                              return (
+                                <div
+                                  key={
+                                    `${item.name}-${index}`
+                                  }
                                   style={{
                                     display:
                                       "grid",
@@ -1195,120 +1275,27 @@ export default function PhotoRankdPage() {
                                     }
                                   </span>
 
-
-                                  <div
-                                    style={{
-                                      minWidth:
-                                        0
-                                    }}
-                                  >
-
-                                    {
-                                      longForm
-                                        ? (
-                                            paragraphs.map(
-                                              (
-                                                paragraph,
-                                                paragraphIndex
-                                              ) => (
-                                                <p
-                                                  key={
-                                                    `${item.name}-${index}-${paragraphIndex}`
-                                                  }
-                                                  style={{
-                                                    margin:
-                                                      paragraphIndex === 0
-                                                        ? "0"
-                                                        : "14px 0 0",
-                                                    fontSize:
-                                                      paragraphIndex === 0
-                                                        ? "18px"
-                                                        : "14px",
-                                                    lineHeight:
-                                                      paragraphIndex === 0
-                                                        ? 1.08
-                                                        : 1.6,
-                                                    fontWeight:
-                                                      paragraphIndex === 0
-                                                        ? 900
-                                                        : 400,
-                                                    letterSpacing:
-                                                      paragraphIndex === 0
-                                                        ? "-0.025em"
-                                                        : "0",
-                                                    color:
-                                                      paragraphIndex === 0
-                                                        ? "#111"
-                                                        : "rgba(17,17,17,0.60)"
-                                                  }}
-                                                >
-                                                  {
-                                                    paragraph
-                                                  }
-                                                </p>
+                                  {
+                                    item.position === 1
+                                      ? (
+                                          <RevealTopCover
+                                            revealed={
+                                              topItemRevealed
+                                            }
+                                            onReveal={() => {
+                                              setTopItemRevealed(
+                                                true
                                               )
-                                            )
-                                          )
-                                        : (
-                                            <span
-                                              style={{
-                                                fontSize:
-                                                  "15px",
-                                                lineHeight:
-                                                  1.3,
-                                                fontWeight:
-                                                  700,
-                                                color:
-                                                  "#111"
-                                              }}
-                                            >
-                                              {
-                                                item.name
-                                              }
-                                            </span>
-                                          )
-                                    }
-
-                                  </div>
-
-                                </div>
-                              )
-
-                              if (
-                                item.position === 1
-                              ) {
-
-                                return (
-
-                                  <RevealTopCover
-                                    key={
-                                      `${item.name}-${index}`
-                                    }
-                                    revealed={
-                                      topItemRevealed
-                                    }
-                                    onReveal={() => {
-                                      setTopItemRevealed(
-                                        true
-                                      )
-                                    }}
-                                    accent="#FF6B35"
-                                    ink="#111111"
-                                  >
-                                    {row}
-                                  </RevealTopCover>
-
-                                )
-
-                              }
-
-                              return (
-                                <div
-                                  key={
-                                    `${item.name}-${index}`
+                                            }}
+                                            accent="#FF6B35"
+                                            ink="#111111"
+                                          >
+                                            {nameCell}
+                                          </RevealTopCover>
+                                        )
+                                      : nameCell
                                   }
-                                >
-                                  {row}
+
                                 </div>
                               )
                             }

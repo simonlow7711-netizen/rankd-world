@@ -1,7 +1,5 @@
 import Link from "next/link"
 
-import PhotoRankdMark from "@/components/PhotoRankdMark"
-
 import {
   PhotoRankdPreview
 } from "@/utils/photoRankds"
@@ -147,43 +145,25 @@ export default function PhotoRankdSection({
               >
                 <div
                   className="
-                    grid
-                    grid-cols-[72px_minmax(0,1fr)]
+                    relative
+                    aspect-[4/3]
+                    overflow-hidden
                     border-b
                     border-black
-                    md:grid-cols-[88px_minmax(0,1fr)]
+                    bg-[#EFEBE3]
                   "
                 >
-                  <div
+                  <img
+                    src={photoRankd.image_url}
+                    alt={photoRankd.title}
                     className="
-                      border-r
-                      border-black
-                      bg-[#F7F4EE]
+                      absolute
+                      inset-0
+                      h-full
+                      w-full
+                      object-cover
                     "
-                  >
-                    <PhotoRankdMark />
-                  </div>
-
-                  <div
-                    className="
-                      relative
-                      aspect-[4/3]
-                      overflow-hidden
-                      bg-[#EFEBE3]
-                    "
-                  >
-                    <img
-                      src={photoRankd.image_url}
-                      alt={photoRankd.title}
-                      className="
-                        absolute
-                        inset-0
-                        h-full
-                        w-full
-                        object-cover
-                      "
-                    />
-                  </div>
+                  />
                 </div>
 
                 <div
