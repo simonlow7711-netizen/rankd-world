@@ -124,8 +124,10 @@ function SortableItem({
           w-12
           h-12
           rounded-full
-          bg-black
-          text-white
+          border
+          border-black
+          bg-transparent
+          text-black
           font-black
           cursor-grab
         "

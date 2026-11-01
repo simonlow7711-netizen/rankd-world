@@ -536,10 +536,13 @@ export default function PhotoRankdIndexPage() {
             50%;
 
           background:
-            #111;
+            transparent;
+
+          border:
+            1px solid #111;
 
           color:
-            #F7F4EE;
+            #111;
 
           font-size:
             20px;

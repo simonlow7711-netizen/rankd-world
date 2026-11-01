@@ -63,7 +63,7 @@ export default function RankingResponse({
     "border-black/10",
 
   card =
-    "bg-[#F7F4EE]",
+    "bg-transparent",
 
   accentColor,
 
@@ -607,13 +607,13 @@ export default function RankingResponse({
             overflow-hidden
             rounded-2xl
             border
+            bg-transparent
             px-2.5
             py-3.5
             text-left
             transition-all
             duration-300
             hover:-translate-y-0.5
-            hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]
             active:translate-y-0
             active:scale-[0.985]
             focus:outline-none
@@ -840,13 +840,13 @@ export default function RankingResponse({
             overflow-hidden
             rounded-2xl
             border
+            bg-transparent
             px-2.5
             py-3.5
             text-left
             transition-all
             duration-300
             hover:-translate-y-0.5
-            hover:shadow-[0_8px_24px_rgba(0,0,0,0.07)]
             active:translate-y-0
             active:scale-[0.985]
             focus:outline-none

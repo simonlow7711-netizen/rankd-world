@@ -45,7 +45,7 @@ export default function RankingEngagement({
 
   borderColor = "#000000",
 
-  cardColor = "#F7F4EE"
+  cardColor = "transparent"
 
 }: RankingEngagementProps) {
 
@@ -58,7 +58,7 @@ export default function RankingEngagement({
   const itemStyle = {
 
     backgroundColor:
-      `${accentColor}12`,
+      "transparent",
 
     color:
       textColor
@@ -85,7 +85,8 @@ export default function RankingEngagement({
           shrink
           items-center
           gap-2
-          rounded-2xl
+          rounded-full
+          border
           px-3
           py-3
           md:px-4
@@ -93,7 +94,7 @@ export default function RankingEngagement({
         style={{
           ...itemStyle,
           borderColor:
-            `${borderColor}12`
+            borderColor
         }}
       >
 
@@ -133,7 +134,8 @@ export default function RankingEngagement({
           shrink
           items-center
           gap-2
-          rounded-2xl
+          rounded-full
+          border
           px-3
           py-3
           md:px-4
@@ -141,7 +143,7 @@ export default function RankingEngagement({
         style={{
           ...itemStyle,
           borderColor:
-            `${borderColor}12`
+            borderColor
         }}
       >
 
@@ -181,7 +183,8 @@ export default function RankingEngagement({
           shrink
           items-center
           gap-2
-          rounded-2xl
+          rounded-full
+          border
           px-3
           py-3
           md:px-4
@@ -189,7 +192,7 @@ export default function RankingEngagement({
         style={{
           ...itemStyle,
           borderColor:
-            `${borderColor}12`
+            borderColor
         }}
       >
 

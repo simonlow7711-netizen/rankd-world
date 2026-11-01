@@ -719,10 +719,13 @@ export default function EntryExperience({
                       "
                       style={{
                         backgroundColor:
-                          `${theme.text}0A`,
+                          "transparent",
+
+                        border:
+                          `1px solid ${theme.accent}`,
 
                         color:
-                          theme.text
+                          theme.accent
                       }}
                     >
                       TOP 7
@@ -805,9 +808,7 @@ export default function EntryExperience({
                                       : "20px",
 
                                   backgroundColor:
-                                    topItemRevealed
-                                      ? "transparent"
-                                      : `${theme.accent}0A`
+                                    "transparent"
                                 }}
                               >
 
@@ -879,12 +880,12 @@ export default function EntryExperience({
                                         px-4
                                         text-center
                                         transition
-                                        hover:bg-black/[0.03]
+                                        bg-transparent
                                         md:px-6
                                       "
                                       style={{
                                         backgroundColor:
-                                          theme.paper
+                                          "transparent"
                                       }}
                                       aria-label="Reveal the number one ranked item"
                                     >
@@ -1105,9 +1106,8 @@ export default function EntryExperience({
                         theme.border
                       }
 
-                      cardColor={
-                        theme.paper
-                      }
+                      card="bg-transparent"
+                      cardColor="transparent"
                     />
 
                   </div>

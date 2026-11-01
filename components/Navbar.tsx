@@ -269,9 +269,8 @@ export default function Navbar() {
         w-full
         overflow-x-clip
         border-b
-        border-black/[0.06]
-        bg-[#F7F4EE]/95
-        backdrop-blur-md
+        border-black
+        bg-[#F7F4EE]
       "
     >
 
@@ -371,12 +370,11 @@ export default function Navbar() {
                 items-center
                 rounded-full
                 border
-                border-black/[0.10]
-                bg-[#F7F4EE]
+                border-black
+                bg-transparent
                 px-4
                 transition
-                focus-within:border-black/25
-                focus-within:bg-[#F7F4EE]
+                focus-within:border-black
               "
             >
 
@@ -695,12 +693,11 @@ export default function Navbar() {
               items-center
               rounded-full
               border
-              border-black/[0.10]
-              bg-[#F7F4EE]
+              border-black
+              bg-transparent
               px-4
               transition
-              focus-within:border-black/25
-              focus-within:bg-[#F7F4EE]
+              focus-within:border-black
             "
           >
 
@@ -843,11 +840,10 @@ export default function Navbar() {
               gap-1
               overflow-hidden
               rounded-xl
-              bg-black
               py-2
-              text-white
+              text-black
               transition
-              hover:bg-black/85
+              hover:bg-black/[0.04]
             "
           >
 

@@ -19,6 +19,8 @@ interface ConversationTreeProps {
 
   currentId: string
 
+  paper?: string
+
 }
 
 
@@ -26,7 +28,9 @@ export default function ConversationTree({
 
   nodes,
 
-  currentId
+  currentId,
+
+  paper = "#F7F4EE"
 
 }: ConversationTreeProps) {
 
@@ -129,16 +133,15 @@ export default function ConversationTree({
               isCurrent
 
                 ? `
-                  bg-[#F7F4EE]
+                  bg-transparent
                   text-black
                   border-black
                 `
 
                 : `
-                  bg-[#F7F4EE]
+                  bg-transparent
                   text-black
-                  border-black/10
-                  hover:border-black/20
+                  border-black
                   hover:-translate-y-0.5
                 `
             }
@@ -259,8 +262,8 @@ export default function ConversationTree({
                       `
 
                       : `
-                        border-black/10
-                        bg-[#F7F4EE]
+                        border-black
+                        bg-transparent
                         text-black/45
                         hover:border-black/20
                         hover:text-black
@@ -373,12 +376,15 @@ export default function ConversationTree({
       className="
         rounded-3xl
         border
-        border-black/10
-        bg-[#F7F4EE]
+        border-black
         p-6
         text-black
         md:p-7
       "
+      style={{
+        backgroundColor:
+          paper
+      }}
     >
 
       <div

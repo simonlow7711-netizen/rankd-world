@@ -361,14 +361,16 @@ export default function ShareButton({
                       w-full
                       items-center
                       justify-between
-                      rounded-2xl
-                      bg-black
+                      rounded-full
+                      border
+                      border-black
+                      bg-transparent
                       px-4
                       py-3.5
                       text-left
                       text-sm
                       font-black
-                      text-white
+                      text-black
                     "
                   >
                     <span>Share</span>
@@ -385,10 +387,10 @@ export default function ShareButton({
                   w-full
                   items-center
                   justify-between
-                  rounded-2xl
+                  rounded-full
                   border
-                  border-black/10
-                  bg-[#F7F4EE]
+                  border-black
+                  bg-transparent
                   px-4
                   py-3.5
                   text-left

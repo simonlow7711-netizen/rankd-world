@@ -81,6 +81,26 @@ video {
 }
 
 
+input,
+textarea,
+select {
+
+  appearance: none;
+  background-color: #F7F4EE;
+  color: #111111;
+
+}
+
+
+input[type="search"] {
+
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: transparent;
+
+}
+
+
 
 
 

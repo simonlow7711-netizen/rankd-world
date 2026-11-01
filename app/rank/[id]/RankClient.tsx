@@ -985,6 +985,9 @@ export default function RankClient({
                 currentId={
                   ranking.id
                 }
+                paper={
+                  theme.paper
+                }
               />
 
             </div>
@@ -1201,16 +1204,18 @@ export default function RankClient({
                           items-center
                           justify-center
                           gap-3
-                          rounded-2xl
-                          bg-black
+                          rounded-full
+                          border
+                          border-black
+                          bg-transparent
                           px-4
                           py-3
                           text-center
                           text-sm
                           font-black
-                          text-white
+                          text-black
                           transition
-                          hover:bg-black/85
+                          hover:border-[#FF6B35]
                         "
                       >
                         <span>Preview animated teaser</span>
@@ -1467,7 +1472,6 @@ export default function RankClient({
                     rounded-[24px]
                     border
                     border-black
-                    bg-[#F7F4EE]
                   "
                 >
                   <div
@@ -1585,7 +1589,6 @@ export default function RankClient({
                     rounded-[24px]
                     border
                     border-black
-                    bg-[#F7F4EE]
                   "
                 >
 
@@ -1708,6 +1711,13 @@ export default function RankClient({
                 onRerankd={
                   rankIt
                 }
+                card="bg-transparent"
+                cardColor="transparent"
+                border="border-black"
+                accentColor={theme.accentHex}
+                textColor={theme.ink}
+                mutedColor={theme.mutedHex}
+                borderColor="#111111"
               />
 
             </div>
@@ -1901,11 +1911,14 @@ export default function RankClient({
                 rounded-[28px]
                 border
                 border-black
-                bg-[#F7F4EE]
                 p-7
                 text-center
                 md:p-8
               "
+              style={{
+                backgroundColor:
+                  theme.paper
+              }}
             >
 
               <div
@@ -2014,12 +2027,11 @@ export default function RankClient({
                             block
                             rounded-2xl
                             border
-                            border-black/10
-                            bg-[#F7F4EE]
+                            border-black
+                            bg-transparent
                             p-4
                             transition-all
                             hover:-translate-y-0.5
-                            hover:bg-black/[0.03]
                           "
                         >
 
@@ -2114,12 +2126,15 @@ export default function RankClient({
                 rounded-[28px]
                 border
                 border-black
-                bg-[#F7F4EE]
                 p-7
                 md:p-8
                 text-center
                 text-black
               "
+              style={{
+                backgroundColor:
+                  theme.paper
+              }}
             >
 
               <div
@@ -2232,16 +2247,19 @@ export default function RankClient({
 
             <div
               className="
+                relative
                 h-full
                 min-h-[280px]
+                overflow-hidden
                 rounded-[28px]
                 border
-                border-black/10
-                bg-[#F7F4EE]
+                border-black
                 p-8
-                relative
-                overflow-hidden
               "
+              style={{
+                backgroundColor:
+                  theme.paper
+              }}
             >
 
               <div

@@ -1050,7 +1050,7 @@ export default function RankingCard({
           }
 
           card={
-            theme.card
+            "bg-transparent"
           }
 
           accentColor={
@@ -1070,7 +1070,7 @@ export default function RankingCard({
           }
 
           cardColor={
-            theme.cardColor
+            "transparent"
           }
 
         />
