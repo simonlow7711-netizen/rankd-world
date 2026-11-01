@@ -28,6 +28,8 @@ import RankingResponse from "@/components/RankingResponse"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
+import EditionChrome from "@/components/EditionChrome"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -646,6 +648,12 @@ export default function EntryExperience({
                 }}
               >
 
+                <EditionChrome
+                  theme={
+                    theme
+                  }
+                />
+
                 <div
                   className="
                     relative
@@ -1060,6 +1068,12 @@ export default function EntryExperience({
                   "#111111"
               }}
             >
+
+              <EditionChrome
+                theme={
+                  theme
+                }
+              />
 
               <div
                 className="

@@ -36,6 +36,8 @@ import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
+import EditionChrome from "@/components/EditionChrome"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -287,6 +289,11 @@ export default function RankingCard({
       ranking.category
     )
 
+  const edition =
+    getCategoryTheme(
+      ranking.category
+    )
+
 
   const locationName =
     ranking.location?.name?.trim() ??
@@ -447,6 +454,12 @@ export default function RankingCard({
       `}
 
     >
+
+      <EditionChrome
+        theme={
+          edition
+        }
+      />
 
       <Link
 
@@ -729,12 +742,11 @@ export default function RankingCard({
         <div
 
           className={`
+            relative
+            z-10
             mt-8
-            rounded-[22px]
-            border
-            px-4
-            py-5
-            md:px-5
+            border-t
+            pt-5
             ${theme.border}
           `}
 

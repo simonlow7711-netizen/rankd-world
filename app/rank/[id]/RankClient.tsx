@@ -64,6 +64,8 @@ import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
+import EditionChrome from "@/components/EditionChrome"
+
 
 type RankClientProps = {
   id:string
@@ -112,7 +114,9 @@ function getTheme(
     mutedHex:
       theme.muted,
     index:
-      theme.index
+      theme.index,
+    edition:
+      theme
   }
 
 }
@@ -1044,6 +1048,12 @@ export default function RankClient({
           `}
         >
 
+          <EditionChrome
+            theme={
+              theme.edition
+            }
+          />
+
           <div
             className="
               relative
@@ -1306,7 +1316,7 @@ export default function RankClient({
                         "
                         style={{
                           backgroundColor:
-                            theme.paper,
+                            "transparent",
                           borderColor:
                             "#111111"
                         }}
@@ -1865,7 +1875,7 @@ export default function RankClient({
                             "
                             style={{
                               backgroundColor:
-                                theme.paper,
+                                "transparent",
                                 borderColor:
                                 "#111111"
                             }}

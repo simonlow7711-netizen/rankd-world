@@ -5,6 +5,8 @@ import {
   getDailyRankd
 } from "@/utils/dailyRankd"
 
+import EditionChrome from "@/components/EditionChrome"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -108,6 +110,10 @@ export default function DailyRankd({
               "#111111"
           }}
         >
+
+          <EditionChrome
+            theme={theme}
+          />
 
           <div
             className="

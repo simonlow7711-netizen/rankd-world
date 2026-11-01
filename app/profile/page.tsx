@@ -21,6 +21,8 @@ import {
 
 import RankingEngagement from "@/components/RankingEngagement"
 
+import EditionChrome from "@/components/EditionChrome"
+
 import {
   getRankingEngagement,
   RankingEngagementData
@@ -672,6 +674,10 @@ export default function ProfilePage() {
                           "#111111"
                       }}
                     >
+
+                      <EditionChrome
+                        theme={theme}
+                      />
 
                       <div
                         className="

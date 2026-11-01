@@ -12,6 +12,8 @@ import RankingCard from "@/components/RankingCard"
 
 import CategoryCover from "@/components/CategoryCover"
 
+import EditionChrome from "@/components/EditionChrome"
+
 import {
   getAllRankings
 } from "@/utils/supabaseRankings"
@@ -461,6 +463,10 @@ export default async function CategoryPage(
                 "#111111"
             }}
           >
+
+            <EditionChrome
+              theme={theme}
+            />
 
             <CategoryCover
               theme={theme}
