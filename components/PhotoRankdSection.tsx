@@ -1,0 +1,299 @@
+import Link from "next/link"
+
+import PhotoRankdMark from "@/components/PhotoRankdMark"
+
+import {
+  PhotoRankdPreview
+} from "@/utils/photoRankds"
+
+
+type PhotoRankdSectionProps = {
+  photoRankds: PhotoRankdPreview[]
+  showHeading?: boolean
+  showIndexLink?: boolean
+}
+
+
+export default function PhotoRankdSection({
+  photoRankds,
+  showHeading = true,
+  showIndexLink = true
+}: PhotoRankdSectionProps) {
+
+  if (
+    photoRankds.length === 0
+  ) {
+    return null
+  }
+
+
+  return (
+    <div>
+      {
+        showHeading && (
+          <div
+            className="
+              mb-10
+              flex
+              flex-col
+              items-center
+              gap-6
+              text-center
+              md:mb-12
+            "
+          >
+            <div>
+              <p
+                className="
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.3em]
+                  text-[#FF6B35]
+                "
+              >
+                PHOTO RANKD
+              </p>
+
+              <h2
+                className="
+                  mt-3
+                  text-4xl
+                  font-black
+                  leading-none
+                  tracking-[-0.045em]
+                  md:text-6xl
+                "
+              >
+                See it.
+                Rank it differently.
+              </h2>
+
+              <p
+                className="
+                  mx-auto
+                  mt-4
+                  max-w-xl
+                  text-base
+                  leading-relaxed
+                  text-black/50
+                  md:text-lg
+                "
+              >
+                Explore a photograph and find the
+                seven RANKDs hidden in it.
+              </p>
+            </div>
+
+            <Link
+              href="/photo-rankd"
+              className="
+                inline-flex
+                items-center
+                gap-3
+                rounded-full
+                border
+                border-black
+                bg-black
+                px-6
+                py-3
+                text-sm
+                font-black
+                text-white
+                transition
+                hover:bg-[#FF6B35]
+                hover:text-black
+              "
+            >
+              <span>
+                Explore Photo RANKD
+              </span>
+              <span className="text-lg leading-none">
+                →
+              </span>
+            </Link>
+          </div>
+        )
+      }
+
+      <div
+        className={`
+          grid
+          gap-5
+          ${
+            photoRankds.length > 1
+              ? "md:grid-cols-2"
+              : ""
+          }
+        `}
+      >
+        {
+          photoRankds.map(
+            photoRankd => (
+              <Link
+                key={photoRankd.id}
+                href={`/photo-rankd/${photoRankd.id}`}
+                className="
+                  rankd-edition
+                  group
+                  block
+                  overflow-hidden
+                  rounded-[28px]
+                  border
+                  border-black
+                  bg-[#F7F4EE]
+                  text-black
+                "
+              >
+                <div
+                  className="
+                    grid
+                    grid-cols-[72px_minmax(0,1fr)]
+                    border-b
+                    border-black
+                    md:grid-cols-[88px_minmax(0,1fr)]
+                  "
+                >
+                  <div
+                    className="
+                      border-r
+                      border-black
+                      bg-[#F7F4EE]
+                    "
+                  >
+                    <PhotoRankdMark />
+                  </div>
+
+                  <div
+                    className="
+                      relative
+                      aspect-[4/3]
+                      overflow-hidden
+                      bg-[#EFEBE3]
+                    "
+                  >
+                    <img
+                      src={photoRankd.image_url}
+                      alt={photoRankd.title}
+                      className="
+                        absolute
+                        inset-0
+                        h-full
+                        w-full
+                        object-cover
+                      "
+                    />
+                  </div>
+                </div>
+
+                <div
+                  className="
+                    px-6
+                    py-6
+                    text-left
+                    md:px-8
+                    md:py-7
+                  "
+                >
+                  <p
+                    className="
+                      text-[10px]
+                      font-black
+                      uppercase
+                      tracking-[0.22em]
+                      text-[#FF6B35]
+                    "
+                  >
+                    Photo RANKD
+                  </p>
+
+                  <h3
+                    className="
+                      mt-3
+                      text-2xl
+                      font-black
+                      leading-[0.95]
+                      tracking-[-0.045em]
+                      text-balance
+                      hyphens-none
+                      md:text-3xl
+                    "
+                  >
+                    {photoRankd.title}
+                  </h3>
+
+                  {
+                    photoRankd.description && (
+                      <p
+                        className="
+                          mt-4
+                          text-sm
+                          leading-relaxed
+                          text-black/50
+                        "
+                      >
+                        {photoRankd.description}
+                      </p>
+                    )
+                  }
+
+                  <p
+                    className="
+                      mt-6
+                      text-sm
+                      font-black
+                    "
+                  >
+                    Open Photo RANKD →
+                  </p>
+                </div>
+              </Link>
+            )
+          )
+        }
+      </div>
+
+      {
+        !showHeading &&
+        showIndexLink && (
+          <div
+            className="
+              mt-8
+              flex
+              justify-center
+            "
+          >
+            <Link
+              href="/photo-rankd"
+              className="
+                inline-flex
+                items-center
+                gap-3
+                rounded-full
+                border
+                border-black
+                bg-black
+                px-6
+                py-3
+                text-sm
+                font-black
+                text-white
+                transition
+                hover:bg-[#FF6B35]
+                hover:text-black
+              "
+            >
+              <span>
+                Explore Photo RANKD
+              </span>
+              <span className="text-lg leading-none">
+                →
+              </span>
+            </Link>
+          </div>
+        )
+      }
+    </div>
+  )
+
+}
