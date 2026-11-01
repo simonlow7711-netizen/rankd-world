@@ -47,6 +47,33 @@ export function parseRankingDescription(
 }
 
 
+export function rankingMediaFromRow(
+  row: {
+    description?: string | null
+    hero_media_url?: string | null
+  }
+) {
+
+  const parsed =
+    parseRankingDescription(
+      row.description
+    )
+
+  const column =
+    row.hero_media_url?.trim() ||
+    null
+
+  return {
+    text:
+      parsed.text,
+    mediaUrl:
+      column ||
+      parsed.mediaUrl
+  }
+
+}
+
+
 export function serializeRankingDescription(
   text: string,
   mediaUrl?: string | null

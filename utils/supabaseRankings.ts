@@ -8,8 +8,7 @@ import {
 } from "@/types/ranking"
 
 import {
-  parseRankingDescription,
-  serializeRankingDescription
+  rankingMediaFromRow
 } from "@/utils/rankingMedia"
 
 
@@ -23,6 +22,7 @@ type RankingRow = {
   title:string
   category:string
   description:string | null
+  hero_media_url:string | null
   views:number | null
   user_id:string | null
   parent_id:string | null
@@ -48,8 +48,8 @@ function mapRanking(
 ):Ranking{
 
   const parsedDescription =
-    parseRankingDescription(
-      row.description
+    rankingMediaFromRow(
+      row
     )
 
   const ranking:Ranking = {
@@ -501,6 +501,7 @@ export async function getSupabaseRanking(
         title,
         category,
         description,
+        hero_media_url,
         views,
         user_id,
         parent_id,
@@ -639,6 +640,7 @@ export async function getAllSupabaseRankings():Promise<Ranking[]>{
         title,
         category,
         description,
+        hero_media_url,
         views,
         user_id,
         parent_id,
@@ -698,6 +700,7 @@ export async function getRankingsForLocation(
           title,
           category,
           description,
+          hero_media_url,
           views,
           user_id,
           parent_id,
@@ -871,6 +874,7 @@ export async function searchSupabaseRankings(
         title,
         category,
         description,
+        hero_media_url,
         views,
         user_id,
         parent_id,
@@ -973,6 +977,7 @@ export async function searchSupabaseRankings(
           title,
           category,
           description,
+          hero_media_url,
           views,
           user_id,
           parent_id,
@@ -1115,10 +1120,10 @@ export async function createSupabaseRanking(
         title:ranking.title,
         category:ranking.category,
         description:
-          serializeRankingDescription(
-            ranking.description,
-            ranking.mediaUrl
-          ),
+          ranking.description,
+        hero_media_url:
+          ranking.mediaUrl?.trim() ||
+          null,
         views:ranking.views ?? 0,
         user_id:userId,
         parent_id:ranking.parentId,
@@ -1155,6 +1160,7 @@ export async function createSupabaseRanking(
         title,
         category,
         description,
+        hero_media_url,
         views,
         user_id,
         parent_id,

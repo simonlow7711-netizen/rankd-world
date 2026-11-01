@@ -8,7 +8,7 @@ import {
 } from "@/types/ranking"
 
 import {
-  parseRankingDescription
+  rankingMediaFromRow
 } from "@/utils/rankingMedia"
 
 
@@ -17,6 +17,7 @@ type RankingRow = {
   title:string
   category:string
   description:string | null
+  hero_media_url:string | null
   views:number | null
   user_id:string | null
   parent_id:string | null
@@ -35,8 +36,8 @@ function mapRanking(
 ):Ranking{
 
   const parsedDescription =
-    parseRankingDescription(
-      row.description
+    rankingMediaFromRow(
+      row
     )
 
   const ranking:Ranking = {
@@ -121,6 +122,7 @@ export async function getSupabaseRankingServer(
         title,
         category,
         description,
+        hero_media_url,
         views,
         user_id,
         parent_id,
