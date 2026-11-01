@@ -10,6 +10,8 @@ import {
 
 import RankingCard from "@/components/RankingCard"
 
+import CategoryCover from "@/components/CategoryCover"
+
 import {
   getAllRankings
 } from "@/utils/supabaseRankings"
@@ -460,94 +462,14 @@ export default async function CategoryPage(
             }}
           >
 
-            <div
-              className="
-                relative
-                z-10
-                mx-auto
-                max-w-3xl
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-center
-                  gap-4
-                "
-              >
-
-                <p
-                  className="
-                    text-xs
-                    font-black
-                    uppercase
-                    tracking-[0.24em]
-                  "
-                  style={{
-                    color:
-                      theme.accent
-                  }}
-                >
-
-                  {theme.index} · RANKD / {theme.label}
-
-                </p>
-
-              </div>
-
-
-              <h1
-                className="
-                  mt-5
-                  text-5xl
-                  font-black
-                  leading-[0.9]
-                  tracking-[-0.06em]
-                  md:text-7xl
-                "
-              >
-
-                {category}
-
-              </h1>
-
-
-              <p
-                className="
-                  mx-auto
-                  mt-5
-                  max-w-2xl
-                  text-lg
-                  leading-relaxed
-                  md:text-xl
-                "
-                style={{
-                  color:
-                    theme.muted
-                }}
-              >
-
-                {metadata.description}
-
-              </p>
-
-
-              <p
-                className="
-                  mt-6
-                  text-[11px]
-                  font-black
-                  uppercase
-                  tracking-[0.2em]
-                  opacity-50
-                "
-              >
-                {rankings.length} RANKD{rankings.length === 1 ? "" : "s"} in this edition
-              </p>
-
-            </div>
+            <CategoryCover
+              theme={theme}
+              title={category}
+              description={metadata.description}
+              kicker={`${theme.index} · RANKD / ${theme.label}`}
+              footer={`${rankings.length} RANKD${rankings.length === 1 ? "" : "s"} in this edition`}
+              size="masthead"
+            />
 
           </header>
 

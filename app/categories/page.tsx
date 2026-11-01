@@ -233,8 +233,8 @@ export default function CategoriesPage() {
                 md:text-xl
               "
             >
-              Each category is its own edition. Open one and every RANKD inside
-              carries that look.
+              Twenty designed collections. Same RANKD system. A different cover
+              for every debate.
             </p>
 
           </div>

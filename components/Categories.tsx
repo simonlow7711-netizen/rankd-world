@@ -88,7 +88,7 @@ export default function Categories() {
                 md:text-lg
               "
             >
-              Twenty editorial collections. Every RANKD lives in one of them.
+              Twenty designed collections. Every RANKD lives in one of them.
             </p>
 
           </div>
