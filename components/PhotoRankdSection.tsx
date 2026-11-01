@@ -8,6 +8,7 @@ import {
 type PhotoRankdSectionProps = {
   photoRankds: PhotoRankdPreview[]
   showHeading?: boolean
+  showIntro?: boolean
   showIndexLink?: boolean
 }
 
@@ -15,6 +16,7 @@ type PhotoRankdSectionProps = {
 export default function PhotoRankdSection({
   photoRankds,
   showHeading = true,
+  showIntro = false,
   showIndexLink = true
 }: PhotoRankdSectionProps) {
 
@@ -110,6 +112,47 @@ export default function PhotoRankdSection({
                 →
               </span>
             </Link>
+          </div>
+        )
+      }
+
+      {
+        showIntro && (
+          <div
+            className="
+              mb-8
+              text-center
+              md:mb-10
+            "
+          >
+            <p
+              className="
+                text-xs
+                font-black
+                uppercase
+                tracking-[0.3em]
+                text-[#FF6B35]
+              "
+            >
+              Photo RANKD
+            </p>
+
+            <p
+              className="
+                mx-auto
+                mt-3
+                max-w-xl
+                text-base
+                font-medium
+                leading-relaxed
+                text-black/50
+                md:text-lg
+              "
+            >
+              Photo RANKD turns a photograph into a Top 7.
+              Open the image, find the seven things in it,
+              and rank them your way.
+            </p>
           </div>
         )
       }

@@ -115,6 +115,7 @@ export default async function HomePage() {
           <PhotoRankdSection
             photoRankds={photoRankds}
             showHeading={false}
+            showIntro
           />
 
         </div>
