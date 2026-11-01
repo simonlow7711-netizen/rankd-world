@@ -134,11 +134,6 @@ function easeOutCubic(value: number) {
 }
 
 
-function clamp01(value: number) {
-  return Math.min(1, Math.max(0, value))
-}
-
-
 function appear(
   time: number,
   start: number,
@@ -514,7 +509,11 @@ export default function AnimatedRankPreview({
       return
     }
 
-    const context = canvas.getContext("2d", {
+    const previewCanvas = canvas
+    const previewWidth = previewCanvas.width
+    const previewHeight = previewCanvas.height
+
+    const context = previewCanvas.getContext("2d", {
       alpha: false
     })
 
@@ -583,8 +582,8 @@ export default function AnimatedRankPreview({
 
       drawTeaserFrame(
         context,
-        canvas.width,
-        canvas.height,
+        previewWidth,
+        previewHeight,
         time,
         {
           logo,
