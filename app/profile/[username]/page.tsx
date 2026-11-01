@@ -4,6 +4,11 @@ import type {
 
 import ProfileClient from "./ProfileClient"
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
 
 const SITE_URL =
   "https://rankd.world"
@@ -49,13 +54,26 @@ export async function generateMetadata({
       url: profileUrl,
       siteName: "RANKD",
       type: "profile",
-      locale: "en_GB"
+      locale: "en_GB",
+      images: [
+        sharePreviewImage(
+          title,
+          sharePreviewUrl({
+            title: `${username}'s RANKD`
+          })
+        )
+      ]
     },
 
     twitter: {
       card: "summary_large_image",
       title,
-      description
+      description,
+      images: [
+        sharePreviewUrl({
+          title: `${username}'s RANKD`
+        })
+      ]
     },
 
     robots: {

@@ -22,6 +22,11 @@ import GoogleAnalytics from "@/components/GoogleAnalytics"
 
 import GoogleAnalyticsPageView from "@/components/GoogleAnalyticsPageView"
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
 
 const SITE_URL =
   "https://rankd.world"
@@ -162,15 +167,9 @@ export const metadata: Metadata = {
 
     images: [
 
-      {
-
-        url:
-          SITE_LOGO,
-
-        alt:
-          "RANKD — The World's Top 7 Everything"
-
-      }
+      sharePreviewImage(
+        "RANKD — The World's Top 7 Everything"
+      )
 
     ]
 
@@ -190,7 +189,7 @@ export const metadata: Metadata = {
 
     images: [
 
-      SITE_LOGO
+      sharePreviewUrl()
 
     ]
 

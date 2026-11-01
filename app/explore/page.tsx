@@ -31,6 +31,12 @@ import {
 } from "@/utils/supabase"
 
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
+
 const SITE_URL =
   "https://rankd.world"
 
@@ -72,7 +78,15 @@ export const metadata: Metadata = {
       "Discover the world's Top 7 rankings, trending debates and different perspectives on RANKD.",
 
     locale:
-      "en_GB"
+      "en_GB",
+
+    images: [
+
+      sharePreviewImage(
+        "Explore Top 7 Rankings | RANKD"
+      )
+
+    ]
 
   },
 
@@ -85,7 +99,13 @@ export const metadata: Metadata = {
       "Explore Top 7 Rankings | RANKD",
 
     description:
-      "Discover the world's Top 7 rankings, trending debates and different perspectives on RANKD."
+      "Discover the world's Top 7 rankings, trending debates and different perspectives on RANKD.",
+
+    images: [
+
+      sharePreviewUrl()
+
+    ]
 
   },
 

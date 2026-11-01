@@ -20,6 +20,11 @@ import {
 
 import RankClient from "./RankClient"
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
 
 const SITE_URL =
   "https://rankd.world"
@@ -87,7 +92,9 @@ export async function generateMetadata(
 
 
   const ogImageUrl =
-    `${SITE_URL}/api/og?id=${encodeURIComponent(id)}`
+    sharePreviewUrl({
+      id
+    })
 
 
   return {
@@ -126,24 +133,10 @@ export async function generateMetadata(
 
       images: [
 
-        {
-
-          url:
-            ogImageUrl,
-
-          width:
-            1200,
-
-          height:
-            630,
-
-          type:
-            "image/png",
-
-          alt:
-            `${title} | RANKD`
-
-        }
+        sharePreviewImage(
+          `${title} | RANKD`,
+          ogImageUrl
+        )
 
       ]
 

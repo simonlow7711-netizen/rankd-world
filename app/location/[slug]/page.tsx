@@ -21,6 +21,11 @@ import {
   locations
 } from "@/utils/locations"
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
 const SITE_URL =
   "https://rankd.world"
 
@@ -110,7 +115,19 @@ export async function generateMetadata({
       description,
 
       locale:
-        "en_GB"
+        "en_GB",
+
+      images: [
+
+        sharePreviewImage(
+          title,
+          sharePreviewUrl({
+            category: "Travel",
+            title: location.name
+          })
+        )
+
+      ]
 
     },
 
@@ -121,7 +138,16 @@ export async function generateMetadata({
 
       title,
 
-      description
+      description,
+
+      images: [
+
+        sharePreviewUrl({
+          category: "Travel",
+          title: location.name
+        })
+
+      ]
 
     },
 

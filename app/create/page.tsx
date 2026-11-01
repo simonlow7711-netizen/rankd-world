@@ -2,8 +2,10 @@ import { Suspense } from "react"
 
 import CreateClient from "./CreateClient"
 
-
-
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
 
 
 export const metadata = {
@@ -12,7 +14,22 @@ export const metadata = {
     "Create Your Top 7 | RANKD",
 
   description:
-    "Create your own ranking and start the debate."
+    "Create your own ranking and start the debate.",
+
+  openGraph: {
+    images: [
+      sharePreviewImage(
+        "Create Your Top 7 | RANKD"
+      )
+    ]
+  },
+
+  twitter: {
+    card: "summary_large_image" as const,
+    images: [
+      sharePreviewUrl()
+    ]
+  }
 
 }
 

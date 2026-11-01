@@ -4,6 +4,11 @@ import {
   categoryToSlug
 } from "@/utils/categorySlug"
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
 
 type Category = {
   name: string
@@ -141,7 +146,26 @@ export const metadata = {
     "RANKD Categories | Explore Top 7 Rankings",
 
   description:
-    "Explore RANKD by category and discover the Top 7 opinions shaping conversations."
+    "Explore RANKD by category and discover the Top 7 opinions shaping conversations.",
+
+  openGraph: {
+    title:
+      "RANKD Categories | Explore Top 7 Rankings",
+    description:
+      "Explore RANKD by category and discover the Top 7 opinions shaping conversations.",
+    images: [
+      sharePreviewImage(
+        "RANKD Categories"
+      )
+    ]
+  },
+
+  twitter: {
+    card: "summary_large_image" as const,
+    images: [
+      sharePreviewUrl()
+    ]
+  }
 }
 
 

@@ -3,7 +3,7 @@ import {
 } from "@/utils/categorySlug"
 
 
-export function getEditionPhoto(
+export function editionPhotoFilename(
   category?: string | null
 ) {
 
@@ -12,6 +12,22 @@ export function getEditionPhoto(
       category || "General"
     )
 
-  return `/editions/${slug}.jpg`
+  if (
+    slug ===
+    "health-and-fitness"
+  ) {
+    return "health-fitness.jpg"
+  }
+
+  return `${slug}.jpg`
+
+}
+
+
+export function getEditionPhoto(
+  category?: string | null
+) {
+
+  return `/editions/${editionPhotoFilename(category)}`
 
 }

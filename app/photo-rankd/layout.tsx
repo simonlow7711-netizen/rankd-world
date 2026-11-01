@@ -3,6 +3,12 @@ import type {
 } from "next"
 
 
+import {
+  sharePreviewImage,
+  sharePreviewUrl
+} from "@/utils/ogImage"
+
+
 const SITE_URL =
   "https://rankd.world"
 
@@ -40,7 +46,15 @@ export const metadata: Metadata = {
       "Photo RANKD turns photographs into Top 7 choices. Explore an image, discover the seven things hidden within it, and make your own order.",
 
     locale:
-      "en_GB"
+      "en_GB",
+
+    images: [
+
+      sharePreviewImage(
+        "Photo RANKD | See it. Rank it differently."
+      )
+
+    ]
 
   },
 
@@ -53,7 +67,13 @@ export const metadata: Metadata = {
       "Photo RANKD | See it. Rank it differently. | RANKD",
 
     description:
-      "Photo RANKD turns photographs into Top 7 choices. Explore an image, discover the seven things hidden within it, and make your own order."
+      "Photo RANKD turns photographs into Top 7 choices. Explore an image, discover the seven things hidden within it, and make your own order.",
+
+    images: [
+
+      sharePreviewUrl()
+
+    ]
 
   },
 
