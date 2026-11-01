@@ -52,6 +52,8 @@ export default function CreatePage(){
           flex
           items-center
           justify-center
+          px-6
+          text-center
           font-black
           text-2xl
         ">

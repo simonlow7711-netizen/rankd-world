@@ -69,7 +69,45 @@ import {
   isHttpUrl
 } from "@/utils/linkText"
 
+import EditionChrome from "@/components/EditionChrome"
+
+import EditionHeader, {
+  EditionMark,
+  EditionTitle
+} from "@/components/EditionHeader"
+
 import EntryEmbeds from "@/components/EntryEmbeds"
+
+import {
+  getCategoryTheme
+} from "@/utils/categoryTheme"
+
+
+const fieldClass =
+  `
+    w-full
+    rounded-2xl
+    border
+    border-black
+    bg-transparent
+    px-4
+    py-4
+    outline-none
+    placeholder:text-black/25
+    sm:px-5
+  `
+
+const labelClass =
+  `
+    mb-2
+    block
+    text-center
+    text-[10px]
+    font-black
+    uppercase
+    tracking-[0.18em]
+    text-black/45
+  `
 
 
 export default function CreateClient(){
@@ -1175,6 +1213,19 @@ export default function CreateClient(){
     )
 
 
+  const editionCategory =
+    isValidRankingCategory(
+      category
+    )
+      ? category
+      : "General"
+
+  const theme =
+    getCategoryTheme(
+      editionCategory
+    )
+
+
   const formatCountry =
     (
       country:string
@@ -1228,7 +1279,7 @@ export default function CreateClient(){
           className="
             mx-auto
             w-full
-            max-w-4xl
+            max-w-5xl
             px-5
             py-10
             sm:px-8
@@ -1237,105 +1288,149 @@ export default function CreateClient(){
           "
         >
 
-          <header
+          <section
             className="
-              mb-10
-              max-w-2xl
+              rankd-edition
+              relative
+              mb-8
+              overflow-hidden
+              rounded-[28px]
+              border
+              px-6
+              pb-10
+              pt-10
+              text-center
+              md:px-12
+              md:pb-14
+              md:pt-12
             "
+            style={{
+              backgroundColor:
+                theme.paper,
+              borderColor:
+                "#111111"
+            }}
           >
+
+            <EditionChrome
+              theme={theme}
+            />
 
             <div
               className="
-                mb-5
-                flex
-                items-center
-                gap-3
+                relative
+                z-10
               "
             >
 
-              <span
-                className="
-                  rounded-full
-                  bg-[#FF6B35]/10
-                  px-3
-                  py-1.5
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.18em]
-                  text-[#FF6B35]
-                "
+              <EditionHeader
+                theme={theme}
+                category={editionCategory}
+                bleed="page"
               >
-                {isRerank
-                  ? "RE-RANKD"
-                  : "CREATE"
-                }
-              </span>
 
-              <span
+                <p
+                  className="
+                    text-[11px]
+                    font-black
+                    uppercase
+                    tracking-[0.22em]
+                  "
+                  style={{
+                    color:
+                      theme.accent
+                  }}
+                >
+                  <EditionMark
+                    theme={theme}
+                  >
+                    {
+                      isRerank
+                        ? "RE-RANKD / LINKS"
+                        : "CREATE / LINKS"
+                    }
+                  </EditionMark>
+                </p>
+
+                <h1
+                  className={`
+                    mx-auto
+                    mt-5
+                    max-w-3xl
+                    text-4xl
+                    font-black
+                    text-balance
+                    hyphens-none
+                    md:text-6xl
+                    ${theme.titleClass}
+                  `}
+                >
+                  <EditionTitle
+                    theme={theme}
+                  >
+                    {
+                      isRerank
+                        ? "Edit your links"
+                        : "Add links?"
+                    }
+                  </EditionTitle>
+                </h1>
+
+              </EditionHeader>
+
+              <p
                 className="
-                  text-xs
-                  font-bold
-                  text-black/30
+                  relative
+                  z-10
+                  mx-auto
+                  -mt-12
+                  max-w-xl
+                  text-base
+                  font-medium
+                  leading-7
+                  text-black/55
+                  sm:text-lg
                 "
               >
-                Step 2 of 2
-              </span>
+                {
+                  isRerank
+                    ? "Keep, change or remove the links attached to each choice."
+                    : "Make your Top 7 more useful by linking each choice to where people can find it."
+                }
+              </p>
 
             </div>
 
-
-            <h1
-              className="
-                text-5xl
-                font-black
-                leading-[0.9]
-                tracking-[-0.055em]
-                sm:text-7xl
-              "
-            >
-              {isRerank
-                ? "Edit your links."
-                : "Add links?"
-              }
-            </h1>
-
-
-            <p
-              className="
-                mt-5
-                max-w-xl
-                text-base
-                font-medium
-                leading-7
-                text-black/55
-                sm:text-lg
-              "
-            >
-              {isRerank
-                ? "Keep, change or remove the links attached to each choice."
-                : "Make your Top 7 more useful by linking each choice to where people can find it."
-              }
-            </p>
-
-          </header>
+          </section>
 
 
           <section
             className="
+              rankd-edition
+              relative
               overflow-hidden
-              rounded-3xl
+              rounded-[28px]
               border
-              border-black/[0.08]
-              bg-[#F7F4EE]
-              shadow-[0_18px_50px_rgba(0,0,0,0.05)]
+              text-center
             "
+            style={{
+              backgroundColor:
+                theme.paper,
+              borderColor:
+                "#111111"
+            }}
           >
+
+            <EditionChrome
+              theme={theme}
+            />
 
             <div
               className="
+                relative
+                z-10
                 border-b
-                border-black/[0.07]
+                border-black
                 px-5
                 py-5
                 sm:px-7
@@ -1393,7 +1488,7 @@ export default function CreateClient(){
                       key={item.id}
                       className="
                         border-b
-                        border-black/[0.07]
+                        border-black
                         px-5
                         py-5
                         last:border-b-0
@@ -1407,6 +1502,7 @@ export default function CreateClient(){
                           flex
                           items-start
                           gap-4
+                          text-left
                         "
                       >
 
@@ -1419,11 +1515,16 @@ export default function CreateClient(){
                             items-center
                             justify-center
                             rounded-full
-                            bg-[#FF6B35]/10
+                            border
+                            border-black
+                            bg-transparent
                             text-[11px]
                             font-black
-                            text-[#FF6B35]
                           "
+                          style={{
+                            color:
+                              theme.accent
+                          }}
                         >
                           {index + 1}
                         </span>
@@ -1463,17 +1564,12 @@ export default function CreateClient(){
                                 mt-3
                                 rounded-full
                                 border
-                                border-black/[0.10]
-                                bg-[#F7F4EE]
+                                border-black
+                                bg-transparent
                                 px-4
                                 py-2
                                 text-xs
                                 font-black
-                                text-black/55
-                                transition
-                                hover:border-[#FF6B35]/40
-                                hover:bg-[#F7F4EE]
-                                hover:text-[#FF6B35]
                               "
                             >
                               + Add link
@@ -1537,14 +1633,13 @@ export default function CreateClient(){
                                   }
                                   className="
                                     rounded-full
+                                    border
+                                    border-black
+                                    bg-transparent
                                     px-3
                                     py-2
                                     text-xs
                                     font-black
-                                    text-black/45
-                                    transition
-                                    hover:bg-black/[0.04]
-                                    hover:text-black
                                   "
                                 >
                                   Edit
@@ -1569,14 +1664,13 @@ export default function CreateClient(){
                                   }
                                   className="
                                     rounded-full
+                                    border
+                                    border-black
+                                    bg-transparent
                                     px-3
                                     py-2
                                     text-xs
                                     font-black
-                                    text-black/35
-                                    transition
-                                    hover:bg-red-50
-                                    hover:text-red-600
                                   "
                                 >
                                   Remove
@@ -1616,19 +1710,14 @@ export default function CreateClient(){
                                   w-full
                                   rounded-xl
                                   border
-                                  border-black/[0.08]
-                                  bg-[#F7F4EE]/70
+                                  border-black
+                                  bg-transparent
                                   px-4
                                   py-3
                                   text-sm
                                   font-medium
                                   outline-none
-                                  transition
                                   placeholder:text-black/25
-                                  focus:border-[#FF6B35]/50
-                                  focus:bg-[#F7F4EE]
-                                  focus:ring-4
-                                  focus:ring-[#FF6B35]/[0.06]
                                 "
                               />
 
@@ -1665,14 +1754,13 @@ export default function CreateClient(){
                                   className="
                                     shrink-0
                                     rounded-full
+                                    border
+                                    border-black
+                                    bg-transparent
                                     px-3
                                     py-1.5
                                     text-xs
                                     font-black
-                                    text-black/40
-                                    transition
-                                    hover:bg-black/[0.04]
-                                    hover:text-black
                                   "
                                 >
                                   Done
@@ -1705,15 +1793,14 @@ export default function CreateClient(){
             <div
               className="
                 mt-6
-                rounded-2xl
+                rounded-[28px]
                 border
-                border-red-200
-                bg-red-50
+                border-black
                 px-5
                 py-4
+                text-center
                 text-sm
                 font-medium
-                text-red-700
               "
             >
               {error}
@@ -1726,11 +1813,13 @@ export default function CreateClient(){
             className="
               mt-8
               flex
-              flex-col-reverse
+              flex-col
+              items-center
+              justify-center
               gap-3
+              text-center
               sm:flex-row
-              sm:items-center
-              sm:justify-between
+              sm:flex-wrap
             "
           >
 
@@ -1761,14 +1850,13 @@ export default function CreateClient(){
               }
               className="
                 rounded-full
+                border
+                border-black
+                bg-transparent
                 px-5
                 py-3
                 text-sm
                 font-black
-                text-black/45
-                transition
-                hover:bg-black/[0.04]
-                hover:text-black
                 disabled:cursor-not-allowed
                 disabled:opacity-50
               "
@@ -1776,15 +1864,6 @@ export default function CreateClient(){
               Back to ranking
             </button>
 
-
-            <div
-              className="
-                flex
-                flex-col
-                gap-3
-                sm:flex-row
-              "
-            >
 
               <button
                 type="button"
@@ -1797,16 +1876,12 @@ export default function CreateClient(){
                 className="
                   rounded-full
                   border
-                  border-black/[0.12]
-                  bg-[#F7F4EE]
+                  border-black
+                  bg-transparent
                   px-6
                   py-3.5
                   text-sm
                   font-black
-                  text-black
-                  transition
-                  hover:border-black
-                  hover:bg-[#F7F4EE]
                   disabled:cursor-not-allowed
                   disabled:opacity-50
                 "
@@ -1828,16 +1903,12 @@ export default function CreateClient(){
                 }
                 className="
                   rounded-full
-                  bg-[#FF6B35]
+                  bg-black
                   px-7
                   py-3.5
                   text-sm
                   font-black
                   text-white
-                  shadow-[0_8px_24px_rgba(255,107,53,0.18)]
-                  transition
-                  hover:bg-black
-                  hover:shadow-none
                   disabled:cursor-not-allowed
                   disabled:opacity-50
                 "
@@ -1849,8 +1920,6 @@ export default function CreateClient(){
                     : "Publish RANKD"
                 }
               </button>
-
-            </div>
 
           </div>
 
@@ -1899,141 +1968,163 @@ export default function CreateClient(){
         "
       >
 
-        <header
+        <section
           className="
-            mb-12
-            max-w-3xl
+            rankd-edition
+            relative
+            mb-8
+            overflow-hidden
+            rounded-[28px]
+            border
+            px-6
+            pb-10
+            pt-10
+            text-center
+            md:px-12
+            md:pb-14
+            md:pt-12
           "
+          style={{
+            backgroundColor:
+              theme.paper,
+            borderColor:
+              "#111111"
+          }}
         >
+
+          <EditionChrome
+            theme={theme}
+          />
 
           <div
             className="
-              mb-5
-              flex
-              items-center
-              gap-3
+              relative
+              z-10
             "
           >
 
-            <span
+            <EditionHeader
+              theme={theme}
+              category={editionCategory}
+              bleed="page"
+            >
+
+              <p
+                className="
+                  text-[11px]
+                  font-black
+                  uppercase
+                  tracking-[0.22em]
+                "
+                style={{
+                  color:
+                    theme.accent
+                }}
+              >
+                <EditionMark
+                  theme={theme}
+                >
+                  {
+                    isRerank
+                      ? "RE-RANKD"
+                      : "CREATE"
+                  }
+                </EditionMark>
+              </p>
+
+              <h1
+                className={`
+                  mx-auto
+                  mt-5
+                  max-w-3xl
+                  text-4xl
+                  font-black
+                  text-balance
+                  hyphens-none
+                  md:text-6xl
+                  ${theme.titleClass}
+                `}
+              >
+                <EditionTitle
+                  theme={theme}
+                >
+                  {
+                    isRerank
+                      ? "Rank it differently"
+                      : "Make your choices"
+                  }
+                </EditionTitle>
+              </h1>
+
+            </EditionHeader>
+
+            <p
               className="
-                rounded-full
-                bg-[#FF6B35]/10
-                px-3
-                py-1.5
-                text-[10px]
-                font-black
-                uppercase
-                tracking-[0.18em]
-                text-[#FF6B35]
+                relative
+                z-10
+                mx-auto
+                -mt-12
+                max-w-xl
+                text-base
+                font-medium
+                leading-7
+                text-black/50
+                sm:text-lg
               "
             >
-              {isRerank
-                ? "RE-RANKD"
-                : "CREATE"
+              {
+                isRerank
+                  ? "Start with the existing choices. Change the order to make it yours."
+                  : "Seven choices. One order. Your opinion."
               }
-            </span>
-
-            {isRerank && (
-
-              <span
-                className="
-                  text-xs
-                  font-bold
-                  text-black/30
-                "
-              >
-                Change the order. Make it yours.
-              </span>
-
-            )}
+            </p>
 
           </div>
 
-
-          <h1
-            className="
-              max-w-3xl
-              text-5xl
-              font-black
-              leading-[0.9]
-              tracking-[-0.055em]
-              sm:text-7xl
-            "
-          >
-            {isRerank
-              ? "Rank it differently."
-              : "Make your choices."
-            }
-          </h1>
-
-
-          <p
-            className="
-              mt-5
-              max-w-xl
-              text-base
-              font-medium
-              leading-7
-              text-black/50
-              sm:text-lg
-            "
-          >
-            {isRerank
-              ? "Start with the existing choices. Change the order to make it yours."
-              : "Seven choices. One order. Your opinion."
-            }
-          </p>
-
-        </header>
+        </section>
 
 
         {isRerank && (
 
           <div
             className="
+              rankd-edition
+              relative
               mb-8
-              flex
-              items-center
-              gap-4
-              rounded-2xl
+              overflow-hidden
+              rounded-[28px]
               border
-              border-black/[0.07]
-              bg-[#F7F4EE]
               px-5
-              py-4
-              shadow-[0_8px_30px_rgba(0,0,0,0.03)]
+              py-5
+              text-center
               sm:px-6
             "
+            style={{
+              backgroundColor:
+                theme.paper,
+              borderColor:
+                "#111111"
+            }}
           >
 
-            <span
+            <EditionChrome
+              theme={theme}
+            />
+
+            <div
               className="
-                flex
-                h-9
-                w-9
-                shrink-0
-                items-center
-                justify-center
-                rounded-full
-                bg-[#FF6B35]/10
-                text-xs
-                font-black
-                text-[#FF6B35]
+                relative
+                z-10
               "
             >
-              ↻
-            </span>
-
-            <div>
 
               <p
                 className="
                   text-[10px]
                   font-black
                   uppercase
-                  tracking-[0.15em]
-                  text-black/35
+                  tracking-[0.18em]
+                  text-black/45
                 "
               >
                 You are re-ranking
@@ -2041,10 +2132,12 @@ export default function CreateClient(){
 
               <p
                 className="
-                  mt-0.5
+                  mt-2
                   text-base
                   font-black
                   leading-tight
+                  text-balance
+                  hyphens-none
                 "
               >
                 {stripRankingPrefix(
@@ -2061,18 +2154,31 @@ export default function CreateClient(){
 
         <section
           className="
-            rounded-3xl
+            rankd-edition
+            relative
+            overflow-hidden
+            rounded-[28px]
             border
-            border-black/[0.08]
-            bg-[#F7F4EE]
             p-5
-            shadow-[0_18px_50px_rgba(0,0,0,0.04)]
+            text-center
             sm:p-8
           "
+          style={{
+            backgroundColor:
+              theme.paper,
+            borderColor:
+              "#111111"
+          }}
         >
+
+          <EditionChrome
+            theme={theme}
+          />
 
           <div
             className="
+              relative
+              z-10
               grid
               gap-7
               sm:grid-cols-2
@@ -2087,15 +2193,7 @@ export default function CreateClient(){
 
               <label
                 htmlFor="title"
-                className="
-                  mb-2
-                  block
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.15em]
-                  text-black/45
-                "
+                className={labelClass}
               >
                 Title
               </label>
@@ -2110,27 +2208,14 @@ export default function CreateClient(){
                     )
                 }
                 placeholder="What are you ranking?"
-                className="
-                  w-full
-                  rounded-2xl
-                  border
-                  border-black/[0.08]
-                  bg-[#F7F4EE]/65
-                  px-4
-                  py-4
+                className={`
+                  ${fieldClass}
+                  text-center
                   text-2xl
                   font-black
-                  outline-none
-                  transition
-                  placeholder:text-black/20
-                  focus:border-[#FF6B35]/50
-                  focus:bg-[#F7F4EE]
-                  focus:ring-4
-                  focus:ring-[#FF6B35]/[0.06]
-                  sm:px-5
                   sm:py-5
                   sm:text-3xl
-                "
+                `}
               />
 
             </div>
@@ -2140,15 +2225,7 @@ export default function CreateClient(){
 
               <label
                 htmlFor="category"
-                className="
-                  mb-2
-                  block
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.15em]
-                  text-black/45
-                "
+                className={labelClass}
               >
                 Category
               </label>
@@ -2162,24 +2239,13 @@ export default function CreateClient(){
                       event.target.value
                     )
                 }
-                className="
-                  w-full
+                className={`
+                  ${fieldClass}
                   appearance-none
-                  rounded-2xl
-                  border
-                  border-black/[0.08]
-                  bg-[#F7F4EE]/65
-                  px-4
-                  py-4
+                  text-center
                   text-sm
                   font-bold
-                  outline-none
-                  transition
-                  focus:border-[#FF6B35]/50
-                  focus:bg-[#F7F4EE]
-                  focus:ring-4
-                  focus:ring-[#FF6B35]/[0.06]
-                "
+                `}
               >
 
                 <option value="">
@@ -2206,15 +2272,7 @@ export default function CreateClient(){
 
               <label
                 htmlFor="location"
-                className="
-                  mb-2
-                  block
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.15em]
-                  text-black/45
-                "
+                className={labelClass}
               >
                 Location
               </label>
@@ -2228,24 +2286,13 @@ export default function CreateClient(){
                       event.target.value
                     )
                 }
-                className="
-                  w-full
+                className={`
+                  ${fieldClass}
                   appearance-none
-                  rounded-2xl
-                  border
-                  border-black/[0.08]
-                  bg-[#F7F4EE]/65
-                  px-4
-                  py-4
+                  text-center
                   text-sm
                   font-bold
-                  outline-none
-                  transition
-                  focus:border-[#FF6B35]/50
-                  focus:bg-[#F7F4EE]
-                  focus:ring-4
-                  focus:ring-[#FF6B35]/[0.06]
-                "
+                `}
               >
 
                 <option value="">
@@ -2303,15 +2350,7 @@ export default function CreateClient(){
 
               <label
                 htmlFor="description"
-                className="
-                  mb-2
-                  block
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.15em]
-                  text-black/45
-                "
+                className={labelClass}
               >
                 Description
               </label>
@@ -2327,27 +2366,14 @@ export default function CreateClient(){
                 }
                 rows={3}
                 placeholder="Why did you make this RANKD? Links in this text will open in a new tab."
-                className="
-                  w-full
+                className={`
+                  ${fieldClass}
                   resize-none
-                  rounded-2xl
-                  border
-                  border-black/[0.08]
-                  bg-[#F7F4EE]/65
-                  px-4
-                  py-4
+                  text-center
                   text-sm
                   font-medium
                   leading-6
-                  outline-none
-                  transition
-                  placeholder:text-black/20
-                  focus:border-[#FF6B35]/50
-                  focus:bg-[#F7F4EE]
-                  focus:ring-4
-                  focus:ring-[#FF6B35]/[0.06]
-                  sm:px-5
-                "
+                `}
               />
 
             </div>
@@ -2361,15 +2387,7 @@ export default function CreateClient(){
 
               <label
                 htmlFor="hero-media"
-                className="
-                  mb-2
-                  block
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.15em]
-                  text-black/45
-                "
+                className={labelClass}
               >
                 Hero media (optional)
               </label>
@@ -2385,25 +2403,12 @@ export default function CreateClient(){
                     )
                 }
                 placeholder="YouTube, Spotify, Instagram, Amazon, Maps or any link"
-                className="
-                  w-full
-                  rounded-2xl
-                  border
-                  border-black/[0.08]
-                  bg-[#F7F4EE]/65
-                  px-4
-                  py-4
+                className={`
+                  ${fieldClass}
+                  text-center
                   text-sm
                   font-medium
-                  outline-none
-                  transition
-                  placeholder:text-black/20
-                  focus:border-[#FF6B35]/50
-                  focus:bg-[#F7F4EE]
-                  focus:ring-4
-                  focus:ring-[#FF6B35]/[0.06]
-                  sm:px-5
-                "
+                `}
               />
 
               {
@@ -2430,101 +2435,98 @@ export default function CreateClient(){
 
         <section
           className="
+            rankd-edition
+            relative
             mt-8
+            overflow-hidden
+            rounded-[28px]
+            border
+            p-5
+            text-center
+            sm:p-8
           "
+          style={{
+            backgroundColor:
+              theme.paper,
+            borderColor:
+              "#111111"
+          }}
         >
+
+          <EditionChrome
+            theme={theme}
+          />
 
           <div
             className="
-              mb-5
-              flex
-              items-end
-              justify-between
-              gap-4
+              relative
+              z-10
             "
           >
 
-            <div>
-
-              <p
-                className="
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.15em]
-                  text-[#FF6B35]
-                "
-              >
-                The important bit
-              </p>
-
-              <h2
-                className="
-                  mt-1
-                  text-2xl
-                  font-black
-                  tracking-tight
-                "
-              >
-                Your Top 7
-              </h2>
-
-              <p
-                className="
-                  mt-1
-                  text-sm
-                  font-medium
-                  text-black/45
-                "
-              >
-                Put them in the order you believe.
-              </p>
-
-            </div>
-
-
-            <span
+            <p
               className="
-                hidden
-                rounded-full
-                bg-black/[0.04]
-                px-3
-                py-1.5
                 text-[10px]
                 font-black
                 uppercase
-                tracking-[0.12em]
-                text-black/35
-                sm:block
+                tracking-[0.18em]
+              "
+              style={{
+                color:
+                  theme.accent
+              }}
+            >
+              The important bit
+            </p>
+
+            <h2
+              className="
+                mt-2
+                text-2xl
+                font-black
+                tracking-tight
               "
             >
-              7 choices
-            </span>
+              Your Top 7
+            </h2>
 
-          </div>
+            <p
+              className="
+                mt-1
+                text-sm
+                font-medium
+                text-black/45
+              "
+            >
+              Put them in the order you believe.
+            </p>
 
+            <div
+              className="
+                mt-6
+                overflow-hidden
+                rounded-[28px]
+                border
+                border-black
+                p-3
+                text-left
+                sm:p-4
+              "
+            >
 
-          <div
-            className="
-              overflow-hidden
-              rounded-3xl
-              border
-              border-black/[0.08]
-              bg-[#F7F4EE]
-              p-3
-              shadow-[0_18px_50px_rgba(0,0,0,0.05)]
-              sm:p-4
-            "
-          >
+              <SortableRankingList
+                items={
+                  items
+                }
+                setItems={
+                  setItems
+                }
+                accentColor={
+                  theme.accent
+                }
+              />
 
-            <SortableRankingList
-              items={
-                items
-              }
-              setItems={
-                setItems
-              }
-            />
+            </div>
 
           </div>
 
@@ -2536,15 +2538,14 @@ export default function CreateClient(){
           <div
             className="
               mt-6
-              rounded-2xl
+              rounded-[28px]
               border
-              border-red-200
-              bg-red-50
+              border-black
               px-5
               py-4
+              text-center
               text-sm
               font-medium
-              text-red-700
             "
           >
             {error}
@@ -2555,51 +2556,54 @@ export default function CreateClient(){
 
         <div
           className="
+            rankd-edition
+            relative
             mt-8
-            rounded-3xl
+            overflow-hidden
+            rounded-[28px]
             border
-            border-black/[0.07]
-            bg-[#F7F4EE]
-            p-4
-            sm:p-5
+            p-6
+            text-center
+            sm:p-8
           "
+          style={{
+            backgroundColor:
+              theme.paper,
+            borderColor:
+              "#111111"
+          }}
         >
+
+          <EditionChrome
+            theme={theme}
+          />
 
           <div
             className="
-              flex
-              flex-col
-              gap-4
-              sm:flex-row
-              sm:items-center
-              sm:justify-between
+              relative
+              z-10
             "
           >
 
-            <div>
+            <p
+              className="
+                text-sm
+                font-black
+              "
+            >
+              Ready?
+            </p>
 
-              <p
-                className="
-                  text-sm
-                  font-black
-                "
-              >
-                Ready?
-              </p>
-
-              <p
-                className="
-                  mt-1
-                  text-xs
-                  font-medium
-                  text-black/40
-                "
-              >
-                You can add links to your choices on the next step.
-              </p>
-
-            </div>
-
+            <p
+              className="
+                mt-1
+                text-xs
+                font-medium
+                text-black/40
+              "
+            >
+              You can add links to your choices on the next step.
+            </p>
 
             <button
               type="button"
@@ -2610,20 +2614,16 @@ export default function CreateClient(){
                 saving
               }
               className="
+                mt-5
                 rounded-full
-                bg-[#FF6B35]
+                bg-black
                 px-7
                 py-3.5
                 text-sm
                 font-black
                 text-white
-                shadow-[0_8px_24px_rgba(255,107,53,0.16)]
-                transition
-                hover:bg-black
-                hover:shadow-none
                 disabled:cursor-not-allowed
                 disabled:opacity-50
-                sm:shrink-0
               "
             >
               Continue · Add links

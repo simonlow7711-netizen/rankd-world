@@ -43,6 +43,9 @@ type Props = {
       >
     >
 
+  accentColor?:
+    string
+
 }
 
 
@@ -51,6 +54,8 @@ function SortableItem({
   item,
 
   index,
+
+  accentColor,
 
   updateRankingItem,
 
@@ -63,6 +68,9 @@ function SortableItem({
 
   index:
     number
+
+  accentColor:
+    string
 
   updateRankingItem:
     (
@@ -118,7 +126,8 @@ function SortableItem({
         min-w-0
         items-center
         border-b
-        border-black/10
+        border-black
+        last:border-b-0
         py-3
         sm:py-4
       "
@@ -175,10 +184,13 @@ function SortableItem({
           text-2xl
           font-black
           leading-none
-          text-[#FF6B35]
           sm:w-16
           sm:text-3xl
         "
+        style={{
+          color:
+            accentColor
+        }}
       >
         {index + 1}
       </div>
@@ -273,7 +285,9 @@ export default function SortableRankingList({
 
   items,
 
-  setItems
+  setItems,
+
+  accentColor = "#FF6B35"
 
 }:Props){
 
@@ -429,7 +443,7 @@ export default function SortableRankingList({
       <div
         className="
           divide-y
-          divide-black/10
+          divide-black
         "
       >
 
@@ -501,6 +515,8 @@ export default function SortableRankingList({
           flex
           items-center
           justify-between
+          gap-4
+          text-center
           text-xs
           font-bold
           text-black/40
@@ -559,6 +575,9 @@ export default function SortableRankingList({
                   }
                   index={
                     index
+                  }
+                  accentColor={
+                    accentColor
                   }
                   updateRankingItem={
                     updateRankingItem
