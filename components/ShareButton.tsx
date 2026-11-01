@@ -71,11 +71,34 @@ function copyText(
 
 }
 
+function isDesktopShare() {
+  if (typeof window === "undefined") {
+    return true
+  }
+
+  const finePointer =
+    window.matchMedia(
+      "(hover: hover) and (pointer: fine)"
+    ).matches
+
+  const mobileAgent =
+    /Android|iPhone|iPod/i.test(
+      navigator.userAgent
+    )
+
+  return finePointer && !mobileAgent
+}
+
 function canUseNativeShare() {
   return (
     typeof navigator !== "undefined" &&
-    typeof navigator.share === "function"
+    typeof navigator.share === "function" &&
+    !isDesktopShare()
   )
+}
+
+function canUseSmsShare() {
+  return !isDesktopShare()
 }
 
 export default function ShareButton({
@@ -412,12 +435,16 @@ export default function ShareButton({
             </div>
 
             <div
-              className="
+              className={`
                 mt-3
                 grid
-                grid-cols-4
                 gap-2
-              "
+                ${
+                  canUseSmsShare()
+                    ? "grid-cols-5"
+                    : "grid-cols-4"
+                }
+              `}
             >
               <button
                 type="button"
@@ -436,11 +463,37 @@ export default function ShareButton({
                   rounded-2xl
                   border
                   border-black/10
-                  text-sm
+                  px-2
+                  text-xs
                   font-black
                 "
               >
-                Wa
+                WhatsApp
+              </button>
+
+              <button
+                type="button"
+                aria-label="Share on Facebook"
+                onClick={() =>
+                  openChannel(
+                    "facebook",
+                    `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
+                  )
+                }
+                className="
+                  flex
+                  h-12
+                  items-center
+                  justify-center
+                  rounded-2xl
+                  border
+                  border-black/10
+                  px-2
+                  text-xs
+                  font-black
+                "
+              >
+                Facebook
               </button>
 
               <button
@@ -467,27 +520,31 @@ export default function ShareButton({
                 𝕏
               </button>
 
-              <button
-                type="button"
-                aria-label="Share by message"
-                onClick={() =>
-                  openChannel(
-                    "messages",
-                    `sms:?&body=${encodedText}%20${encodedUrl}`
-                  )
-                }
-                className="
-                  flex
-                  h-12
-                  items-center
-                  justify-center
-                  rounded-2xl
-                  border
-                  border-black/10
-                "
-              >
-                <MessageCircle size={16} />
-              </button>
+              {
+                canUseSmsShare() && (
+                  <button
+                    type="button"
+                    aria-label="Share by message"
+                    onClick={() =>
+                      openChannel(
+                        "messages",
+                        `sms:?&body=${encodedText}%20${encodedUrl}`
+                      )
+                    }
+                    className="
+                      flex
+                      h-12
+                      items-center
+                      justify-center
+                      rounded-2xl
+                      border
+                      border-black/10
+                    "
+                  >
+                    <MessageCircle size={16} />
+                  </button>
+                )
+              }
 
               <button
                 type="button"
