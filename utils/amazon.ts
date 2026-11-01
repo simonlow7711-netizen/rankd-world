@@ -1,5 +1,31 @@
 const AMAZON_HOST =
-  /^(www\.)?(amazon\.[a-z.]+|amzn\.to|a\.co)$/i
+  /^(?:www\.|m\.|smile\.)?(?:amazon\.[a-z.]+|amzn\.to|amzn\.eu|a\.co)$/i
+
+const ASIN_PATH =
+  /\/(?:dp|gp\/product|gp\/aw\/d|gp\/offer-listing|exec\/obidos\/(?:ASIN|asin)|product|d)\/([A-Z0-9]{10})(?:[/?]|$)/i
+
+const ASIN_VALUE =
+  /^[A-Z0-9]{10}$/
+
+
+export type AmazonPreview = {
+  url: string
+  asin: string | null
+  title: string | null
+  image: string | null
+}
+
+
+export function isAmazonHost(
+  hostname: string
+) {
+
+  return AMAZON_HOST.test(
+    hostname.toLowerCase()
+  )
+
+}
+
 
 export function getAmazonUrl(
   url?: string | null
@@ -10,9 +36,10 @@ export function getAmazonUrl(
   }
 
   try {
-    const parsed = new URL(url)
+    const parsed =
+      new URL(url)
 
-    if (!AMAZON_HOST.test(parsed.hostname)) {
+    if (!isAmazonHost(parsed.hostname)) {
       return null
     }
 
@@ -24,26 +51,64 @@ export function getAmazonUrl(
 }
 
 
-export function getAmazonSearchQuery(
-  url: string,
-  fallbackName: string
-): string {
+export function getAmazonAsin(
+  url?: string | null
+): string | null {
 
-  try {
-    const parsed = new URL(url)
-    const fromQuery =
-      parsed.searchParams.get("k") ||
-      parsed.searchParams.get("keywords")
+  const amazonUrl =
+    getAmazonUrl(url)
 
-    if (fromQuery) {
-      return fromQuery.replace(/\+/g, " ").trim()
-    }
-  } catch {
-    // Use the ranking entry name.
+  if (!amazonUrl) {
+    return null
   }
 
-  return fallbackName
-    .replace(/\bbook\b/gi, "")
-    .trim() || fallbackName
+  try {
+    const parsed =
+      new URL(amazonUrl)
+
+    const fromQuery =
+      parsed.searchParams.get("asin") ||
+      parsed.searchParams.get("ASIN")
+
+    if (
+      fromQuery &&
+      ASIN_VALUE.test(fromQuery)
+    ) {
+      return fromQuery.toUpperCase()
+    }
+
+    const fromPath =
+      amazonUrl.match(ASIN_PATH)?.[1]
+
+    if (fromPath) {
+      return fromPath.toUpperCase()
+    }
+  } catch {
+    return null
+  }
+
+  return null
+
+}
+
+
+export function getAmazonImageUrl(
+  asin: string
+) {
+
+  return `https://m.media-amazon.com/images/P/${asin}.01._SCLZZZZZZZ_.jpg`
+
+}
+
+
+export function getAmazonImageFallbacks(
+  asin: string
+) {
+
+  return [
+    getAmazonImageUrl(asin),
+    `https://images-na.ssl-images-amazon.com/images/P/${asin}.01._SCLZZZZZZZ_.jpg`,
+    `https://images-eu.ssl-images-amazon.com/images/P/${asin}.01._SCLZZZZZZZ_.jpg`
+  ]
 
 }

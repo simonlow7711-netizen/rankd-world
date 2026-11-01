@@ -6,8 +6,11 @@ import {
 } from "react"
 
 import {
-  getAmazonSearchQuery,
-  getAmazonUrl
+  getAmazonAsin,
+  getAmazonImageFallbacks,
+  getAmazonImageUrl,
+  getAmazonUrl,
+  type AmazonPreview
 } from "@/utils/amazon"
 
 type AmazonTreatmentProps = {
@@ -23,70 +26,144 @@ export default function AmazonTreatment({
   const amazonUrl =
     getAmazonUrl(url)
 
-  const [coverId, setCoverId] =
-    useState<number | null>(null)
+  const initialAsin =
+    getAmazonAsin(amazonUrl)
 
-  const [coverFailed, setCoverFailed] =
+  const [
+    preview,
+    setPreview
+  ] =
+    useState<AmazonPreview | null>(
+      amazonUrl
+        ? {
+            url: amazonUrl,
+            asin: initialAsin,
+            title: null,
+            image:
+              initialAsin
+                ? getAmazonImageUrl(initialAsin)
+                : null
+          }
+        : null
+    )
+
+  const [
+    imageFailed,
+    setImageFailed
+  ] =
     useState(false)
+
+  const [
+    imageIndex,
+    setImageIndex
+  ] =
+    useState(0)
 
   useEffect(() => {
     if (!amazonUrl) {
-      setCoverId(null)
+      setPreview(null)
       return
     }
 
+    const asin =
+      getAmazonAsin(amazonUrl)
+
+    setPreview({
+      url: amazonUrl,
+      asin,
+      title: null,
+      image:
+        asin
+          ? getAmazonImageUrl(asin)
+          : null
+    })
+    setImageFailed(false)
+    setImageIndex(0)
+
     let cancelled = false
 
-    async function findCover() {
+    async function loadPreview() {
       try {
-        const query =
-          getAmazonSearchQuery(
-            amazonUrl as string,
-            name
+        const response =
+          await fetch(
+            `/api/amazon?url=${encodeURIComponent(amazonUrl as string)}`,
+            {
+              signal:
+                AbortSignal.timeout(10000)
+            }
           )
-
-        const response = await fetch(
-          `https://openlibrary.org/search.json?title=${encodeURIComponent(query)}&limit=5&fields=cover_i,title`,
-          {
-            signal: AbortSignal.timeout(8000)
-          }
-        )
 
         if (!response.ok) {
           return
         }
 
-        const data = await response.json()
+        const data =
+          await response.json() as AmazonPreview
 
-        const result = data.docs?.find(
-          (book: {
-            cover_i?: number
-          }) => book.cover_i
-        )
-
-        if (!cancelled && result?.cover_i) {
-          setCoverId(result.cover_i)
-          setCoverFailed(false)
+        if (cancelled) {
+          return
         }
+
+        setPreview({
+          url:
+            data.url ||
+            amazonUrl as string,
+          asin:
+            data.asin,
+          title:
+            data.title,
+          image:
+            data.image ||
+            (
+              data.asin
+                ? getAmazonImageUrl(data.asin)
+                : null
+            )
+        })
+        setImageFailed(false)
+        setImageIndex(0)
       } catch {
-        // Keep the card without a cover.
+        // Keep the local ASIN preview if the lookup fails.
       }
     }
 
-    findCover()
+    loadPreview()
 
     return () => {
       cancelled = true
     }
-  }, [amazonUrl, name])
+  }, [amazonUrl])
 
-  if (!amazonUrl) {
+  if (!amazonUrl || !preview) {
     return null
   }
 
+  const imageCandidates =
+    preview.asin
+      ? [
+          preview.image,
+          ...getAmazonImageFallbacks(preview.asin)
+        ].filter(
+          (value, index, list): value is string =>
+            Boolean(value) &&
+            list.indexOf(value) === index
+        )
+      : preview.image
+        ? [preview.image]
+        : []
+
+  const imageSrc =
+    !imageFailed
+      ? imageCandidates[imageIndex] ?? null
+      : null
+
+  const title =
+    preview.title ||
+    name
+
   return (
     <a
-      href={amazonUrl}
+      href={preview.url}
       target="_blank"
       rel="noopener noreferrer"
       className="
@@ -101,44 +178,52 @@ export default function AmazonTreatment({
         overflow-hidden
         rounded-[22px]
         border
-        border-black/10
+        border-black
         bg-[#F7F4EE]
         p-3.5
         pr-5
         text-left
         text-black
-        shadow-[0_12px_28px_rgba(0,0,0,0.06)]
-        transition
-        hover:-translate-y-0.5
-        hover:shadow-[0_16px_36px_rgba(0,0,0,0.1)]
       "
     >
       <div
         className="
           flex
           h-[7.5rem]
-          w-[5.25rem]
+          w-[7.5rem]
           shrink-0
           items-center
           justify-center
           overflow-hidden
           rounded-xl
-          bg-[#F3EEE6]
+          border
+          border-black/10
+          bg-[#F7F4EE]
         "
       >
         {
-          coverId && !coverFailed ? (
+          imageSrc ? (
             <img
-              src={`https://covers.openlibrary.org/b/id/${coverId}-M.jpg`}
-              alt={`Cover of ${name}`}
+              src={imageSrc}
+              alt={`Amazon product image for ${title}`}
               className="
                 h-full
                 w-full
-                object-cover
+                object-contain
               "
               loading="lazy"
               onError={() => {
-                setCoverFailed(true)
+                if (
+                  imageIndex <
+                  imageCandidates.length - 1
+                ) {
+                  setImageIndex(
+                    imageIndex + 1
+                  )
+                  return
+                }
+
+                setImageFailed(true)
               }}
             />
           ) : (
@@ -151,7 +236,7 @@ export default function AmazonTreatment({
                 text-black/35
               "
             >
-              Book
+              Amazon
             </span>
           )
         }
@@ -179,7 +264,7 @@ export default function AmazonTreatment({
             tracking-[-0.03em]
           "
         >
-          {name}
+          {title}
         </p>
 
         <p
