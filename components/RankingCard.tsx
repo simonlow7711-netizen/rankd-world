@@ -478,7 +478,7 @@ export default function RankingCard({
           relative
           z-10
           block
-          text-center
+          text-left
         "
 
       >
@@ -532,7 +532,7 @@ export default function RankingCard({
           className={`
             flex
             items-center
-            justify-center
+            justify-start
             gap-4
             pb-5
             border-b
@@ -670,8 +670,7 @@ export default function RankingCard({
           className={`
             relative
             z-10
-            mx-auto
-            -mt-12
+            mt-6
             max-w-xl
             whitespace-pre-wrap
             leading-relaxed

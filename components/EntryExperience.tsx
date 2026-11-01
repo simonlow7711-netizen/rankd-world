@@ -798,7 +798,7 @@ export default function EntryExperience({
                       relative
                       z-10
                       mx-auto
-                      -mt-12
+                      mt-6
                       max-w-3xl
                       whitespace-pre-wrap
                       text-center
@@ -1184,7 +1184,7 @@ export default function EntryExperience({
                       relative
                       z-10
                       mx-auto
-                      -mt-12
+                      mt-6
                       max-w-2xl
                       text-lg
                       font-medium

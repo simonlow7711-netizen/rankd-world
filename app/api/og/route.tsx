@@ -6,13 +6,11 @@ import fs from "node:fs/promises"
 
 import path from "node:path"
 
+import CategoryMark from "@/components/CategoryMark"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
-
-import {
-  editionPhotoFilename
-} from "@/utils/editionPhoto"
 
 import {
   formatRankingTitle
@@ -77,33 +75,6 @@ function withAlpha(
     Number.parseInt(value.slice(4, 6), 16)
 
   return `rgba(${r},${g},${b},${alpha})`
-
-}
-
-
-async function loadEditionPhoto(
-  category: string
-) {
-
-  try {
-
-    const file =
-      await fs.readFile(
-        path.join(
-          process.cwd(),
-          "public",
-          "editions",
-          editionPhotoFilename(category)
-        )
-      )
-
-    return `data:image/jpeg;base64,${file.toString("base64")}`
-
-  } catch {
-
-    return null
-
-  }
 
 }
 
@@ -183,9 +154,6 @@ export async function GET(
     const theme =
       getCategoryTheme(category)
 
-    const photoSrc =
-      await loadEditionPhoto(category)
-
     const [
       geistRegular,
       geistBold,
@@ -204,7 +172,6 @@ export async function GET(
         label={theme.label}
         paper={theme.paper}
         accent={theme.accent}
-        photoSrc={photoSrc}
       />,
       {
         width: 1200,
@@ -250,7 +217,6 @@ export async function GET(
         label="TOP 7"
         paper={PAPER}
         accent="#FF6B35"
-        photoSrc={null}
       />,
       {
         width: 1200,
@@ -263,116 +229,18 @@ export async function GET(
 }
 
 
-function OgLogo({
-  paper,
-  accent
-}: {
-  paper: string
-  accent: string
-}) {
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        position: "relative",
-        width: 220,
-        height: 118,
-        borderRadius: 28,
-        overflow: "hidden",
-        backgroundColor: withAlpha(paper, 0.62)
-      }}
-    >
-
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          right: 0,
-          bottom: 0,
-          left: 0,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          fontSize: 96,
-          lineHeight: 1,
-          fontWeight: 900,
-          letterSpacing: "-0.16em",
-          color: withAlpha(accent, 0.18)
-        }}
-      >
-        7
-      </div>
-
-      <div
-        style={{
-          display: "flex",
-          position: "relative",
-          fontSize: 42,
-          lineHeight: 1,
-          fontWeight: 900,
-          letterSpacing: "-0.065em",
-          color: "#111111"
-        }}
-      >
-        RANKD
-      </div>
-
-    </div>
-  )
-
-}
-
-
-function OgMark({
-  paper,
-  children,
-  size = "label",
-  color = "#111111"
-}: {
-  paper: string
-  children: string
-  size?: "title" | "label"
-  color?: string
-}) {
-
-  const isTitle =
-    size === "title"
-
-  return (
-    <div
-      style={{
-        display: "flex",
-        alignSelf: "flex-start",
-        borderRadius: isTitle ? 28 : 999,
-        padding: isTitle ? "18px 28px" : "9px 16px",
-        backgroundColor: withAlpha(paper, 0.62),
-        color
-      }}
-    >
-      {children}
-    </div>
-  )
-
-}
-
-
 function OgCard({
   title,
   category,
   label,
   paper,
-  accent,
-  photoSrc
+  accent
 }: {
   title: string
   category: string
   label: string
   paper: string
   accent: string
-  photoSrc: string | null
 }) {
 
   const titleSize =
@@ -380,7 +248,7 @@ function OgCard({
       ? 48
       : title.length > 34
         ? 60
-        : 76
+        : 72
 
   return (
     <div
@@ -388,85 +256,36 @@ function OgCard({
         width: "1200px",
         height: "630px",
         display: "flex",
-        position: "relative",
         overflow: "hidden",
         backgroundColor: paper,
         color: "#111111",
-        fontFamily: "Geist"
+        fontFamily: "Geist",
+        border: "1px solid #111111"
       }}
     >
 
-      {photoSrc ? (
-        <img
-          src={photoSrc}
-          alt=""
-          width={1200}
-          height={630}
-          style={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "1200px",
-            height: "630px",
-            objectFit: "cover",
-            objectPosition: "center"
-          }}
+      <div
+        style={{
+          display: "flex",
+          width: "188px",
+          height: "630px",
+          borderRight: "1px solid #111111",
+          backgroundColor: paper
+        }}
+      >
+        <CategoryMark
+          category={category}
         />
-      ) : (
-        <div
-          style={{
-            position: "absolute",
-            right: "40px",
-            top: "40px",
-            display: "flex",
-            fontSize: "620px",
-            lineHeight: 0.8,
-            fontWeight: 900,
-            letterSpacing: "-0.16em",
-            color: accent,
-            opacity: 0.14
-          }}
-        >
-          7
-        </div>
-      )}
+      </div>
 
       <div
         style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          backgroundColor: withAlpha(paper, 0.16)
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          backgroundImage: `linear-gradient(to bottom, ${withAlpha(paper, 0.04)} 0%, ${withAlpha(paper, 0.08)} 28%, ${withAlpha(paper, 0.38)} 58%, ${withAlpha(paper, 0.88)} 82%, ${paper} 94%)`
-        }}
-      />
-
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          display: "flex",
-          border: "1px solid #111111"
-        }}
-      />
-
-      <div
-        style={{
-          position: "relative",
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
-          width: "1200px",
+          flex: 1,
           height: "630px",
-          padding: "48px 56px 42px"
+          padding: "48px 52px 42px"
         }}
       >
 
@@ -478,10 +297,41 @@ function OgCard({
           }}
         >
 
-          <OgLogo
-            paper={paper}
-            accent={accent}
-          />
+          <div
+            style={{
+              display: "flex",
+              position: "relative",
+              alignItems: "center",
+              height: 72
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                position: "absolute",
+                fontSize: 92,
+                lineHeight: 1,
+                fontWeight: 900,
+                letterSpacing: "-0.16em",
+                color: withAlpha(accent, 0.18)
+              }}
+            >
+              7
+            </div>
+            <div
+              style={{
+                display: "flex",
+                position: "relative",
+                fontSize: 40,
+                lineHeight: 1,
+                fontWeight: 900,
+                letterSpacing: "-0.065em",
+                color: "#111111"
+              }}
+            >
+              RANKD
+            </div>
+          </div>
 
           <div
             style={{
@@ -489,15 +339,11 @@ function OgCard({
               fontSize: "16px",
               fontWeight: 900,
               letterSpacing: "0.18em",
-              textTransform: "uppercase"
+              textTransform: "uppercase",
+              color: accent
             }}
           >
-            <OgMark
-              paper={paper}
-              color={accent}
-            >
-              {label}
-            </OgMark>
+            {label}
           </div>
 
         </div>
@@ -506,62 +352,47 @@ function OgCard({
           style={{
             display: "flex",
             flexDirection: "column",
-            maxWidth: "1040px"
+            maxWidth: "900px"
           }}
         >
 
           <div
             style={{
               display: "flex",
-              marginBottom: "16px",
+              marginBottom: "14px",
               fontSize: "18px",
               fontWeight: 900,
               letterSpacing: "0.16em",
-              textTransform: "uppercase"
+              textTransform: "uppercase",
+              color: accent
             }}
           >
-            <OgMark
-              paper={paper}
-              color={accent}
-            >
-              {category}
-            </OgMark>
+            {category}
           </div>
 
           <div
             style={{
               display: "flex",
-              maxWidth: "1040px",
               fontSize: titleSize,
               lineHeight: 0.94,
               fontWeight: 900,
-              letterSpacing: "-0.055em",
-              textTransform: "uppercase"
+              letterSpacing: "-0.055em"
             }}
           >
-            <OgMark
-              paper={paper}
-              size="title"
-            >
-              {title}
-            </OgMark>
+            {title}
           </div>
 
           <div
             style={{
               display: "flex",
-              marginTop: "22px",
-              fontSize: "28px",
-              fontWeight: 900,
-              letterSpacing: "-0.035em"
+              marginTop: "20px",
+              fontSize: "26px",
+              fontWeight: 700,
+              letterSpacing: "-0.03em",
+              color: accent
             }}
           >
-            <OgMark
-              paper={paper}
-              color={accent}
-            >
-              Would you rank it differently?
-            </OgMark>
+            Would you rank it differently?
           </div>
 
         </div>
@@ -579,15 +410,11 @@ function OgCard({
               display: "flex",
               fontSize: "21px",
               fontWeight: 700,
-              letterSpacing: "-0.02em"
+              letterSpacing: "-0.02em",
+              color: "#6B6B6B"
             }}
           >
-            <OgMark
-              paper={paper}
-              color="#6B6B6B"
-            >
-              rankd.world
-            </OgMark>
+            rankd.world
           </div>
 
           <div
@@ -598,12 +425,7 @@ function OgCard({
               letterSpacing: "0.08em"
             }}
           >
-            <OgMark
-              paper={paper}
-              color="#111111"
-            >
-              THE WORLD'S TOP 7 EVERYTHING
-            </OgMark>
+            THE WORLD'S TOP 7 EVERYTHING
           </div>
 
         </div>

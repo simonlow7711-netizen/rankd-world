@@ -219,7 +219,7 @@ export default function ProfileIdentity({
             relative
             z-10
             mx-auto
-            -mt-12
+            mt-4
             max-w-md
             px-6
             pb-2

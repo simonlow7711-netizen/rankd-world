@@ -124,7 +124,7 @@ export default function DailyRankd({
             className="
               relative
               z-10
-              text-center
+              text-left
             "
           >
 
@@ -138,7 +138,7 @@ export default function DailyRankd({
               className="
                 flex
                 flex-col
-                items-center
+                items-start
                 gap-3
               "
             >
@@ -184,7 +184,6 @@ export default function DailyRankd({
 
             <div
               className="
-                mx-auto
                 max-w-5xl
                 py-8
                 md:py-10
@@ -211,8 +210,8 @@ export default function DailyRankd({
 
               <h2
                 className="
-                  mx-auto
                   max-w-5xl
+                  text-left
                   text-4xl
                   font-black
                   leading-[0.94]
@@ -239,10 +238,10 @@ export default function DailyRankd({
                 className="
                   relative
                   z-10
-                  -mt-12
+                  mt-6
                   flex
                   flex-col
-                  items-center
+                  items-start
                   gap-6
                 "
               >

@@ -476,7 +476,7 @@ export default async function CategoryPage(
               border
               px-6
               py-10
-              text-center
+              text-left
               text-black
               md:mb-16
               md:px-12

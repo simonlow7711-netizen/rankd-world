@@ -260,7 +260,7 @@ export default async function NotificationsPage() {
                 relative
                 z-10
                 mx-auto
-                -mt-12
+                mt-4
                 max-w-md
                 text-lg
                 leading-relaxed
@@ -398,7 +398,7 @@ export default async function NotificationsPage() {
                     relative
                     z-10
                     mx-auto
-                    -mt-10
+                    mt-3
                     max-w-md
                     leading-relaxed
                     text-black/50

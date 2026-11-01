@@ -1383,7 +1383,7 @@ export default function CreateClient(){
                   relative
                   z-10
                   mx-auto
-                  -mt-12
+                  mt-4
                   max-w-xl
                   text-base
                   font-medium
@@ -2062,8 +2062,7 @@ export default function CreateClient(){
               className="
                 relative
                 z-10
-                mx-auto
-                -mt-12
+                mt-4
                 max-w-xl
                 text-base
                 font-medium

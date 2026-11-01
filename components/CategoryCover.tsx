@@ -49,7 +49,7 @@ export default function CategoryCover({
         h-full
         w-full
         flex-col
-        text-center
+        text-left
         ${
           isMasthead
             ? "justify-center"
@@ -108,7 +108,7 @@ export default function CategoryCover({
                     mt-4
                     w-full
                     max-w-[16ch]
-                    text-center
+                    text-left
                     font-black
                     ${theme.titleClass}
                     ${titleSize}
@@ -128,7 +128,7 @@ export default function CategoryCover({
                     mt-6
                     w-full
                     max-w-[16ch]
-                    text-center
+                    text-left
                     font-black
                     ${theme.titleClass}
                     ${titleSize}
@@ -154,8 +154,8 @@ export default function CategoryCover({
                 mx-auto
                 ${
                   isMasthead
-                    ? "-mt-12 text-lg md:text-xl"
-                    : "-mt-10 line-clamp-2 text-sm"
+                    ? "mt-4 text-lg md:text-xl"
+                    : "mt-3 line-clamp-2 text-sm"
                 }
                 max-w-md
                 text-center

@@ -238,7 +238,7 @@ export default function NotificationCard({
             space-y-4
             px-1
             pb-1
-            md:-mt-10
+            mt-3
           "
         >
 

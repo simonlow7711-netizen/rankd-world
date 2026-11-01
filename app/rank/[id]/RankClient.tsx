@@ -1084,9 +1084,8 @@ export default function RankClient({
               className="
                 flex
                 items-center
-                justify-center
+                justify-start
                 gap-3
-                text-center
               "
             >
 
@@ -1113,12 +1112,9 @@ export default function RankClient({
 
             <div
               className="
-                mx-auto
-                mt-8
+                mt-2
                 w-full
-                max-w-5xl
-                text-center
-                md:mt-10
+                min-w-0
               "
             >
 
@@ -1173,9 +1169,7 @@ export default function RankClient({
 
             <div
               className="
-                mx-auto
                 max-w-3xl
-                text-center
               "
             >
 
@@ -1192,11 +1186,10 @@ export default function RankClient({
                 className={`
                   relative
                   z-10
-                  mx-auto
-                  -mt-12
+                  mt-6
                   max-w-2xl
                   whitespace-pre-wrap
-                  text-center
+                  text-left
                   text-xl
                   leading-relaxed
                   md:text-2xl

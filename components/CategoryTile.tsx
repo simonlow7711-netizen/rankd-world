@@ -43,12 +43,11 @@ export default function CategoryTile({
         flex
         min-h-[268px]
         flex-col
-        items-center
         overflow-hidden
         rounded-[28px]
         border
         p-6
-        text-center
+        text-left
         text-black
         ${
           isIndex
