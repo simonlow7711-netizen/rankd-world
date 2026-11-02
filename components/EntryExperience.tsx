@@ -35,12 +35,6 @@ import EditionHeader, {
 
 import RankingDescription from "@/components/RankingDescription"
 
-import UpRankdButton from "@/components/UpRankdButton"
-
-import {
-  useItemUpranks
-} from "@/utils/uprankd"
-
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -156,11 +150,6 @@ export default function EntryExperience({
     eligibleRankings[
       rankingIndex
     ]
-
-  const upranks =
-    useItemUpranks(
-      ranking?.id ?? null
-    )
 
 
   const nextRanking =
@@ -880,30 +869,6 @@ export default function EntryExperience({
                                   item.name
                                 }
                               </div>
-
-                              <UpRankdButton
-                                count={
-                                  upranks.forPosition(
-                                    item.position
-                                  ).count
-                                }
-                                mine={
-                                  upranks.forPosition(
-                                    item.position
-                                  ).mine
-                                }
-                                accent={
-                                  theme.accent
-                                }
-                                ink={
-                                  theme.ink
-                                }
-                                onToggle={() => {
-                                  void upranks.toggle(
-                                    item.position
-                                  )
-                                }}
-                              />
 
                             </div>
 
