@@ -16,6 +16,10 @@ import {
   Muxer
 } from "mp4-muxer"
 
+import {
+  publishRankingTeaser
+} from "@/utils/teaser"
+
 
 type AnimatedRankPreviewProps = {
   title: string
@@ -24,6 +28,7 @@ type AnimatedRankPreviewProps = {
     name: string
   }[]
   href: string
+  rankingId?: string
   category?: string
   paper?: string
   accent?: string
@@ -42,6 +47,119 @@ const DURATION_SEC = 8.4
 const CREAM = "#F7F4EE"
 const INK = "#111111"
 const FONT = 'Geist, "Geist Sans", ui-sans-serif, system-ui, sans-serif'
+
+
+function rankingShareUrl(
+  href: string
+) {
+  return new URL(
+    href,
+    window.location.origin
+  ).href
+}
+
+
+function rankingIdFromHref(
+  href: string,
+  rankingId?: string
+) {
+  if (rankingId) {
+    return rankingId
+  }
+
+  try {
+    const pathname =
+      new URL(
+        href,
+        window.location.origin
+      ).pathname
+
+    const match =
+      pathname.match(
+        /\/rank\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i
+      )
+
+    return match?.[1] ?? null
+  } catch {
+    return null
+  }
+}
+
+
+function rankingShareCaption(
+  title: string,
+  href: string
+) {
+  return [
+    "Would you rank it differently?",
+    "",
+    `${title} | RANKD`,
+    "",
+    `See the full list: ${rankingShareUrl(href)}`
+  ].join("\n")
+}
+
+
+async function shareVideoFile(
+  file: File,
+  title: string,
+  href: string
+) {
+  if (
+    typeof navigator.share !== "function"
+  ) {
+    return false
+  }
+
+  const url =
+    rankingShareUrl(href)
+
+  const text =
+    rankingShareCaption(
+      title,
+      href
+    )
+
+  const attempts: ShareData[] = [
+    {
+      files: [file],
+      title,
+      text,
+      url
+    },
+    {
+      files: [file],
+      title,
+      text
+    },
+    {
+      files: [file]
+    }
+  ]
+
+  for (const shareData of attempts) {
+    if (
+      typeof navigator.canShare === "function" &&
+      !navigator.canShare(shareData)
+    ) {
+      continue
+    }
+
+    try {
+      await navigator.share(shareData)
+      return true
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.name === "AbortError"
+      ) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
 
 
 type EncoderConfig = {
@@ -469,6 +587,7 @@ export default function AnimatedRankPreview({
   title,
   items,
   href,
+  rankingId,
   category = "Top 7",
   paper = CREAM,
   accent = "#FF6B35",
@@ -476,10 +595,13 @@ export default function AnimatedRankPreview({
 }: AnimatedRankPreviewProps) {
   const [replayKey, setReplayKey] = useState(0)
   const [isProcessing, setIsProcessing] = useState(false)
+  const [isPreparing, setIsPreparing] = useState(true)
   const [needsSoundTap, setNeedsSoundTap] = useState(false)
   const previewRef = useRef<HTMLCanvasElement>(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const onCloseRef = useRef(onClose)
+  const videoPromiseRef = useRef<Promise<Blob> | null>(null)
+  const publishPromiseRef = useRef<Promise<string | null> | null>(null)
 
   onCloseRef.current = onClose
 
@@ -877,6 +999,86 @@ export default function AnimatedRankPreview({
     }
   }
 
+  function ensureVideoBlob() {
+    if (!videoPromiseRef.current) {
+      videoPromiseRef.current =
+        createVideoBlob().catch(error => {
+          videoPromiseRef.current = null
+          throw error
+        })
+    }
+
+    return videoPromiseRef.current
+  }
+
+  function ensurePublishedTeaser(
+    blob: Blob
+  ) {
+    const id =
+      rankingIdFromHref(
+        href,
+        rankingId
+      )
+
+    if (!id) {
+      return Promise.resolve(null)
+    }
+
+    if (!publishPromiseRef.current) {
+      publishPromiseRef.current =
+        publishRankingTeaser(
+          id,
+          blob
+        ).catch(error => {
+          publishPromiseRef.current = null
+          console.error(
+            "RANKD teaser publish failed:",
+            error
+          )
+          return null
+        })
+    }
+
+    return publishPromiseRef.current
+  }
+
+  useEffect(() => {
+    videoPromiseRef.current = null
+    publishPromiseRef.current = null
+    setIsPreparing(true)
+
+    const prepare =
+      createVideoBlob()
+
+    videoPromiseRef.current =
+      prepare.catch(error => {
+        videoPromiseRef.current = null
+        throw error
+      })
+
+    void prepare
+      .then(blob => {
+        setIsPreparing(false)
+        void ensurePublishedTeaser(blob)
+      })
+      .catch(error => {
+        console.error(
+          "RANKD teaser prepare failed:",
+          error
+        )
+        setIsPreparing(false)
+      })
+  }, [
+    accent,
+    category,
+    href,
+    hrefHost,
+    paper,
+    rankingId,
+    teaserItems,
+    title
+  ])
+
   async function downloadVideo() {
     if (isProcessing) {
       return
@@ -885,7 +1087,7 @@ export default function AnimatedRankPreview({
     setIsProcessing(true)
 
     try {
-      const blob = await createVideoBlob()
+      const blob = await ensureVideoBlob()
 
       downloadBlob(blob)
     } catch (error) {
@@ -901,7 +1103,9 @@ export default function AnimatedRankPreview({
     }
   }
 
-  async function shareVideo() {
+  async function shareVideo(
+    destination?: "facebook" | "whatsapp"
+  ) {
     if (isProcessing) {
       return
     }
@@ -909,7 +1113,19 @@ export default function AnimatedRankPreview({
     setIsProcessing(true)
 
     try {
-      const blob = await createVideoBlob()
+      const blob = await ensureVideoBlob()
+      const url =
+        rankingShareUrl(href)
+
+      if (destination === "facebook") {
+        await ensurePublishedTeaser(blob)
+        window.open(
+          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
+          "_blank",
+          "noopener,noreferrer"
+        )
+        return
+      }
 
       const file = new File(
         [blob],
@@ -919,42 +1135,32 @@ export default function AnimatedRankPreview({
         }
       )
 
-      const shareData: ShareData = {
-        files: [file],
-        title,
-        text: `Would you rank it differently? See the full RANKD: ${new URL(
-          href,
-          window.location.origin
-        ).href}`
+      const shared =
+        await shareVideoFile(
+          file,
+          title,
+          href
+        )
+
+      if (shared) {
+        return
       }
 
-      if (
-        typeof navigator.share === "function" &&
-        typeof navigator.canShare === "function" &&
-        navigator.canShare(shareData)
-      ) {
-        try {
-          await navigator.share(shareData)
-          return
-        } catch (error) {
-          if (
-            error instanceof DOMException &&
-            error.name === "AbortError"
-          ) {
-            return
-          }
-
-          console.error(
-            "RANKD native video sharing failed:",
-            error
-          )
-        }
+      if (destination === "whatsapp") {
+        window.open(
+          `https://wa.me/?text=${encodeURIComponent(
+            rankingShareCaption(title, href)
+          )}`,
+          "_blank",
+          "noopener,noreferrer"
+        )
+        return
       }
 
       downloadBlob(blob)
 
       window.alert(
-        "Your MP4 video is ready. Upload rankd-preview.mp4 to your preferred social platform."
+        "Your MP4 video is ready, with music. Attach rankd-preview.mp4 to Facebook or another app, and share the RANKD link with it."
       )
     } catch (error) {
       console.error("RANKD video sharing failed:", error)
@@ -1051,7 +1257,7 @@ export default function AnimatedRankPreview({
 
         <div className="flex w-full shrink-0 items-center justify-between gap-3">
           <p className="text-xs leading-relaxed text-white/65">
-            Preview only. The top three stay hidden. Music starts 12s into the RANKD track.
+            Preview only. The top three stay hidden. The share is a video with music and a link to the full RANKD.
           </p>
 
           <button
@@ -1069,7 +1275,9 @@ export default function AnimatedRankPreview({
 
         <button
           type="button"
-          onClick={shareVideo}
+          onClick={() => {
+            void shareVideo()
+          }}
           disabled={isProcessing}
           className="
             flex w-full shrink-0 items-center justify-center gap-2
@@ -1079,12 +1287,12 @@ export default function AnimatedRankPreview({
             disabled:cursor-wait disabled:opacity-60
           "
         >
-          {isProcessing ? (
+          {isProcessing || isPreparing ? (
             <>
               <span className="animate-spin" aria-hidden="true">
                 ↻
               </span>
-              Preparing MP4…
+              {isProcessing ? "Sharing video…" : "Preparing video…"}
             </>
           ) : (
             <>
@@ -1093,6 +1301,40 @@ export default function AnimatedRankPreview({
             </>
           )}
         </button>
+
+        <div className="grid w-full shrink-0 grid-cols-2 gap-2">
+          <button
+            type="button"
+            onClick={() => {
+              void shareVideo("facebook")
+            }}
+            disabled={isProcessing}
+            className="
+              rounded-full border border-white
+              px-4 py-2.5 text-xs font-black text-white
+              transition hover:bg-white/10
+              disabled:cursor-wait disabled:opacity-60
+            "
+          >
+            Facebook
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              void shareVideo("whatsapp")
+            }}
+            disabled={isProcessing}
+            className="
+              rounded-full border border-white
+              px-4 py-2.5 text-xs font-black text-white
+              transition hover:bg-white/10
+              disabled:cursor-wait disabled:opacity-60
+            "
+          >
+            WhatsApp
+          </button>
+        </div>
 
         <button
           type="button"

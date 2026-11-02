@@ -1271,6 +1271,9 @@ export default function RankClient({
                   animatedPreviewOpen && (
                     <AnimatedRankPreview
                       title={displayTitle}
+                      rankingId={
+                        displayRanking.id
+                      }
                       items={
                         sortedOriginalItems.map(item => ({
                           position: item.position,

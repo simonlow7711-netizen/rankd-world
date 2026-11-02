@@ -9,6 +9,7 @@ import {
 
 
 import {
+  getRankingTeaserUrl,
   getSupabaseRankingServer
 } from "@/utils/supabaseRankingServer"
 
@@ -97,6 +98,12 @@ export async function generateMetadata(
     })
 
 
+  const teaserUrl =
+    await getRankingTeaserUrl(
+      id
+    )
+
+
   return {
 
     title,
@@ -115,7 +122,9 @@ export async function generateMetadata(
     openGraph: {
 
       type:
-        "article",
+        teaserUrl
+          ? "video.other"
+          : "article",
 
       url:
         canonicalUrl,
@@ -138,7 +147,23 @@ export async function generateMetadata(
           ogImageUrl
         )
 
-      ]
+      ],
+
+      ...(
+        teaserUrl
+          ? {
+              videos: [
+                {
+                  url: teaserUrl,
+                  secureUrl: teaserUrl,
+                  type: "video/mp4",
+                  width: 1080,
+                  height: 1920
+                }
+              ]
+            }
+          : {}
+      )
 
     },
 

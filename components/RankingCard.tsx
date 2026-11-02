@@ -1157,6 +1157,9 @@ export default function RankingCard({
                   ranking.title
                 )
               }
+              rankingId={
+                ranking.id
+              }
               items={
                 sortedItems.map(item => ({
                   position: item.position,

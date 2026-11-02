@@ -305,3 +305,50 @@ export async function getSupabaseRankingServer(
   return ranking
 
 }
+
+
+export async function getRankingTeaserUrl(
+  id:string
+):Promise<string | null>{
+
+  const supabase =
+    await createSupabaseServerClient()
+
+
+  const {
+    data,
+    error
+  } = await supabase
+    .from("rankings")
+    .select(
+      "teaser_url"
+    )
+    .eq(
+      "id",
+      id
+    )
+    .maybeSingle()
+
+
+  if(
+    error ||
+    !data
+  ){
+
+    return null
+
+  }
+
+
+  const teaserUrl =
+    (
+      data as {
+        teaser_url?:string | null
+      }
+    ).teaser_url
+      ?.trim()
+
+
+  return teaserUrl || null
+
+}
