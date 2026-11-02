@@ -68,6 +68,12 @@ import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
+import UpRankdButton from "@/components/UpRankdButton"
+
+import {
+  useItemUpranks
+} from "@/utils/uprankd"
+
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -206,6 +212,22 @@ export default function RankClient({
     setPerspectiveTopRevealed
   ] =
     useState(false)
+
+  const originalUpranks =
+    useItemUpranks(
+      originalRanking?.id ??
+      ranking?.id ??
+      initialRanking.id
+    )
+
+  const perspectiveUpranks =
+    useItemUpranks(
+      ranking &&
+      originalRanking &&
+      ranking.id !== originalRanking.id
+        ? ranking.id
+        : null
+    )
 
 
   useEffect(() => {
@@ -1469,6 +1491,30 @@ export default function RankClient({
                               }
                             />
 
+                            <UpRankdButton
+                              count={
+                                originalUpranks.forPosition(
+                                  item.position
+                                ).count
+                              }
+                              mine={
+                                originalUpranks.forPosition(
+                                  item.position
+                                ).mine
+                              }
+                              accent={
+                                theme.accentHex
+                              }
+                              ink={
+                                theme.ink
+                              }
+                              onToggle={() => {
+                                void originalUpranks.toggle(
+                                  item.position
+                                )
+                              }}
+                            />
+
                           </div>
 
                         </div>
@@ -1934,6 +1980,30 @@ export default function RankClient({
                                 name={
                                   item.name
                                 }
+                              />
+
+                              <UpRankdButton
+                                count={
+                                  perspectiveUpranks.forPosition(
+                                    item.position
+                                  ).count
+                                }
+                                mine={
+                                  perspectiveUpranks.forPosition(
+                                    item.position
+                                  ).mine
+                                }
+                                accent={
+                                  theme.accentHex
+                                }
+                                ink={
+                                  theme.ink
+                                }
+                                onToggle={() => {
+                                  void perspectiveUpranks.toggle(
+                                    item.position
+                                  )
+                                }}
                               />
 
                             </div>

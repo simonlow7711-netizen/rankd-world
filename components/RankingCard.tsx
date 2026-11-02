@@ -45,6 +45,12 @@ import EditionHeader, {
 
 import RankingDescription from "@/components/RankingDescription"
 
+import UpRankdButton from "@/components/UpRankdButton"
+
+import {
+  useItemUpranks
+} from "@/utils/uprankd"
+
 import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
@@ -276,6 +282,11 @@ export default function RankingCard({
   ] =
     useState(
       false
+    )
+
+  const upranks =
+    useItemUpranks(
+      ranking.id
     )
 
 
@@ -943,6 +954,31 @@ export default function RankingCard({
 
                           )
                     }
+
+                    <UpRankdButton
+                      count={
+                        upranks.forPosition(
+                          item.position
+                        ).count
+                      }
+                      mine={
+                        upranks.forPosition(
+                          item.position
+                        ).mine
+                      }
+                      accent={
+                        theme.accentColor
+                      }
+                      ink={
+                        theme.textColor
+                      }
+                      compact
+                      onToggle={() => {
+                        void upranks.toggle(
+                          item.position
+                        )
+                      }}
+                    />
 
                   </div>
 
