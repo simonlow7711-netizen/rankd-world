@@ -1,5 +1,7 @@
 "use client"
 
+import FitEmbed from "@/components/FitEmbed"
+
 import {
   getSpotifyEmbed
 } from "@/utils/spotify"
@@ -28,9 +30,13 @@ export default function SpotifyTreatment({
   const height =
     compact ? 152 : 352
 
+  const nativeWidth =
+    compact ? 300 : 400
+
   return (
     <figure
       className="
+        isolate
         mx-auto
         mt-5
         w-full
@@ -43,24 +49,15 @@ export default function SpotifyTreatment({
         bg-[#191414]
       "
     >
-      <div
-        className="
-          relative
-          w-full
-          min-w-0
-          overflow-hidden
-          bg-[#191414]
-        "
-        style={{
-          height
-        }}
+      <FitEmbed
+        width={nativeWidth}
+        height={height}
+        fill
       >
         <iframe
           src={embed.embedUrl}
           title={`Listen to ${name} on Spotify`}
           className="
-            absolute
-            inset-0
             h-full
             w-full
             min-w-0
@@ -76,7 +73,7 @@ export default function SpotifyTreatment({
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         />
-      </div>
+      </FitEmbed>
 
       <figcaption
         className="

@@ -11,12 +11,14 @@ type FitEmbedProps = {
   children: ReactNode
   width: number
   height: number
+  fill?: boolean
 }
 
 export default function FitEmbed({
   children,
   width,
-  height
+  height,
+  fill = false
 }: FitEmbedProps) {
 
   const ref =
@@ -76,6 +78,10 @@ export default function FitEmbed({
     }
   }, [width])
 
+  const fills =
+    fill &&
+    scale === 1
+
   return (
     <div
       ref={ref}
@@ -88,23 +94,29 @@ export default function FitEmbed({
       "
       style={{
         height:
-          Math.ceil(height * scale)
+          fills
+            ? height
+            : Math.ceil(height * scale)
       }}
     >
       <div
-        className="
-          absolute
-          left-0
-          top-0
-        "
-        style={{
-          width,
-          height,
-          transform:
-            `scale(${scale})`,
-          transformOrigin:
-            "top left"
-        }}
+        className={
+          fills
+            ? "absolute inset-0"
+            : "absolute left-0 top-0"
+        }
+        style={
+          fills
+            ? undefined
+            : {
+                width,
+                height,
+                transform:
+                  `scale(${scale})`,
+                transformOrigin:
+                  "top left"
+              }
+        }
       >
         {children}
       </div>
