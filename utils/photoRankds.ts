@@ -8,6 +8,7 @@ export type PhotoRankdPreview = {
   title: string
   description: string | null
   image_url: string
+  ranking_ids: string[]
 }
 
 
@@ -24,7 +25,8 @@ export async function getPublishedPhotoRankds(): Promise<PhotoRankdPreview[]> {
           id,
           title,
           description,
-          image_url
+          image_url,
+          ranking_ids
         `
       )
 
@@ -46,7 +48,13 @@ export async function getPublishedPhotoRankds(): Promise<PhotoRankdPreview[]> {
       description:
         item.description,
       image_url:
-        item.image_url
+        item.image_url,
+      ranking_ids:
+        Array.isArray(
+          item.ranking_ids
+        )
+          ? item.ranking_ids
+          : []
     })
   )
 

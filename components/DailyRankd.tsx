@@ -78,9 +78,7 @@ export default function DailyRankd({
   return (
     <section
       className="
-        px-5
         py-8
-        md:px-8
         md:py-10
       "
     >

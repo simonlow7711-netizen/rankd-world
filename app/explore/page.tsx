@@ -15,6 +15,20 @@ import RankingCard from "@/components/RankingCard"
 
 import DailyRankd from "@/components/DailyRankd"
 
+import LinkdSection from "@/components/LinkdSection"
+
+import {
+  getDailyRankd
+} from "@/utils/dailyRankd"
+
+import {
+  getLinkdThread
+} from "@/utils/linkd"
+
+import {
+  getPublishedPhotoRankds
+} from "@/utils/photoRankds"
+
 
 import {
   getRecentRankingAnalytics
@@ -121,6 +135,22 @@ export default async function ExplorePage() {
 
   const allRankings =
     await getAllRankings()
+
+  const photoRankds =
+    await getPublishedPhotoRankds()
+
+  const dailyRankd =
+    getDailyRankd()
+
+  const linkdThread =
+    getLinkdThread(
+      allRankings,
+      {
+        preferCategory:
+          dailyRankd.category,
+        photoRankds
+      }
+    )
 
 
   const latestRankings =
@@ -289,6 +319,17 @@ export default async function ExplorePage() {
           <DailyRankd />
 
         </section>
+
+
+        {
+          linkdThread && (
+            <LinkdSection
+              thread={
+                linkdThread
+              }
+            />
+          )
+        }
 
 
         <section
