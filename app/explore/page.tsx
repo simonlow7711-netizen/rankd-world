@@ -17,6 +17,8 @@ import DailyRankd from "@/components/DailyRankd"
 
 import LinkdSection from "@/components/LinkdSection"
 
+import PageSignal from "@/components/PageSignal"
+
 import {
   getDailyRankd
 } from "@/utils/dailyRankd"
@@ -234,6 +236,10 @@ export default async function ExplorePage() {
         text-black
       "
     >
+
+      <PageSignal
+        event="explore_viewed"
+      />
 
       <div
         className="

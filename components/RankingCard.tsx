@@ -486,6 +486,18 @@ export default function RankingCard({
           text-left
         "
 
+        onClick={() => {
+          void trackEvent(
+            "ranking_opened",
+            {
+              rankingId:
+                ranking.id,
+              surface:
+                "card"
+            }
+          )
+        }}
+
       >
 
         <EditionHeader
@@ -964,6 +976,16 @@ export default function RankingCard({
                         onReveal={() => {
                           setTopItemRevealed(
                             true
+                          )
+
+                          void trackEvent(
+                            "ranking_reveal_top",
+                            {
+                              rankingId:
+                                ranking.id,
+                              surface:
+                                "card"
+                            }
                           )
                         }}
                         accent={

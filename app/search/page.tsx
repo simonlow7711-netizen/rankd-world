@@ -30,6 +30,11 @@ import {
 } from "@/types/ranking"
 
 
+import {
+  trackEvent
+} from "@/utils/analytics"
+
+
 function SearchResults() {
 
   const searchParams =
@@ -91,6 +96,16 @@ function SearchResults() {
             )
 
             setLoading(false)
+
+            void trackEvent(
+              "search_viewed",
+              {
+                q:
+                  query,
+                results:
+                  results.length
+              }
+            )
 
           }
 

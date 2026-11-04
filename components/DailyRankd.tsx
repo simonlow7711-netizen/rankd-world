@@ -1,4 +1,4 @@
-import Link from "next/link"
+import TrackedLink from "@/components/TrackedLink"
 
 
 import {
@@ -240,8 +240,15 @@ export default function DailyRankd({
                 </div>
 
 
-                <Link
+                <TrackedLink
                   href={createHref}
+                  event="daily_rank_started"
+                  eventProps={{
+                    category:
+                      activeCategory,
+                    title:
+                      activeTitle
+                  }}
                   className="
                     inline-flex
                     shrink-0
@@ -279,7 +286,7 @@ export default function DailyRankd({
                     →
                   </span>
 
-                </Link>
+                </TrackedLink>
 
               </div>
 

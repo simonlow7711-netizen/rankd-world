@@ -1,4 +1,4 @@
-import Link from "next/link"
+import TrackedLink from "@/components/TrackedLink"
 
 import EditionHeader, {
   EditionMark,
@@ -41,10 +41,17 @@ export default function ProfileRankingTile({
     )
 
   return (
-    <Link
+    <TrackedLink
       href={
         `/rank/${id}`
       }
+      event="ranking_opened"
+      eventProps={{
+        rankingId:
+          id,
+        surface:
+          "profile"
+      }}
       className="
         rankd-edition
         group
@@ -206,7 +213,7 @@ export default function ProfileRankingTile({
 
       </div>
 
-    </Link>
+    </TrackedLink>
   )
 
 }

@@ -80,6 +80,10 @@ import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
 
+import {
+  trackEvent
+} from "@/utils/analytics"
+
 
 const fieldClass =
   `
@@ -196,6 +200,41 @@ export default function CreateClient(){
 
     },
     []
+  )
+
+
+  useEffect(
+    () => {
+
+      if (
+        !hydrated
+      ) {
+        return
+      }
+
+      void trackEvent(
+        "create_viewed",
+        {
+          remix:
+            Boolean(
+              searchParams.get(
+                "parentId"
+              ) ??
+              searchParams.get(
+                "parent"
+              )
+            ),
+          category:
+            searchParams.get(
+              "category"
+            )
+        }
+      )
+
+    },
+    [
+      hydrated
+    ]
   )
 
 
@@ -1180,6 +1219,27 @@ export default function CreateClient(){
         )()
 
       ]
+    )
+
+
+    void trackEvent(
+      "ranking_published",
+      {
+        rankingId:
+          publishedRankingId,
+        category:
+          publishedRanking.category,
+        remix:
+          Boolean(
+            ranking.parentId ??
+            searchParams.get(
+              "parentId"
+            ) ??
+            searchParams.get(
+              "parent"
+            )
+          )
+      }
     )
 
 

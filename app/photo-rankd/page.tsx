@@ -1,5 +1,7 @@
 import PhotoRankdSection from "@/components/PhotoRankdSection"
 
+import PageSignal from "@/components/PageSignal"
+
 import {
   getPublishedPhotoRankds
 } from "@/utils/photoRankds"
@@ -27,6 +29,10 @@ export default async function PhotoRankdIndexPage() {
         md:py-16
       "
     >
+
+      <PageSignal
+        event="photo_rankd_index_viewed"
+      />
 
       <div
         className="

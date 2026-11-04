@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+import TrackedLink from "@/components/TrackedLink"
+
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -158,13 +160,24 @@ export default function LinkdSection({
                 )
 
               return (
-                <Link
+                <TrackedLink
                   key={
                     ranking.id
                   }
                   href={
                     `/rank/${ranking.id}`
                   }
+                  event="linkd_opened"
+                  eventProps={{
+                    rankingId:
+                      ranking.id,
+                    bondKind:
+                      thread.kind,
+                    bondLabel:
+                      thread.label,
+                    position:
+                      index + 1
+                  }}
                   className="
                     rankd-edition
                     group
@@ -273,7 +286,7 @@ export default function LinkdSection({
 
                   </div>
 
-                </Link>
+                </TrackedLink>
               )
 
             }

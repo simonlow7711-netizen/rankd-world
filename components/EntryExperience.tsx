@@ -21,6 +21,10 @@ import {
 } from "@/utils/analytics"
 
 import {
+  useDwellSignal
+} from "@/utils/dwellSignal"
+
+import {
   formatRankingTitle
 } from "@/utils/rankingTitle"
 
@@ -150,6 +154,14 @@ export default function EntryExperience({
     eligibleRankings[
       rankingIndex
     ]
+
+  useDwellSignal(
+    "entry_dwell",
+    {
+      rankingId:
+        ranking?.id
+    }
+  )
 
 
   const nextRanking =
@@ -379,6 +391,20 @@ export default function EntryExperience({
     setTopItemRevealed(
       true
     )
+
+    if (
+      ranking
+    ) {
+      void trackEvent(
+        "ranking_reveal_top",
+        {
+          rankingId:
+            ranking.id,
+          surface:
+            "entry"
+        }
+      )
+    }
 
   }
 

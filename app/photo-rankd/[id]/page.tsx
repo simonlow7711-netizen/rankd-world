@@ -21,6 +21,10 @@ import ShareButton from "@/components/ShareButton"
 
 import RevealTopCover from "@/components/RevealTopCover"
 
+import {
+  trackEvent
+} from "@/utils/analytics"
+
 
 type Hotspot = {
   rankingId?: number
@@ -240,6 +244,14 @@ export default function PhotoRankdPage() {
 
         setLoading(false)
 
+        void trackEvent(
+          "photo_rankd_viewed",
+          {
+            photoRankdId:
+              loadedPhotoRankd.id
+          }
+        )
+
 
         if (
           loadedPhotoRankd.hotspots.length === 0
@@ -317,6 +329,17 @@ export default function PhotoRankdPage() {
 
     setSelectedHotspotIndex(
       hotspotIndex
+    )
+
+    void trackEvent(
+      "photo_rankd_hotspot",
+      {
+        photoRankdId:
+          photoRankd.id,
+        rankingId:
+          hotspot.rankingSupabaseId,
+        hotspotIndex
+      }
     )
 
 
@@ -1286,6 +1309,16 @@ export default function PhotoRankdPage() {
                                               setTopItemRevealed(
                                                 true
                                               )
+
+                                              void trackEvent(
+                                                "ranking_reveal_top",
+                                                {
+                                                  rankingId:
+                                                    selectedRanking.id,
+                                                  surface:
+                                                    "photo"
+                                                }
+                                              )
                                             }}
                                             accent="#FF6B35"
                                             ink="#111111"
@@ -1316,6 +1349,19 @@ export default function PhotoRankdPage() {
                         href={
                           `/rank/${selectedRanking.id}`
                         }
+                        onClick={() => {
+                          void trackEvent(
+                            "ranking_opened",
+                            {
+                              rankingId:
+                                selectedRanking.id,
+                              surface:
+                                "photo",
+                              photoRankdId:
+                                photoRankd?.id
+                            }
+                          )
+                        }}
                         style={{
                           display:
                             "flex",

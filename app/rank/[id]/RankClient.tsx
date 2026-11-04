@@ -74,6 +74,10 @@ import {
   useItemUpranks
 } from "@/utils/uprankd"
 
+import {
+  useDwellSignal
+} from "@/utils/dwellSignal"
+
 import EditionHeader, {
   EditionMark,
   EditionTitle
@@ -228,6 +232,14 @@ export default function RankClient({
         ? ranking.id
         : null
     )
+
+  useDwellSignal(
+    "ranking_dwell",
+    {
+      rankingId:
+        id
+    }
+  )
 
 
   useEffect(() => {
@@ -1543,6 +1555,17 @@ export default function RankClient({
                             setOriginalTopRevealed(
                               true
                             )
+
+                            void trackEvent(
+                              "ranking_reveal_top",
+                              {
+                                rankingId:
+                                  originalRanking?.id ??
+                                  id,
+                                surface:
+                                  "list"
+                              }
+                            )
                           }}
                           accent={
                             theme.accentHex
@@ -2031,6 +2054,17 @@ export default function RankClient({
                                 onReveal={() => {
                                   setPerspectiveTopRevealed(
                                     true
+                                  )
+
+                                  void trackEvent(
+                                    "ranking_reveal_top",
+                                    {
+                                      rankingId:
+                                        ranking?.id ??
+                                        id,
+                                      surface:
+                                        "perspective"
+                                    }
                                   )
                                 }}
                                 accent={

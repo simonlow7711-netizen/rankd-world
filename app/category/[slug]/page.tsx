@@ -33,6 +33,8 @@ import {
   getCategoryTheme
 } from "@/utils/categoryTheme"
 
+import PageSignal from "@/components/PageSignal"
+
 import {
   sharePreviewImage,
   sharePreviewUrl
@@ -452,6 +454,13 @@ export default async function CategoryPage(
           text-black
         "
       >
+
+        <PageSignal
+          event="category_viewed"
+          metadata={{
+            category
+          }}
+        />
 
         <div
           className="

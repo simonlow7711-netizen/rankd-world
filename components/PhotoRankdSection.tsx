@@ -1,5 +1,7 @@
 import Link from "next/link"
 
+import TrackedLink from "@/components/TrackedLink"
+
 import {
   PhotoRankdPreview
 } from "@/utils/photoRankds"
@@ -171,9 +173,14 @@ export default function PhotoRankdSection({
         {
           photoRankds.map(
             photoRankd => (
-              <Link
+              <TrackedLink
                 key={photoRankd.id}
                 href={`/photo-rankd/${photoRankd.id}`}
+                event="photo_rankd_opened"
+                eventProps={{
+                  photoRankdId:
+                    photoRankd.id
+                }}
                 className="
                   rankd-edition
                   group
@@ -270,7 +277,7 @@ export default function PhotoRankdSection({
                     Open Photo RANKD →
                   </p>
                 </div>
-              </Link>
+              </TrackedLink>
             )
           )
         }

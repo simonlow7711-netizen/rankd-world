@@ -10,6 +10,10 @@ import {
   supabase
 } from "@/utils/supabase"
 
+import {
+  trackEvent
+} from "@/utils/analytics"
+
 
 const VOTER_KEY =
   "rankd.uprankd.voter"
@@ -213,6 +217,16 @@ export function useItemUpranks(
         ...existing,
         [position]: result
       }))
+
+      void trackEvent(
+        "item_uprankd",
+        {
+          rankingId,
+          position,
+          on:
+            result.mine
+        }
+      )
     } catch (error) {
       console.error("upRANKD toggle error:", error)
 

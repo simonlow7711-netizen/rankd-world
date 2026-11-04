@@ -35,6 +35,11 @@ import {
 } from "@/utils/notifications"
 
 
+import {
+  trackEvent
+} from "@/utils/analytics"
+
+
 export default function Navbar() {
 
   const router =
@@ -114,6 +119,15 @@ export default function Navbar() {
         return
 
       }
+
+
+      void trackEvent(
+        "search_submitted",
+        {
+          q:
+            query
+        }
+      )
 
 
       router.push(
