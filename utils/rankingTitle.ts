@@ -3,6 +3,96 @@ export const RANKD_PREFIX =
   "Top 7"
 
 
+const US_COUNTRY_FOLLOWERS =
+  new Set([
+    "cities",
+    "city",
+    "states",
+    "state",
+    "census",
+    "army",
+    "navy",
+    "marines",
+    "dollar",
+    "dollars",
+    "presidents",
+    "elections",
+    "senate",
+    "congress",
+    "constitution",
+    "citizens",
+    "population",
+    "government"
+  ])
+
+
+function restoreOriginalAcronyms(
+  original: string,
+  titled: string
+) {
+
+  const acronyms =
+    original.match(
+      /\b[A-Z]{2,}\b/g
+    ) ??
+    []
+
+  return acronyms.reduce(
+    (title, acronym) =>
+      title.replace(
+        new RegExp(
+          `\\b${acronym[0]}${acronym.slice(1).toLowerCase()}\\b`,
+          "g"
+        ),
+        acronym
+      ),
+    titled
+  )
+
+}
+
+
+function restoreCountryUs(
+  titled: string
+) {
+
+  return titled
+    .replace(
+      /\bThe Us\b/g,
+      "The US"
+    )
+    .replace(
+      /\bUs\b(?=\s+[A-Z][a-z]+)/g,
+      (
+        match,
+        offset: number,
+        source: string
+      ) => {
+
+        const follower =
+          source
+            .slice(
+              offset + match.length
+            )
+            .trimStart()
+            .split(
+              /\s+/
+            )[0]
+            ?.toLowerCase()
+
+        return follower &&
+          US_COUNTRY_FOLLOWERS.has(
+            follower
+          )
+          ? "US"
+          : match
+
+      }
+    )
+
+}
+
+
 export function formatRankingTitle(
   title: string
 ): string {
@@ -32,6 +122,9 @@ export function formatRankingTitle(
       )
       .trim()
 
+  const original =
+    cleanTitle
+
   cleanTitle =
     cleanTitle
       .toLowerCase()
@@ -57,6 +150,21 @@ export function formatRankingTitle(
         /\bTv\b/g,
         "TV"
       )
+      .replace(
+        /\bUsa\b/g,
+        "USA"
+      )
+
+  cleanTitle =
+    restoreOriginalAcronyms(
+      original,
+      cleanTitle
+    )
+
+  cleanTitle =
+    restoreCountryUs(
+      cleanTitle
+    )
 
   return `${RANKD_PREFIX} ${cleanTitle}`
 }
