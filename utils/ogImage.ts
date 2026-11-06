@@ -1,5 +1,6 @@
-const SITE_URL =
-  "https://rankd.world"
+import {
+  SITE_URL
+} from "@/utils/siteUrl"
 
 
 export function sharePreviewUrl(

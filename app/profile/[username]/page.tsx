@@ -10,8 +10,10 @@ import {
 } from "@/utils/ogImage"
 
 
-const SITE_URL =
-  "https://rankd.world"
+import {
+  SITE_URL,
+  indexableRobots
+} from "@/utils/siteUrl"
 
 
 type Props = {
@@ -76,10 +78,7 @@ export async function generateMetadata({
       ]
     },
 
-    robots: {
-      index: true,
-      follow: true
-    }
+    robots: indexableRobots
 
   }
 

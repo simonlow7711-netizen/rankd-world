@@ -9,6 +9,11 @@ import {
   sharePreviewUrl
 } from "@/utils/ogImage"
 
+import {
+  SITE_URL,
+  indexableRobots
+} from "@/utils/siteUrl"
+
 
 type Category = {
   name: string
@@ -148,11 +153,18 @@ export const metadata = {
   description:
     "Explore RANKD by category and discover the Top 7 opinions shaping conversations.",
 
+  alternates: {
+    canonical:
+      `${SITE_URL}/categories`
+  },
+
   openGraph: {
     title:
       "RANKD Categories | Explore Top 7 Rankings",
     description:
       "Explore RANKD by category and discover the Top 7 opinions shaping conversations.",
+    url:
+      `${SITE_URL}/categories`,
     images: [
       sharePreviewImage(
         "RANKD Categories"
@@ -165,7 +177,9 @@ export const metadata = {
     images: [
       sharePreviewUrl()
     ]
-  }
+  },
+
+  robots: indexableRobots
 }
 
 

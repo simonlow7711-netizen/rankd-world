@@ -23,8 +23,9 @@ import {
 } from "@/utils/supabase"
 
 
-const SITE_URL =
-  "https://rankd.world"
+import {
+  SITE_URL
+} from "@/utils/siteUrl"
 
 
 export default async function sitemap(): Promise<

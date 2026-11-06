@@ -3,8 +3,9 @@ import type {
 } from "next"
 
 
-const SITE_URL =
-  "https://www.rankd.world"
+import {
+  SITE_URL
+} from "@/utils/siteUrl"
 
 
 export default function robots(): MetadataRoute.Robots {

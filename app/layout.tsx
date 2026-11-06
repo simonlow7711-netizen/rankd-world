@@ -28,8 +28,9 @@ import {
 } from "@/utils/ogImage"
 
 
-const SITE_URL =
-  "https://rankd.world"
+import {
+  SITE_URL
+} from "@/utils/siteUrl"
 
 
 const SITE_NAME =
@@ -137,21 +138,10 @@ export const metadata: Metadata = {
   },
 
 
-  alternates: {
-
-    canonical:
-      SITE_URL
-
-  },
-
-
   openGraph: {
 
     type:
       "website",
-
-    url:
-      SITE_URL,
 
     siteName:
       SITE_NAME,
@@ -199,7 +189,7 @@ export const metadata: Metadata = {
   robots: {
 
     index:
-      true,
+      false,
 
     follow:
       true,
@@ -207,19 +197,10 @@ export const metadata: Metadata = {
     googleBot: {
 
       index:
-        true,
+        false,
 
       follow:
-        true,
-
-      "max-image-preview":
-        "large",
-
-      "max-snippet":
-        -1,
-
-      "max-video-preview":
-        -1
+        true
 
     }
 

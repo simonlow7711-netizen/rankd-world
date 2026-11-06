@@ -1,3 +1,7 @@
+import type {
+  Metadata
+} from "next"
+
 import PhotoRankdSection from "@/components/PhotoRankdSection"
 import RANKDFeed from "@/components/RANKDFeed"
 import Trending from "@/components/Trending"
@@ -13,9 +17,40 @@ import {
   getPublishedPhotoRankds
 } from "@/utils/photoRankds"
 
+import {
+  sharePreviewImage
+} from "@/utils/ogImage"
+
+import {
+  SITE_URL,
+  indexableRobots
+} from "@/utils/siteUrl"
+
 
 export const dynamic =
   "force-dynamic"
+
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: SITE_URL
+  },
+  openGraph: {
+    type: "website",
+    url: SITE_URL,
+    siteName: "RANKD",
+    title: "RANKD — The World's Top 7 Everything",
+    description:
+      "Discover, create and debate the world's Top 7. Compare opinions, explore different perspectives and rank it differently.",
+    locale: "en_GB",
+    images: [
+      sharePreviewImage(
+        "RANKD — The World's Top 7 Everything"
+      )
+    ]
+  },
+  robots: indexableRobots
+}
 
 
 export default async function HomePage() {

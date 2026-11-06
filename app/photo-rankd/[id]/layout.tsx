@@ -7,8 +7,10 @@ import {
 } from "@/utils/supabase"
 
 
-const SITE_URL =
-  "https://rankd.world"
+import {
+  SITE_URL,
+  indexableRobots
+} from "@/utils/siteUrl"
 
 
 type PhotoRankdMetadata = {
@@ -75,10 +77,13 @@ export async function generateMetadata({
       description:
         "Explore Photo RANKD on RANKD.",
 
-      alternates: {
+      robots: {
 
-        canonical:
-          `${SITE_URL}/photo-rankd/${id}`
+        index:
+          false,
+
+        follow:
+          false
 
       }
 
@@ -165,15 +170,8 @@ export async function generateMetadata({
 
     },
 
-    robots: {
-
-      index:
-        true,
-
-      follow:
-        true
-
-    }
+    robots:
+      indexableRobots
 
   }
 
