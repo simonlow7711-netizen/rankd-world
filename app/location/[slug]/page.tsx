@@ -18,6 +18,8 @@ import {
 import RankingCard from "@/components/RankingCard"
 
 import {
+  formatLocationCountry,
+  formatLocationPlace,
   locations
 } from "@/utils/locations"
 
@@ -80,11 +82,16 @@ export async function generateMetadata({
 
   }
 
+  const place =
+    formatLocationPlace(
+      location
+    )
+
   const title =
-    `Top 7 ${location.name} Rankings | RANKD`
+    `Top 7 ${place} Rankings`
 
   const description =
-    `Discover the Top 7 rankings from ${location.name}, ${location.city}. Explore local opinions across food, travel, culture, sport and more.`
+    `Discover the Top 7 rankings from ${place}. Explore local opinions across food, travel, culture, sport and more.`
 
   const canonical =
     `${SITE_URL}/location/${locationSlug}`
@@ -218,13 +225,9 @@ export default async function LocationPage({
   ]
 
   const countryLabel =
-    location.country ===
-      "United Kingdom"
-      ? "UK"
-      : location.country ===
-          "Philippines"
-        ? "PH"
-        : location.country
+    formatLocationCountry(
+      location.country
+    )
 
   /*
    *
@@ -254,11 +257,16 @@ export default async function LocationPage({
   const canonical =
     `${SITE_URL}/location/${locationSlug}`
 
+  const place =
+    formatLocationPlace(
+      location
+    )
+
   const title =
-    `Top 7 rankings from ${location.name}`
+    `Top 7 rankings from ${place}`
 
   const description =
-    `Discover local opinions, rankings and perspectives from ${location.name}, ${location.city}.`
+    `Discover local opinions, rankings and perspectives from ${place}.`
 
   const structuredData = {
 
@@ -515,7 +523,7 @@ export default async function LocationPage({
 
               Top 7 rankings from{" "}
 
-              {location.name}
+              {place}
 
             </h1>
 
@@ -534,9 +542,7 @@ export default async function LocationPage({
 
               Discover local opinions,
               rankings and perspectives
-              from {location.name},
-              {" "}
-              {location.city}.
+              from {place}.
 
             </p>
 

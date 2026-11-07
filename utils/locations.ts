@@ -13,6 +13,54 @@ export type LocationConfig = {
 }
 
 
+export function formatLocationCountry(
+  country: string
+): string {
+
+  if (country === "United Kingdom") {
+    return "UK"
+  }
+
+  if (country === "United States") {
+    return "US"
+  }
+
+  if (country === "Philippines") {
+    return "PH"
+  }
+
+  return country
+
+}
+
+
+export function formatLocationPlace(
+  location: LocationConfig
+): string {
+
+  if (location.cityLevel) {
+    return [
+      location.name,
+      location.state || formatLocationCountry(location.country)
+    ].join(", ")
+  }
+
+  const parts = [
+    location.name
+  ]
+
+  if (
+    location.city &&
+    location.city.toLowerCase() !== location.name.toLowerCase()
+  ) {
+    parts.push(location.city)
+  }
+
+  return parts.join(", ")
+
+}
+
+
 export const locations:Record<
   string,
   LocationConfig
