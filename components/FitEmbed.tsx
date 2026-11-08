@@ -12,13 +12,15 @@ type FitEmbedProps = {
   width: number
   height: number
   fill?: boolean
+  allowUpscale?: boolean
 }
 
 export default function FitEmbed({
   children,
   width,
   height,
-  fill = false
+  fill = false,
+  allowUpscale = false
 }: FitEmbedProps) {
 
   const ref =
@@ -43,8 +45,13 @@ export default function FitEmbed({
         return
       }
 
+      const nextScale =
+        available / width
+
       setScale(
-        Math.min(1, available / width)
+        allowUpscale
+          ? nextScale
+          : Math.min(1, nextScale)
       )
     }
 
@@ -76,7 +83,7 @@ export default function FitEmbed({
         update
       )
     }
-  }, [width])
+  }, [allowUpscale, width])
 
   const fills =
     fill &&

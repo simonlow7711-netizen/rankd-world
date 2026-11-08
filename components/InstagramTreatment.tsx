@@ -75,6 +75,7 @@ export default function InstagramTreatment({
       <FitEmbed
         width={INSTAGRAM_WIDTH}
         height={INSTAGRAM_HEIGHT}
+        allowUpscale
       >
         <iframe
           title={`${name} on Instagram`}
