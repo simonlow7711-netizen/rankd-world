@@ -2343,7 +2343,6 @@ export default function RankClient({
             <Link
               href="/explore"
               className="
-                group
                 relative
                 overflow-hidden
                 rounded-[28px]
@@ -2367,15 +2366,6 @@ export default function RankClient({
                 "
               >
 
-                <div
-                  className="
-                  flex
-                  items-center
-                  justify-center
-                  gap-3
-                "
-              >
-
                 <span
                   className="
                     text-[11px]
@@ -2387,21 +2377,6 @@ export default function RankClient({
                 >
                   RANKD / EXPLORE
                 </span>
-
-
-                  <span
-                    className="
-                      text-xl
-                      font-black
-                      text-[#A95BCB]
-                      transition-transform
-                      group-hover:translate-x-1
-                    "
-                  >
-                    →
-                  </span>
-
-                </div>
 
 
                 <div

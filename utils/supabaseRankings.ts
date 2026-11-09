@@ -1105,6 +1105,164 @@ export async function getAllRankings():Promise<Ranking[]>{
 }
 
 
+const rankingSummarySelect =
+  `
+    id,
+    title,
+    category,
+    description,
+    hero_media_url,
+    views,
+    user_id,
+    parent_id,
+    root_id,
+    source_type,
+    created_at,
+    location_name,
+    location_city,
+    location_state,
+    location_country
+  `
+
+
+export async function getRankingSummaries():Promise<Ranking[]>{
+
+  const {
+    data:rankingRows,
+    error:rankingError
+  } = await supabase
+    .from("rankings")
+    .select(
+      rankingSummarySelect
+    )
+    .order(
+      "created_at",
+      {
+        ascending:false
+      }
+    )
+
+
+  if(rankingError){
+
+    console.error(
+      "RANKING SUMMARIES LOAD ERROR",
+      rankingError
+    )
+
+    return []
+
+  }
+
+
+  if(!rankingRows){
+
+    return []
+
+  }
+
+
+  return (rankingRows as RankingRow[]).map(
+    row =>
+      mapRanking(
+        row,
+        []
+      )
+  )
+
+}
+
+
+export async function getRankingsByIds(
+  ids:string[]
+):Promise<Ranking[]>{
+
+  const uniqueIds =
+    Array.from(
+      new Set(
+        ids.filter(Boolean)
+      )
+    )
+
+
+  if(
+    uniqueIds.length === 0
+  ){
+
+    return []
+
+  }
+
+
+  const {
+    data:rankingRows,
+    error:rankingError
+  } = await supabase
+    .from("rankings")
+    .select(
+      rankingSummarySelect
+    )
+    .in(
+      "id",
+      uniqueIds
+    )
+
+
+  if(rankingError){
+
+    console.error(
+      "RANKINGS BY IDS LOAD ERROR",
+      rankingError
+    )
+
+    return []
+
+  }
+
+
+  if(!rankingRows){
+
+    return []
+
+  }
+
+
+  const rankings =
+    await attachRankingItems(
+      rankingRows as RankingRow[]
+    )
+
+
+  const rankingsById =
+    new Map(
+      rankings.map(
+        ranking =>
+          [
+            ranking.id,
+            ranking
+          ]
+      )
+    )
+
+
+  return uniqueIds.flatMap(
+    id => {
+
+      const ranking =
+        rankingsById.get(
+          id
+        )
+
+      return ranking
+        ? [ranking]
+        : []
+
+    }
+  )
+
+}
+
+
 export async function createSupabaseRanking(
   ranking:Ranking,
   userId:string

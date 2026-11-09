@@ -241,3 +241,70 @@ export async function getRecentRankingAnalytics(
   return allEvents
 
 }
+
+
+export async function getRecentAnalyticsEvents(){
+
+  const cutoff =
+    new Date(
+      Date.now()
+      -
+      (
+        72
+        *
+        60
+        *
+        60
+        *
+        1000
+      )
+    ).toISOString()
+
+
+  const {
+    data,
+    error
+  } =
+    await supabase
+      .from("analytics_events")
+      .select(
+        `
+          ranking_id,
+          event_name,
+          created_at
+        `
+      )
+      .in(
+        "event_name",
+        [
+          "ranking_viewed",
+          "ranking_rankd",
+          "ranking_rerank_started"
+        ]
+      )
+      .gte(
+        "created_at",
+        cutoff
+      )
+      .limit(
+        2000
+      )
+
+
+  if(
+    error
+  ){
+
+    console.error(
+      "Recent analytics events load error:",
+      error
+    )
+
+    return []
+
+  }
+
+
+  return data ?? []
+
+}

@@ -6,7 +6,8 @@ import Link from "next/link"
 
 
 import {
-  getAllRankings
+  getRankingSummaries,
+  getRankingsByIds
 } from "@/utils/supabaseRankings"
 
 
@@ -33,7 +34,7 @@ import {
 
 
 import {
-  getRecentRankingAnalytics
+  getRecentAnalyticsEvents
 } from "@/utils/rankingEngagement"
 
 
@@ -128,20 +129,59 @@ export const metadata: Metadata = {
 }
 
 
+function pickHydratedRankings(
+  summaries: Awaited<
+    ReturnType<
+      typeof getRankingSummaries
+    >
+  >,
+  rankingsById: Map<
+    string,
+    Awaited<
+      ReturnType<
+        typeof getRankingsByIds
+      >
+    >[number]
+  >
+) {
+
+  return summaries.flatMap(
+    summary => {
+
+      const ranking =
+        rankingsById.get(
+          summary.id
+        )
+
+      return ranking
+        ? [ranking]
+        : []
+
+    }
+  )
+
+}
+
+
 export default async function ExplorePage() {
 
-  const allRankings =
-    await getAllRankings()
-
-  const photoRankds =
-    await getPublishedPhotoRankds()
+  const [
+    rankingSummaries,
+    photoRankds,
+    recentEvents
+  ] =
+    await Promise.all([
+      getRankingSummaries(),
+      getPublishedPhotoRankds(),
+      getRecentAnalyticsEvents()
+    ])
 
   const dailyRankd =
     getDailyRankd()
 
   const linkdThread =
     getLinkdThread(
-      allRankings,
+      rankingSummaries,
       {
         preferCategory:
           dailyRankd.category,
@@ -150,76 +190,91 @@ export default async function ExplorePage() {
     )
 
 
-  const latestRankings =
-    [...allRankings]
-      .sort(
-
-        (a, b) =>
-
-          new Date(
-            b.createdAt || 0
-          ).getTime()
-
-          -
-
-          new Date(
-            a.createdAt || 0
-          ).getTime()
-
-      )
-      .slice(
-        0,
-        6
-      )
-
-
-  const rankingIds =
-    allRankings.map(
-
-      ranking =>
-
-        ranking.id
-
+  const latestSummaries =
+    rankingSummaries.slice(
+      0,
+      6
     )
 
 
-  const recentEvents =
-    await getRecentRankingAnalytics(
-
-      rankingIds
-
-    )
-
-
-  const trendingRankings =
+  const trendingSummaries =
     calculateTrendingScores(
-
-      allRankings,
-
+      rankingSummaries,
       recentEvents
-
     )
-
       .sort(
-
         (a, b) =>
-
           b.trendingScore -
-
           a.trendingScore
-
       )
       .slice(
         0,
         3
       )
       .map(
-
         item =>
-
           item.ranking
-
       )
+
+
+  const rankingsToShow =
+    await getRankingsByIds(
+      [
+        ...latestSummaries.map(
+          ranking =>
+            ranking.id
+        ),
+        ...trendingSummaries.map(
+          ranking =>
+            ranking.id
+        ),
+        ...(
+          linkdThread?.rankings.map(
+            ranking =>
+              ranking.id
+          ) ?? []
+        )
+      ]
+    )
+
+
+  const rankingsById =
+    new Map(
+      rankingsToShow.map(
+        ranking =>
+          [
+            ranking.id,
+            ranking
+          ]
+      )
+    )
+
+
+  const latestRankings =
+    pickHydratedRankings(
+      latestSummaries,
+      rankingsById
+    )
+
+
+  const trendingRankings =
+    pickHydratedRankings(
+      trendingSummaries,
+      rankingsById
+    )
+
+
+  const hydratedLinkdThread =
+    linkdThread
+      ? {
+          ...linkdThread,
+          rankings:
+            pickHydratedRankings(
+              linkdThread.rankings,
+              rankingsById
+            )
+        }
+      : null
 
 
   return (
@@ -323,10 +378,11 @@ export default async function ExplorePage() {
 
 
         {
-          linkdThread && (
+          hydratedLinkdThread &&
+          hydratedLinkdThread.rankings.length > 1 && (
             <LinkdSection
               thread={
-                linkdThread
+                hydratedLinkdThread
               }
             />
           )
