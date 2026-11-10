@@ -48,46 +48,6 @@ function MarkSvg({
 }
 
 
-function GeometricSeven({
-  x,
-  y,
-  height,
-  fill
-}: {
-  x: number
-  y: number
-  height: number
-  fill: string
-}) {
-
-  const width =
-    height * 0.58
-
-  const bar =
-    height * 0.13
-
-  return (
-    <g fill={fill}>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={bar}
-      />
-      <polygon
-        points={[
-          `${x + width},${y}`,
-          `${x + width},${y + bar}`,
-          `${x + width * 0.36},${y + height}`,
-          `${x + width * 0.12},${y + height}`
-        ].join(" ")}
-      />
-    </g>
-  )
-
-}
-
-
 function FoodMark({
   ink,
   accent
@@ -185,10 +145,15 @@ function FilmMark({
         stroke={ink}
         strokeWidth="3"
       />
-      <GeometricSeven
-        x={28}
-        y={86}
-        height={72}
+      <rect
+        x="26"
+        y="78"
+        width="28"
+        height="14"
+        fill={accent}
+      />
+      <polygon
+        points="54,78 54,92 36,184 22,184"
         fill={accent}
       />
     </MarkSvg>
@@ -627,19 +592,24 @@ function HealthMark({
   accent
 }: MarkProps) {
 
+  const stroke = {
+    fill: "none" as const,
+    strokeWidth: 4,
+    strokeLinejoin: "miter" as const,
+    strokeLinecap: "square" as const
+  }
+
   return (
     <MarkSvg>
       <polyline
-        points="40,8 40,40 18,52 62,76 18,100 62,124 18,148 40,160 40,232"
-        fill="none"
+        points="40,8 40,40 18,52 62,72 18,92 70,112 18,132 62,152 18,172 40,188 40,232"
         stroke={ink}
-        strokeWidth="4"
+        {...stroke}
       />
       <polyline
-        points="40,148 62,124 40,160"
-        fill="none"
+        points="18,92 70,112 18,132"
         stroke={accent}
-        strokeWidth="5"
+        {...stroke}
       />
     </MarkSvg>
   )
