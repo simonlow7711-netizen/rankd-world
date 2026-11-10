@@ -129,18 +129,22 @@ export function formatRankingTitle(
     cleanTitle
       .toLowerCase()
       .replace(
-        /\b[a-z]/g,
-        character =>
-          character.toUpperCase()
+        /(^|[^\p{L}\p{N}'’])(\p{L})/gu,
+        (
+          _,
+          before: string,
+          letter: string
+        ) =>
+          before + letter.toUpperCase()
       )
       .replace(
-        /(['’])([A-Z])/g,
+        /(['’])(\p{L})/gu,
         (
           _,
           apostrophe: string,
-          character: string
+          letter: string
         ) =>
-          apostrophe + character.toLowerCase()
+          apostrophe + letter.toLowerCase()
       )
       .replace(
         /\bUk\b/g,
