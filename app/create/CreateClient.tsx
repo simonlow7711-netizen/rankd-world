@@ -1789,7 +1789,7 @@ export default function CreateClient(){
                                     text-black/30
                                   "
                                 >
-                                  Paste a YouTube, Spotify, Maps or any other link.
+                                  Paste a YouTube, Spotify, Apple Music, Apple Podcasts, Maps or any other link.
                                 </p>
 
 
@@ -2439,7 +2439,7 @@ export default function CreateClient(){
                       event.target.value
                     )
                 }
-                placeholder="YouTube, Spotify, Instagram, Amazon, Maps or any link"
+                placeholder="YouTube, Spotify, Apple Music, Apple Podcasts, Instagram, Amazon, Maps or any link"
                 className={`
                   ${fieldClass}
                   text-center

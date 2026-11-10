@@ -1,6 +1,7 @@
 "use client"
 
 import AmazonTreatment from "@/components/AmazonTreatment"
+import AppleTreatment from "@/components/AppleTreatment"
 import InstagramTreatment from "@/components/InstagramTreatment"
 import MapsTreatment from "@/components/MapsTreatment"
 import SpotifyTreatment from "@/components/SpotifyTreatment"
@@ -10,6 +11,10 @@ import YouTubeTreatment from "@/components/YouTubeTreatment"
 import {
   getAmazonUrl
 } from "@/utils/amazon"
+
+import {
+  getAppleEmbed
+} from "@/utils/appleMedia"
 
 import {
   getGoogleMapsEmbedUrl
@@ -56,13 +61,17 @@ export default function EntryEmbeds({
   const instagramPostUrl =
     getInstagramPostUrl(url)
 
+  const apple =
+    getAppleEmbed(url)
+
   const hasSpecific =
     Boolean(
       youtubeId ||
       mapsUrl ||
       spotify ||
       amazonUrl ||
-      instagramPostUrl
+      instagramPostUrl ||
+      apple
     )
 
   return (
@@ -88,6 +97,11 @@ export default function EntryEmbeds({
       />
 
       <SpotifyTreatment
+        url={url}
+        name={name}
+      />
+
+      <AppleTreatment
         url={url}
         name={name}
       />
