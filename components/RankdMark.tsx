@@ -29,22 +29,29 @@ export default function RankdMark({
   const frame =
     size === "sm"
       ? isUprankd
-        ? "h-8 w-5"
+        ? "h-8 min-w-[4.85rem] px-0.5"
         : "h-5 w-5"
       : size === "lg"
         ? isUprankd
-          ? "h-[5.25rem] w-16 sm:h-[5.75rem] sm:w-[4.5rem]"
+          ? "h-16 min-w-[11rem] px-1"
           : "h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem]"
         : isUprankd
-          ? "h-[4.75rem] w-14 sm:h-[5.25rem] sm:w-16"
+          ? "h-12 min-w-[8.5rem] px-1"
           : "h-14 w-14 sm:h-16 sm:w-16"
 
-  const hat =
+  const word =
     size === "sm"
-      ? "mb-px h-[13px] w-[12px]"
+      ? "text-[15px]"
       : size === "lg"
-        ? "mb-0.5 h-7 w-8"
-        : "mb-0.5 h-6 w-7"
+        ? "text-4xl"
+        : "text-2xl"
+
+  const shadow =
+    size === "sm"
+      ? "text-[2.75rem]"
+      : size === "lg"
+        ? "text-[5.5rem]"
+        : "text-[5rem]"
 
   return (
     <span
@@ -54,11 +61,6 @@ export default function RankdMark({
         shrink-0
         items-center
         justify-center
-        ${
-          isUprankd
-            ? "flex-col"
-            : ""
-        }
         ${frame}
       `}
       aria-hidden="true"
@@ -66,38 +68,46 @@ export default function RankdMark({
 
       {
         isUprankd && (
-          <svg
-            key={playKey}
-            viewBox="0 0 24 20"
-            className={`
-              pointer-events-none
-              shrink-0
-              ${hat}
-              ${playKey > 0 ? "uprankd-hat-play" : ""}
-            `}
-            aria-hidden="true"
-          >
-            {
-              [
-                "M3 18 L12 12.5 L21 18",
-                "M3 12.5 L12 7 L21 12.5",
-                "M3 7 L12 1.5 L21 7"
-              ].map(
-                d => (
-                  <path
-                    key={d}
-                    className="uprankd-chevron"
-                    d={d}
-                    fill="none"
-                    stroke={color}
-                    strokeWidth="2.2"
-                    strokeLinecap="square"
-                    strokeLinejoin="miter"
-                  />
-                )
-              )
-            }
-          </svg>
+          <>
+            <span
+              key={playKey}
+              className={`
+                pointer-events-none
+                absolute
+                left-1/2
+                top-1/2
+                -translate-x-1/2
+                -translate-y-1/2
+                select-none
+                font-black
+                leading-none
+                tracking-[-0.16em]
+                ${shadow}
+                ${playKey > 0 ? "uprankd-shadow-play" : ""}
+              `}
+              style={{
+                color: "#FF6B35",
+                opacity: 0.14
+              }}
+            >
+              7
+            </span>
+
+            <span
+              className={`
+                relative
+                z-10
+                select-none
+                font-black
+                leading-none
+                tracking-[-0.065em]
+                text-black
+                ${word}
+              `}
+            >
+              upRANK
+            </span>
+          </>
         )
       }
 
@@ -142,26 +152,6 @@ export default function RankdMark({
               z-10
               -translate-x-1/2
               -translate-y-1/2
-              select-none
-              font-black
-              leading-none
-              tracking-[-0.16em]
-              ${glyph}
-            `}
-            style={{
-              color
-            }}
-          >
-            7
-          </span>
-        )
-      }
-
-      {
-        isUprankd && (
-          <span
-            className={`
-              pointer-events-none
               select-none
               font-black
               leading-none

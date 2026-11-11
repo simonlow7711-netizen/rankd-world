@@ -24,9 +24,6 @@ export default function UpRankdButton({
   onToggle
 }: UpRankdButtonProps) {
 
-  const color =
-    mine ? accent : ink
-
   const [
     playKey,
     setPlayKey
@@ -60,26 +57,20 @@ export default function UpRankdButton({
         inline-flex
         items-center
         justify-center
-        border
-        border-black
+        border-0
         bg-transparent
-        transition
-        hover:border-[color:var(--uprankd-accent,#FF6B35)]
+        p-0
         ${
           compact
-            ? "mt-1 gap-1 rounded-full px-2 py-1"
-            : "mt-4 gap-1.5 rounded-full px-3 py-1.5"
+            ? "mt-1 gap-1.5"
+            : "mt-4 gap-2"
         }
       `}
-      style={{
-        ["--uprankd-accent" as string]: accent,
-        color
-      }}
     >
       <RankdMark
         variant="uprankd"
         size="sm"
-        color={color}
+        color={accent}
         playKey={playKey}
       />
 
@@ -87,9 +78,12 @@ export default function UpRankdButton({
         className={`
           font-black
           leading-none
-          tracking-[-0.04em]
-          ${compact ? "text-[11px]" : "text-sm"}
+          tracking-[-0.065em]
+          ${compact ? "text-[11px]" : "text-[12px]"}
         `}
+        style={{
+          color: ink
+        }}
       >
         {count}
       </span>
