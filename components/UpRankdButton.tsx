@@ -48,11 +48,9 @@ export default function UpRankdButton({
       }}
       aria-pressed={mine}
       aria-label={
-        mine
-          ? `Remove your upRANKD. ${count} so far.`
-          : `upRANKD this entry. ${count} so far.`
+        `upRANK this entry. ${count} so far.`
       }
-      title="upRANKD"
+      title="upRANK this entry"
       className={`
         inline-flex
         items-center
