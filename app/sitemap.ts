@@ -4,8 +4,9 @@ import type {
 
 
 import {
-  getAllRankings
-} from "@/utils/supabaseRankings"
+  getCachedPublishedPhotoRankds,
+  getCachedRankingSitemapEntries
+} from "@/utils/cachedRankings"
 
 
 import {
@@ -16,11 +17,6 @@ import {
 import {
   categoryToSlug
 } from "@/utils/categorySlug"
-
-
-import {
-  supabase
-} from "@/utils/supabase"
 
 
 import {
@@ -35,19 +31,13 @@ export default async function sitemap(): Promise<
 
   const [
     rankings,
-    photoRankdResult
+    photoRankds
   ] =
     await Promise.all([
 
-      getAllRankings(),
+      getCachedRankingSitemapEntries(),
 
-      supabase
-        .from("photo_rankds")
-        .select(
-          `
-            id
-          `
-        )
+      getCachedPublishedPhotoRankds()
 
     ])
 
@@ -545,10 +535,7 @@ export default async function sitemap(): Promise<
 
     },
 
-    ...(
-      photoRankdResult.data
-      ?? []
-    ).map(
+    ...photoRankds.map(
 
       photoRankd => ({
 

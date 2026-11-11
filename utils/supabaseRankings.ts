@@ -1133,7 +1133,21 @@ export async function getRankingSummaries():Promise<Ranking[]>{
   } = await supabase
     .from("rankings")
     .select(
-      rankingSummarySelect
+      `
+        id,
+        title,
+        category,
+        views,
+        user_id,
+        parent_id,
+        root_id,
+        source_type,
+        created_at,
+        location_name,
+        location_city,
+        location_state,
+        location_country
+      `
     )
     .order(
       "created_at",
@@ -1258,6 +1272,74 @@ export async function getRankingsByIds(
         : []
 
     }
+  )
+
+}
+
+
+export function pickHydratedRankings(
+  summaries: Ranking[],
+  rankingsById: Map<string, Ranking>
+) {
+
+  return summaries.flatMap(
+    summary => {
+
+      const ranking =
+        rankingsById.get(
+          summary.id
+        )
+
+      return ranking
+        ? [ranking]
+        : []
+
+    }
+  )
+
+}
+
+
+export async function getRankingSitemapEntries() {
+
+  const {
+    data,
+    error
+  } = await supabase
+    .from("rankings")
+    .select(
+      "id, created_at"
+    )
+    .order(
+      "created_at",
+      {
+        ascending: false
+      }
+    )
+
+
+  if (
+    error
+  ) {
+
+    console.error(
+      "RANKING SITEMAP LOAD ERROR",
+      error
+    )
+
+    return []
+
+  }
+
+
+  return (data ?? []).map(
+    row => ({
+      id:
+        row.id as string,
+      createdAt:
+        (row.created_at as string | null) ??
+        null
+    })
   )
 
 }

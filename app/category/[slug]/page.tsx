@@ -13,7 +13,11 @@ import RankingCard from "@/components/RankingCard"
 import CategoryCover from "@/components/CategoryCover"
 
 import {
-  getAllRankings
+  getCachedRankingSummaries
+} from "@/utils/cachedRankings"
+
+import {
+  getRankingsByIds
 } from "@/utils/supabaseRankings"
 
 import {
@@ -292,13 +296,13 @@ export default async function CategoryPage(
     )
 
 
-  const allRankings =
-    await getAllRankings()
+  const rankingSummaries =
+    await getCachedRankingSummaries()
 
 
-  const rankings =
+  const categorySummaries =
 
-    allRankings
+    rankingSummaries
 
       .filter(
 
@@ -324,6 +328,15 @@ export default async function CategoryPage(
           ).getTime()
 
       )
+
+
+  const rankings =
+    await getRankingsByIds(
+      categorySummaries.map(
+        ranking =>
+          ranking.id
+      )
+    )
 
 
   const categoryUrl =

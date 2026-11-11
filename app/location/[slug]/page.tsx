@@ -33,8 +33,8 @@ import {
   indexableRobots
 } from "@/utils/siteUrl"
 
-export const dynamic =
-  "force-dynamic"
+export const revalidate =
+  300
 
 type LocationPageProps = {
   params: Promise<{

@@ -10,12 +10,19 @@ import Categories from "@/components/Categories"
 import Footer from "@/components/Footer"
 
 import {
-  getAllRankings
+  getCachedPublishedPhotoRankds,
+  getCachedRankingSummaries,
+  getCachedRecentAnalyticsEvents
+} from "@/utils/cachedRankings"
+
+import {
+  getRankingsByIds,
+  pickHydratedRankings
 } from "@/utils/supabaseRankings"
 
 import {
-  getPublishedPhotoRankds
-} from "@/utils/photoRankds"
+  calculateTrendingScores
+} from "@/utils/trendingScore"
 
 import {
   sharePreviewImage
@@ -27,8 +34,8 @@ import {
 } from "@/utils/siteUrl"
 
 
-export const dynamic =
-  "force-dynamic"
+export const revalidate =
+  300
 
 
 export const metadata: Metadata = {
@@ -57,13 +64,83 @@ export default async function HomePage() {
 
 
   const [
-    rankings,
-    photoRankds
+    rankingSummaries,
+    photoRankds,
+    recentEvents
   ] =
     await Promise.all([
-      getAllRankings(),
-      getPublishedPhotoRankds()
+      getCachedRankingSummaries(),
+      getCachedPublishedPhotoRankds(),
+      getCachedRecentAnalyticsEvents()
     ])
+
+
+  const latestSummaries =
+    rankingSummaries.slice(
+      0,
+      6
+    )
+
+
+  const trendingSummaries =
+    calculateTrendingScores(
+      rankingSummaries,
+      recentEvents
+    )
+      .sort(
+        (a, b) =>
+          b.trendingScore -
+          a.trendingScore
+      )
+      .slice(
+        0,
+        3
+      )
+      .map(
+        item =>
+          item.ranking
+      )
+
+
+  const rankingsToShow =
+    await getRankingsByIds(
+      [
+        ...latestSummaries.map(
+          ranking =>
+            ranking.id
+        ),
+        ...trendingSummaries.map(
+          ranking =>
+            ranking.id
+        )
+      ]
+    )
+
+
+  const rankingsById =
+    new Map(
+      rankingsToShow.map(
+        ranking =>
+          [
+            ranking.id,
+            ranking
+          ]
+      )
+    )
+
+
+  const latestRankings =
+    pickHydratedRankings(
+      latestSummaries,
+      rankingsById
+    )
+
+
+  const trendingRankings =
+    pickHydratedRankings(
+      trendingSummaries,
+      rankingsById
+    )
 
 
   return (
@@ -170,13 +247,17 @@ export default async function HomePage() {
         <RANKDFeed
 
           rankings={
-            rankings
+            latestRankings
           }
 
         />
 
 
-        <Trending />
+        <Trending
+          rankings={
+            trendingRankings
+          }
+        />
 
 
         <WhyRankd />

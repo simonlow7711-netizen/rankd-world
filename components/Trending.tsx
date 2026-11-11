@@ -1,11 +1,4 @@
-"use client"
-
 import Link from "next/link"
-
-import {
-  useEffect,
-  useState
-} from "react"
 
 import RankingCard from "@/components/RankingCard"
 
@@ -13,103 +6,15 @@ import {
   Ranking
 } from "@/types/ranking"
 
-import {
-  getAllRankings
-} from "@/utils/supabaseRankings"
 
-import {
-  getRecentRankingAnalytics
-} from "@/utils/rankingEngagement"
-
-import {
-  calculateTrendingScores
-} from "@/utils/trendingScore"
+type TrendingProps = {
+  rankings: Ranking[]
+}
 
 
-export default function Trending() {
-
-  const [
-    rankings,
-    setRankings
-  ] =
-    useState<Ranking[]>([])
-
-
-  const [
-    loading,
-    setLoading
-  ] =
-    useState(true)
-
-
-  useEffect(() => {
-
-    async function loadRankings() {
-
-      try {
-
-        const data =
-          await getAllRankings()
-
-
-        const rankingIds =
-          data.map(
-            ranking =>
-              ranking.id
-          )
-
-
-        const events =
-          await getRecentRankingAnalytics(
-            rankingIds
-          )
-
-
-        const trending =
-          calculateTrendingScores(
-            data,
-            events
-          )
-            .sort(
-              (a, b) =>
-                b.trendingScore -
-                a.trendingScore
-            )
-            .slice(
-              0,
-              3
-            )
-            .map(
-              item =>
-                item.ranking
-            )
-
-
-        setRankings(
-          trending
-        )
-
-      }
-
-      catch {
-
-        setRankings([])
-
-      }
-
-      finally {
-
-        setLoading(false)
-
-      }
-
-    }
-
-
-    loadRankings()
-
-  }, [])
-
+export default function Trending({
+  rankings
+}: TrendingProps) {
 
   return (
 
@@ -222,23 +127,7 @@ export default function Trending() {
         </div>
 
 
-        {loading ? (
-
-          <div
-            className="
-              border
-              border-black/10
-              bg-[#F7F4EE]
-              p-8
-              text-center
-              text-sm
-              font-black
-            "
-          >
-            Loading perspectives...
-          </div>
-
-        ) : rankings.length === 0 ? (
+        {rankings.length === 0 ? (
 
           <div
             className="

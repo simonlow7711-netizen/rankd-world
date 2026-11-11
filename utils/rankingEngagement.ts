@@ -14,16 +14,17 @@ export type RankingEngagementData = {
 }
 
 
-export async function getRankingEngagement(
+async function countRankingEvents(
 
-  rankingId:string
+  rankingId:string,
 
-):Promise<RankingEngagementData> {
+  eventName:string
 
+){
 
   const {
 
-    data,
+    count,
 
     error
 
@@ -32,7 +33,11 @@ export async function getRankingEngagement(
     .from("analytics_events")
 
     .select(
-      "event_name"
+      "*",
+      {
+        count: "exact",
+        head: true
+      }
     )
 
     .eq(
@@ -40,16 +45,9 @@ export async function getRankingEngagement(
       rankingId
     )
 
-    .in(
-
+    .eq(
       "event_name",
-
-      [
-        "ranking_viewed",
-        "ranking_rankd",
-        "ranking_rerank_started"
-      ]
-
+      eventName
     )
 
 
@@ -57,63 +55,60 @@ export async function getRankingEngagement(
 
     console.error(
 
-      "Ranking engagement load error:",
+      "Ranking engagement count error:",
 
       error
 
     )
 
-
-    return {
-
-      views:0,
-
-      rankd:0,
-
-      rerankd:0
-
-    }
+    return 0
 
   }
 
 
-  const events =
-    data ?? []
+  return count ?? 0
+
+}
+
+
+export async function getRankingEngagement(
+
+  rankingId:string
+
+):Promise<RankingEngagementData> {
+
+
+  const [
+    views,
+    rankd,
+    rerankd
+  ] = await Promise.all([
+
+    countRankingEvents(
+      rankingId,
+      "ranking_viewed"
+    ),
+
+    countRankingEvents(
+      rankingId,
+      "ranking_rankd"
+    ),
+
+    countRankingEvents(
+      rankingId,
+      "ranking_rerank_started"
+    )
+
+  ])
 
 
   return {
 
-    views:
+    views,
 
-      events.filter(
+    rankd,
 
-        event =>
-          event.event_name ===
-          "ranking_viewed"
-
-      ).length,
-
-
-    rankd:
-
-      events.filter(
-
-        event =>
-          event.event_name ===
-          "ranking_rankd"
-
-      ).length,
-
-
-    rerankd:
-
-      events.filter(
-
-        event =>
-          event.event_name ===
-          "ranking_rerank_started"
-
-      ).length
+    rerankd
 
   }
 

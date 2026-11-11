@@ -6,8 +6,14 @@ import Link from "next/link"
 
 
 import {
-  getRankingSummaries,
-  getRankingsByIds
+  getCachedPublishedPhotoRankds,
+  getCachedRankingSummaries,
+  getCachedRecentAnalyticsEvents
+} from "@/utils/cachedRankings"
+
+import {
+  getRankingsByIds,
+  pickHydratedRankings
 } from "@/utils/supabaseRankings"
 
 
@@ -28,14 +34,6 @@ import {
   getLinkdThread
 } from "@/utils/linkd"
 
-import {
-  getPublishedPhotoRankds
-} from "@/utils/photoRankds"
-
-
-import {
-  getRecentAnalyticsEvents
-} from "@/utils/rankingEngagement"
 
 
 import {
@@ -55,8 +53,8 @@ import {
 } from "@/utils/siteUrl"
 
 
-export const dynamic =
-  "force-dynamic"
+export const revalidate =
+  300
 
 
 export const metadata: Metadata = {
@@ -129,40 +127,6 @@ export const metadata: Metadata = {
 }
 
 
-function pickHydratedRankings(
-  summaries: Awaited<
-    ReturnType<
-      typeof getRankingSummaries
-    >
-  >,
-  rankingsById: Map<
-    string,
-    Awaited<
-      ReturnType<
-        typeof getRankingsByIds
-      >
-    >[number]
-  >
-) {
-
-  return summaries.flatMap(
-    summary => {
-
-      const ranking =
-        rankingsById.get(
-          summary.id
-        )
-
-      return ranking
-        ? [ranking]
-        : []
-
-    }
-  )
-
-}
-
-
 export default async function ExplorePage() {
 
   const [
@@ -171,9 +135,9 @@ export default async function ExplorePage() {
     recentEvents
   ] =
     await Promise.all([
-      getRankingSummaries(),
-      getPublishedPhotoRankds(),
-      getRecentAnalyticsEvents()
+      getCachedRankingSummaries(),
+      getCachedPublishedPhotoRankds(),
+      getCachedRecentAnalyticsEvents()
     ])
 
   const dailyRankd =
