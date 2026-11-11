@@ -49,10 +49,12 @@ export function EditionTitle({
   return (
     <span
       className="
-        inline-block
+        block
+        w-full
+        min-w-0
         max-w-full
-        text-balance
-        hyphens-none
+        break-words
+        [overflow-wrap:anywhere]
       "
     >
       {children}

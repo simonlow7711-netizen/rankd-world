@@ -134,7 +134,7 @@ function getTheme(
     categoryLabel:
       theme.name,
     title:
-      `text-3xl md:text-4xl ${theme.titleClass}`,
+      `text-3xl ${theme.titleClass}`,
     index:
       theme.index
   }
@@ -576,10 +576,13 @@ export default function RankingCard({
 
           className={`
             mt-2
+            w-full
+            min-w-0
             max-w-full
             font-black
             text-balance
-            hyphens-none
+            break-words
+            [overflow-wrap:anywhere]
             ${theme.title}
           `}
 
@@ -602,6 +605,8 @@ export default function RankingCard({
         </h3>
 
         </EditionHeader>
+
+      </Link>
 
 
         <RankingDescription
@@ -631,8 +636,10 @@ export default function RankingCard({
         {
           ranking.location && (
 
-            <div
-
+            <Link
+              href={
+                `/rank/${ranking.id}`
+              }
               className="
                 mx-auto
                 mt-3
@@ -738,12 +745,10 @@ export default function RankingCard({
 
               </span>
 
-            </div>
+            </Link>
 
           )
         }
-
-      </Link>
 
 
         <div
@@ -941,6 +946,9 @@ export default function RankingCard({
 
                               className="
                                 min-w-0
+                                w-full
+                                break-words
+                                [overflow-wrap:anywhere]
                                 font-black
                                 leading-tight
                               "

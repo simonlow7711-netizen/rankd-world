@@ -1142,7 +1142,8 @@ export default function RankClient({
                   lg:text-6xl
                   font-black
                   text-balance
-                  hyphens-none
+                  break-words
+                  [overflow-wrap:anywhere]
                   ${theme.title}
                 `}
               >
