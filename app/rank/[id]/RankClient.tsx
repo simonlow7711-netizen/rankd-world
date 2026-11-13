@@ -87,6 +87,7 @@ import EditionHeader, {
 type RankClientProps = {
   id:string
   initialRanking:Ranking
+  openTeaser?:boolean
 }
 
 
@@ -140,7 +141,8 @@ function getTheme(
 
 export default function RankClient({
   id,
-  initialRanking
+  initialRanking,
+  openTeaser = false
 }: RankClientProps) {
   const router =
     useRouter()
@@ -201,7 +203,53 @@ export default function RankClient({
     animatedPreviewOpen,
     setAnimatedPreviewOpen
   ] =
-    useState(false)
+    useState(
+      false
+    )
+
+  useEffect(
+    () => {
+      const wantsTeaser =
+        openTeaser ||
+        new URLSearchParams(
+          window.location.search
+        ).get(
+          "teaser"
+        ) === "1"
+
+      if (wantsTeaser) {
+        setAnimatedPreviewOpen(
+          true
+        )
+      }
+    },
+    [
+      openTeaser
+    ]
+  )
+
+  useEffect(
+    () => {
+      function openFromShare() {
+        setAnimatedPreviewOpen(
+          true
+        )
+      }
+
+      window.addEventListener(
+        "rankd:share-video",
+        openFromShare
+      )
+
+      return () => {
+        window.removeEventListener(
+          "rankd:share-video",
+          openFromShare
+        )
+      }
+    },
+    []
+  )
 
 
   const [
@@ -1273,6 +1321,21 @@ export default function RankClient({
                         displayRanking.id
                     }}
                     align="center"
+                    teaserUrl={
+                      displayRanking.teaserUrl
+                    }
+                    rankingId={
+                      displayRanking.id
+                    }
+                    category={category}
+                    paper={theme.paper}
+                    accent={theme.accentHex}
+                    items={
+                      sortedOriginalItems.map(item => ({
+                        position: item.position,
+                        name: item.name
+                      }))
+                    }
                     onTeaser={() => {
                       setAnimatedPreviewOpen(true)
                     }}
@@ -1294,11 +1357,42 @@ export default function RankClient({
                         }))
                       }
                       href={`/rank/${displayRanking.id}`}
+                      teaserUrl={
+                        displayRanking.teaserUrl
+                      }
                       category={category}
                       paper={theme.paper}
                       accent={theme.accentHex}
                       onClose={() => {
                         setAnimatedPreviewOpen(false)
+
+                        if (
+                          typeof window === "undefined"
+                        ) {
+                          return
+                        }
+
+                        const params =
+                          new URLSearchParams(
+                            window.location.search
+                          )
+
+                        params.delete(
+                          "teaser"
+                        )
+
+                        const query =
+                          params.toString()
+
+                        window.history.replaceState(
+                          null,
+                          "",
+                          `${window.location.pathname}${
+                            query
+                              ? `?${query}`
+                              : ""
+                          }`
+                        )
                       }}
                     />
                   )

@@ -11,13 +11,18 @@ import {
   createPortal
 } from "react-dom"
 
-import {
+import type {
   ArrayBufferTarget,
   Muxer
 } from "mp4-muxer"
 
 import {
-  publishRankingTeaser
+  downloadTeaserFile,
+  fetchTeaserFile,
+  publishRankingTeaser,
+  rankingVideoCaption,
+  shareRankingVideoFile,
+  teaserFileName
 } from "@/utils/teaser"
 
 
@@ -29,6 +34,7 @@ type AnimatedRankPreviewProps = {
   }[]
   href: string
   rankingId?: string
+  teaserUrl?: string | null
   category?: string
   paper?: string
   accent?: string
@@ -40,23 +46,12 @@ const EXPORT_WIDTH = 1080
 const EXPORT_HEIGHT = 1920
 const EXPORT_FPS = 30
 const FRAME_DURATION = Math.round(1_000_000 / EXPORT_FPS)
-const VIDEO_FILENAME = "rankd-preview.mp4"
 const TRACK_URL = "/rankd-track.m4a"
 const MUSIC_START_SEC = 12
 const DURATION_SEC = 8.4
 const CREAM = "#F7F4EE"
 const INK = "#111111"
-const FONT = 'Geist, "Geist Sans", ui-sans-serif, system-ui, sans-serif'
-
-
-function rankingShareUrl(
-  href: string
-) {
-  return new URL(
-    href,
-    window.location.origin
-  ).href
-}
+const FONT = '"Geist Sans", Geist, ui-sans-serif, system-ui, sans-serif'
 
 
 function rankingIdFromHref(
@@ -83,82 +78,6 @@ function rankingIdFromHref(
   } catch {
     return null
   }
-}
-
-
-function rankingShareCaption(
-  title: string,
-  href: string
-) {
-  return [
-    "Would you rank it differently?",
-    "",
-    `${title} | RANKD`,
-    "",
-    `See the full list: ${rankingShareUrl(href)}`
-  ].join("\n")
-}
-
-
-async function shareVideoFile(
-  file: File,
-  title: string,
-  href: string
-) {
-  if (
-    typeof navigator.share !== "function"
-  ) {
-    return false
-  }
-
-  const url =
-    rankingShareUrl(href)
-
-  const text =
-    rankingShareCaption(
-      title,
-      href
-    )
-
-  const attempts: ShareData[] = [
-    {
-      files: [file],
-      title,
-      text,
-      url
-    },
-    {
-      files: [file],
-      title,
-      text
-    },
-    {
-      files: [file]
-    }
-  ]
-
-  for (const shareData of attempts) {
-    if (
-      typeof navigator.canShare === "function" &&
-      !navigator.canShare(shareData)
-    ) {
-      continue
-    }
-
-    try {
-      await navigator.share(shareData)
-      return true
-    } catch (error) {
-      if (
-        error instanceof DOMException &&
-        error.name === "AbortError"
-      ) {
-        return true
-      }
-    }
-  }
-
-  return false
 }
 
 
@@ -273,6 +192,57 @@ function appear(
 }
 
 
+function fadeInOut(
+  time: number,
+  inStart: number,
+  inDur: number,
+  outStart: number,
+  outDur: number
+) {
+  return appear(time, inStart, inDur) * (1 - appear(time, outStart, outDur))
+}
+
+
+function setType(
+  context: CanvasRenderingContext2D,
+  weight: string,
+  sizePx: number,
+  trackingEm: number
+) {
+  context.font = `${weight} ${sizePx}px ${FONT}`
+
+  if ("letterSpacing" in context) {
+    context.letterSpacing = `${sizePx * trackingEm}px`
+  }
+}
+
+
+function drawRankdLockup(
+  context: CanvasRenderingContext2D,
+  cx: number,
+  cy: number,
+  sevenSize: number,
+  accent: string,
+  sevenAlpha: number,
+  wordAlpha: number
+) {
+  const wordSize = sevenSize * 0.26
+
+  context.save()
+  context.textAlign = "center"
+  context.textBaseline = "middle"
+  context.globalAlpha = sevenAlpha
+  context.fillStyle = accent
+  setType(context, "900", sevenSize, -0.16)
+  context.fillText("7", cx, cy)
+  context.globalAlpha = wordAlpha
+  context.fillStyle = INK
+  setType(context, "900", wordSize, -0.065)
+  context.fillText("RANKD", cx, cy)
+  context.restore()
+}
+
+
 function wrapText(
   context: CanvasRenderingContext2D,
   text: string,
@@ -356,7 +326,7 @@ function drawTeaserFrame(
   context.fillStyle = paper
   context.fillRect(0, 0, width, height)
 
-  const ghostProgress = appear(time, 0.2, 0.7)
+  const ghostProgress = fadeInOut(time, 0.2, 0.7, 5.15, 0.9)
   const revealedCount = assets.items.reduce((count, item, index) => {
     const start = 1.05 + index * 0.95
 
@@ -413,7 +383,7 @@ function drawTeaserFrame(
   context.save()
   context.globalAlpha = logoProgress
   context.fillStyle = accent
-  context.font = `800 ${width * 0.022}px ${FONT}`
+  setType(context, "900", width * 0.022, 0.16)
   context.textAlign = "right"
   context.textBaseline = "middle"
   context.fillText(
@@ -430,7 +400,7 @@ function drawTeaserFrame(
   context.globalAlpha = titleProgress
   context.translate(0, (1 - titleProgress) * 18)
   context.fillStyle = INK
-  context.font = `900 ${titleSize}px ${FONT}`
+  setType(context, "900", titleSize, -0.04)
   context.textAlign = "left"
   context.textBaseline = "top"
   const titleLines = wrapText(
@@ -450,7 +420,7 @@ function drawTeaserFrame(
 
   const titleBlock = titleLines.length * titleSize * 0.94
   const listTop = pad + logoHeight + width * 0.08 + titleBlock
-  const rowHeight = width * 0.128
+  const rowHeight = width * 0.118
 
   assets.items.forEach((item, index) => {
     const start = 1.05 + index * 0.95
@@ -476,7 +446,7 @@ function drawTeaserFrame(
     const stamp = appear(time, start, 0.28)
 
     context.fillStyle = accent
-    context.font = `900 ${width * 0.07}px ${FONT}`
+    setType(context, "900", width * 0.07, -0.04)
     context.textAlign = "left"
     context.textBaseline = "top"
     context.save()
@@ -486,7 +456,7 @@ function drawTeaserFrame(
     context.restore()
 
     context.fillStyle = INK
-    context.font = `800 ${width * 0.04}px ${FONT}`
+    setType(context, "900", width * 0.04, -0.03)
     const nameLines = wrapText(
       context,
       item.name,
@@ -503,83 +473,325 @@ function drawTeaserFrame(
     context.restore()
   })
 
-  const hookProgress = appear(time, 5.05, 0.5)
-  const hookTop = listTop + assets.items.length * rowHeight + width * 0.02
+  const hookProgress = appear(time, 4.55, 0.55)
+  const hookTop = listTop + assets.items.length * rowHeight + width * 0.085
+  const brandSize = width * 0.084
+  const brandLeading = brandSize * 1.08
+  const footerY = height - pad
+  const sevenSize = width * 0.44
+  const lockupX = width - pad - sevenSize * 0.45
+  const lockupY = footerY - sevenSize * 0.38
+  const markProgress = appear(time, 5.2, 0.7)
+  const wordProgress = appear(time, 5.55, 0.5)
+
+  if (markProgress > 0) {
+    context.save()
+    context.translate(0, (1 - markProgress) * 14)
+    drawRankdLockup(
+      context,
+      lockupX,
+      lockupY,
+      sevenSize,
+      accent,
+      markProgress * 0.22,
+      wordProgress
+    )
+    context.restore()
+  }
 
   context.save()
   context.globalAlpha = hookProgress
-  context.translate(0, (1 - hookProgress) * 16)
+  context.translate(0, (1 - hookProgress) * 22)
 
   context.fillStyle = INK
-  context.fillRect(pad, hookTop, inner, 1)
+  context.fillRect(pad, hookTop, inner * 0.58, 1)
 
   context.fillStyle = accent
-  context.font = `800 ${width * 0.022}px ${FONT}`
+  setType(context, "900", width * 0.02, 0.16)
   context.textAlign = "left"
   context.textBaseline = "top"
   context.fillText(
     "WOULD YOU RANK IT DIFFERENTLY?",
     pad,
-    hookTop + width * 0.03
+    hookTop + width * 0.052
   )
 
   context.fillStyle = INK
-  context.font = `900 ${width * 0.058}px ${FONT}`
-  const hookLines = wrapText(
+  setType(context, "900", brandSize, -0.04)
+  const brandLines = wrapText(
     context,
-    "The top 3 stay hidden until you open the RANKD.",
-    inner
-  ).slice(0, 3)
+    "The world's Top 7 everything.",
+    inner * 0.56
+  ).slice(0, 4)
 
-  hookLines.forEach((line, index) => {
+  brandLines.forEach((line, index) => {
     context.fillText(
       line,
       pad,
-      hookTop + width * 0.068 + index * width * 0.064
+      hookTop + width * 0.125 + index * brandLeading
     )
   })
+
+  context.fillStyle = "rgba(17,17,17,0.55)"
+  setType(context, "900", width * 0.032, -0.065)
+  context.fillText(
+    "Search RANKD.",
+    pad,
+    hookTop + width * 0.125 + brandLines.length * brandLeading + width * 0.055
+  )
   context.restore()
 
-  const ctaProgress = appear(time, 6.35, 0.4)
-  const ctaY = height - pad - width * 0.2
-  const ctaH = width * 0.088
-  const ctaR = ctaH / 2
+  const footerProgress = appear(time, 6.35, 0.4)
 
   context.save()
-  context.globalAlpha = ctaProgress
-  context.translate(0, (1 - ctaProgress) * 12)
-
-  context.fillStyle = accent
-  context.beginPath()
-  context.moveTo(pad + ctaR, ctaY)
-  context.lineTo(width - pad - ctaR, ctaY)
-  context.arc(width - pad - ctaR, ctaY + ctaR, ctaR, -Math.PI / 2, Math.PI / 2)
-  context.lineTo(pad + ctaR, ctaY + ctaH)
-  context.arc(pad + ctaR, ctaY + ctaR, ctaR, Math.PI / 2, -Math.PI / 2)
-  context.closePath()
-  context.fill()
-  context.lineWidth = 1
-  context.strokeStyle = INK
-  context.stroke()
-
-  context.fillStyle = INK
-  context.font = `900 ${width * 0.032}px ${FONT}`
-  context.textAlign = "center"
-  context.textBaseline = "middle"
-  context.fillText(
-    "SEE THE FULL TOP 7",
-    width / 2,
-    ctaY + ctaH / 2
-  )
-
+  context.globalAlpha = footerProgress
   context.fillStyle = "rgba(17,17,17,0.42)"
-  context.font = `800 ${width * 0.02}px ${FONT}`
+  setType(context, "900", width * 0.02, 0.04)
+  context.textAlign = "center"
+  context.textBaseline = "alphabetic"
   context.fillText(
     assets.hrefHost,
     width / 2,
-    ctaY + ctaH + width * 0.038
+    footerY
   )
   context.restore()
+}
+
+
+export async function encodeRankingTeaser(
+  options: {
+    title: string
+    category?: string
+    items: {
+      position: number
+      name: string
+    }[]
+    paper?: string
+    accent?: string
+  }
+): Promise<Blob> {
+  const webCodecs = window as unknown as WebCodecsAPI
+  const Encoder = webCodecs.VideoEncoder
+  const Frame = webCodecs.VideoFrame
+  const AudioEncoderConstructor = webCodecs.AudioEncoder
+
+  if (
+    typeof Encoder !== "function" ||
+    typeof Frame !== "function"
+  ) {
+    throw new Error(
+      "MP4 export is not supported by this browser. Please try the latest desktop version of Google Chrome."
+    )
+  }
+
+  const VideoFrameConstructor = Frame
+
+  await Promise.race([
+    document.fonts.ready,
+    new Promise(
+      resolve => {
+        window.setTimeout(
+          resolve,
+          800
+        )
+      }
+    )
+  ])
+
+  const logo = await loadImage("/rankd-logo.png").catch(() => null)
+  const decoded = await loadTeaserAudioBuffer().catch(() => null)
+  const sampleRate = decoded?.sampleRate ?? 48000
+  const numberOfChannels = decoded
+    ? Math.min(2, Math.max(1, decoded.numberOfChannels))
+    : 2
+
+  const canvas = document.createElement("canvas")
+
+  canvas.width = EXPORT_WIDTH
+  canvas.height = EXPORT_HEIGHT
+
+  const canvasContext = canvas.getContext("2d", {
+    alpha: false
+  })
+
+  if (!canvasContext) {
+    throw new Error("Could not create the video rendering canvas.")
+  }
+
+  const teaserItems = options.items
+    .filter(item => item.position >= 4 && item.position <= 7)
+    .sort((a, b) => b.position - a.position)
+
+  const assets: TeaserAssets = {
+    logo,
+    title: options.title,
+    category: options.category || "Top 7",
+    items: teaserItems,
+    paper: options.paper || CREAM,
+    accent: options.accent || "#FF6B35",
+    hrefHost: "rankd.world"
+  }
+
+  let encoder: VideoEncoderInstance | null = null
+  let encoderError: Error | null = null
+  let frameTimestamp = 0
+
+  const {
+    ArrayBufferTarget,
+    Muxer
+  } = await import(
+    "mp4-muxer"
+  )
+
+  const target = new ArrayBufferTarget()
+
+  const muxer = new Muxer({
+    target,
+    video: {
+      codec: "avc",
+      width: EXPORT_WIDTH,
+      height: EXPORT_HEIGHT,
+      frameRate: EXPORT_FPS
+    },
+    ...(
+      decoded &&
+      typeof AudioEncoderConstructor === "function"
+        ? {
+            audio: {
+              codec: "aac",
+              numberOfChannels,
+              sampleRate
+            }
+          }
+        : {}
+    ),
+    fastStart: "in-memory",
+    firstTimestampBehavior: "offset"
+  })
+
+  try {
+    encoder = new Encoder({
+      output: (chunk, metadata) => {
+        muxer.addVideoChunk(
+          chunk as EncodedVideoChunk,
+          metadata as EncodedVideoChunkMetadata
+        )
+      },
+      error: error => {
+        encoderError = error
+      }
+    })
+
+    const encoderConfig: EncoderConfig = {
+      codec: "avc1.420028",
+      width: EXPORT_WIDTH,
+      height: EXPORT_HEIGHT,
+      bitrate: 8_000_000,
+      framerate: EXPORT_FPS,
+      latencyMode: "quality"
+    }
+
+    if (typeof Encoder.isConfigSupported === "function") {
+      const support = await Encoder.isConfigSupported(
+        encoderConfig
+      )
+
+      if (!support.supported) {
+        throw new Error(
+          "This browser cannot encode the required H.264 MP4 video. Please try the latest desktop version of Google Chrome."
+        )
+      }
+
+      encoder.configure(support.config)
+    } else {
+      encoder.configure(encoderConfig)
+    }
+
+    if (
+      decoded &&
+      typeof AudioEncoderConstructor === "function"
+    ) {
+      await encodeDecodedAudio(
+        muxer,
+        AudioEncoderConstructor,
+        decoded,
+        DURATION_SEC
+      )
+    }
+
+    const totalFrames = Math.round(DURATION_SEC * EXPORT_FPS)
+
+    for (let index = 0; index < totalFrames; index += 1) {
+      if (encoderError) {
+        throw encoderError
+      }
+
+      const time = index / EXPORT_FPS
+
+      drawTeaserFrame(
+        canvasContext,
+        EXPORT_WIDTH,
+        EXPORT_HEIGHT,
+        time,
+        assets
+      )
+
+      const frame = new VideoFrameConstructor(canvas, {
+        timestamp: frameTimestamp,
+        duration: FRAME_DURATION
+      })
+
+      try {
+        encoder.encode(frame, {
+          keyFrame: index % EXPORT_FPS === 0
+        })
+      } finally {
+        frame.close()
+      }
+
+      frameTimestamp += FRAME_DURATION
+
+      if (encoder.encodeQueueSize > 8) {
+        await encoder.flush()
+      }
+    }
+
+    await encoder.flush()
+
+    if (encoderError) {
+      throw encoderError
+    }
+
+    encoder.close()
+    encoder = null
+
+    muxer.finalize()
+
+    const blob = new Blob(
+      [
+        target.buffer
+      ],
+      {
+        type: "video/mp4"
+      }
+    )
+
+    if (blob.size === 0) {
+      throw new Error("The exported MP4 video was empty.")
+    }
+
+    return blob
+  } catch (error) {
+    if (encoder) {
+      try {
+        encoder.close()
+      } catch {
+        // The encoder may already be closed.
+      }
+    }
+
+    throw error
+  }
 }
 
 
@@ -588,6 +800,7 @@ export default function AnimatedRankPreview({
   items,
   href,
   rankingId,
+  teaserUrl,
   category = "Top 7",
   paper = CREAM,
   accent = "#FF6B35",
@@ -794,215 +1007,42 @@ export default function AnimatedRankPreview({
     })
   }
 
-  function downloadBlob(blob: Blob) {
-    const objectUrl = URL.createObjectURL(blob)
-    const link = document.createElement("a")
-
-    link.href = objectUrl
-    link.download = VIDEO_FILENAME
-
-    document.body.appendChild(link)
-    link.click()
-    link.remove()
-
-    window.setTimeout(() => {
-      URL.revokeObjectURL(objectUrl)
-    }, 60000)
+  function fileFromBlob(
+    blob: Blob
+  ) {
+    return blob instanceof File
+      ? blob
+      : new File(
+          [
+            blob
+          ],
+          teaserFileName(),
+          {
+            type: "video/mp4"
+          }
+        )
   }
 
   async function createVideoBlob(): Promise<Blob> {
-    const webCodecs = window as unknown as WebCodecsAPI
-    const Encoder = webCodecs.VideoEncoder
-    const Frame = webCodecs.VideoFrame
-    const AudioEncoderConstructor = webCodecs.AudioEncoder
-
-    if (
-      typeof Encoder !== "function" ||
-      typeof Frame !== "function" ||
-      typeof AudioEncoderConstructor !== "function"
-    ) {
-      throw new Error(
-        "MP4 export with music is not supported by this browser. Please try the latest desktop version of Google Chrome."
-      )
-    }
-
-    const VideoFrameConstructor = Frame
-
-    await document.fonts.ready
-
-    const logo = await loadImage("/rankd-logo.png").catch(() => null)
-    const decoded = await loadTeaserAudioBuffer()
-    const sampleRate = decoded.sampleRate
-    const numberOfChannels = Math.min(2, Math.max(1, decoded.numberOfChannels))
-
-    const canvas = document.createElement("canvas")
-
-    canvas.width = EXPORT_WIDTH
-    canvas.height = EXPORT_HEIGHT
-
-    const canvasContext = canvas.getContext("2d", {
-      alpha: false
-    })
-
-    if (!canvasContext) {
-      throw new Error("Could not create the video rendering canvas.")
-    }
-
-    const assets: TeaserAssets = {
-      logo,
+    return encodeRankingTeaser({
       title,
       category,
       items: teaserItems,
       paper,
-      accent,
-      hrefHost
-    }
-
-    let encoder: VideoEncoderInstance | null = null
-    let encoderError: Error | null = null
-    let frameTimestamp = 0
-
-    const target = new ArrayBufferTarget()
-
-    const muxer = new Muxer({
-      target,
-      video: {
-        codec: "avc",
-        width: EXPORT_WIDTH,
-        height: EXPORT_HEIGHT,
-        frameRate: EXPORT_FPS
-      },
-      audio: {
-        codec: "aac",
-        numberOfChannels,
-        sampleRate
-      },
-      fastStart: "in-memory",
-      firstTimestampBehavior: "offset"
+      accent
     })
-
-    try {
-      encoder = new Encoder({
-        output: (chunk, metadata) => {
-          muxer.addVideoChunk(
-            chunk as EncodedVideoChunk,
-            metadata as EncodedVideoChunkMetadata
-          )
-        },
-        error: error => {
-          encoderError = error
-        }
-      })
-
-      const encoderConfig: EncoderConfig = {
-        codec: "avc1.420028",
-        width: EXPORT_WIDTH,
-        height: EXPORT_HEIGHT,
-        bitrate: 8_000_000,
-        framerate: EXPORT_FPS,
-        latencyMode: "quality"
-      }
-
-      if (typeof Encoder.isConfigSupported === "function") {
-        const support = await Encoder.isConfigSupported(
-          encoderConfig
-        )
-
-        if (!support.supported) {
-          throw new Error(
-            "This browser cannot encode the required H.264 MP4 video. Please try the latest desktop version of Google Chrome."
-          )
-        }
-
-        encoder.configure(support.config)
-      } else {
-        encoder.configure(encoderConfig)
-      }
-
-      await encodeDecodedAudio(
-        muxer,
-        AudioEncoderConstructor,
-        decoded,
-        DURATION_SEC
-      )
-
-      const totalFrames = Math.round(DURATION_SEC * EXPORT_FPS)
-
-      for (let index = 0; index < totalFrames; index += 1) {
-        if (encoderError) {
-          throw encoderError
-        }
-
-        const time = index / EXPORT_FPS
-
-        drawTeaserFrame(
-          canvasContext,
-          EXPORT_WIDTH,
-          EXPORT_HEIGHT,
-          time,
-          assets
-        )
-
-        const frame = new VideoFrameConstructor(canvas, {
-          timestamp: frameTimestamp,
-          duration: FRAME_DURATION
-        })
-
-        try {
-          encoder.encode(frame, {
-            keyFrame: index % EXPORT_FPS === 0
-          })
-        } finally {
-          frame.close()
-        }
-
-        frameTimestamp += FRAME_DURATION
-
-        if (encoder.encodeQueueSize > 8) {
-          await encoder.flush()
-        }
-      }
-
-      await encoder.flush()
-
-      if (encoderError) {
-        throw encoderError
-      }
-
-      encoder.close()
-      encoder = null
-
-      muxer.finalize()
-
-      const blob = new Blob(
-        [target.buffer],
-        {
-          type: "video/mp4"
-        }
-      )
-
-      if (blob.size === 0) {
-        throw new Error("The exported MP4 video was empty.")
-      }
-
-      return blob
-    } catch (error) {
-      if (encoder) {
-        try {
-          encoder.close()
-        } catch {
-          // The encoder may already be closed.
-        }
-      }
-
-      throw error
-    }
   }
 
   function ensureVideoBlob() {
     if (!videoPromiseRef.current) {
       videoPromiseRef.current =
-        createVideoBlob().catch(error => {
+        (
+          teaserUrl
+            ? fetchTeaserFile(
+                teaserUrl
+              )
+            : createVideoBlob()
+        ).catch(error => {
           videoPromiseRef.current = null
           throw error
         })
@@ -1045,6 +1085,19 @@ export default function AnimatedRankPreview({
   useEffect(() => {
     videoPromiseRef.current = null
     publishPromiseRef.current = null
+
+    if (teaserUrl) {
+      setIsPreparing(false)
+      videoPromiseRef.current =
+        fetchTeaserFile(
+          teaserUrl
+        ).catch(error => {
+          videoPromiseRef.current = null
+          throw error
+        })
+      return
+    }
+
     setIsPreparing(true)
 
     const prepare =
@@ -1076,6 +1129,7 @@ export default function AnimatedRankPreview({
     paper,
     rankingId,
     teaserItems,
+    teaserUrl,
     title
   ])
 
@@ -1089,7 +1143,11 @@ export default function AnimatedRankPreview({
     try {
       const blob = await ensureVideoBlob()
 
-      downloadBlob(blob)
+      downloadTeaserFile(
+        fileFromBlob(
+          blob
+        )
+      )
     } catch (error) {
       console.error("RANKD MP4 export failed:", error)
 
@@ -1114,32 +1172,21 @@ export default function AnimatedRankPreview({
 
     try {
       const blob = await ensureVideoBlob()
-      const url =
-        rankingShareUrl(href)
-
-      if (destination === "facebook") {
-        await ensurePublishedTeaser(blob)
-        window.open(
-          `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`,
-          "_blank",
-          "noopener,noreferrer"
+      const file =
+        fileFromBlob(
+          blob
         )
-        return
+
+      if (!teaserUrl) {
+        void ensurePublishedTeaser(
+          blob
+        )
       }
 
-      const file = new File(
-        [blob],
-        VIDEO_FILENAME,
-        {
-          type: "video/mp4"
-        }
-      )
-
       const shared =
-        await shareVideoFile(
+        await shareRankingVideoFile(
           file,
-          title,
-          href
+          title
         )
 
       if (shared) {
@@ -1149,7 +1196,7 @@ export default function AnimatedRankPreview({
       if (destination === "whatsapp") {
         window.open(
           `https://wa.me/?text=${encodeURIComponent(
-            rankingShareCaption(title, href)
+            rankingVideoCaption(title)
           )}`,
           "_blank",
           "noopener,noreferrer"
@@ -1157,10 +1204,12 @@ export default function AnimatedRankPreview({
         return
       }
 
-      downloadBlob(blob)
+      downloadTeaserFile(
+        file
+      )
 
       window.alert(
-        "Your MP4 video is ready, with music. Attach rankd-preview.mp4 to Facebook or another app, and share the RANKD link with it."
+        "Your MP4 is ready. Attach it to Instagram, Facebook or another app."
       )
     } catch (error) {
       console.error("RANKD video sharing failed:", error)
@@ -1182,7 +1231,7 @@ export default function AnimatedRankPreview({
   return createPortal(
     <div
       className="
-        fixed inset-0 z-[120]
+        fixed inset-0 z-[300]
         flex items-start justify-center
         overflow-y-auto
         bg-black/70 p-3
@@ -1257,7 +1306,7 @@ export default function AnimatedRankPreview({
 
         <div className="flex w-full shrink-0 items-center justify-between gap-3">
           <p className="text-xs leading-relaxed text-white/65">
-            Preview only. The top three stay hidden. The share is a video with music and a link to the full RANKD.
+            Preview only. The top three stay hidden. Share the video, not a link.
           </p>
 
           <button

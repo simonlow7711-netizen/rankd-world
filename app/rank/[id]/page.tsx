@@ -37,6 +37,9 @@ type Props = {
   params: Promise<{
     id: string
   }>
+  searchParams: Promise<{
+    teaser?: string
+  }>
 }
 
 
@@ -196,13 +199,18 @@ export async function generateMetadata(
 
 export default async function RankPage(
   {
-    params
+    params,
+    searchParams
   }: Props
 ) {
 
   const {
     id
   } = await params
+
+  const {
+    teaser
+  } = await searchParams
 
 
   const ranking =
@@ -292,6 +300,9 @@ export default async function RankPage(
       <RankClient
         id={id}
         initialRanking={ranking}
+        openTeaser={
+          teaser === "1"
+        }
       />
 
     </>

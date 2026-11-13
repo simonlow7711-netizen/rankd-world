@@ -27,6 +27,7 @@ type RankingRow = {
   location_name:string | null
   location_city:string | null
   location_country:string | null
+  teaser_url?:string | null
 }
 
 
@@ -47,6 +48,9 @@ function mapRanking(
     creator:"",
     description:parsedDescription.text,
     mediaUrl:parsedDescription.mediaUrl,
+    teaserUrl:
+      row.teaser_url?.trim() ||
+      null,
     items:items.map(
       item => ({
         position:item.position,
@@ -123,6 +127,7 @@ export async function getSupabaseRankingServer(
         category,
         description,
         hero_media_url,
+        teaser_url,
         views,
         user_id,
         parent_id,

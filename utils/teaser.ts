@@ -22,6 +22,158 @@ export function teaserObjectPath(
 }
 
 
+export function rankingVideoCaption(
+  title: string
+) {
+  return [
+    "Would you rank it differently?",
+    "",
+    `${title} | RANKD`
+  ].join("\n")
+}
+
+
+export function teaserFileName() {
+  return "rankd-preview.mp4"
+}
+
+
+export async function fetchTeaserFile(
+  teaserUrl: string
+) {
+  const response =
+    await fetch(
+      teaserUrl,
+      {
+        mode: "cors"
+      }
+    )
+
+  if (!response.ok) {
+    throw new Error(
+      "The RANKD video could not be loaded."
+    )
+  }
+
+  const blob =
+    await response.blob()
+
+  if (blob.size === 0) {
+    throw new Error(
+      "The RANKD video was empty."
+    )
+  }
+
+  return new File(
+    [
+      blob
+    ],
+    teaserFileName(),
+    {
+      type: "video/mp4"
+    }
+  )
+}
+
+
+export async function shareRankingVideoFile(
+  file: File,
+  title: string
+) {
+  if (
+    typeof navigator.share !== "function"
+  ) {
+    return false
+  }
+
+  const text =
+    rankingVideoCaption(
+      title
+    )
+
+  const attempts: ShareData[] = [
+    {
+      files: [
+        file
+      ],
+      title:
+        `${title} | RANKD`,
+      text
+    },
+    {
+      files: [
+        file
+      ]
+    }
+  ]
+
+  for (const shareData of attempts) {
+    if (
+      typeof navigator.canShare === "function" &&
+      !navigator.canShare(
+        shareData
+      )
+    ) {
+      continue
+    }
+
+    try {
+      await navigator.share(
+        shareData
+      )
+
+      return true
+    } catch (error) {
+      if (
+        error instanceof DOMException &&
+        error.name === "AbortError"
+      ) {
+        return true
+      }
+    }
+  }
+
+  return false
+}
+
+
+export function downloadTeaserFile(
+  file: File
+) {
+  const objectUrl =
+    URL.createObjectURL(
+      file
+    )
+
+  const link =
+    document.createElement(
+      "a"
+    )
+
+  link.href =
+    objectUrl
+
+  link.download =
+    file.name
+
+  document.body.appendChild(
+    link
+  )
+
+  link.click()
+  link.remove()
+
+  window.setTimeout(
+    () => {
+      URL.revokeObjectURL(
+        objectUrl
+      )
+    },
+    60000
+  )
+}
+
+
 export async function publishRankingTeaser(
   rankingId: string,
   blob: Blob

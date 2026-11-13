@@ -22,6 +22,8 @@ import GoogleAnalytics from "@/components/GoogleAnalytics"
 
 import GoogleAnalyticsPageView from "@/components/GoogleAnalyticsPageView"
 
+import TeaserEncodeBoot from "@/components/TeaserEncodeBoot"
+
 import {
   sharePreviewImage,
   sharePreviewUrl
@@ -252,6 +254,18 @@ export default function RootLayout({
 
 
         <GoogleAnalyticsPageView />
+
+        <TeaserEncodeBoot />
+
+        <script
+          type="module"
+          src="/rankd-teaser-encode.js?v=8"
+        />
+
+        <script
+          src="/rankd-share.js?v=11"
+          defer
+        />
 
 
         <Script

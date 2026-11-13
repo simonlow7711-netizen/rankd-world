@@ -278,6 +278,26 @@ export default function RankingCard({
       false
     )
 
+  useEffect(() => {
+    function openTeaser() {
+      setAnimatedPreviewOpen(
+        true
+      )
+    }
+
+    window.addEventListener(
+      "rankd:share-video",
+      openTeaser
+    )
+
+    return () => {
+      window.removeEventListener(
+        "rankd:share-video",
+        openTeaser
+      )
+    }
+  }, [])
+
 
   useEffect(() => {
 
@@ -1173,6 +1193,27 @@ export default function RankingCard({
             }}
             compact
             align="center"
+            teaserUrl={
+              ranking.teaserUrl
+            }
+            rankingId={
+              ranking.id
+            }
+            category={
+              ranking.category
+            }
+            paper={
+              theme.cardColor
+            }
+            accent={
+              theme.accentColor
+            }
+            items={
+              ranking.items.map(item => ({
+                position: item.position,
+                name: item.name
+              }))
+            }
             onTeaser={() => {
               setAnimatedPreviewOpen(true)
             }}
@@ -1197,6 +1238,9 @@ export default function RankingCard({
                 }))
               }
               href={`/rank/${ranking.id}`}
+              teaserUrl={
+                ranking.teaserUrl
+              }
               category={ranking.category}
               paper={edition.paper}
               accent={edition.accent}
