@@ -159,7 +159,7 @@ function readDescriptor(
 
 function parseAudioSpecificConfig(
   bytes: Uint8Array
-) {
+): Uint8Array | null {
   let cursor = 0
 
   while (cursor < bytes.length) {
