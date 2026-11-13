@@ -60,7 +60,8 @@
     if (id === "facebook") {
       return {
         label: "Facebook",
-        href: "https://www.facebook.com/reel/create"
+        href: "",
+        fileShare: true
       }
     }
     if (id === "x") {
@@ -72,7 +73,8 @@
     if (id === "whatsapp") {
       return {
         label: "WhatsApp",
-        href: "https://wa.me/?text=" + encodedCaption + "%20" + encodedUrl
+        href: "https://wa.me/?text=" + encodedCaption + "%20" + encodedUrl,
+        fileShare: true
       }
     }
     if (id === "email") {
@@ -90,13 +92,15 @@
     if (id === "instagram") {
       return {
         label: "Instagram",
-        href: "https://www.instagram.com/"
+        href: "https://www.instagram.com/",
+        fileShare: true
       }
     }
     if (id === "tiktok") {
       return {
         label: "TikTok",
-        href: "https://www.tiktok.com/tiktokstudio/upload"
+        href: "https://www.tiktok.com/tiktokstudio/upload",
+        fileShare: true
       }
     }
 
@@ -116,7 +120,9 @@
       root.getAttribute("data-share-title") || "RANKD"
     )
     if (button) {
-      button.textContent = "Open " + meta.label
+      button.textContent = meta.fileShare
+        ? "Share to " + meta.label
+        : "Open " + meta.label
     }
   }
 
@@ -144,6 +150,40 @@
     return file
   }
 
+  async function shareFileToApp(file, title, caption) {
+    if (typeof navigator.share !== "function") {
+      return false
+    }
+
+    var attempts = [
+      {
+        files: [file],
+        title: title + " | RANKD",
+        text: caption
+      },
+      {
+        files: [file]
+      }
+    ]
+
+    for (var i = 0; i < attempts.length; i++) {
+      var data = attempts[i]
+      if (typeof navigator.canShare === "function" && !navigator.canShare(data)) {
+        continue
+      }
+      try {
+        await navigator.share(data)
+        return true
+      } catch (error) {
+        if (error && error.name === "AbortError") {
+          return true
+        }
+      }
+    }
+
+    return false
+  }
+
   async function openChosenPlatform(root) {
     var status = root.querySelector("[data-share-status]")
     var note = root.querySelector("[data-share-video-note]")
@@ -168,15 +208,29 @@
         setStatus("This RANKD does not have a video file yet.")
         return
       }
-      downloadFile(file)
       if (navigator.clipboard && window.isSecureContext && caption) {
         try {
           await navigator.clipboard.writeText(caption)
         } catch (error) {}
       }
-      if (meta.href.indexOf("mailto:") === 0) {
+      if (meta.fileShare) {
+        var shared = await shareFileToApp(file, title, caption)
+        if (shared) {
+          setStatus("Pick " + meta.label + " in the share sheet.")
+          return
+        }
+        downloadFile(file)
+        setStatus(
+          "Saved the RANKD MP4. Open " +
+            meta.label +
+            " and upload it as a Reel or video."
+        )
+        return
+      }
+      downloadFile(file)
+      if (meta.href && meta.href.indexOf("mailto:") === 0) {
         window.location.href = meta.href
-      } else {
+      } else if (meta.href) {
         window.open(meta.href, "_blank", "noopener,noreferrer")
       }
       setStatus(
@@ -299,8 +353,9 @@
       return cachedUrl
     }
 
-    if (root.getAttribute("data-teaser-url")) {
-      return root.getAttribute("data-teaser-url")
+    var existingUrl = root.getAttribute("data-teaser-url") || ""
+    if (existingUrl.indexOf("blob:") === 0) {
+      return existingUrl
     }
 
     if (root.getAttribute("data-creating") === "1") {
@@ -341,10 +396,7 @@
       setStatus("Video ready.")
       if (rankingId && typeof window.__rankdPublishTeaser === "function") {
         try {
-          var published = await window.__rankdPublishTeaser(rankingId, blob)
-          if (published) {
-            root.setAttribute("data-teaser-url", published)
-          }
+          await window.__rankdPublishTeaser(rankingId, blob)
         } catch (error) {}
       }
       return objectUrl

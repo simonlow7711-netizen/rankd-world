@@ -211,6 +211,7 @@ export default function ShareButton({
       if (
         root &&
         teaserUrl &&
+        teaserUrl.indexOf("blob:") === 0 &&
         !root.getAttribute(
           "data-teaser-url"
         )
@@ -251,9 +252,9 @@ export default function ShareButton({
         const currentUrl =
           root.getAttribute(
             "data-teaser-url"
-          ) || options.teaserUrl
+          ) || ""
 
-        if (currentUrl) {
+        if (currentUrl.indexOf("blob:") === 0) {
           setReadyUrl(
             currentUrl
           )
@@ -322,18 +323,9 @@ export default function ShareButton({
           )
 
           if (options.rankingId) {
-            const published =
-              await publishRankingTeaser(
-                options.rankingId,
-                blob
-              )
-
-            root.setAttribute(
-              "data-teaser-url",
-              published
-            )
-            setReadyUrl(
-              published
+            await publishRankingTeaser(
+              options.rankingId,
+              blob
             )
           }
         } catch (error) {

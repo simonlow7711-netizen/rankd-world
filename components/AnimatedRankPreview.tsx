@@ -301,9 +301,25 @@ async function loadTeaserAudioBuffer() {
     throw new Error("The RANKD teaser track is missing. Add rankd-track.m4a to public/.")
   }
 
-  const audioContext = new AudioContext()
+  const AudioContextConstructor =
+    window.AudioContext ||
+    (
+      window as Window & {
+        webkitAudioContext?: typeof AudioContext
+      }
+    ).webkitAudioContext
+
+  if (!AudioContextConstructor) {
+    throw new Error("This browser could not decode the RANKD teaser track.")
+  }
+
+  const audioContext = new AudioContextConstructor()
 
   try {
+    if (audioContext.state === "suspended") {
+      await audioContext.resume()
+    }
+
     return await audioContext.decodeAudioData(data.slice(0))
   } finally {
     await audioContext.close()
@@ -584,6 +600,12 @@ export async function encodeRankingTeaser(
     )
   }
 
+  if (typeof AudioEncoderConstructor !== "function") {
+    throw new Error(
+      "This browser cannot embed the RANKD track in the video. Please try the latest desktop version of Google Chrome."
+    )
+  }
+
   const VideoFrameConstructor = Frame
 
   await Promise.race([
@@ -599,11 +621,9 @@ export async function encodeRankingTeaser(
   ])
 
   const logo = await loadImage("/rankd-logo.png").catch(() => null)
-  const decoded = await loadTeaserAudioBuffer().catch(() => null)
-  const sampleRate = decoded?.sampleRate ?? 48000
-  const numberOfChannels = decoded
-    ? Math.min(2, Math.max(1, decoded.numberOfChannels))
-    : 2
+  const decoded = await loadTeaserAudioBuffer()
+  const sampleRate = decoded.sampleRate
+  const numberOfChannels = Math.min(2, Math.max(1, decoded.numberOfChannels))
 
   const canvas = document.createElement("canvas")
 
@@ -653,18 +673,11 @@ export async function encodeRankingTeaser(
       height: EXPORT_HEIGHT,
       frameRate: EXPORT_FPS
     },
-    ...(
-      decoded &&
-      typeof AudioEncoderConstructor === "function"
-        ? {
-            audio: {
-              codec: "aac",
-              numberOfChannels,
-              sampleRate
-            }
-          }
-        : {}
-    ),
+    audio: {
+      codec: "aac",
+      numberOfChannels,
+      sampleRate
+    },
     fastStart: "in-memory",
     firstTimestampBehavior: "offset"
   })
@@ -707,17 +720,12 @@ export async function encodeRankingTeaser(
       encoder.configure(encoderConfig)
     }
 
-    if (
-      decoded &&
-      typeof AudioEncoderConstructor === "function"
-    ) {
-      await encodeDecodedAudio(
-        muxer,
-        AudioEncoderConstructor,
-        decoded,
-        DURATION_SEC
-      )
-    }
+    await encodeDecodedAudio(
+      muxer,
+      AudioEncoderConstructor,
+      decoded,
+      DURATION_SEC
+    )
 
     const totalFrames = Math.round(DURATION_SEC * EXPORT_FPS)
 

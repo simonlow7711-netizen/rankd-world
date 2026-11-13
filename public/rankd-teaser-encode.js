@@ -109,7 +109,13 @@ async function loadTeaserAudioBuffer() {
     throw new Error("The RANKD teaser track is missing. Add rankd-track.m4a to public/.")
   }
 
-  var audioContext = new AudioContext()
+  var AudioContextConstructor = window.AudioContext || window.webkitAudioContext
+
+  if (!AudioContextConstructor) {
+    throw new Error("This browser could not decode the RANKD teaser track.")
+  }
+
+  var audioContext = new AudioContextConstructor()
 
   try {
     if (audioContext.state === "suspended") {
