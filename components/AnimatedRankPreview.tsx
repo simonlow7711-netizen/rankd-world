@@ -11,11 +11,6 @@ import {
   createPortal
 } from "react-dom"
 
-import type {
-  ArrayBufferTarget,
-  Muxer
-} from "mp4-muxer"
-
 import {
   downloadTeaserFile,
   fetchTeaserFile,
@@ -24,6 +19,11 @@ import {
   shareRankingVideoFile,
   teaserFileName
 } from "@/utils/teaser"
+
+import {
+  addTeaserAacToMuxer,
+  extractTeaserAac
+} from "@/utils/teaserAac"
 
 
 type AnimatedRankPreviewProps = {
@@ -288,7 +288,7 @@ function loadImage(src: string) {
 }
 
 
-async function loadTeaserAudioBuffer() {
+async function loadTeaserAacClip() {
   const response = await fetch(TRACK_URL)
 
   if (!response.ok) {
@@ -301,119 +301,10 @@ async function loadTeaserAudioBuffer() {
     throw new Error("The RANKD teaser track is missing. Add rankd-track.m4a to public/.")
   }
 
-  const AudioContextConstructor =
-    window.AudioContext ||
-    (
-      window as Window & {
-        webkitAudioContext?: typeof AudioContext
-      }
-    ).webkitAudioContext
-
-  if (!AudioContextConstructor) {
-    throw new Error("This browser could not decode the RANKD teaser track.")
-  }
-
-  let audioContext: AudioContext
-
-  try {
-    audioContext = new AudioContextConstructor({
-      sampleRate: 44100
-    })
-  } catch {
-    audioContext = new AudioContextConstructor()
-  }
-
-  try {
-    if (audioContext.state === "suspended") {
-      await audioContext.resume()
-    }
-
-    return await audioContext.decodeAudioData(data.slice(0))
-  } finally {
-    await audioContext.close()
-  }
-}
-
-
-type TeaserPcm = {
-  sampleRate: number
-  numberOfChannels: number
-  length: number
-  getChannelData: (channel: number) => Float32Array
-}
-
-
-function resampleAudio(
-  decoded: AudioBuffer | TeaserPcm,
-  sampleRate: number,
-  numberOfChannels: number
-): TeaserPcm {
-  const length = Math.max(
-    1,
-    Math.round(decoded.length * (sampleRate / decoded.sampleRate))
-  )
-  const channels: Float32Array[] = []
-
-  for (let channel = 0; channel < numberOfChannels; channel += 1) {
-    const source = decoded.getChannelData(
-      Math.min(channel, decoded.numberOfChannels - 1)
-    )
-    const dest = new Float32Array(length)
-
-    if (sampleRate === decoded.sampleRate && source.length === length) {
-      dest.set(source.subarray(0, length))
-    } else {
-      const ratio = decoded.sampleRate / sampleRate
-
-      for (let i = 0; i < length; i += 1) {
-        const position = i * ratio
-        const left = Math.min(source.length - 1, Math.floor(position))
-        const right = Math.min(source.length - 1, left + 1)
-        const mix = position - left
-        dest[i] = source[left] * (1 - mix) + source[right] * mix
-      }
-    }
-
-    channels.push(dest)
-  }
-
-  return {
-    sampleRate,
-    numberOfChannels,
-    length,
-    getChannelData: index => channels[index]
-  }
-}
-
-
-async function pickAacConfig(
-  AudioEncoderConstructor: NonNullable<WebCodecsAPI["AudioEncoder"]>
-): Promise<AudioEncoderConfig> {
-  const rates = [44100, 48000]
-
-  for (const sampleRate of rates) {
-    const audioConfig: AudioEncoderConfig = {
-      codec: "mp4a.40.2",
-      sampleRate,
-      numberOfChannels: 2,
-      bitrate: 128_000
-    }
-
-    if (typeof AudioEncoderConstructor.isConfigSupported !== "function") {
-      return audioConfig
-    }
-
-    const support = await AudioEncoderConstructor.isConfigSupported(
-      audioConfig
-    )
-
-    if (support.supported) {
-      return audioConfig
-    }
-  }
-
-  throw new Error(
-    "This browser cannot encode AAC audio for the teaser. Please try the latest desktop version of Google Chrome."
+  return extractTeaserAac(
+    data,
+    MUSIC_START_SEC,
+    DURATION_SEC
   )
 }
 
@@ -680,7 +571,6 @@ export async function encodeRankingTeaser(
   const webCodecs = window as unknown as WebCodecsAPI
   const Encoder = webCodecs.VideoEncoder
   const Frame = webCodecs.VideoFrame
-  const AudioEncoderConstructor = webCodecs.AudioEncoder
 
   if (
     typeof Encoder !== "function" ||
@@ -688,12 +578,6 @@ export async function encodeRankingTeaser(
   ) {
     throw new Error(
       "MP4 export is not supported by this browser. Please try the latest desktop version of Google Chrome."
-    )
-  }
-
-  if (typeof AudioEncoderConstructor !== "function") {
-    throw new Error(
-      "This browser cannot embed the RANKD track in the video. Please try the latest desktop version of Google Chrome."
     )
   }
 
@@ -712,14 +596,9 @@ export async function encodeRankingTeaser(
   ])
 
   const logo = await loadImage("/rankd-logo.png").catch(() => null)
-  const audioConfig = await pickAacConfig(AudioEncoderConstructor)
-  const decoded = resampleAudio(
-    await loadTeaserAudioBuffer(),
-    audioConfig.sampleRate,
-    audioConfig.numberOfChannels
-  )
-  const sampleRate = decoded.sampleRate
-  const numberOfChannels = decoded.numberOfChannels
+  const audioClip = await loadTeaserAacClip()
+  const sampleRate = audioClip.sampleRate
+  const numberOfChannels = audioClip.numberOfChannels
 
   const canvas = document.createElement("canvas")
 
@@ -816,11 +695,9 @@ export async function encodeRankingTeaser(
       encoder.configure(encoderConfig)
     }
 
-    await encodeDecodedAudio(
+    addTeaserAacToMuxer(
       muxer,
-      AudioEncoderConstructor,
-      decoded,
-      DURATION_SEC
+      audioClip
     )
 
     const totalFrames = Math.round(DURATION_SEC * EXPORT_FPS)
@@ -1520,99 +1397,4 @@ export default function AnimatedRankPreview({
     </div>,
     document.body
   )
-}
-
-
-async function encodeDecodedAudio(
-  muxer: Muxer<ArrayBufferTarget>,
-  AudioEncoderConstructor: NonNullable<WebCodecsAPI["AudioEncoder"]>,
-  decoded: TeaserPcm,
-  durationSec: number
-) {
-  const sampleRate = decoded.sampleRate
-  const numberOfChannels = decoded.numberOfChannels
-  const startSample = Math.min(
-    decoded.length,
-    Math.floor(MUSIC_START_SEC * sampleRate)
-  )
-  const needed = Math.floor(durationSec * sampleRate)
-  const frameCount = Math.min(needed, Math.max(0, decoded.length - startSample))
-
-  if (frameCount < sampleRate) {
-    throw new Error(
-      "The RANKD teaser track is too short to start 12 seconds in."
-    )
-  }
-
-  let audioError: Error | null = null
-
-  const encoder = new AudioEncoderConstructor({
-    output: (chunk, metadata) => {
-      muxer.addAudioChunk(
-        chunk as EncodedAudioChunk,
-        metadata as EncodedAudioChunkMetadata
-      )
-    },
-    error: error => {
-      audioError = error
-    }
-  })
-
-  const audioConfig: AudioEncoderConfig = {
-    codec: "mp4a.40.2",
-    sampleRate,
-    numberOfChannels,
-    bitrate: 128_000
-  }
-
-  encoder.configure(audioConfig)
-
-  const frameSize = 1024
-  let timestamp = 0
-
-  for (let offset = 0; offset < frameCount; offset += frameSize) {
-    if (audioError) {
-      encoder.close()
-      throw audioError
-    }
-
-    const rawSamples = Math.min(frameSize, frameCount - offset)
-    const samples = frameSize
-    const interleaved = new Float32Array(samples * numberOfChannels)
-
-    for (let channel = 0; channel < numberOfChannels; channel += 1) {
-      const source = decoded.getChannelData(
-        Math.min(channel, decoded.numberOfChannels - 1)
-      )
-
-      for (let sample = 0; sample < samples; sample += 1) {
-        interleaved[sample * numberOfChannels + channel] =
-          source[startSample + offset + sample] ?? 0
-      }
-    }
-
-    const audioData = new AudioData({
-      format: "f32",
-      sampleRate,
-      numberOfFrames: samples,
-      numberOfChannels,
-      timestamp,
-      data: interleaved
-    })
-
-    try {
-      encoder.encode(audioData)
-    } finally {
-      audioData.close()
-    }
-
-    timestamp += Math.round(samples / sampleRate * 1_000_000)
-  }
-
-  await encoder.flush()
-  encoder.close()
-
-  if (audioError) {
-    throw audioError
-  }
 }
