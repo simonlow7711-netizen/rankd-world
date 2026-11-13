@@ -60,7 +60,7 @@
     if (id === "facebook") {
       return {
         label: "Facebook",
-        href: "",
+        href: "https://www.facebook.com/reels/create",
         fileShare: true
       }
     }
@@ -120,9 +120,10 @@
       root.getAttribute("data-share-title") || "RANKD"
     )
     if (button) {
-      button.textContent = meta.fileShare
-        ? "Share to " + meta.label
-        : "Open " + meta.label
+      button.textContent =
+        meta.fileShare && prefersNativeFileShare()
+          ? "Share to " + meta.label
+          : "Open " + meta.label
     }
   }
 
@@ -150,8 +151,26 @@
     return file
   }
 
-  async function shareFileToApp(file, title, caption, filesOnly) {
+  function prefersNativeFileShare() {
     if (typeof navigator.share !== "function") {
+      return false
+    }
+
+    if (
+      window.matchMedia &&
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    ) {
+      return false
+    }
+
+    return (
+      (navigator.maxTouchPoints || 0) > 0 ||
+      (window.matchMedia && window.matchMedia("(pointer: coarse)").matches)
+    )
+  }
+
+  async function shareFileToApp(file, title, caption, filesOnly) {
+    if (!prefersNativeFileShare()) {
       return false
     }
 
@@ -231,13 +250,6 @@
           setStatus("Pick " + meta.label + " in the share sheet.")
           return
         }
-        downloadFile(file)
-        setStatus(
-          "Saved the RANKD MP4. Open " +
-            meta.label +
-            " and upload it as a Reel or video."
-        )
-        return
       }
       downloadFile(file)
       if (meta.href && meta.href.indexOf("mailto:") === 0) {

@@ -263,7 +263,7 @@ export default function RootLayout({
         />
 
         <script
-          src="/rankd-share.js?v=13"
+          src="/rankd-share.js?v=14"
           defer
         />
 
