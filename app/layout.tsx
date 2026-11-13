@@ -259,11 +259,11 @@ export default function RootLayout({
 
         <script
           type="module"
-          src="/rankd-teaser-encode.js?v=9"
+          src="/rankd-teaser-encode.js?v=10"
         />
 
         <script
-          src="/rankd-share.js?v=12"
+          src="/rankd-share.js?v=13"
           defer
         />
 

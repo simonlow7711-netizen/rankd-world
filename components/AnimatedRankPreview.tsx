@@ -313,7 +313,15 @@ async function loadTeaserAudioBuffer() {
     throw new Error("This browser could not decode the RANKD teaser track.")
   }
 
-  const audioContext = new AudioContextConstructor()
+  let audioContext: AudioContext
+
+  try {
+    audioContext = new AudioContextConstructor({
+      sampleRate: 44100
+    })
+  } catch {
+    audioContext = new AudioContextConstructor()
+  }
 
   try {
     if (audioContext.state === "suspended") {
@@ -324,6 +332,89 @@ async function loadTeaserAudioBuffer() {
   } finally {
     await audioContext.close()
   }
+}
+
+
+type TeaserPcm = {
+  sampleRate: number
+  numberOfChannels: number
+  length: number
+  getChannelData: (channel: number) => Float32Array
+}
+
+
+function resampleAudio(
+  decoded: AudioBuffer | TeaserPcm,
+  sampleRate: number,
+  numberOfChannels: number
+): TeaserPcm {
+  const length = Math.max(
+    1,
+    Math.round(decoded.length * (sampleRate / decoded.sampleRate))
+  )
+  const channels: Float32Array[] = []
+
+  for (let channel = 0; channel < numberOfChannels; channel += 1) {
+    const source = decoded.getChannelData(
+      Math.min(channel, decoded.numberOfChannels - 1)
+    )
+    const dest = new Float32Array(length)
+
+    if (sampleRate === decoded.sampleRate && source.length === length) {
+      dest.set(source.subarray(0, length))
+    } else {
+      const ratio = decoded.sampleRate / sampleRate
+
+      for (let i = 0; i < length; i += 1) {
+        const position = i * ratio
+        const left = Math.min(source.length - 1, Math.floor(position))
+        const right = Math.min(source.length - 1, left + 1)
+        const mix = position - left
+        dest[i] = source[left] * (1 - mix) + source[right] * mix
+      }
+    }
+
+    channels.push(dest)
+  }
+
+  return {
+    sampleRate,
+    numberOfChannels,
+    length,
+    getChannelData: index => channels[index]
+  }
+}
+
+
+async function pickAacConfig(
+  AudioEncoderConstructor: NonNullable<WebCodecsAPI["AudioEncoder"]>
+): Promise<AudioEncoderConfig> {
+  const rates = [44100, 48000]
+
+  for (const sampleRate of rates) {
+    const audioConfig: AudioEncoderConfig = {
+      codec: "mp4a.40.2",
+      sampleRate,
+      numberOfChannels: 2,
+      bitrate: 128_000
+    }
+
+    if (typeof AudioEncoderConstructor.isConfigSupported !== "function") {
+      return audioConfig
+    }
+
+    const support = await AudioEncoderConstructor.isConfigSupported(
+      audioConfig
+    )
+
+    if (support.supported) {
+      return audioConfig
+    }
+  }
+
+  throw new Error(
+    "This browser cannot encode AAC audio for the teaser. Please try the latest desktop version of Google Chrome."
+  )
 }
 
 
@@ -621,9 +712,14 @@ export async function encodeRankingTeaser(
   ])
 
   const logo = await loadImage("/rankd-logo.png").catch(() => null)
-  const decoded = await loadTeaserAudioBuffer()
+  const audioConfig = await pickAacConfig(AudioEncoderConstructor)
+  const decoded = resampleAudio(
+    await loadTeaserAudioBuffer(),
+    audioConfig.sampleRate,
+    audioConfig.numberOfChannels
+  )
   const sampleRate = decoded.sampleRate
-  const numberOfChannels = Math.min(2, Math.max(1, decoded.numberOfChannels))
+  const numberOfChannels = decoded.numberOfChannels
 
   const canvas = document.createElement("canvas")
 
@@ -1430,11 +1526,11 @@ export default function AnimatedRankPreview({
 async function encodeDecodedAudio(
   muxer: Muxer<ArrayBufferTarget>,
   AudioEncoderConstructor: NonNullable<WebCodecsAPI["AudioEncoder"]>,
-  decoded: AudioBuffer,
+  decoded: TeaserPcm,
   durationSec: number
 ) {
   const sampleRate = decoded.sampleRate
-  const numberOfChannels = Math.min(2, Math.max(1, decoded.numberOfChannels))
+  const numberOfChannels = decoded.numberOfChannels
   const startSample = Math.min(
     decoded.length,
     Math.floor(MUSIC_START_SEC * sampleRate)
@@ -1466,25 +1562,10 @@ async function encodeDecodedAudio(
     codec: "mp4a.40.2",
     sampleRate,
     numberOfChannels,
-    bitrate: 160_000
+    bitrate: 128_000
   }
 
-  if (typeof AudioEncoderConstructor.isConfigSupported === "function") {
-    const support = await AudioEncoderConstructor.isConfigSupported(
-      audioConfig
-    )
-
-    if (!support.supported) {
-      encoder.close()
-      throw new Error(
-        "This browser cannot encode AAC audio for the teaser. Please try the latest desktop version of Google Chrome."
-      )
-    }
-
-    encoder.configure(support.config)
-  } else {
-    encoder.configure(audioConfig)
-  }
+  encoder.configure(audioConfig)
 
   const frameSize = 1024
   let timestamp = 0

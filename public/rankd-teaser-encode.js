@@ -96,6 +96,68 @@ function loadImage(src) {
   })
 }
 
+function resampleAudio(decoded, sampleRate, numberOfChannels) {
+  var length = Math.max(1, Math.round(decoded.length * (sampleRate / decoded.sampleRate)))
+  var channels = []
+
+  for (var channel = 0; channel < numberOfChannels; channel++) {
+    var source = decoded.getChannelData(
+      Math.min(channel, decoded.numberOfChannels - 1)
+    )
+    var dest = new Float32Array(length)
+
+    if (sampleRate === decoded.sampleRate && source.length === length) {
+      dest.set(source.subarray(0, length))
+    } else {
+      var ratio = decoded.sampleRate / sampleRate
+      for (var i = 0; i < length; i++) {
+        var position = i * ratio
+        var left = Math.min(source.length - 1, Math.floor(position))
+        var right = Math.min(source.length - 1, left + 1)
+        var mix = position - left
+        dest[i] = source[left] * (1 - mix) + source[right] * mix
+      }
+    }
+
+    channels.push(dest)
+  }
+
+  return {
+    sampleRate: sampleRate,
+    numberOfChannels: numberOfChannels,
+    length: length,
+    getChannelData: function (index) {
+      return channels[index]
+    }
+  }
+}
+
+async function pickAacConfig(AudioEncoderConstructor) {
+  var rates = [44100, 48000]
+
+  for (var i = 0; i < rates.length; i++) {
+    var audioConfig = {
+      codec: "mp4a.40.2",
+      sampleRate: rates[i],
+      numberOfChannels: 2,
+      bitrate: 128000
+    }
+
+    if (typeof AudioEncoderConstructor.isConfigSupported !== "function") {
+      return audioConfig
+    }
+
+    var support = await AudioEncoderConstructor.isConfigSupported(audioConfig)
+    if (support.supported) {
+      return audioConfig
+    }
+  }
+
+  throw new Error(
+    "This browser cannot encode AAC audio for the teaser. Please try the latest desktop version of Google Chrome."
+  )
+}
+
 async function loadTeaserAudioBuffer() {
   var response = await fetch(TRACK_URL)
 
@@ -115,7 +177,12 @@ async function loadTeaserAudioBuffer() {
     throw new Error("This browser could not decode the RANKD teaser track.")
   }
 
-  var audioContext = new AudioContextConstructor()
+  var audioContext
+  try {
+    audioContext = new AudioContextConstructor({ sampleRate: 44100 })
+  } catch (error) {
+    audioContext = new AudioContextConstructor()
+  }
 
   try {
     if (audioContext.state === "suspended") {
@@ -155,21 +222,10 @@ async function encodeDecodedAudio(muxer, AudioEncoderConstructor, decoded, durat
     codec: "mp4a.40.2",
     sampleRate: sampleRate,
     numberOfChannels: numberOfChannels,
-    bitrate: 160000
+    bitrate: 128000
   }
 
-  if (typeof AudioEncoderConstructor.isConfigSupported === "function") {
-    var support = await AudioEncoderConstructor.isConfigSupported(audioConfig)
-    if (!support.supported) {
-      encoder.close()
-      throw new Error(
-        "This browser cannot encode AAC audio for the teaser. Please try the latest desktop version of Google Chrome."
-      )
-    }
-    encoder.configure(support.config)
-  } else {
-    encoder.configure(audioConfig)
-  }
+  encoder.configure(audioConfig)
 
   var frameSize = 1024
   var timestamp = 0
@@ -437,9 +493,14 @@ async function encodeRankingTeaser(options) {
   var logo = await loadImage("/rankd-logo.png").catch(function () {
     return null
   })
-  var decoded = await loadTeaserAudioBuffer()
+  var audioConfig = await pickAacConfig(AudioEncoderConstructor)
+  var decoded = resampleAudio(
+    await loadTeaserAudioBuffer(),
+    audioConfig.sampleRate,
+    audioConfig.numberOfChannels
+  )
   var sampleRate = decoded.sampleRate
-  var numberOfChannels = Math.min(2, Math.max(1, decoded.numberOfChannels))
+  var numberOfChannels = decoded.numberOfChannels
 
   var canvas = document.createElement("canvas")
   canvas.width = EXPORT_WIDTH

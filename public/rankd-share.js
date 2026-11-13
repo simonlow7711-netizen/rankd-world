@@ -150,21 +150,28 @@
     return file
   }
 
-  async function shareFileToApp(file, title, caption) {
+  async function shareFileToApp(file, title, caption, filesOnly) {
     if (typeof navigator.share !== "function") {
       return false
     }
 
-    var attempts = [
-      {
-        files: [file],
-        title: title + " | RANKD",
-        text: caption
-      },
-      {
-        files: [file]
-      }
-    ]
+    var videoFile = new File([file], "rankd-preview.mp4", { type: "video/mp4" })
+    var attempts = filesOnly
+      ? [
+          {
+            files: [videoFile]
+          }
+        ]
+      : [
+          {
+            files: [videoFile]
+          },
+          {
+            files: [videoFile],
+            title: title + " | RANKD",
+            text: caption
+          }
+        ]
 
     for (var i = 0; i < attempts.length; i++) {
       var data = attempts[i]
@@ -214,7 +221,12 @@
         } catch (error) {}
       }
       if (meta.fileShare) {
-        var shared = await shareFileToApp(file, title, caption)
+        var shared = await shareFileToApp(
+          file,
+          title,
+          caption,
+          channel === "whatsapp"
+        )
         if (shared) {
           setStatus("Pick " + meta.label + " in the share sheet.")
           return
