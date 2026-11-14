@@ -52,6 +52,21 @@
     }
   }
 
+  function liveRankdUrl(root) {
+    var destination = (root.getAttribute("data-share-url") || "").trim()
+    if (/^https?:\/\//i.test(destination)) {
+      return destination
+    }
+    var rankingId = (root.getAttribute("data-ranking-id") || "").trim()
+    if (rankingId) {
+      return "https://www.rankd.world/rank/" + rankingId
+    }
+    if (destination.charAt(0) === "/") {
+      return "https://www.rankd.world" + destination
+    }
+    return "https://www.rankd.world"
+  }
+
   function captionForChannel(id, caption, destination) {
     if (
       id !== "facebook" &&
@@ -62,11 +77,15 @@
       return caption
     }
 
-    if (!destination || caption.indexOf(destination) !== -1) {
+    if (!destination) {
       return caption
     }
 
-    return caption ? caption + "\n\n" + destination : destination
+    if (caption.indexOf(destination) !== -1) {
+      return caption
+    }
+
+    return caption ? caption.replace(/\s+$/, "") + "\n\n" + destination : destination
   }
 
   function channelMeta(id, destination, caption, title) {
@@ -190,6 +209,15 @@
     }
 
     var videoFile = new File([file], "rankd-preview.mp4", { type: "video/mp4" })
+    var liveUrl = (caption.match(/https?:\/\/[^\s]+/) || [])[0]
+    var withCaption = {
+      files: [videoFile],
+      title: title + " | RANKD",
+      text: caption
+    }
+    if (liveUrl) {
+      withCaption.url = liveUrl
+    }
     var attempts = filesOnly
       ? [
           {
@@ -197,13 +225,13 @@
           }
         ]
       : [
-          {
-            files: [videoFile]
-          },
+          withCaption,
           {
             files: [videoFile],
-            title: title + " | RANKD",
             text: caption
+          },
+          {
+            files: [videoFile]
           }
         ]
 
@@ -228,14 +256,14 @@
   async function openChosenPlatform(root) {
     var status = root.querySelector("[data-share-status]")
     var note = root.querySelector("[data-share-video-note]")
-    var destination = root.getAttribute("data-share-url") || ""
+    var destination = liveRankdUrl(root)
     var title = root.getAttribute("data-share-title") || "RANKD"
+    var channel = root.getAttribute("data-share-channel") || ""
     var caption = captionForChannel(
-      root.getAttribute("data-share-channel") || "",
+      channel,
       root.getAttribute("data-share-caption") || "",
       destination
     )
-    var channel = root.getAttribute("data-share-channel") || ""
     var meta = channelMeta(channel, destination, caption, title)
 
     function setStatus(message) {
@@ -263,7 +291,7 @@
           file,
           title,
           caption,
-          channel === "whatsapp"
+          false
         )
         if (shared) {
           setStatus("Pick " + meta.label + " in the share sheet.")
