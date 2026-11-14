@@ -20,6 +20,8 @@ import {
   encodeRankingTeaser
 } from "@/components/AnimatedRankPreview"
 
+import PlatformMark from "@/components/share/PlatformMark"
+
 import {
   publishRankingTeaser,
   teaserFileName
@@ -76,18 +78,17 @@ function channelButtonClass(
 ) {
   return `
     inline-flex
-    min-w-[4.5rem]
     items-center
     justify-center
     rounded-full
     border
-    border-black
-    px-3
-    py-1.5
-    text-[11px]
+    border-[#111]
+    px-2.5
+    py-1
+    text-[10px]
     font-black
     tracking-tight
-    text-black
+    text-[#111]
     no-underline
     ${
       kind === "video"
@@ -163,8 +164,8 @@ export default function ShareButton({
   ] =
     useState(
       teaserUrl
-        ? "Share this MP4 to Instagram, TikTok, WhatsApp or Facebook."
-        : "First share builds the 9:16 video. That can take about 20 seconds."
+        ? "Video ready."
+        : "Building the 9:16 video takes about 20 seconds."
     )
 
   const [
@@ -259,7 +260,7 @@ export default function ShareButton({
             currentUrl
           )
           setNote(
-            "Share this MP4 to Instagram, TikTok, WhatsApp or Facebook."
+            "Video ready."
           )
           setStatus(
             ""
@@ -273,7 +274,7 @@ export default function ShareButton({
           "Creating the 9:16 video…"
         )
         setNote(
-          "Building the MP4. Keep this window open — about 20 seconds."
+          "Building the 9:16 video…"
         )
 
         try {
@@ -316,7 +317,7 @@ export default function ShareButton({
             objectUrl
           )
           setNote(
-            "Share this MP4 to Instagram, TikTok, WhatsApp or Facebook."
+            "Video ready."
           )
           setStatus(
             "Video ready."
@@ -338,7 +339,7 @@ export default function ShareButton({
               : "Could not create the video. Try Chrome on desktop."
           )
           setNote(
-            "This browser could not build the MP4. Use Link, or try Video in Chrome."
+            "Could not build the MP4. Use Link, or try Chrome."
           )
         } finally {
           creatingRef.current =
@@ -488,11 +489,6 @@ export default function ShareButton({
       destination
     )
 
-  const encodedText =
-    encodeURIComponent(
-      text ?? `${title} — RANKD`
-    )
-
   const encodedCaption =
     encodeURIComponent(
       caption
@@ -505,30 +501,6 @@ export default function ShareButton({
     href?: string
   }[] = [
     {
-      id: "facebook",
-      label: "Facebook",
-      video: canShareVideo,
-      href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
-    },
-    {
-      id: "x",
-      label: "X",
-      video: canShareVideo,
-      href: `https://twitter.com/intent/tweet?text=${encodedCaption}&url=${encodedUrl}`
-    },
-    {
-      id: "whatsapp",
-      label: "WhatsApp",
-      video: canShareVideo,
-      href: `https://wa.me/?text=${encodedCaption}%20${encodedUrl}`
-    },
-    {
-      id: "email",
-      label: "Email",
-      video: canShareVideo,
-      href: `mailto:?subject=${encodeURIComponent(`${title} | RANKD`)}&body=${encodedCaption}%0A%0A${encodedUrl}`
-    },
-    {
       id: "instagram",
       label: "Instagram",
       video: canShareVideo
@@ -537,6 +509,30 @@ export default function ShareButton({
       id: "tiktok",
       label: "TikTok",
       video: canShareVideo
+    },
+    {
+      id: "facebook",
+      label: "Facebook",
+      video: canShareVideo,
+      href: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`
+    },
+    {
+      id: "whatsapp",
+      label: "WhatsApp",
+      video: canShareVideo,
+      href: `https://wa.me/?text=${encodedCaption}%20${encodedUrl}`
+    },
+    {
+      id: "x",
+      label: "X",
+      video: canShareVideo,
+      href: `https://twitter.com/intent/tweet?text=${encodedCaption}&url=${encodedUrl}`
+    },
+    {
+      id: "email",
+      label: "Email",
+      video: canShareVideo,
+      href: `mailto:?subject=${encodeURIComponent(`${title} | RANKD`)}&body=${encodedCaption}%0A%0A${encodedUrl}`
     }
   ]
 
@@ -646,53 +642,38 @@ export default function ShareButton({
         role="dialog"
         aria-label="Share"
         className="
-          w-[calc(100vw-1.5rem)]
-          max-w-md
+          w-[min(calc(100vw-1.5rem),20.5rem)]
           max-h-[min(92dvh,100%)]
           overflow-y-auto
-          rounded-[28px]
+          rounded-[20px]
           border
-          border-black
+          border-[#111]
           bg-[#F7F4EE]
-          p-5
+          p-3.5
           text-left
-          text-black
+          text-[#111]
         "
       >
         <div
           className="
-            mb-4
+            mb-3
             flex
-            items-start
+            items-center
             justify-between
-            gap-4
+            gap-3
           "
         >
-          <div>
-            <p
-              className="
-                text-[10px]
-                font-black
-                uppercase
-                tracking-[0.2em]
-                text-black/40
-              "
-            >
-              Share this RANKD
-            </p>
-
-            <p
-              className="
-                mt-1
-                text-lg
-                font-black
-                leading-tight
-                tracking-[-0.03em]
-              "
-            >
-              {title}
-            </p>
-          </div>
+          <p
+            className="
+              min-w-0
+              truncate
+              text-sm
+              font-black
+              tracking-[-0.04em]
+            "
+          >
+            {title}
+          </p>
 
           <button
             type="button"
@@ -701,37 +682,27 @@ export default function ShareButton({
             popoverTargetAction="hide"
             className="
               flex
-              h-9
-              w-9
+              h-7
+              w-7
               shrink-0
               items-center
               justify-center
               rounded-full
-              bg-black/[0.06]
+              border
+              border-[#111]
             "
           >
-            <X size={16} />
+            <X size={14} />
           </button>
         </div>
 
         <div
           data-share-channels=""
         >
-        <p
-          className="
-            mb-3
-            text-sm
-            leading-snug
-            text-black/55
-          "
-        >
-          Video is the 9:16 RANKD. Link is the page. Instagram and TikTok take video only.
-        </p>
-
         <div
           className="
             grid
-            gap-2
+            gap-1.5
           "
         >
           {
@@ -742,19 +713,22 @@ export default function ShareButton({
                   className="
                     flex
                     items-center
-                    justify-between
-                    gap-3
-                    rounded-2xl
+                    gap-2.5
+                    rounded-full
                     border
-                    border-black
-                    bg-transparent
-                    px-3
-                    py-2.5
+                    border-[#111]
+                    px-2
+                    py-1.5
                   "
                 >
+                  <PlatformMark id={channel.id} />
+
                   <span
                     className="
-                      text-sm
+                      min-w-0
+                      flex-1
+                      truncate
+                      text-[13px]
                       font-black
                       tracking-tight
                     "
@@ -767,7 +741,7 @@ export default function ShareButton({
                       flex
                       shrink-0
                       items-center
-                      gap-1.5
+                      gap-1
                     "
                   >
                     {
@@ -810,18 +784,18 @@ export default function ShareButton({
           type="button"
           data-share-action="copy"
           className="
-            mt-3
+            mt-2
             flex
             w-full
             items-center
             justify-center
             rounded-full
             border
-            border-black
+            border-[#111]
             bg-transparent
-            px-4
-            py-3
-            text-sm
+            px-3
+            py-2
+            text-[12px]
             font-black
           "
         >
@@ -833,30 +807,18 @@ export default function ShareButton({
           value={destination}
           data-share-url-field=""
           aria-label="RANKD link"
-          className="
-            mt-2
-            w-full
-            rounded-full
-            border
-            border-black/15
-            bg-transparent
-            px-4
-            py-2
-            text-[11px]
-            text-black/60
-            outline-none
-          "
+          className="sr-only"
         />
 
         <p
           data-share-status=""
           className="
-            mt-3
-            min-h-[1.25rem]
-            text-xs
+            mt-2
+            min-h-[1rem]
+            text-[11px]
             font-bold
             leading-snug
-            text-black/55
+            text-[#111]/55
           "
         >
           {status}
@@ -864,7 +826,7 @@ export default function ShareButton({
 
         {
           extra && (
-            <div className="mt-3">
+            <div className="mt-2">
               {extra}
             </div>
           )
@@ -878,179 +840,151 @@ export default function ShareButton({
             type="button"
             data-share-action="video-back"
             className="
-              mb-4
-              text-xs
+              mb-3
+              text-[10px]
               font-black
               uppercase
               tracking-[0.16em]
-              text-black/45
+              text-[#111]/45
             "
           >
-            ← Destinations
+            ← Back
           </button>
 
           <div
             className="
-              mx-auto
-              w-full
-              max-w-[220px]
-              overflow-hidden
-              rounded-[22px]
-              border
-              border-black
-              bg-[#F7F4EE]
+              flex
+              items-start
+              gap-3
             "
-            style={{
-              aspectRatio: "9 / 16"
-            }}
           >
-            <video
-              data-share-video=""
-              autoPlay
-              muted
-              loop
-              playsInline
-              className="
-                h-full
-                w-full
-                object-cover
-              "
-            />
             <div
-              data-share-still=""
               className="
-                flex
-                h-full
-                flex-col
-                justify-end
-                gap-2
-                p-4
+                w-[108px]
+                shrink-0
+                overflow-hidden
+                rounded-[14px]
+                border
+                border-[#111]
+                bg-[#F7F4EE]
               "
+              style={{
+                aspectRatio: "9 / 16"
+              }}
             >
-              <p
+              <video
+                data-share-video=""
+                autoPlay
+                muted
+                loop
+                playsInline
                 className="
-                  text-[10px]
-                  font-black
-                  uppercase
-                  tracking-[0.18em]
-                  text-black/35
+                  h-full
+                  w-full
+                  object-cover
                 "
-              >
-                RANKD
-              </p>
-              <p
-                className="
-                  text-lg
-                  font-black
-                  leading-tight
-                  tracking-[-0.04em]
-                "
-              >
-                {title}
-              </p>
+              />
               <div
+                data-share-still=""
                 className="
-                  mt-2
-                  grid
-                  gap-1.5
+                  flex
+                  h-full
+                  flex-col
+                  justify-end
+                  p-2.5
                 "
               >
-                {
-                  items
-                    .filter(
-                      item =>
-                        item.position >= 4 &&
-                        item.position <= 7
-                    )
-                    .sort(
-                      (a, b) =>
-                        b.position -
-                        a.position
-                    )
-                    .map(
-                      item => (
-                        <p
-                          key={item.position}
-                          className="
-                            text-sm
-                            font-black
-                            tracking-tight
-                          "
-                        >
-                          <span
-                            className="
-                              mr-2
-                              text-black/35
-                            "
-                          >
-                            {String(item.position).padStart(2, "0")}
-                          </span>
-                          {item.name}
-                        </p>
-                      )
-                    )
-                }
+                <p
+                  className="
+                    text-[8px]
+                    font-black
+                    uppercase
+                    tracking-[0.16em]
+                    text-[#111]/35
+                  "
+                >
+                  RANKD
+                </p>
+                <p
+                  className="
+                    mt-1
+                    line-clamp-4
+                    text-[11px]
+                    font-black
+                    leading-tight
+                    tracking-[-0.04em]
+                  "
+                >
+                  {title}
+                </p>
               </div>
             </div>
-          </div>
 
-          <p
-            data-share-video-note=""
-            className="
-              mt-3
-              text-sm
-              leading-snug
-              text-black/55
-            "
-          >
-            {note}
-          </p>
-
-          <div
-            data-share-video-actions=""
-          >
-            <button
-              type="button"
-              data-share-action="video-file"
+            <div
               className="
-                mt-3
-                flex
-                w-full
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-black
-                bg-[#FF6B35]
-                px-4
-                py-3
-                text-sm
-                font-black
+                min-w-0
+                flex-1
+                pt-0.5
               "
             >
-              Open platform
-            </button>
-            <button
-              type="button"
-              data-share-action="video-download"
-              className="
-                mt-2
-                flex
-                w-full
-                items-center
-                justify-center
-                rounded-full
-                border
-                border-black
-                bg-transparent
-                px-4
-                py-3
-                text-sm
-                font-black
-              "
-            >
-              Download MP4
-            </button>
+              <p
+                data-share-video-note=""
+                className="
+                  text-[12px]
+                  leading-snug
+                  text-[#111]/55
+                "
+              >
+                {note}
+              </p>
+
+              <div
+                data-share-video-actions=""
+              >
+                <button
+                  type="button"
+                  data-share-action="video-file"
+                  className="
+                    mt-3
+                    flex
+                    w-full
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
+                    border-[#111]
+                    bg-[#FF6B35]
+                    px-3
+                    py-2
+                    text-[12px]
+                    font-black
+                  "
+                >
+                  Open platform
+                </button>
+                <button
+                  type="button"
+                  data-share-action="video-download"
+                  className="
+                    mt-1.5
+                    flex
+                    w-full
+                    items-center
+                    justify-center
+                    rounded-full
+                    border
+                    border-[#111]
+                    bg-transparent
+                    px-3
+                    py-2
+                    text-[12px]
+                    font-black
+                  "
+                >
+                  Download MP4
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
