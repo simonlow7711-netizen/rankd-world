@@ -22,87 +22,117 @@ export default function RevealTopCover({
   children
 }: RevealTopCoverProps) {
 
-  if (!revealed) {
-    return (
-      <div
-        className="
-          relative
-          overflow-hidden
-        "
-        style={{
-          border:
-            `2px solid ${accent}`,
-          borderRadius:
-            "20px"
-        }}
-      >
-        <button
-          type="button"
-          onClick={
-            event => {
-              event.preventDefault()
-              event.stopPropagation()
-              onReveal()
+  return (
+
+    <div
+      className="
+        relative
+        overflow-hidden
+      "
+      style={
+        revealed
+          ? undefined
+          : {
+              border:
+                `2px solid ${accent}`,
+              borderRadius:
+                "20px",
+              minHeight:
+                136
             }
-          }
-          className="
-            flex
-            min-h-[136px]
-            w-full
-            items-center
-            justify-center
-            bg-transparent
-            px-4
-            py-6
-            text-center
-          "
-          aria-label="Reveal the number one ranked item"
-        >
-          <span
+      }
+    >
+
+      <div
+        className={
+          revealed
+            ? undefined
+            : "invisible"
+        }
+      >
+        {children}
+      </div>
+
+
+      {
+        !revealed && (
+
+          <button
+            type="button"
+            onClick={
+              event => {
+                event.preventDefault()
+                event.stopPropagation()
+                onReveal()
+              }
+            }
             className="
+              absolute
+              inset-0
+              z-10
               flex
-              flex-col
+              w-full
               items-center
               justify-center
+              bg-transparent
+              px-4
+              py-3
+              text-center
             "
+            aria-label="Reveal the number one ranked item"
           >
-            <span
-              className="
-                text-base
-                font-black
-                leading-tight
-                tracking-[-0.03em]
-                md:text-xl
-              "
-              style={{
-                color:
-                  ink
-              }}
-            >
-              Would you have RANKD this #1?
-            </span>
 
             <span
               className="
-                mt-3
-                text-xs
-                font-black
-                uppercase
-                tracking-[0.22em]
+                flex
+                flex-col
+                items-center
+                justify-center
               "
-              style={{
-                color:
-                  accent
-              }}
             >
-              Click to reveal →
-            </span>
-          </span>
-        </button>
-      </div>
-    )
-  }
 
-  return <>{children}</>
+              <span
+                className="
+                  text-base
+                  font-black
+                  leading-tight
+                  tracking-[-0.03em]
+                  md:text-xl
+                "
+                style={{
+                  color:
+                    ink
+                }}
+              >
+                Would you have RANKD this #1?
+              </span>
+
+
+              <span
+                className="
+                  mt-3
+                  text-xs
+                  font-black
+                  uppercase
+                  tracking-[0.22em]
+                "
+                style={{
+                  color:
+                    accent
+                }}
+              >
+                Click to reveal →
+              </span>
+
+            </span>
+
+          </button>
+
+        )
+      }
+
+    </div>
+
+  )
 
 }
