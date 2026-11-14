@@ -52,9 +52,26 @@
     }
   }
 
+  function captionForChannel(id, caption, destination) {
+    if (
+      id !== "facebook" &&
+      id !== "x" &&
+      id !== "whatsapp" &&
+      id !== "email"
+    ) {
+      return caption
+    }
+
+    if (!destination || caption.indexOf(destination) !== -1) {
+      return caption
+    }
+
+    return caption ? caption + "\n\n" + destination : destination
+  }
+
   function channelMeta(id, destination, caption, title) {
-    var encodedCaption = encodeURIComponent(caption)
-    var encodedUrl = encodeURIComponent(destination)
+    var linkedCaption = captionForChannel(id, caption, destination)
+    var encodedCaption = encodeURIComponent(linkedCaption)
     var encodedTitle = encodeURIComponent(title + " | RANKD")
 
     if (id === "facebook") {
@@ -73,7 +90,7 @@
     if (id === "whatsapp") {
       return {
         label: "WhatsApp",
-        href: "https://wa.me/?text=" + encodedCaption + "%20" + encodedUrl,
+        href: "https://wa.me/?text=" + encodedCaption,
         fileShare: true
       }
     }
@@ -84,9 +101,7 @@
           "mailto:?subject=" +
           encodedTitle +
           "&body=" +
-          encodedCaption +
-          "%0A%0A" +
-          encodedUrl
+          encodedCaption
       }
     }
     if (id === "instagram") {
@@ -215,7 +230,11 @@
     var note = root.querySelector("[data-share-video-note]")
     var destination = root.getAttribute("data-share-url") || ""
     var title = root.getAttribute("data-share-title") || "RANKD"
-    var caption = root.getAttribute("data-share-caption") || ""
+    var caption = captionForChannel(
+      root.getAttribute("data-share-channel") || "",
+      root.getAttribute("data-share-caption") || "",
+      destination
+    )
     var channel = root.getAttribute("data-share-channel") || ""
     var meta = channelMeta(channel, destination, caption, title)
 

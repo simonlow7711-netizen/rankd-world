@@ -24,6 +24,7 @@ import PlatformMark from "@/components/share/PlatformMark"
 
 import {
   publishRankingTeaser,
+  rankingVideoCaption,
   teaserFileName
 } from "@/utils/teaser"
 
@@ -476,12 +477,8 @@ export default function ShareButton({
   )
 
   const caption =
-    [
-      "Would you rank it differently?",
-      "",
-      `${title} | RANKD`
-    ].join(
-      "\n"
+    rankingVideoCaption(
+      title
     )
 
   const encodedUrl =

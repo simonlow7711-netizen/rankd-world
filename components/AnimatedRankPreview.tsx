@@ -1167,7 +1167,8 @@ export default function AnimatedRankPreview({
       const shared =
         await shareRankingVideoFile(
           file,
-          title
+          title,
+          href
         )
 
       if (shared) {
@@ -1177,7 +1178,7 @@ export default function AnimatedRankPreview({
       if (destination === "whatsapp") {
         window.open(
           `https://wa.me/?text=${encodeURIComponent(
-            rankingVideoCaption(title)
+            rankingVideoCaption(title, href)
           )}`,
           "_blank",
           "noopener,noreferrer"

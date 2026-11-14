@@ -23,13 +23,20 @@ export function teaserObjectPath(
 
 
 export function rankingVideoCaption(
-  title: string
+  title: string,
+  url?: string
 ) {
-  return [
+  const lines = [
     "Would you rank it differently?",
     "",
     `${title} | RANKD`
-  ].join("\n")
+  ]
+
+  if (url) {
+    lines.push("", url)
+  }
+
+  return lines.join("\n")
 }
 
 
@@ -78,7 +85,8 @@ export async function fetchTeaserFile(
 
 export async function shareRankingVideoFile(
   file: File,
-  title: string
+  title: string,
+  url?: string
 ) {
   if (
     typeof navigator.share !== "function"
@@ -88,7 +96,8 @@ export async function shareRankingVideoFile(
 
   const text =
     rankingVideoCaption(
-      title
+      title,
+      url
     )
 
   const attempts: ShareData[] = [
